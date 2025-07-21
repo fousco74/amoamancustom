@@ -1,0 +1,107 @@
+{
+ "actions": [],
+ "allow_guest_to_view": 1,
+ "allow_rename": 1,
+ "autoname": "format:{title}-{DD}-{YY}-{#####}",
+ "creation": "2025-07-21 14:18:18.650201",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "training",
+  "lastname",
+  "file",
+  "title",
+  "column_break_wkth",
+  "firstname",
+  "email",
+  "route",
+  "is_published"
+ ],
+ "fields": [
+  {
+   "fieldname": "firstname",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Firstname",
+   "reqd": 1
+  },
+  {
+   "fieldname": "lastname",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Lastname",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_wkth",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Email",
+   "reqd": 1
+  },
+  {
+   "fieldname": "file",
+   "fieldtype": "Attach",
+   "in_list_view": 1,
+   "label": "File",
+   "reqd": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "is_published",
+   "fieldtype": "Check",
+   "label": "Is Published"
+  },
+  {
+   "fieldname": "route",
+   "fieldtype": "Data",
+   "label": "Route"
+  },
+  {
+   "fieldname": "training",
+   "fieldtype": "Link",
+   "label": "Training",
+   "options": "Training",
+   "reqd": 1
+  },
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "label": "Title"
+  }
+ ],
+ "grid_page_length": 50,
+ "has_web_view": 1,
+ "is_published_field": "is_published",
+ "links": [],
+ "modified": "2025-07-21 16:57:58.077373",
+ "modified_by": "Administrator",
+ "module": "Amoaman Custom App",
+ "name": "Training Attestation",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "route": "Training-Attestation",
+ "row_format": "Dynamic",
+ "search_fields": "firstname, lastname",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

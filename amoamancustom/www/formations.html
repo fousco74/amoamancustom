@@ -1,0 +1,45 @@
+{% extends "templates/web.html" %}
+
+{% block page_content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="fw-bold">Retrouvez votre attestation</h1>
+        <p class="text-muted">Entrez votre identifiant de formation pour accéder à votre attestation sécurisée.</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form id="search-form" class="card shadow-sm p-4 bg-white">
+                <div class="mb-3">
+                    <label for="formation-id" class="form-label fw-medium">Identifiant de formation</label>
+                    <input type="text" id="formation-id" name="formation_id" class="form-control form-control-lg" placeholder="Exemple: F-2023-05842" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 btn-lg">
+                    <i class="fas fa-search me-2"></i> Rechercher mon attestation
+                </button>
+            </form>
+
+            <div id="error-message" class="alert alert-danger mt-3 d-none" role="alert">
+                Veuillez saisir un identifiant valide.
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('search-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formationId = document.getElementById('formation-id').value.trim();
+
+    if (!formationId) {
+        document.getElementById('error-message').classList.remove('d-none');
+        return;
+    }
+
+    // Vous pouvez personnaliser l'URL de redirection selon la logique de routing
+    // Exemple : /attestation/<formation_id>
+    const redirectUrl = `/training-attestation/${formationId}`;
+    window.location.href = redirectUrl;
+});
+</script>
+{% endblock %}
