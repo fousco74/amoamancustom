@@ -1,12 +1,14 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:{title}-{DD}-{YY}",
+ "autoname": "format:{title}-{DD}{YY}",
  "creation": "2025-07-21 15:55:54.926385",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "name1",
   "title",
+  "column_break_orgw",
   "start",
   "end"
  ],
@@ -14,23 +16,40 @@
   {
    "fieldname": "title",
    "fieldtype": "Data",
-   "label": "Title"
+   "in_list_view": 1,
+   "label": "Title",
+   "reqd": 1
   },
   {
    "fieldname": "start",
    "fieldtype": "Date",
-   "label": "Start"
+   "in_list_view": 1,
+   "label": "Start",
+   "reqd": 1
   },
   {
    "fieldname": "end",
    "fieldtype": "Date",
-   "label": "End"
+   "in_list_view": 1,
+   "label": "End",
+   "reqd": 1
+  },
+  {
+   "fieldname": "name1",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_orgw",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-07-21 16:04:02.836341",
+ "modified": "2025-07-22 23:56:04.561784",
  "modified_by": "Administrator",
  "module": "Amoaman Custom App",
  "name": "Training",

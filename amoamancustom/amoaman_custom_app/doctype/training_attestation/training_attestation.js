@@ -16,13 +16,12 @@ frappe.ui.form.on("Training Attestation", {
     },
      async  fullname(frm){
         if(frm.doc.firstname && frm.doc.lastname && frm.doc.training) {
-            console.log(frm.doc.training)
          let doc = await frappe.db.get_doc("Training",frm.doc.training)
 
         frm.set_value('title',`${frm.doc.firstname[0].toUpperCase()}${frm.doc.lastname[0].toUpperCase()}-${doc.title}`)
         }
     },
     before_save(frm){
-        if(frm.doc.is_published) frm.set_value('route',frm.doc.name)
+        if(frm.doc.is_published) frm.set_value('route',`training-attestation/${frm.doc.name}`)
     }
 });

@@ -137,13 +137,16 @@ app_license = "mit"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+#doc_events = {
+	#"Timesheet": {
+		#"before_save": "amoamancustom.hr_custom.doctype.timesheet.timesheet.calculate_work_days",
+	#},
+   #"Sales Invoice" :{
+	   #"before_save" : "amoamancustom.hr_custom.doctype.sales_invoice.sales_invoice.before_submit_link_so_items"
+   #}
+#}
+
+
 
 # Scheduled Tasks
 # ---------------

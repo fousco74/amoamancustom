@@ -29,7 +29,7 @@
 <script>
 document.getElementById('search-form').addEventListener('submit', function(e) {
     e.preventDefault();
-    const formationId = document.getElementById('formation-id').value.trim();
+    const formationId = document.getElementById('formation-id').value;
 
     if (!formationId) {
         document.getElementById('error-message').classList.remove('d-none');
