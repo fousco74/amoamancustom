@@ -1,0 +1,81 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-09-09 16:21:52.570498",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "cdd_employment_type_id",
+  "cdi_employment_type_id",
+  "column_break_kftm",
+  "training_employment_type_id",
+  "section_break_hnbl",
+  "cdi_or_cdd_leave_policy_id",
+  "column_break_scpu",
+  "training_leave_policy_id"
+ ],
+ "fields": [
+  {
+   "fieldname": "cdd_employment_type_id",
+   "fieldtype": "Data",
+   "label": "CDD Employment Type ID"
+  },
+  {
+   "fieldname": "cdi_employment_type_id",
+   "fieldtype": "Data",
+   "label": "CDI Employment Type ID"
+  },
+  {
+   "fieldname": "column_break_kftm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "training_employment_type_id",
+   "fieldtype": "Data",
+   "label": "Training Employment Type ID"
+  },
+  {
+   "fieldname": "section_break_hnbl",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "cdi_or_cdd_leave_policy_id",
+   "fieldtype": "Data",
+   "label": "CDI or CDD Leave Policy ID"
+  },
+  {
+   "fieldname": "column_break_scpu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "training_leave_policy_id",
+   "fieldtype": "Data",
+   "label": "Training Leave Policy ID"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2025-09-09 16:27:01.715429",
+ "modified_by": "Administrator",
+ "module": "HR_CUSTOM",
+ "name": "RH Leave Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

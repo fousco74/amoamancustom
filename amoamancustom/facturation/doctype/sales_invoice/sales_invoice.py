@@ -55,3 +55,5 @@ def before_submit_link_so_items(doc, method=None):
             match = pick_so_item(it)
             if match:
                 it.so_detail = match["name"]
+                
+

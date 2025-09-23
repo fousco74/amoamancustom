@@ -5,6 +5,12 @@ app_description = "custom amoaman erpnet app"
 app_email = "fkone@amoaman.com"
 app_license = "mit"
 
+from hrms.hr.doctype.expense_claim import expense_claim
+from amoamancustom.overrides.expense_claim import get_total_reimbursed_amount
+
+# Patch de la fonction originale
+expense_claim.get_total_reimbursed_amount = get_total_reimbursed_amount
+
 # Apps
 # ------------------
 
@@ -43,7 +49,15 @@ app_license = "mit"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {
+    "Timesheet" : "public/js/timesheet/timesheet.js",
+    "Sales Order" : "public/js/sales_order/sales_order.js",
+    "Quotation" : "public/js/quotation/quotation.js",
+    "Project" : "public/js/project/project.js",
+    "Employee" : "public/js/employee/employee.js",
+    "Salary Slip" : "public/js/salary_slip/salary_slip.js",
+    "Salary Structure Assignment" : "public/js/salary_structure _assignment/salary_structure _assignment.js"
+    }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -74,10 +88,13 @@ app_license = "mit"
 # ----------
 
 # add methods and filters to jinja environment
-# jinja = {
-# 	"methods": "amoamancustom.utils.jinja_methods",
-# 	"filters": "amoamancustom.utils.jinja_filters"
-# }
+jinja = {
+    "methods": [
+        "amoamancustom.utils.timesheet_utils.build_time_log_rows",
+    ],
+    # Si vous voulez exposer des filtres custom :
+    # "filters": ["amoamancustom.utils.some_module.some_filter"],
+}
 
 # Installation
 # ------------
@@ -137,37 +154,36 @@ app_license = "mit"
 # ---------------
 # Hook on document methods and events
 
-#doc_events = {
-	#"Timesheet": {
-		#"before_save": "amoamancustom.hr_custom.doctype.timesheet.timesheet.calculate_work_days",
-	#},
+doc_events = {
+	"Employee": {
+		"on_update": "amoamancustom.hr_custom.doctype.employee.employee.employment_type_changed",
+	},
    #"Sales Invoice" :{
 	   #"before_save" : "amoamancustom.hr_custom.doctype.sales_invoice.sales_invoice.before_submit_link_so_items"
    #}
-#}
+}
 
 
 
 # Scheduled Tasks
 # ---------------
-
-# scheduler_events = {
-# 	"all": [
-# 		"amoamancustom.tasks.all"
-# 	],
-# 	"daily": [
-# 		"amoamancustom.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"amoamancustom.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"amoamancustom.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"amoamancustom.tasks.monthly"
-# 	],
-# }
+scheduler_events = {
+ 	"all": [
+ 		#"amoamancustom.tasks.all"
+ 	],
+ 	"daily": [
+ 		"amoamancustom.schedulers.employee.set_seniority"
+ 	],
+ 	"hourly": [
+ 		#"amoamancustom.tasks.hourly"
+ 	],
+ 	"weekly": [
+ 		#"amoamancustom.tasks.weekly"
+ 	],
+ 	"monthly": [
+ 		#"amoamancustom.schedulers.employee.set_seniority"
+ 	],
+ }
 
 # Testing
 # -------
@@ -244,4 +260,333 @@ app_license = "mit"
 # default_log_clearing_doctypes = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
+
+
+fixtures = [
+    # -----------------------------
+    # 1. Custom Fields
+    # -----------------------------
+    {
+        "doctype": "Custom Field",
+        "filters": [
+            [
+                "dt", "in", [
+                    # --- Département RH ---
+                    "Employee",
+                    "Employment Contract",
+                    "Employee Grade",
+                    "Expense Claim",
+                    "Timesheet",
+                    "Attendance",
+                    "Leave Application",
+                    "Leave Allocation",
+                    "Payroll Entry",
+                    "Salary Slip",
+                    "Shift Assignment",
+                    "Department",
+                    "Designation",
+
+                    # --- Département Comptabilité / Finance ---
+                    "Item",
+                    "Sales Invoice",
+                    "Purchase Invoice",
+                    "Sales Order",
+                    "Purchase Order",
+                    "Quotation",
+                    "Delivery Note",
+                    "Purchase Receipt",
+                    "Payment Entry",
+                    "Customer",
+                    "Supplier",
+                    "Contact",
+                    "Address",
+                    "Contract",
+                    "Journal Entry",
+                    "Account",
+                    "Cost Center",
+                    "Company",
+                    "Tax Rule",
+                    "Pricing Rule",
+
+                    # --- Autres DocTypes fréquemment utilisés ---
+                    "Project",
+                    "Task",
+                    "Issue",
+                    "Stock Entry",
+                    "Warehouse",
+                    "Batch",
+                    "Serial No",
+                    "Material Request",
+                    "Work Order",
+                    "BOM",
+                    "Subscription",
+                    "Email Template",
+                    "Notification Log",
+                    "File",
+                    "Web Page",
+                    "Website Settings",
+                    "Communication",
+                    "ToDo"
+                ]
+            ]
+        ]
+    },
+
+    # -----------------------------
+    # 2. Property Setters
+    # -----------------------------
+    {
+        "doctype": "Property Setter",
+        "filters": [
+            [
+                "doc_type", "in", [
+                    # --- Département RH ---
+                    "Employee",
+                    "Employment Contract",
+                    "Employee Grade",
+                    "Expense Claim",
+                    "Timesheet",
+                    "Attendance",
+                    "Leave Application",
+                    "Leave Allocation",
+                    "Payroll Entry",
+                    "Salary Slip",
+                    "Shift Assignment",
+                    "Department",
+                    "Designation",
+
+                    # --- Département Comptabilité / Finance ---
+                    "Item",
+                    "Sales Invoice",
+                    "Purchase Invoice",
+                    "Sales Order",
+                    "Purchase Order",
+                    "Quotation",
+                    "Delivery Note",
+                    "Purchase Receipt",
+                    "Payment Entry",
+                    "Customer",
+                    "Supplier",
+                    "Contact",
+                    "Address",
+                    "Contract",
+                    "Journal Entry",
+                    "Account",
+                    "Cost Center",
+                    "Company",
+                    "Tax Rule",
+                    "Pricing Rule",
+
+                    # --- Autres DocTypes utilisés ---
+                    "Project",
+                    "Task",
+                    "Issue",
+                    "Stock Entry",
+                    "Warehouse",
+                    "Batch",
+                    "Serial No",
+                    "Material Request",
+                    "Work Order",
+                    "BOM",
+                    "Subscription",
+                    "Email Template",
+                    "Notification Log",
+                    "File",
+                    "Web Page",
+                    "Website Settings",
+                    "Communication",
+                    "ToDo"
+                ]
+            ]
+        ]
+    },
+
+    # -----------------------------
+    # 3. Workflows
+    # -----------------------------
+    {
+        "doctype": "Workflow",
+        "filters": [
+            [
+                "document_type", "in", [
+                    # RH
+                    "Employee",
+                    "Employment Contract",
+                    "Expense Claim",
+                    "Timesheet",
+                    "Leave Application",
+                    "Payroll Entry",
+                    "Salary Slip",
+
+                    # Comptabilité
+                    "Sales Invoice",
+                    "Purchase Invoice",
+                    "Sales Order",
+                    "Purchase Order",
+                    "Quotation",
+                    "Delivery Note",
+                    "Payment Entry",
+                    "Journal Entry",
+
+                    # Stock
+                    "Stock Entry",
+                    "Material Request",
+                    "Work Order",
+
+                    # Contacts et adresses
+                    "Address",
+                    "Contact"
+                ]
+            ]
+        ]
+    },
+
+    # -----------------------------
+    # 4. Workflow States
+    # -----------------------------
+    {
+        "doctype": "Workflow State",
+        "filters": [
+            [
+                "workflow_state_name", "not like", "%Recruitment%"
+            ]
+        ]
+    },
+
+    # -----------------------------
+    # 5. Workflow Actions
+    # -----------------------------
+    {
+        "doctype": "Workflow Action",
+        "filters": [
+            [
+                "name", "not like", "%Recruitment%"
+            ]
+        ]
+    },
+
+    # -----------------------------
+    # 6. Roles (incluant RH + Comptabilité)
+    # -----------------------------
+    {
+        "doctype": "Role",
+        "filters": [
+            [
+                "name", "in", [
+                    # RH
+                    "HR Manager",
+                    "HR User",
+                    "Employee",
+                    "Leave Approver",
+                    "Expense Approver",
+                    "Payroll Manager",
+                    "Timesheet Approver",
+
+                    # Comptabilité
+                    "Accounts Manager",
+                    "Accounts User",
+                    "Auditor",
+                    "Stock Manager",
+                    "Stock User",
+                    "Sales Manager",
+                    "Sales User",
+                    "Purchase Manager",
+                    "Purchase User",
+
+                    # Autres
+                    "System Manager",
+                    "Administrator",
+                    "Project Manager",
+                    "Project User"
+                ]
+            ]
+        ]
+    },
+
+    # -----------------------------
+    # 7. Print Formats
+    # -----------------------------
+    {
+        "doctype": "Print Format",
+        "filters": [
+            [
+                "doc_type", "in", [
+                    # RH
+                    "Employee",
+                    "Employment Contract",
+                    "Expense Claim",
+                    "Timesheet",
+                    "Salary Slip",
+
+                    # Comptabilité
+                    "Sales Invoice",
+                    "Purchase Invoice",
+                    "Quotation",
+                    "Sales Order",
+                    "Purchase Order",
+                    "Delivery Note",
+                    "Purchase Receipt",
+                    "Payment Entry",
+                    "Journal Entry",
+                    "Address",
+                    "Contact",
+
+                    # Autres
+                    "Project",
+                    "Task",
+                    "Stock Entry",
+                    "Material Request",
+                    "Work Order"
+                ]
+            ]
+        ]
+    },
+
+    # -----------------------------
+    # 8. Reports personnalisés
+    # -----------------------------
+    {
+        "doctype": "Report",
+        "filters": [
+            [
+                "ref_doctype", "in", [
+                    # RH
+                    "Employee",
+                    "Employment Contract",
+                    "Expense Claim",
+                    "Timesheet",
+                    "Leave Application",
+                    "Payroll Entry",
+                    "Salary Slip",
+
+                    # Comptabilité
+                    "Sales Invoice",
+                    "Purchase Invoice",
+                    "Quotation",
+                    "Sales Order",
+                    "Purchase Order",
+                    "Delivery Note",
+                    "Purchase Receipt",
+                    "Payment Entry",
+                    "Journal Entry",
+                    "Account",
+                    "Cost Center",
+                    "Company",
+                    "Address",
+                    "Contact",
+
+                    # Autres
+                    "Project",
+                    "Task",
+                    "Stock Entry",
+                    "Material Request",
+                    "Work Order"
+                ]
+            ]
+        ]
+    }
+]
+
+
+
 

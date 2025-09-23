@@ -104,12 +104,12 @@ def calculate_work_days(doc, method=None):
             days = 0.0
 
         # Stocke des JOURS dans un champ custom de la ligne
-        tl.days = days
+        tl.custom_days = days
         last_days = days
         total_days += days
 
     # 6) Totaux (parent)
-    doc.total_days = total_days  # champ custom en entête si tu l’as créé
+    doc.custom_total_working_days = total_days  # champ custom en entête si tu l’as créé
     print("TOTAL DAYS (doc):", total_days)
 
     return {"days": last_days, "total_days": total_days}
@@ -145,9 +145,9 @@ def recalc_timesheet_row(timesheet, row_name: str):
         if not row:
             frappe.throw(_("Ligne introuvable après recalcul."))
 
-        row_days = flt(getattr(row, "days", 0))
-        total_days = flt(getattr(doc, "total_days", 0))
-
+        row_days = flt(getattr(row, "custom_days", 0))
+        total_days = flt(getattr(doc, "custom_total_working_days", 0))
+        
         print("days (row):", row_days)
         print("total_days (doc):", total_days)
 
@@ -158,3 +158,65 @@ def recalc_timesheet_row(timesheet, row_name: str):
     except Exception:
         frappe.log_error(frappe.get_traceback(), "recalc_timesheet_row failed")
         raise
+    
+
+@frappe.whitelist()
+def user_project(employee):
+    # Charger l'employé
+    employee = frappe.get_doc("Employee", employee)
+
+    # Récupérer tous les projets liés à l'utilisateur
+    project_users = frappe.get_all(
+        "Project User",
+        filters={"user": employee.company_email},
+        fields=["parent"]
+    )
+
+    project_names = [pu.parent for pu in project_users]
+
+    if not project_names:
+        return {"projects": [], "customers": []}
+
+    # Récupérer les détails des projets
+    projects_all = frappe.get_all(
+        "Project",
+        filters={"name": ["in", project_names]},
+        fields=["name", "customer"]
+    )
+
+    # Construire les listes
+    projects = [p.name for p in projects_all]
+    customers = list({p.customer for p in projects_all if p.customer})  # set() pour éviter les doublons
+    activity_types = frappe.get_all(
+        "Activity Type",
+        filters={"custom_user": employee.company_email},
+        fields=["name"]
+    )
+
+    # Extraire uniquement les noms
+    activity_types = [a["name"] for a in activity_types]
+    
+
+    return {
+        "projects": projects,
+        "customers": customers,
+        "activity_types" : activity_types
+    }
+
+@frappe.whitelist()
+def user_activity_type(employee):
+    employee = frappe.get_doc("Employee", employee)
+    activity_types = frappe.get_all(
+        "Activity Type",
+        filters={"custom_user": employee.company_email},
+        fields=["name"]
+    )
+
+    # Extraire uniquement les noms
+    activity_types = [a["name"] for a in activity_types]
+
+    return {
+        "activity_types": activity_types
+    }
+
+    
