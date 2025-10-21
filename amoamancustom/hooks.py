@@ -35,8 +35,8 @@ expense_claim.get_total_reimbursed_amount = get_total_reimbursed_amount
 # app_include_js = "/assets/amoamancustom/js/amoamancustom.js"
 
 # include js, css files in header of web template
-# web_include_css = "/assets/amoamancustom/css/amoamancustom.css"
-# web_include_js = "/assets/amoamancustom/js/amoamancustom.js"
+#web_include_css = ["/assets/amoamancustom/css/styles.css"]
+#web_include_js = ["/assets/amoamancustom/js/site.js"]
 
 # include custom scss in every website theme (without file extension ".scss")
 # website_theme_scss = "amoamancustom/public/scss/website"
