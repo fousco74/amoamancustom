@@ -1,0 +1,58 @@
+<footer class="site-footer">
+    <div class="container py-2">
+        <div class="d-flex justify-content-end">
+            <div class="credit">Made by Amoaman &amp; Associés</div>
+        </div>
+    </div>
+    <div class="container pb-4">
+        <div class="row gy-4 align-items-start">
+            <div class="col-lg-4 d-flex align-items-center justify-content-center">
+                <div class="logo-wrap">
+                    <div class="logo-badge"><img src="/assets/amoamancustom/images/logo.webp" alt="Logo" /></div>
+                    <div class="brand-name">AMOAMAN &amp; ASSOCIÉS</div>
+                </div>
+            </div>
+            <div class="col-lg-4 contact">
+                <div class="footer-title">{{ _("Siège – Abidjan") }}</div>
+                <p>Cocody Riviera 3 Sideci – Villa 676</p>
+                <p><a href="tel:+2252724311561">(+225) 27 24 31 15 61</a></p>
+                <div class="footer-title mt-3">{{ _("Agence – Dakar") }}</div>
+                <p>12 Bld El Hadj Djily Mbaye – Immeuble Azur</p>
+                <p><a href="tel:+221779765528">(+221) 77 976 55 28</a></p>
+                <p class="mt-2"><a class="mail" href="mailto:hello@amoaman.com">hello@amoaman.com</a></p>
+            </div>
+            <div class="col-6 col-lg-2">
+                <div class="footer-title">{{ _("Services") }}</div>
+                <ul class="footer-list">
+                    <li><a href="/erp#erp">ERP</a></li>
+                    <li><a href="/erp#bigdata">Big Data</a></li>
+                    <li><a href="/erp#sourcing">Sourcing</a></li>
+                    <li><a href="/erp#formation">Formation</a></li>
+                    <li><a href="/erp#conformite">Mise en Conformité</a></li>
+                </ul>
+            </div>
+            <div class="col-6 col-lg-2">
+                <div class="footer-title">{{ _("Navigation") }}</div>
+                <ul class="footer-list">
+                    <li><a href="/erp#actualites">Agenda</a></li>
+                    <li><a href="/erp#apropos">À propos</a></li>
+                    <li><a href="/erp#faq">FAQ</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom border-top mt-4 pt-3 small text-muted d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-2">
+  <div>
+    © <span id="year">{{ frappe.utils.formatdate(frappe.utils.nowdate(), "YYYY") }}</span>
+    Amoaman &amp; Associés — {{ _("Tous droits réservés.") }}
+  </div>
+
+  <nav class="legal-links" aria-label="{{ _('Liens légaux') }}">
+    <a href="/cookies" class="legal-link">{{ _("Cookies") }}</a>
+    <span class="sep" aria-hidden="true">•</span>
+    <a href="/legal-notice" class="legal-link">{{ _("Mentions légales") }}</a>
+    <span class="sep" aria-hidden="true">•</span>
+    <a href="/confidentialite" class="legal-link">{{ _("Confidentialité") }}</a>
+  </nav>
+</div>
+
+</footer>

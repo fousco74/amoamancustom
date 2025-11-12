@@ -1,0 +1,650 @@
+{%- from "templates/includes/ui/button.html" import ui_button -%}
+<section class="hero-section  has-glows" id="hero">
+    <div class="text-content fade-in-up">
+        <h1 class="display-4 fw-bold">{{ _(title) }}</h1>
+        <span class="d-block">{{ _(subtitle) }}</span>
+    </div>
+
+    <!-- Glows -->
+    <span class="glow" style="--x:15%; --y:50%; --size:44vmin; --blur:48px;"></span>
+    <span class="glow" style="--x:50%; --y:40%; --size:48vmin; --blur:56px;"></span>
+    <span class="glow" style="--x:90%; --y:50%; --size:54vmin; --blur:48px;"></span>
+
+    <div class="grid-overlay" aria-hidden="true"></div>
+
+    <!-- Grille -->
+    <div class="grille" aria-hidden="true">
+        {% for i in range(15) %}
+        <span class="cell{% if i > 9 %} bb-none{% endif %}{% if i in [6,8] %} bg-blue-blur{% endif %}"></span>
+        {% endfor %}
+    </div>
+
+    <div class="hero-content text-deep-midnight-blue">
+        <h3 class="fs-5 fw-normal">
+            {{ _("Un accompagnement complet pour aligner vos outils, vos talents et vos données au service de votre
+            <br /> performance. Nous vous aidons à structurer, sécuriser et exploiter tout le potentiel de vos
+            données.") }}
+        </h3>
+        {{ ui_button(_(cta_label), cta_href, variant='light') }}
+    </div>
+</section>
+
+<!-- IMAGE + CTA -->
+<div class="d-flex flex-column justify-content-center align-items-center card-content">
+    <img src="{{ card_img }}" alt="card" class="img-fluid" loading="lazy">
+    {{ ui_button(_(card_cta_label), card_cta_href, variant='contact', size='sm') }}
+</div>
+
+<!-- SECTION DATA -->
+<section class="d-flex data flex-column justify-content-center p-4 align-items-center" id="data-intro">
+    <h1 class="fw-semibold" style="font-size: 40px; line-height: 48px;">
+        {{ _("Les données, ce sont toutes les informations que") }} <br> {{ _("votre entreprise génère ou reçoit chaque
+        jour.") }}
+    </h1>
+    <h3 class="fw-medium p-2" style="font-size: 20px; line-height: 28px; color: #081A2A !important;">
+        {{ _("Vos données bien exploitées, ce sont : des décisions plus justes,") }} <br>{{ _("des processus plus
+        fluides et des performances qui s'envolent !") }}
+    </h3>
+
+    <div class="w-100 d-flex flex-column justify-content-center p-4 align-items-center m-4"
+        style="position: relative !important; color: #081A2A !important;">
+        <div class="card" style="border-radius: 30px; transform: rotate(-10deg); position: relative !important;" >
+            <div class="card-body d-flex flex-column justify-content-center p-4 align-items-center"
+                style="text-align:start;">
+                <h5 class="card-title fw-semibold" style="font-size:18px; line-height:30px;">
+                    {{ _("Collectées, organisées et") }} <br> {{ _("protégées, elles vous aider à :") }}
+                </h5>
+                <ul style="list-style:none; padding-left:0;">
+                    <li><img src="assets/amoamancustom/images/Mask-group.svg" alt="" style="width:15px;"> {{ _("Prendre
+                        des décisions éclairées") }}</li>
+                    <li><img src="assets/amoamancustom/images/Mask-group.svg" alt="" style="width:15px;"> {{
+                        _("Automatiser vos tâches") }}</li>
+                    <li><img src="assets/amoamancustom/images/Mask-group.svg" alt="" style="width:15px;"> {{
+                        _("Fluidifier vos process") }}</li>
+                    <li><img src="assets/amoamancustom/images/Mask-group.svg" alt="" style="width:15px;"> {{ _("Booster
+                        vos performances") }}</li>
+                </ul>
+            </div>
+            <img src="assets/amoamancustom/images/solar_cup-star-outline.svg" alt="solar_cup-star-outline" style="position: absolute; bottom:70px; right: 5px; width: 40px; transform:rotate(45deg);">
+            <img id="img2" src="assets/amoamancustom/images/solar_cup-star-outline.svg" alt="solar_cup-star-outline" style="position: absolute; bottom:5px; right: 5px; width: 60px;">
+        </div>
+        <span class="glow" style="--x:35%; --y:50%; --size:54vmin; --blur:48px;"></span>
+        <span class="glow" style="--x:65%; --y:50%; --size:54vmin; --blur:48px;"></span>
+    </div>
+
+    <!-- MENU SECTION -->
+    <div class="container section-pill position-relative mt-4" style="max-width: 1400px;">
+        <div class="menu-section" role="group" aria-label="{{ _('Actions rapides') }}">
+            <div class="button-row">
+                    <button class="pill-button">Commandes</button>
+                    <button class="pill-button rot-15" style="transform: rotate(15deg) !important;">Achats</button>
+                    <button class="pill-button " style="transform: rotate(-15deg) !important;">Stocks</button>
+                    <button class="pill-button">Adresse E-Mail</button>
+                    <button class="pill-button rot--25" style="transform: rotate(-25deg) !important;">Achats</button>
+                    <button class="pill-button rot-35 pr-10" style="transform: rotate(30deg) !important;">Commandes</button>
+                    <button class="pill-button rot--15" style="transform: rotate(-15deg) !important;">CV</button>
+                </div>
+
+                <div class="button-row">
+                    <button class="pill-button">Annulations</button>
+                    <button class="pill-button">Nom</button>
+                    <button class="pill-button rot-25" style="transform: rotate(25deg) !important;">Factures</button>
+                    <button class="pill-button">Date</button>
+                    <button class="pill-button">Clients</button>
+                    <button class="pill-button">Ventes</button>
+                    <button class="pill-button rot--25" style="transform: rotate(-25deg) !important;">Interactions</button>
+                    <button class="pill-button">Chiffre</button>
+                    <button class="pill-button">Clic Siteweb</button>
+                </div>
+
+                <div class="button-row">
+                    <button class="pill-button">Retours</button>
+                    <button class="pill-button" style="transform: rotate(-10deg) !important;">Achats</button>
+                    <button class="pill-button">Clic Siteweb</button>
+                    <button class="pill-button">Chiffre</button>
+                    <button class="pill-button">Outils</button>
+                    <button class="pill-button">Équipes</button>
+                    <button class="pill-button">Candidatures</button>
+                    <button class="pill-button">Outils</button>
+                    <button class="pill-button">Équipes</button>
+                </div>
+        </div>
+
+        <!-- Lignes animées -->
+        <svg viewBox="0 0 1200 350" class="wavy-lines" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+            <defs>
+                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#ff6b6b;stop-opacity:0" />
+                    <stop offset="20%" style="stop-color:#ff6b6b;stop-opacity:1" />
+                    <stop offset="40%" style="stop-color:#4ecdc4;stop-opacity:1" />
+                    <stop offset="60%" style="stop-color:#45b7d1;stop-opacity:1" />
+                    <stop offset="80%" style="stop-color:#96e6a1;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#96e6a1;stop-opacity:0" />
+                </linearGradient>
+            </defs>
+
+            <!-- Ligne gauche (très espacée) -->
+            <path class="line-path" d="M 150 30 L 150 80 Q 150 120 200 120 L 500 120 Q 600 120 600 170 L 600 350" />
+            <!-- Ligne droite (très espacée) -->
+            <path class="line-path" d="M 1050 30 L 1050 80 Q 1050 120 1000 120 L 700 120 Q 600 120 600 170 L 600 350" />
+
+            <!-- Lignes animées -->
+            <path class="animated-line" pathLength="1000"
+                d="M 150 30 L 150 80 Q 150 120 200 120 L 500 120 Q 600 120 600 170 L 600 350" />
+            <path class="animated-line anim-delay-02" pathLength="1000"
+                d="M 1050 30 L 1050 80 Q 1050 120 1000 120 L 700 120 Q 600 120 600 170 L 600 350" />
+        </svg>
+    </div>
+</section>
+
+<style>
+
+
+   /* -------- HERO -------- */
+
+  
+
+/* Animation d'apparition du texte (fade + slide up) */
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 1.2s ease-out forwards;
+  animation-delay: 0.3s;
+}
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+
+/* Section principale */
+.hero-section {
+  position: relative;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  overflow: hidden;
+  margin-top: 120px !important;
+
+
+}
+
+/* Grille */
+.grille {
+  position: absolute;
+  height: 200px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  pointer-events: none;
+  z-index: 0;
+  top: 5px;
+}
+.grille .cell {
+  border-right: 1px dotted rgba(3,42,95,.35);
+  border-bottom: 1px dotted rgba(3,42,95,.35);
+}
+.grille .bb-none { border-bottom: none !important; }
+
+@media (max-width: 768px) {
+  .grille .cell {
+    border-right: 1px dotted rgba(3,42,95,.25);
+    border-bottom: 1px dotted rgba(3,42,95,.25);
+  }
+}
+
+.hero-section {
+ 
+      margin-top: 80px !important;
+
+
+}
+
+/* Glows */
+.has-glows {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.glow-white, .glow {
+  --x: 50%; --y: 50%; --size: 42vmin; --blur: 40px;
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--size);
+  height: var(--size);
+  transform: translate(-50%, -50%);
+  border-radius: 9999px;
+  pointer-events: none;
+  z-index: -1;
+}
+.glow-white {
+  background: radial-gradient(circle at center, rgba(255,255,255,.9) 0%, rgba(255,255,255,.6) 25%, rgba(255,255,255,.3) 50%, rgba(255,255,255,0) 75%);
+  filter: blur(var(--blur)) saturate(120%);
+}
+.glow {
+  background:
+    radial-gradient(60% 60% at 62% 35%, rgba(143,168,255,.9) 0%, rgba(143,168,255,0) 55%),
+    radial-gradient(55% 55% at 48% 55%, rgba(255,117,147,.9) 0%, rgba(255,117,147,0) 55%),
+    radial-gradient(75% 75% at 50% 70%, rgba(255,215,215,.85) 0%, rgba(255,215,215,0) 60%);
+  filter: blur(var(--blur)) saturate(115%);
+}
+
+/* Overlay */
+.grid-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(240,248,255,.25);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.text-color { color: #081A2A; }
+
+/* Contenu hero */
+.hero-content {
+  z-index: 1;
+  text-align: center;
+}
+.hero-content h3 {
+  text-wrap: nowrap;
+  font-size: 20px;
+  line-height: 1.8;
+  margin-bottom: 2rem;
+  font-weight: 400;
+}
+
+/* Titres */
+.text-content, .text-content h1 {
+  font-weight: bold;
+  line-height: 65px;
+  font-size: 45px;
+  text-align: center;
+  text-wrap: nowrap;
+}
+.text-content span { color: #081A2A !important; text-wrap: nowrap; }
+.text-content h1 {
+  background: linear-gradient(90deg, var(--blue-bright, #0756C5) 20%, var(--pink-fuchsia, #F32A57) 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+
+/* CTA */
+.btn-voir-services {
+  background: #fff;
+  color: #2B1D64;
+  border: 1px solid #2B1D64;
+  padding: .6rem  2rem !important;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all .3s;
+  box-shadow: 0 4px 15px rgba(0,0,0,.1);
+}
+.btn-voir-services:hover {
+  transform: translateY(-2px);
+  border: 1px solid #2B1D64;
+  box-shadow: 0 6px 20px rgba(0,0,0,.15);
+}
+
+
+/* Carte + bouton superposé */
+.card-content {
+  position: relative;
+}
+.card-content img {
+  width: min(960px, 92vw);
+  height: auto;
+  display: block;
+}
+
+/* Lignes animées - LARGEUR MAXIMALE */
+.wavy-lines {
+  position: relative;
+  width: 100%;
+  height: 350px;
+  margin-top: 40px; 
+}
+
+.line-path {
+  fill: none;
+  stroke: #081A2A;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: .3;
+  vector-effect: non-scaling-stroke;
+}
+.animated-line {
+  fill: none;
+  stroke: url(#gradient);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: var(--seg, 140) calc(1000 - var(--seg, 140));
+  stroke-dashoffset: 0;
+  animation: move var(--speed, 3s) linear infinite;
+  pointer-events: none;
+}
+.anim-delay-02 { animation-delay: .2s; }
+@keyframes move { to { stroke-dashoffset: -1000; } }
+@media (prefers-reduced-motion: reduce) {
+  .animated-line { animation: none; }
+}
+
+/* ------------------------------ */
+/* MENU PILLS + ANIMATION CASCADE */
+/* ------------------------------ */
+.menu-section {
+  position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 30px;
+            width: 100%;
+            padding: 30px;
+            top: -50px;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeDownRow 0.8s ease-out forwards;
+  animation-play-state: paused;
+}
+
+/* Animation des boutons à l'intérieur (apparition douce après la ligne) */
+.pill-button {
+  --r: 0deg;
+  background: #fff;
+  border: 2px solid #333;
+  padding: .8rem 1.2rem;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .3s ease;
+  white-space: nowrap;
+  box-shadow: 0 4px 15px rgba(0,0,0,.08);
+  opacity: 0;
+  transform: rotate(var(--r)) translateX(-10px);
+  animation: fadeButton 0.4s ease-out forwards;
+  animation-delay: 0.5s;
+  animation-play-state: paused;
+}
+
+.pill-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,.12);
+  border-color: #6366f1;
+}
+
+/* Keyframes */
+@keyframes fadeDownRow {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeButton {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Délais par ligne (cascade verticale) */
+.menu-section .button-row:nth-child(3) { animation-delay: 1.2s }
+.menu-section .button-row:nth-child(2) { animation-delay: 0.8s; }
+.menu-section .button-row:nth-child(1) { animation-delay: 0.2s }
+
+/* Effet d'activation visuelle */
+.pill-button.active {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99,102,241,.15);
+}
+
+/* Rotations utilitaires */
+.rot-15 { --r: 15deg; }
+.rot-25 { --r: 25deg; }
+.rot-35 { --r: 35deg; }
+.rot--10 { --r: -10deg; }
+.rot--15 { --r: -15deg; }
+.rot--25 { --r: -25deg; }
+.pr-10 { padding-right: 10px !important; }
+
+/* ------- Responsive ------- */
+@media (max-width: 1199.98px) {
+
+   .menu-section {
+    max-width: 100%;
+    padding: 15px 5px;
+          margin-top: 40px;
+
+  }
+
+  .text-content, .text-content h1 {
+    font-size: clamp(28px, 6vw, 44px);
+    line-height: clamp(36px, 7vw, 58px);
+    text-wrap: balance;
+  }
+  .hero-content h3 {
+    text-wrap: balance;
+    font-size: clamp(16px, 2.4vw, 20px);
+  }
+  .menu-section { 
+    max-width: 90%;
+    padding: 25px 15px;
+  }
+  
+  .pill-button {
+    padding: .7rem 1rem;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 991.98px) {
+
+   .menu-section {
+    max-width: 100%;
+    padding: 15px 5px;
+          margin-top: 40px;
+
+  }
+  .hero-section { min-height: 520px; padding: 24px 12px; }
+  .hero-content { position: static; margin-top: 20px; }
+  .hero-content h3 { white-space: normal;  font-size: 1rem !important;}
+  .menu-section {
+    max-width: 95%;
+    padding: 20px 10px;
+  }
+  .pill-button { padding: 8px 14px; font-size: 11px; }
+  
+  .wavy-lines {
+    height: 280px;
+    top: -25px;
+  }
+}
+
+@media (max-width: 767.98px) {
+
+  .hero-section{
+    margin-top: 0px !important;
+  }
+
+  .btn-voir-services {
+  text-align: center !important;
+}
+
+ .card-title{
+    font-size: 1rem !important;
+   }
+
+   .card-body ul li{
+    font-size: 0.8rem !important;
+   }
+
+   .card #img2{
+    width: 48px !important;
+
+   }
+
+   .menu-section{
+    position: absolute !important;
+    top: -150px !important;
+   }
+
+   .container{
+    width: 100% !important;
+    padding: 0.7rem !important;
+    margin-top: 100px !important;
+   }
+
+
+
+   
+
+
+
+     .data h1{
+      font-size: 0.8rem !important;
+      line-height: 20px !important;
+     }
+
+
+  .data h3{
+    font-size: 0.7rem !important;
+          line-height: 20px !important;
+
+   }
+
+  .menu-section {
+    max-width: 100%;
+    padding: 15px 5px;
+          margin-top: 40px;
+
+  }
+
+  .text-content h1{
+    font-size: 1.7rem !important;
+    text-wrap: nowrap;
+  }
+
+  .text-content span{
+    font-size: 0.9rem !important;
+  }
+  
+  .button-row {
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  
+  .pill-button {
+    padding: 6px 12px;
+    font-size: 10px;
+  }
+  
+  .wavy-lines {
+    height: 240px;
+    top: -15px;
+  }
+}
+
+@media (max-width: 575.98px) {
+
+   .menu-section {
+    max-width: 100%;
+    padding: 15px 5px;
+          margin-top: 40px;
+
+  }
+
+  .text-content, .text-content h1 {
+    font-size: clamp(24px, 8vw, 34px);
+    line-height: clamp(32px, 9vw, 44px);
+  }
+  .glow { --size: 60vmin; --blur: 36px; }
+  .card-content .btn-contacts { position: static; margin-top: 12px; }
+  
+  .pill-button {
+    padding: 5px 10px;
+    font-size: 9px;
+  }
+  
+  .button-row {
+    gap: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .wavy-lines {
+    height: 200px;
+    top: -10px;
+  }
+}
+
+/* Section "active" */
+section.active {
+  scroll-margin-top: 80px;
+  outline: 2px solid rgba(99,102,241,.18);
+  outline-offset: 6px;
+  border-radius: 12px;
+}
+
+</style>
+
+<script>
+
+    (function () {
+        const fill = document.getElementById('ticksFill'); 
+        const tags = Array.from(document.querySelectorAll('.time-tag'));
+        // Valeur initiale (étiquette active au chargement) 
+        const init = tags.find(t => t.classList.contains('active'));
+        if (init && fill) fill.style.width = init.dataset.progress + '%';
+        tags.forEach(tag => {
+            tag.addEventListener('click', () => {
+                // active visuelle 
+                tags.forEach(t => t.classList.toggle('active', t === tag)); 
+                tags.forEach(t => t.classList.toggle('secondary', t !== tag));
+                // anime la largeur (bleu) jusqu'à la position cliquée 
+                const pct = Number(tag.dataset.progress || 0); 
+                // Clamp 0..100 pour éviter tout débordement 
+                const pctClamped = Math.max(0, Math.min(100, pct)); 
+                if (fill) fill.style.width = pctClamped + '%';
+            });
+        });
+    })();
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const rows = document.querySelectorAll('.menu-section .button-row');
+        const buttons = document.querySelectorAll('.pill-button');
+        const section = document.querySelector('.menu-section');
+
+        if (!section) return;
+
+        // Prépare tout en pause
+        rows.forEach(r => r.style.animationPlayState = 'paused');
+        buttons.forEach(b => b.style.animationPlayState = 'paused');
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    rows.forEach((row, i) => {
+                        setTimeout(() => {
+                            row.style.animationPlayState = 'running';
+                            const innerBtns = row.querySelectorAll('.pill-button');
+                            innerBtns.forEach(btn => btn.style.animationPlayState = 'running');
+                        }, i * 600);
+                    });
+                    observer.disconnect();
+                }
+            });
+        }, { threshold: 0.2 });
+
+        observer.observe(section);
+    });
+</script>

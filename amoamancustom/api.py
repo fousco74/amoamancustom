@@ -176,3 +176,53 @@ def recalculate_salary_slip(doc):
         "net_pay": salary_slip.net_pay,
         "paid_days": fresh_paid_days,  # valeur fraîche réellement utilisée
     }
+    
+    
+    
+
+@frappe.whitelist(allow_guest=True)
+def create_entry(doctype, data):
+    """
+    Crée un document Frappe générique, accepte des champs multi-sélection envoyés comme liste.
+    """
+
+    # Si les données arrivent sous forme de texte JSON, on les convertit
+    if isinstance(data, str):
+        try:
+            data = json.loads(data)
+        except Exception as e:
+            frappe.throw(f"Erreur JSON : {e}")
+
+    if not doctype or not isinstance(data, dict):
+        frappe.throw("Paramètres invalides : il faut fournir un 'doctype' et un 'data' (dict).")
+
+    # Récupération de la meta du Doctype
+    meta = frappe.get_meta(doctype)
+    doc_fields = {}
+
+    for fieldname, value in data.items():
+        field_meta = next((f for f in meta.fields if f.fieldname == fieldname), None)
+        if not field_meta:
+            continue
+
+        # Si c’est une liste, on la transforme en chaîne séparée par des virgules
+        if isinstance(value, list):
+            # Choisis ton format selon ton besoin :
+            # Format texte (classique pour MultiSelectList)
+            doc_fields[fieldname] = ", ".join(value)
+            
+            # OU, si tu veux stocker le tableau brut :
+            # doc_fields[fieldname] = json.dumps(value)
+        else:
+            doc_fields[fieldname] = value
+
+    # Création et insertion
+    doc = frappe.get_doc({"doctype": doctype, **doc_fields})
+    doc.insert(ignore_permissions=True)
+    frappe.db.commit()
+
+    return {
+        "name": doc.name,
+        "doctype": doc.doctype,
+        "message": f"Enregistrement '{doctype}' créé avec succès"
+    }

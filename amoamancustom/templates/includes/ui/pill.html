@@ -1,0 +1,5 @@
+{# UI Macro: Pill #}
+{% macro ui_pill(text, variant="default") %}
+{%- set klass = 'pill' if variant=='default' else 'pill ' ~ variant -%}
+<span class="{{ klass }}">{{ text }}</span>
+{% endmacro %}

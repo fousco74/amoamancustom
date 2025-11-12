@@ -1,0 +1,386 @@
+{% extends "templates/layout.html" %}
+{% block title %}{{ _("Contact") }}{% endblock %}
+
+
+{% block page_content %}
+
+<style>
+:root{
+  --brand-grad: linear-gradient(135deg, #266BCC 0%, #F32A57 100%);
+  --text:#081A2A;
+  --muted:#6b7280;
+  --card-shadow: 0 10px 40px rgba(0,0,0,.08);
+  --ring: 0 0 0 3px rgba(38,107,204,.12);
+}
+
+/* Bande héro */
+
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            overflow-x: hidden;
+            background: #fff;
+        }
+
+        main.container {
+  width: 100% !important;   /* force largeur totale */
+  max-width: 100% !important; /* annule la limitation bootstrap */
+  min-height: 100vh;         /* prend toute la hauteur de la fenêtre */
+  margin: 0;
+  padding: 0;
+  display: block;
+}
+
+
+  .contact-hero{ background: linear-gradient(135deg,#E8EEFF 0%,#FFE8F0 100%); min-height:220px; display:flex; align-items:center; justify-content:center; text-align:center; padding:40px 16px; }
+.contact-hero .page-title{ font-weight:800; letter-spacing:.2px; font-size:clamp(1.4rem,1rem + 2vw,2.1rem); }
+
+/* Grille principale */
+.contact-wrap{ max-width:1120px; margin:-70px auto 48px; padding:0 16px; }
+.contact-grid{ display:grid; grid-template-columns:minmax(320px,1fr) 360px; gap:28px; }
+
+/* Form */
+.form-wrapper{ background:#fff; border-radius:20px; box-shadow:var(--card-shadow); padding:36px 36px 28px; position:relative; }
+.form-title{ font-size:22px; font-weight:800; margin-bottom:18px; background:var(--brand-grad); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+.form-grid{ display:grid; gap:16px; grid-template-columns:1fr 1fr; }
+.form-group{ display:flex; flex-direction:column; }
+.form-group.full{ grid-column:1 / -1; }
+label{ font-size:13px; font-weight:600; margin-bottom:6px; color:var(--text); }
+.required::after{ content:'*'; color:#F32A57; margin-left:4px; }
+input,select,textarea{ background:#F8F9FA; border:1px solid #E3E7EF; border-radius:10px; padding:11px 14px; font-size:14px; transition:.15s; }
+input:focus,select:focus,textarea:focus{ outline:none; background:#fff; border-color:#266BCC; box-shadow:var(--ring); }
+textarea{ min-height:120px; resize:vertical; }
+.checkbox-group{ display:flex; gap:10px; align-items:flex-start; grid-column:1 / -1; margin-top:6px; }
+input[type="checkbox"]{ width:18px; height:18px; margin-top:2px; accent-color:#266BCC; }
+.checkbox-label{ font-size:12px; line-height:1.45; color:#475569; }
+.form-actions{ display:flex; justify-content:flex-end; gap:10px; grid-column:1 / -1; margin-top:6px; }
+.submit-btn{ background:var(--brand-grad); color:#fff; border:0; border-radius:24px; padding:10px 24px; font-weight:700; font-size:15px; box-shadow:0 8px 22px rgba(38,107,204,.22); transition:transform .15s ease, box-shadow .15s ease; }
+.submit-btn:hover{ transform:translateY(-1px); }
+.submit-btn:focus{ outline:none; box-shadow:var(--ring); }
+
+/* --- Colonne infos --- */
+.aside{
+  display:flex; flex-direction:column; gap:18px; align-self:flex-end; margin-bottom: 50px; 
+}
+.info-card{
+  background:#fff; border-radius:16px; padding:16px 18px;
+  display:flex; align-items:center; gap:14px; min-height:84px;
+  box-shadow:0 4px 16px rgba(0,0,0,.05);
+  border:1px solid #EEF1F6;
+}
+.info-card.soft{ background:#F4F5FF; border-color:#E7E9FF; }
+.info-card .icon{
+  width:44px; height:44px; border-radius:50%;
+  background: var(--brand-grad);
+  display:grid; place-items:center; color:#fff; font-size:20px; flex:0 0 44px;
+}
+.info-card .title{ font-weight:700; font-size:14px; margin:0; color: var(--text); }
+.info-card .desc{ font-size:13px; color:#6b7280; margin:0; }
+
+.hours-card{
+  padding: 0; overflow:hidden; border:0; box-shadow:0 8px 30px rgba(38,107,204,.20);
+  background: var(--brand-grad);
+}
+.hours-card-inner{
+  display:flex; align-items:center; gap:14px; padding:16px 18px; color:#fff; align-items: center;
+}
+.hours-card .icon{ background: rgba(255,255,255,.28); }
+.hours-card .title{ color:#fff; }
+.hours-card .desc{ color:#EAF1FF; }
+
+/* Multi-select chips */
+.chip-select{ position:relative; }
+.chip-control{ display:flex; align-items:center; gap:8px; min-height:44px; width:100%; background:#F8F9FA; border:1px solid #E3E7EF; border-radius:10px; padding:6px 38px 6px 10px; cursor:pointer; transition:.15s; }
+.chip-control:focus-within, .chip-control.is-open{ outline:none; border-color:#266BCC; box-shadow:0 0 0 3px rgba(38,107,204,.12); background:#fff; }
+.chips{ display:flex; flex-wrap:wrap; gap:6px; flex:1 1 auto; }
+.chip{ display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; font-size:12px; font-weight:600; background:#fff; border:1px solid #E3E7EF; }
+.chip .remove{ border:0; background:transparent; font-size:16px; line-height:1; cursor:pointer; color:#64748b; }
+.chip .remove:hover{ color:#F32A57; }
+.chip-placeholder{ color:#94a3b8; font-size:14px; user-select:none; }
+.chip-caret{ position:absolute; right:10px; top:50%; transform:translateY(-50%); width:18px; height:18px; pointer-events:none; background: conic-gradient(from 135deg at 50% 45%, #94a3b8 0 90deg, transparent 0 360deg); -webkit-mask: radial-gradient(circle 8px at 50% 70%, transparent 9px, #000 10px); }
+.chip-menu{ position:absolute; left:0; right:0; top:calc(100% + 6px); z-index:5; background:#fff; border:1px solid #E3E7EF; border-radius:10px; box-shadow:0 10px 32px rgba(2,6,23,.12); padding:8px; display:none; max-height:240px; overflow:auto; }
+.chip-menu.open{ display:block; }
+.chip-option{ display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:8px; cursor:pointer; }
+.chip-option:hover{ background:#F6F8FC; }
+.chip-option input{ width:16px; height:16px; accent-color:#266BCC; }
+
+/* Responsive */
+@media (max-width:991.98px){ .contact-grid{ grid-template-columns:1fr; } .aside{ order:2; } .form-wrapper{ order:1; } }
+@media (max-width:575.98px){ .form-grid{ grid-template-columns:1fr; } .form-wrapper{ padding:26px 18px 20px; } .chip-control{ min-height:42px; padding:6px 36px 6px 8px; } .chip{ font-size:11px; padding:3px 8px; } }
+</style>
+
+}
+<section class="contact-hero">
+  <h1 class="page-title">{{ _("Faites le premier pas vers votre performance.") }}</h1>
+</section>
+
+<div class="contact-wrap">
+  <div class="contact-grid">
+
+    <!-- Formulaire -->
+    <div class="form-wrapper">
+      <h2 class="form-title">{{ _("Contactez-nous") }}</h2>
+
+      <form id="contactForm">
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label for="first_name" class="required">{{ _("Nom") }}</label>
+            <input id="first_name" name="first_name" type="text" required>
+          </div>
+
+          <div class="form-group">
+            <label for="last_name" class="required">{{ _("Prénoms") }}</label>
+            <input id="last_name" name="last_name" type="text" required>
+          </div>
+
+          <div class="form-group">
+            <label for="entreprise">{{ _("Entreprise") }}</label>
+            <input id="entreprise" name="entreprise" type="text">
+          </div>
+
+          <div class="form-group">
+            <label for="email" class="required">{{ _("E-mail Professionnel") }}</label>
+            <input id="email" name="email" type="email" required>
+          </div>
+
+          <div class="form-group">
+            <label for="tel">{{ _("Numéro de téléphone") }}</label>
+            <input id="tel" name="tel" type="tel">
+          </div>
+
+          <div class="form-group">
+            <label class="required">{{ _("Service concerné") }}</label>
+
+            <!-- Contrôleur chips -->
+            <div class="chip-select" id="serviceSelect" data-placeholder="{{ _('Choisir un ou plusieurs service(s)') }}">
+              <div class="chip-control" tabindex="0" aria-haspopup="listbox" aria-expanded="false">
+                <div class="chips"></div>
+                <span class="chip-placeholder"></span>
+                <span class="chip-caret" aria-hidden="true"></span>
+              </div>
+
+              <div class="chip-menu" role="listbox" aria-multiselectable="true">
+                <label class="chip-option"><input type="checkbox" value="erp"><span>{{ _("ERP") }}</span></label>
+                <label class="chip-option"><input type="checkbox" value="bigdata"><span>{{ _("Big Data") }}</span></label>
+                <label class="chip-option"><input type="checkbox" value="sourcing"><span>{{ _("Sourcing") }}</span></label>
+                <label class="chip-option"><input type="checkbox" value="formation"><span>{{ _("Formation") }}</span></label>
+                <label class="chip-option"><input type="checkbox" value="conformite"><span>{{ _("Mise en conformité") }}</span></label>
+              </div>
+            </div>
+
+            <!-- Select natif pour la soumission -->
+            <select id="service" name="service[]" multiple hidden>
+              <option value="erp">{{ _("ERP") }}</option>
+              <option value="bigdata">{{ _("Big Data") }}</option>
+              <option value="sourcing">{{ _("Sourcing") }}</option>
+              <option value="formation">{{ _("Formation") }}</option>
+              <option value="conformite">{{ _("Mise en conformité") }}</option>
+            </select>
+          </div>
+
+          <div class="form-group full">
+            <label for="message">{{ _("Message") }}</label>
+            <textarea id="message" name="message"></textarea>
+          </div>
+
+          <div class="checkbox-group">
+            <input type="checkbox" id="consent" name="consent" style="cursor: pointer;">
+            <label class="checkbox-label" for="consent">
+              {{ _("J'accepte que mes données soient utilisées pour me recontacter dans le cadre de ma demande.") }}
+            </label>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="submit-btn">{{ _("Envoyer") }}</button>
+          </div>
+
+        </div>
+      </form>
+    </div>
+
+    
+    <!-- Cartes d’infos -->
+    <aside class="aside">
+
+      <div class="info-card">
+                        <div class="hours-card-inner">
+
+        <div class="icon"><i class="bi bi-telephone-fill"></i></div>
+        <div>
+          <p class="title">{{ _("Appeller maintenant") }}</p>
+          <p class="desc">(+225) 27 24 31 15 61</p>
+        </div>
+        </div>
+      </div>
+
+      <div class="info-card soft">
+                        <div class="hours-card-inner">
+
+        <div class="icon"><i class="bi bi-envelope-fill"></i></div>
+        <div>
+          <p class="title">{{ _("Envoyer un mail") }}</p>
+          <p class="desc">hello@amoaman.com</p>
+        </div>
+        </div>
+      </div>
+
+      <div class="info-card">
+                <div class="hours-card-inner">
+
+        <div class="icon"><i class="bi bi-geo-alt-fill"></i></div>
+        <div>
+          <p class="title">{{ _("Itinéraire") }}</p>
+          <p class="desc">{{ _("Cocody Riviera 3 Sideci – Villa 676") }}</p>
+        </div>
+        </div>
+
+      </div>
+
+      <div class="info-card hours-card">
+        <div class="hours-card-inner">
+          <div class="icon"><i class="bi bi-clock-history"></i></div>
+          <div>
+            <p class="title">{{ _("Horaires d'ouverture") }}</p>
+            <p class="desc">{{ _("Lundi au Vendredi 09H – 18H") }}</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</div>
+{% endblock %}
+
+{# IMPORTANT : pas d'inclusion manuelle de scripts Frappe ici. web.html les charge déjà. #}
+
+{% block script %}
+<script>
+frappe.ready(function () {
+  // ---------- Multi-select chips ----------
+  (function(){
+    const wrap = document.getElementById('serviceSelect');
+    if(!wrap) return;
+    const control = wrap.querySelector('.chip-control');
+    const chipsBox = wrap.querySelector('.chips');
+    const menu = wrap.querySelector('.chip-menu');
+    const placeholder = wrap.querySelector('.chip-placeholder');
+    const select = document.getElementById('service');
+    const PLACEHOLDER = wrap.dataset.placeholder || '';
+
+    function syncFromSelect(){
+      const selected = new Set([...select.selectedOptions].map(o => o.value));
+      menu.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = selected.has(cb.value));
+      renderChips();
+    }
+    function renderChips(){
+      const items = [...select.selectedOptions].map(o => ({value:o.value, label:o.text}));
+      chipsBox.innerHTML = '';
+      if(!items.length){ placeholder.textContent = PLACEHOLDER; return; }
+      placeholder.textContent = '';
+      items.forEach(item => {
+        const chip = document.createElement('span');
+        chip.className = 'chip';
+        chip.innerHTML = `<span>${frappe.utils.escape_html(item.label)}</span>
+                          <button type="button" class="remove" aria-label="${__('Retirer')}">×</button>`;
+        chip.querySelector('.remove').addEventListener('click', () => toggle(item.value, false));
+        chipsBox.appendChild(chip);
+      });
+    }
+    function toggle(value, state){
+      [...select.options].forEach(o => { if(o.value === value) o.selected = (state ?? !o.selected); });
+      syncFromSelect();
+    }
+    control.addEventListener('click', () => {
+      const isOpen = menu.classList.toggle('open');
+      control.classList.toggle('is-open', isOpen);
+      control.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+    menu.addEventListener('click', e => {
+      const cb = e.target.closest('input[type="checkbox"]');
+      if(!cb) return;
+      toggle(cb.value, cb.checked);
+    });
+    document.addEventListener('click', e => {
+      if(!wrap.contains(e.target)){
+        menu.classList.remove('open');
+        control.classList.remove('is-open');
+        control.setAttribute('aria-expanded','false');
+      }
+    });
+    placeholder.textContent = PLACEHOLDER;
+    syncFromSelect();
+  })();
+
+  // ---------- Soumission via frappe.call ----------
+  const form = document.getElementById('contactForm');
+  const submitBtn = form.querySelector('.submit-btn');
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+
+    const first_name = (document.getElementById('first_name').value || '').trim();
+    const last_name  = (document.getElementById('last_name').value  || '').trim();
+    const email      = (document.getElementById('email').value      || '').trim();
+    const entreprise = (document.getElementById('entreprise').value || '').trim();
+    const number     = (document.getElementById('tel').value        || '').trim();
+    const message    = (document.getElementById('message').value    || '').trim();
+    const consent    = document.getElementById('consent').checked;
+    const select     = document.getElementById('service');
+    const services   = [...select.selectedOptions].map(o => o.value);
+
+    if(!first_name || !last_name || !email || services.length === 0){
+      frappe.msgprint({
+        title: __('Champs requis'),
+        message: __('Veuillez remplir tous les champs requis (Nom, Prénoms, E-mail, Service).'),
+        indicator: 'red'
+      });
+      return;
+    }
+
+    frappe.call({
+      method: 'amoamancustom.api.create_entry',       // votre méthode côté serveur (voir plus bas)
+      type: 'POST',
+      freeze: true,
+      freeze_message: __('Envoi en cours...'),
+      btn: submitBtn,                                 // désactive/active automatiquement le bouton
+      args: {
+        doctype: 'Contact Us',
+        data: {
+          first_name, last_name, email,
+          entreprise, number, services, message,
+          accept: consent
+        }
+      },
+      callback(r){
+        if (r && r.message){
+          frappe.show_alert({message: __('Message envoyé avec succès.'), indicator: 'green'});
+          form.reset();
+          // clear chips
+          [...select.options].forEach(o => o.selected = false);
+          // re-sync UI chips
+          document.querySelectorAll('#serviceSelect .chip').forEach(el => el.remove());
+          const ph = document.querySelector('#serviceSelect .chip-placeholder');
+          if(ph) ph.textContent = document.getElementById('serviceSelect').dataset.placeholder || '';
+        } else {
+          frappe.msgprint({
+            title: __('Erreur'),
+            message: __('Une erreur est survenue lors de l’enregistrement.'),
+            indicator: 'red'
+          });
+        }
+      },
+      error(err){
+        console.error(err);
+        frappe.msgprint({
+          title: __('Erreur'),
+          message: __('Impossible d’envoyer le formulaire. Réessayez plus tard.'),
+          indicator: 'red'
+        });
+      }
+    });
+  });
+});
+</script>
+{% endblock %}

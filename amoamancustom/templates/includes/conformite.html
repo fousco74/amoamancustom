@@ -1,0 +1,68 @@
+<section class="py-5" id="conformite">
+    <div class="container">
+        <div class="panel">
+            <div class="text-center mb-3"><a class="btn btn-contact p-2" href="#contact">{{ _("Mise en conformité")
+                    }}</a></div>
+            <div class="text-center">
+                <h2 class="title mb-2"><span class="accent">{{ _("Protégez vos données.") }}</span> {{ _("Renforcez la
+                    confiance.") }}</h2>
+                <p style="font-weight: bold; color: #fff;">{{ _("Nous vous accompagnons dans la mise en conformité avec
+                    le RGPD, <br /> la loi ivoirienne sur la protection des données et les standards internationaux.")
+                    }}</p>
+            </div>
+
+
+            <div class="row conform-row text-center g-4 my-4 py-4">
+                <div class="col-lg-4 step-col  step-col1" data-marker="1">
+                    <div class="step-title">{{ _("Formation/Sensibilisation") }}</div>
+                    <div class="step-desc">{{ _("du personnel en matière de protection des données personnelles") }}
+                    </div>
+                </div>
+                <div class="col-lg-4 step-col step-col2" data-marker="2">
+                    <div class="step-title">{{ _("Audit à blanc, correction des points") }}</div>
+                    <div class="step-desc">{{ _("de non-conformité constatés après l’audit") }}</div>
+                </div>
+                <div class="col-lg-4 step-col step-col3" data-marker="3">
+                    <div class="step-title">{{ _("Accompagnement Amoaman & Associés") }}</div>
+                    <div class="step-desc">{{ _("jusqu’à l’obtention de l’autorisation de traitement délivrée par
+                        l’ARTCI") }}</div>
+                </div>
+                 <span class="marker" style="left:18%" data-marker="1"></span>
+                <span class="marker" style="left:50% ; height: 80px !important;" data-marker="2"></span>
+                <span class="marker" style="left:82%;" data-marker="3"></span>
+            </div>
+
+
+            <div class="timeline position-relative" data-timeline>
+            <div class="ticks-base"></div>
+            <div class="ticks-fill" data-ticks-fill style="width:0;"></div>
+        
+            <span class="time-tag secondary" data-progress="18" style="left:18%">1–3 jours</span>
+            <span class="time-tag secondary" data-progress="50" style="left:50%">2–3 mois</span>
+            <span class="time-tag secondary" data-progress="82" style="left:82%">1–3 jours</span>
+        </div>
+
+
+
+            <div class="text-center mt-5"><a href="#contact" class="btn btn-contact">{{ _("Contactez-nous") }}</a></div>
+        </div>
+    </div>
+</section>
+
+
+<script>
+  document.querySelectorAll(".marker").forEach(marker => {
+    const id = marker.getAttribute("data-marker");
+    const step = document.querySelector(`.step-col[data-marker="${id}"]`);
+
+    marker.addEventListener("mouseenter", () => {
+      step.classList.add("active");
+      marker.classList.add("active");
+    });
+
+    marker.addEventListener("mouseleave", () => {
+      step.classList.remove("active");
+      marker.classList.remove("active");
+    });
+  });
+</script>

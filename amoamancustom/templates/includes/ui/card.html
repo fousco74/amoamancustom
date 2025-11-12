@@ -1,0 +1,11 @@
+{# UI Macro: Card #}
+{% macro ui_card(title, body='', image='', badge='', footer_html='', variant='soft') %}
+{%- set klass = 'news-card' if variant=='news' else 'card-soft' -%}
+<div class="{{ klass }}">
+{% if image %}<img src="{{ image }}" alt="{{ title }}" class="w-100 {{ 'news-img' if variant=='news' else '' }}">{% endif %}
+{% if badge %}<div class="news-title">{{ badge }}</div>{% endif %}
+<h5 class="mt-2">{{ title }}</h5>
+{% if body %}<p class="mb-2">{{ body }}</p>{% endif %}
+{{ footer_html or '' }}
+</div>
+{% endmacro %}

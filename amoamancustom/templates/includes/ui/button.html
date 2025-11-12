@@ -1,0 +1,15 @@
+{# UI Macro: Button #}
+{% macro ui_button(label, href="#", variant="contact", size="md", block=False, icon_class="") %}
+{%- set base = "btn" -%}
+{%- set vmap = {
+"contact":"btn-contact",
+"soft":"btn-outline-soft",
+"primary":"btn-primary",
+"light":"btn-voir-services"
+} -%}
+{%- set smap = {"sm":"btn-sm", "md":"", "lg":"btn-lg"} -%}
+<a href="{{ href }}" class="{{ base }} {{ vmap.get(variant, 'btn-contact') }} {{ smap.get(size,'') }} {{ 'w-100' if block else '' }}">
+{% if icon_class %}<i class="{{ icon_class }} me-1"></i>{% endif %}
+{{ label }}
+</a>
+{% endmacro %}

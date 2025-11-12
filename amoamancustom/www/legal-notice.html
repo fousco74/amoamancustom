@@ -1,0 +1,137 @@
+{# Route conseillée : /mentions-legales #}
+{% extends "templates/layout.html" %}
+{% block title %}{{ _("Mentions légales") }}{% endblock %}
+
+{% block page_content %}
+<style>
+:root{
+  --brand-grad: linear-gradient(135deg,#266BCC 0%,#F32A57 100%);
+  --text:#081A2A; --muted:#6b7280;
+  --card-shadow: 0 10px 32px rgba(2,6,23,.08);
+}
+.legal-hero{
+  background: linear-gradient(135deg,#E8EEFF 0%,#FFE8F0 100%);
+  min-height: 200px; display:flex; align-items:center; justify-content:center;
+  text-align:center; padding: 42px 16px;
+}
+.legal-hero h1{
+  margin:0; font-weight:800; letter-spacing:.2px; color:var(--text);
+}
+
+.legal-wrap{ max-width: 1000px; margin: -60px auto 40px; padding: 0 16px; }
+.legal-card{
+  background:#fff; border:1px solid #e5e7eb; border-radius:16px;
+  box-shadow: var(--card-shadow); padding: 24px;
+}
+
+.legal-head{
+  border-left: 4px solid transparent; border-image: var(--brand-grad) 1;
+  padding-left: 12px; margin-bottom: 10px;
+}
+.legal-dl{ margin: 12px 0 20px; }
+.legal-dl dt{ font-weight:800; color:var(--text); }
+.legal-dl dd{ margin: 0 0 6px 0; color:#111827; }
+
+.toc{ margin: 6px 0 18px; padding-left: 18px; }
+.toc li{ margin: 4px 0; }
+.toc a{ color:#1f2937; text-decoration:none; }
+.toc a:hover{ text-decoration:underline; }
+
+.legal-section{ margin: 28px 0; }
+.legal-section h2{
+  font-size: 1.25rem; font-weight:800; margin-bottom: 8px; color:var(--text);
+  background: var(--brand-grad); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+}
+.legal-section p{ color:#111827; line-height:1.7; margin: 8px 0; }
+.legal-section ul{ padding-left: 18px; }
+.legal-section li{ margin: 4px 0; }
+
+.legal-footer-note{ margin-top: 18px; color: var(--muted); font-size: .95rem; }
+@media (max-width: 575.98px){
+  .legal-card{ padding: 18px; }
+}
+</style>
+
+<section class="legal-hero">
+  <h1>{{ _("Mentions légales") }}</h1>
+</section>
+
+<div class="legal-wrap">
+  <article class="legal-card">
+
+    <!-- En-tête / éditeur -->
+    <div class="legal-head">
+      <p><strong>{{ _("ÉDITEUR DU SITE : AMOAMAN & ASSOCIÉS") }}</strong></p>
+    </div>
+
+    <dl class="legal-dl">
+      <dt>{{ _("Siège social") }}</dt>
+      <dd>{{ _("Cocody Riviera 3 villa 676 Abidjan 11 BP 2624 ABJ 11") }}</dd>
+
+      <dt>{{ _("Capital Social") }}</dt>
+      <dd>{{ _("1. 000. 000 FCFA – RCCM : CI ABJ6 03 2018 B12 33468") }}</dd>
+
+      <dt>{{ _("Téléphone") }}</dt>
+      <dd>+225 27 24 31 15 61</dd>
+
+      <dt>{{ _("Gérant") }}</dt>
+      <dd>{{ _("M. EL HADJI DIHYE YORO AMOAKON") }}</dd>
+    </dl>
+
+    <!-- Sommaire -->
+    <div class="legal-section">
+      <h2 id="sommaire">{{ _("Table des matières") }}</h2>
+      <ol class="toc">
+        <li><a href="#acces">{{ _("Accès au site") }}</a></li>
+        <li><a href="#propriete">{{ _("Propriété Intellectuelle") }}</a></li>
+        <li><a href="#contenu">{{ _("Contenu du site") }}</a></li>
+        <li><a href="#liens">{{ _("Liens Hypertextes") }}</a></li>
+        <li><a href="#donnees">{{ _("Données à caractère personnel") }}</a></li>
+      </ol>
+      <p class="legal-footer-note">{{ _("Lien direct recommandé") }} : <code>/mentions-legales</code></p>
+    </div>
+
+    <!-- 1. Accès au site -->
+    <section class="legal-section" id="acces">
+      <h2>{{ _("1. Accès au site") }}</h2>
+      <p>{{ _("L’utilisateur de ce site reconnaît disposer de la compétence et des moyens nécessaires pour accéder et utiliser ce site. AMOAMAN & ASSOCIÉS ne saurait être tenue responsable des éléments en dehors de son contrôle et des dommages qui pourraient éventuellement être subis par l’environnement technique de l’utilisateur et notamment, ses ordinateurs, logiciels, équipements réseaux et tout autre matériel utilisé pour accéder ou utiliser le service et/ou les informations.") }}</p>
+      <p>{{ _("Il est rappelé que le fait d’accéder ou de se maintenir frauduleusement dans un système informatique, d’entraver ou de fausser le fonctionnement d’un tel système, d’introduire ou de modifier frauduleusement des données dans un système informatique constituent des délits passibles de sanctions pénales.") }}</p>
+      <p>{{ _("L’accès au site est gratuit. Les frais d’accès et d’utilisation du réseau de télécommunication sont à la charge du client, selon les modalités fixées par ses fournisseurs d’accès et opérateurs de télécommunication.") }}</p>
+    </section>
+
+    <!-- 2. Propriété Intellectuelle -->
+    <section class="legal-section" id="propriete">
+      <h2>{{ _("2. Propriété Intellectuelle") }}</h2>
+      <p>{{ _("Amoaman & Associés est propriétaire, ou titulaire des droits, de tous les éléments qui composent ce site notamment les données, dessins, graphiques, photos, bandes sonores.") }}</p>
+      <p>{{ _("Toute reproduction, représentation, diffusion ou rediffusion, totale ou partielle, du contenu de ce site par quelque procédé que ce soit sans l’autorisation expresse et préalable de Amoaman & Associés est interdite, et constitue une infraction sanctionnée par les lois en vigueur et suivants du code de la propriété intellectuelle.") }}</p>
+      <p>{{ _("Les marques de l’éditeur du site amoaman.com et de ses partenaires, ainsi que les logos figurant sur le site sont des marques déposées. Toute reproduction totale ou partielle de ces marques ou de ces logos, effectuée à partir des éléments du site sans l’autorisation expresse de Amoaman & Associés ou de son ayant-droit est donc prohibée.") }}</p>
+    </section>
+
+    <!-- 3. Contenu du site -->
+    <section class="legal-section" id="contenu">
+      <h2>{{ _("3. Contenu du site") }}</h2>
+      <p>{{ _("Amoaman & Associés se réserve le droit de corriger, à tout moment et sans préavis, le contenu de ce site. En outre, Amoaman & Associés décline toute responsabilité en cas de retard, d’erreur ou d’omission quant au contenu des présentes pages de même qu’en cas d’interruption ou de non disponibilité du service.") }}</p>
+      <p>{{ _("Amoaman & Associés ne peut être tenue pour responsable de toute décision prise sur la base d’une information contenue sur le site, ni de l’utilisation qui pourrait en être faite par des tiers. Toute personne souhaitant bénéficier d’un ou de plusieurs des services et/ou d’un ou de plusieurs produits présentés sur le site est invitée à contacter la société directement.") }}</p>
+    </section>
+
+    <!-- 4. Liens Hypertextes -->
+    <section class="legal-section" id="liens">
+      <h2>{{ _("4. Liens Hypertextes") }}</h2>
+      <p>{{ _("Le site amoaman.com pourrait contenir des liens hypertextes permettant l’accès à des sites qui ne sont pas édités par Amoaman & Associés. En conséquence, Amoaman & Associés ne saurait être tenue responsable du contenu desdits sites.") }}</p>
+      <p>{{ _("La création de liens hypertextes vers le site amoaman.com doit faire l’objet d’une autorisation préalable de l’éditeur. Les présentes mentions peuvent faire l’objet de modifications (sans préavis).") }}</p>
+    </section>
+
+    <!-- 5. Données à caractère personnel -->
+    <section class="legal-section" id="donnees">
+      <h2>{{ _("5. Données à caractère personnel") }}</h2>
+      <p>{{ _("Toutes les informations que vous saisirez seront enregistrées par Amoaman & Associés (Responsable de traitement) uniquement pour l’amélioration de votre expérience.") }}</p>
+      <p>{{ _("Vous disposez des droits sur vos informations personnelles aux conditions prévues par la loi lorsque vous le souhaitez, auprès du correspondant à la protection des données personnelles aux adresses suivantes :") }}</p>
+      <ul>
+        <li>{{ _("Siège social : Cocody Riviera 3 villa 676 Abidjan 11 BP 2624 ABJ 11") }}</li>
+        <li>{{ _("Courrier électronique : dpo@amoaman.com") }}</li>
+      </ul>
+    </section>
+
+  </article>
+</div>
+{% endblock %}

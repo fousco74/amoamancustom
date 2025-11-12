@@ -1,0 +1,75 @@
+<section class="py-5" id="sourcing">
+    <div class="container step-content text-center">
+        <small class="text-muted">{{ _("Ils nous ont fait confiance.") }}</small>
+        <div class="logos-container px-2 px-md-4 mt-3">
+        <div class="logos-line">
+            {% for l in logos %}
+            <div class="logo-card m-1">
+            <img src="{{ l.src }}" alt="{{ l.alt }}" loading="lazy">
+            </div>
+            {% endfor %}
+            {# Clone une fois la ligne pour effet infini #}
+            {% for l in logos %}
+            <div class="logo-card m-1">
+            <img src="{{ l.src }}" alt="{{ l.alt }}" loading="lazy">
+            </div>
+            {% endfor %}
+        </div>
+        </div>
+
+
+
+        {# Étapes Sourcing #}
+        <div class="text-end mt-5">
+            <span class="pill">Sourcing</span>
+            <h2 class="fw-bold mt-2">{{ _("Sourcer juste, recruter mieux.") }}</h2>
+            <span class="lead text-end">{{ _("Une méthode rigoureuse, un vivier de talents ciblés, des outils <br/> adaptés : le
+                recrutement à haute valeur ajoutée, nous connectons <br/> votre entreprise aux compétences qui font la
+                différence.") }}</span>
+        </div>
+
+        <div class="steps mt-3 mb-4">
+            {% set steps = [
+            {"n":1, "title": _("Fiche de poste"), "img": "/assets/amoamancustom/images/fiche.svg"},
+            {"n":2, "title": _("Sourcing des candidats"), "img": "/assets/amoamancustom/images/sourcing.svg"},
+            {"n":3, "title": _("Amoaman Assessment"), "img": "/assets/amoamancustom/images/assessment.svg"},
+            {"n":4, "title": _("Shortlist"), "img": "/assets/amoamancustom/images/shortlist.svg"},
+            {"n":5, "title": _("Onboarding"), "img": "/assets/amoamancustom/images/onboarding.svg"},
+            {"n":6, "title": _("Intégration"), "img": "/assets/amoamancustom/images/integration.svg"}
+            ] %}
+            {% for s in steps %}
+            <div class="step-card">
+                <div>
+                    <div class="step-head">{{ _("Étape") }} {{ s.n }}</div>
+                    <div class="step-title">{{ s.title }}</div>
+                </div>
+
+                <div class="d-flex illus justify-content-center align-items-center">
+                    <img src="{{ s.img }}" alt="{{ s.title }}">
+                </div>
+
+                {% if not loop.last %}
+                <div class="step-arrow">
+                    <div class="step-arrow-content">
+                        <!-- chevron -->
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round">
+                            <path d="M9 18l6-6-6-6" />
+                        </svg>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+
+
+        <div class="text-center">
+            <div class="d-inline-flex gap-2 flex-wrap">
+                <a href="/contact" class="btn btn-contact px-5">{{ _("Contactez-nous") }}</a>
+                <a href="#" class="btn btn-outline-soft">{{ _("Rejoindre le vivier Amoaman") }}</a>
+            </div>
+        </div>
+    </div>
+</section>

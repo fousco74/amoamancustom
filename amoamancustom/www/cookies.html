@@ -1,0 +1,153 @@
+{% extends "templates/layout.html" %}
+{% block title %}{{ _("Gestion des cookies") }}{% endblock %}
+
+{% block page_content %}
+<style>
+:root{ --brand-grad:linear-gradient(135deg,#266BCC 0%,#F32A57 100%); --text:#081A2A;}
+.cookies-hero{background:linear-gradient(135deg,#E8EEFF 0%,#FFE8F0 100%);min-height:200px;display:flex;align-items:center;justify-content:center;text-align:center;padding:42px 16px;}
+.cookies-hero h1{font-weight:800;color:var(--text);margin:0;}
+.cc-wrap{max-width:1000px;margin:-60px auto 40px;padding:0 16px;}
+.cc-card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;box-shadow:0 10px 32px rgba(2,6,23,.06);padding:22px;}
+.cc-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;}
+.cc-chip{border:1px solid #e5e7eb;border-radius:9999px;padding:8px 12px;display:flex;align-items:center;gap:8px;}
+.cc-chip input{width:18px;height:18px;accent-color:#266BCC;}
+.cc-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;}
+.cc-btn{border:1px solid #e5e7eb;background:#fff;padding:10px 16px;border-radius:9999px;cursor:pointer;font-weight:700;}
+.cc-btn.primary{background:var(--brand-grad);color:#fff;border-color:transparent;}
+.cc-toc{margin:18px 0 6px;}
+.cc-legal{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:22px;}
+.cc-legal h2{margin-top:18px;}
+.cc-legal h3{margin-top:22px;}
+</style>
+
+<section class="cookies-hero"><h1>{{ _("Gestion des cookies") }}</h1></section>
+
+<div class="cc-wrap">
+
+
+  <!-- Texte légal complet -->
+  <div class="cc-legal">
+    <h2>{{ _("TABLE DES MATIÈRES") }}</h2>
+    <ol>
+      <li><a href="#generalites">{{ _("GÉNÉRALITÉS") }}</a></li>
+      <li><a href="#collecte">{{ _("COLLECTE DE VOS DONNÉES A CARACTÈRE PERSONNEL") }}</a></li>
+      <li><a href="#utilisation">{{ _("UTILISATION DE VOS DONNÉES A CARACTÈRE PERSONNEL") }}</a></li>
+      <li><a href="#partage">{{ _("PARTAGE DE DONNÉES A CARACTÈRE PERSONNEL") }}</a></li>
+      <li><a href="#transfert">{{ _("TRANSFERT DE DONNÉES A CARACTÈRE PERSONNEL") }}</a></li>
+      <li><a href="#conservation">{{ _("CONSERVATION DE VOS DONNÉES A CARACTÈRE PERSONNEL") }}</a></li>
+      <li><a href="#securite">{{ _("SÉCURITÉ DE VOS DONNÉES A CARACTÈRE PERSONNEL") }}</a></li>
+      <li><a href="#maj">{{ _("MISE À JOUR DE LA POLITIQUE") }}</a></li>
+      <li><a href="#droits">{{ _("VOS DROITS") }}</a></li>
+      <li><a href="#cookies">{{ _("COOKIES") }}</a></li>
+      <li><a href="#recours">{{ _("RECOURS EN CAS DE VIOLATION DES DONNÉES") }}</a></li>
+      <li><a href="#coordonnees">{{ _("COORDONNÉES") }}</a></li>
+      <li><a href="#tiers">{{ _("SITE WEB TIERS") }}</a></li>
+    </ol>
+
+    <h3 id="generalites">{{ _("GÉNÉRALITÉS") }}</h3>
+    <p>{{ _("La confidentialité de la navigation et la protection des données à caractère personnel des visiteurs de notre site web revêtent un caractère très important pour AMOAMAN & ASSOCIES. Pour ce faire, nous nous engageons à les protéger. Cette politique détaille l’utilisation de vos données à caractère personnel conformément à la loi n°2013-450 du 19 juin 2013 relative à la protection des données à caractère personnel en Côte d’Ivoire, aux dispositions de l’Acte additionnel A/SA.1/01/10 du 16 février 2010 relatif à la protection des données à caractère personnel dans l’espace de la CEDEAO, à la Convention de l’Union Africaine sur la cybersécurité et la protection des données à caractère personnel, au Règlement Général sur la Protection des Données (RGPD) et à toutes les dispositions pertinentes adoptées par ces instances notamment la décision (UE) 2016/920 du Conseil de l’Europe du 20 mai 2016 relative à l’accord Union Européenne – États-Unis sur la protection des données échangées à des fins répressives. Votre consentement pour l’utilisation des cookies conformément à cette politique, nous permet de les utiliser à chaque fois que vous consultez notre site.") }}</p>
+
+    <h3 id="collecte">{{ _("1. COLLECTE DE VOS DONNÉES A CARACTÈRE PERSONNEL") }}</h3>
+    <p>{{ _("Certaines données peuvent être collectées, afin de répondre à vos besoins dans le cadre des services que propose AMOAMAN & ASSOCIES, notamment à l’occasion de votre visite sur notre site internet, lors de l’utilisation de nos applications mobiles, des informations comme votre adresse e-mail que vous nous fournissez lors de votre inscription à la newsletter, ainsi que tout autre information ou données à caractère personnel que vous nous communiquez relativement à un service spécifique proposé par AMOAMAN & ASSOCIES.") }}</p>
+    <p>{{ _("NB : Avant de nous divulguer des données à caractère personnel concernant une autre personne dans le cadre d’un service, vous devez vous assurer d’avoir le consentement de ladite personne en ce qui concerne la divulgation et le traitement de ses données selon les termes de cette politique.") }}</p>
+
+    <h3 id="utilisation">{{ _("2. UTILISATION DE VOS DONNÉES A CARACTÈRE PERSONNEL") }}</h3>
+    <p>{{ _("Les informations en lien avec vos données qui nous sont fournies par le biais de notre site web seront utilisées dans les objectifs décrits dans cette politique. Ainsi, dans le cadre de nos activités et pour votre confort, nous pouvons utiliser vos données à caractère personnel pour :") }}</p>
+    <ul>
+      <li>{{ _("faciliter votre navigation sur notre site web ;") }}</li>
+      <li>{{ _("permettre votre utilisation des services proposés sur notre site web ;") }}</li>
+      <li>{{ _("vous envoyer des notifications par e-mail que vous avez expressément demandées ;") }}</li>
+      <li>{{ _("vous envoyer notre newsletter par mail, si vous l’avez demandé ;") }}</li>
+      <li>{{ _("fournir des informations statistiques ;") }}</li>
+      <li>{{ _("maintenir la sécurité de notre site web et empêcher la fraude ;") }}</li>
+      <li>{{ _("vérifier le respect des conditions générales qui régissent l’utilisation de notre site.") }}</li>
+    </ul>
+    <p>{{ _("Cependant, vous pouvez demander à tout moment votre désabonnement à notre newsletter.") }}</p>
+
+    <h3 id="partage">{{ _("3. PARTAGE DE DONNÉES A CARACTÈRE PERSONNEL") }}</h3>
+    <p>{{ _("Nous veillons toujours à la sécurité des données de nos partenaires, toutefois nous pouvons avoir certaines obligations réglementaires. Dans un tel cas, nous n’utiliserons que les données strictement autorisées par la loi dans les cas suivants :") }}</p>
+    <ul>
+      <li>{{ _("dans le cadre de procédure judiciaire en cours ou à venir ;") }}</li>
+      <li>{{ _("pour établir, exercer ou défendre nos propres droits légaux ;") }}</li>
+      <li>{{ _("dans le cadre des missions de contrôle de l’Autorité de protection.") }}</li>
+    </ul>
+
+    <h3 id="transfert">{{ _("4. TRANSFERT DE DONNÉES A CARACTÈRE PERSONNEL") }}</h3>
+    <p>{{ _("Conformément à la réglementation en vigueur, nous collaborerons dans le cadre de nos activités, avec des partenaires situés dans des États qui disposent d’un arsenal juridique convenable équivalent à celui de la Côte d’Ivoire en matière de protection des données à caractère personnel. Dans tous les cas, nous veillons à respecter vos droits en matière de protection des données à caractère personnel.") }}</p>
+
+    <h3 id="conservation">{{ _("5. CONSERVATION DE VOS DONNÉES A CARACTÈRE PERSONNEL") }}</h3>
+    <p>{{ _("AMOAMAN & ASSOCIES traite les données en conformité avec la loi, et dans ce cadre, nous respectons les obligations légales concernant la conservation et la suppression des données à caractère personnel. Les données que nous traitons ne sont pas conservées plus longtemps que nécessaire conformément aux finalités pour lesquelles elles ont été collectées.") }}</p>
+
+    <h3 id="securite">{{ _("6. SÉCURITÉ DE VOS DONNÉES A CARACTÈRE PERSONNEL") }}</h3>
+    <p>{{ _("AMOAMAN & ASSOCIES est conscient de la sécurité du traitement de vos données et pour cela nous prenons des précautions techniques et organisationnelles raisonnables pour empêcher toute mauvaise manipulation de vos données. Nous stockons toutes ces informations sur des serveurs hautement sécurisés.") }}</p>
+    <p>{{ _("Toutefois, les données à caractère personnel que vous communiquez lorsque vous naviguez sur notre site web, peuvent être disponibles sur le réseau internet. Nous ne pouvons pas empêcher l’utilisation, bonne ou mauvaise, de ces informations par des tiers. C’est pourquoi nous vous suggérons de ne communiquer à personne vos identifiants et de faire attention aux données que vous pouvez communiquer car internet reste un espace public.") }}</p>
+
+    <h3 id="maj">{{ _("7. MISE À JOUR DE LA POLITIQUE") }}</h3>
+    <p>{{ _("Nous pouvons mettre cette politique à jour en publiant une nouvelle version sur notre site web. Vous devez vérifier cette page régulièrement pour vous assurer de prendre connaissance de tout changement effectué sur cette politique. Nous vous informerons des changements effectués sur cette politique à l’aide d’une notification.") }}</p>
+
+    <h3 id="droits">{{ _("8. VOS DROITS") }}</h3>
+    <p>{{ _("Veiller au respect de vos droits est une mission de la plus haute importance chez AMOAMAN & ASSOCIES. Cette politique s’inscrit justement dans cette logique. Ainsi, nous mettons à votre disposition un cadre propice pour exercer librement vos droits. Conformément à la réglementation en vigueur, vous devrez présenter, pour toute réclamation, des preuves suffisantes justifiant votre identité (une pièce à jour et valable).") }}</p>
+    <p>{{ _("Lorsque vous exprimerez expressément et à l’avance votre accord pour que nous utilisions vos données à caractère personnel à des fins marketing, nous vous fournirons une opportunité de refuser pour motif légitime leur utilisation à des fins marketing.") }}</p>
+    <p>{{ _("En outre, vous pouvez :") }}</p>
+    <ul>
+      <li>{{ _("demander que vos données soient corrigées, mises à jour, effacées ;") }}</li>
+      <li>{{ _("demander ou refuser que vos données soient transférées à quelqu’un d’autre ;") }}</li>
+      <li>{{ _("demander à accéder à vos données.") }}</li>
+    </ul>
+
+    <h3 id="cookies">{{ _("9. COOKIES") }}</h3>
+    <p>{{ _("Notre site web/application utilise des cookies. Sur cet aspect, nous vous assurons le même niveau de sécurité, de confidentialité et de transparence. Un cookie est un fichier contenant un identifiant (une chaîne de lettres et de chiffres), envoyé par un serveur web vers un navigateur web et stocké par le navigateur. L’identifiant est alors renvoyé au serveur à chaque fois que le navigateur demande une page au serveur. Les cookies peuvent être « persistants » ou « de session ».") }}</p>
+    <p>{{ _("Un cookie persistant est stocké par le navigateur et reste valide jusqu’à sa date d’expiration, à moins d’être supprimé par l’utilisateur avant cette date d’expiration. Quant au cookie de session, il expire à la fin de la session de l’utilisateur, lors de la fermeture du navigateur. Les données à caractère personnel que nous stockons à votre sujet peuvent être liées aux informations stockées dans les cookies.") }}</p>
+    <p>{{ _("NB : Veuillez noter que la plupart des navigateurs vous permettent de refuser ou d’accepter les cookies. Dans tous les cas, nous vous assurons une transparence totale dans l’utilisation des cookies et nous vous offrons la possibilité de consentir à l’utilisation des cookies.") }}</p>
+
+    <h3 id="recours">{{ _("10. RECOURS EN CAS DE VIOLATION DES DONNÉES") }}</h3>
+    <p>{{ _("Malgré toutes les précautions, si vous constatez un cas de violation de vos droits, vous pouvez librement nous contacter via notre adresse : hello@amoaman.com. Notre équipe vous contactera dans un délai raisonnable afin de vous assister et entamer les démarches nécessaires pour remédier à la situation.") }}</p>
+
+    <h3 id="coordonnees">{{ _("11. COORDONNÉES") }}</h3>
+    <p>hello@amoaman.com</p>
+
+    <h3 id="tiers">{{ _("12. SITE WEB TIERS") }}</h3>
+    <p>{{ _("Notre site web peut contenir des liens hypertextes menant vers des sites web tiers et des informations les concernant. Nous n’avons aucun contrôle sur ces sites, et ne sommes pas responsables de leurs politiques de confidentialité ni de leurs pratiques. Nous vous conseillons de prendre toutes les précautions lors de vos visites sur ces sites.") }}</p>
+  </div>
+</div>
+
+<script>
+/* Sync UI avec l’API globale + actions */
+(function(){
+  function syncUI(){
+    if (!window.CookieConsent) return;
+    var p = window.CookieConsent.get() || { analytics:false, functional:false, marketing:false };
+    document.getElementById('cc-analytics').checked = !!p.analytics;
+    document.getElementById('cc-functional').checked = !!p.functional;
+    document.getElementById('cc-marketing').checked = !!p.marketing;
+  }
+  document.addEventListener('consent:applied', syncUI);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', syncUI);
+  } else { syncUI(); }
+
+  document.getElementById('cc-accept').addEventListener('click', function(){
+    window.CookieConsent && window.CookieConsent.acceptAll();
+    frappe.show_alert({ message: __('Tous les cookies activés.'), indicator:'green' });
+    syncUI();
+  });
+  document.getElementById('cc-reject').addEventListener('click', function(){
+    window.CookieConsent && window.CookieConsent.rejectAll();
+    frappe.show_alert({ message: __('Cookies limités au strict nécessaire.'), indicator:'orange' });
+    syncUI();
+  });
+  document.getElementById('cc-save').addEventListener('click', function(){
+    if (!window.CookieConsent) return;
+    const prefs = {
+      necessary: true,
+      analytics: document.getElementById('cc-analytics').checked,
+      functional: document.getElementById('cc-functional').checked,
+      marketing: document.getElementById('cc-marketing').checked
+    };
+    window.CookieConsent.set(prefs);
+    frappe.show_alert({ message: __('Préférences enregistrées.'), indicator:'green' });
+    syncUI();
+  });
+})();
+</script>
+{% endblock %}

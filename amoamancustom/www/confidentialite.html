@@ -1,0 +1,150 @@
+{% extends "templates/layout.html" %}
+{% block title %}{{ _("Politique de confidentialité") }}{% endblock %}
+
+{% block page_content %}
+<style>
+:root{
+  --brand-grad: linear-gradient(135deg,#266BCC 0%,#F32A57 100%);
+  --text:#081A2A; --muted:#6b7280;
+  --card: #fff; --bd:#e5e7eb;
+  --shadow: 0 10px 32px rgba(2,6,23,.06);
+}
+
+/* Héro */
+.priv-hero{
+  background: linear-gradient(135deg,#E8EEFF 0%,#FFE8F0 100%);
+  min-height: 200px; display:flex; align-items:center; justify-content:center;
+  text-align:center; padding: 42px 16px;
+}
+.priv-hero h1{ margin:0; font-weight:800; color:var(--text); }
+.priv-hero .link-hint{ margin-top:8px; color:#475569; }
+
+/* Grille principale */
+.priv-wrap{ max-width:1100px; margin:-60px auto 40px; padding: 0 16px; }
+.priv-grid{ display:grid; grid-template-columns: minmax(0,1fr) 300px; gap: 24px; }
+
+/* Carte contenu + Sommaire */
+.card{ background:var(--card); border:1px solid var(--bd); border-radius:16px; box-shadow:var(--shadow); }
+.card.body{ padding: 24px; }
+.card.toc{ padding: 18px; position: sticky; top: 18px; align-self: start; }
+
+.toc-title{ font-weight:800; margin: 4px 0 10px; color:var(--text); }
+.toc-list{ list-style:none; padding-left:0; margin:0; display:grid; gap:6px; }
+.toc-list a{ display:block; padding:8px 10px; border-radius:10px; text-decoration:none; color:#0f172a; border:1px solid #eef2f7; }
+.toc-list a:hover{ background:#f8fafc; border-color:#e5e7eb; }
+
+/* Typo */
+h2{ font-size:22px; font-weight:800; margin: 22px 0 10px; color:var(--text); }
+h3{ font-size:18px; font-weight:800; margin: 18px 0 8px; color:var(--text); }
+p{ color:#334155; line-height:1.7; margin: 8px 0; }
+ul{ margin: 6px 0 12px 18px; }
+li{ margin: 4px 0; }
+
+/* Bande info */
+.note{ background:#f8fafc; border:1px dashed #cbd5e1; border-radius:12px; padding:12px 14px; margin:10px 0; color:#334155; }
+
+/* Responsive */
+@media (max-width: 991.98px){
+  .priv-grid{ grid-template-columns: 1fr; }
+  .card.toc{ position: static; }
+}
+</style>
+
+<section class="priv-hero">
+  <div>
+    <h1>{{ _("Politique de confidentialité") }}</h1>
+    <p class="link-hint">{{ _("Lien direct :") }} <code>/confidentialite</code></p>
+  </div>
+</section>
+
+<div class="priv-wrap">
+  <div class="priv-grid">
+
+    <!-- Contenu principal -->
+    <article class="card body">
+      <div class="note">
+        {{ _("La présente politique de confidentialité fournit des informations concernant le traitement des données à caractère personnel effectué par AMOAMAN & ASSOCIÉS. Elle décrit comment la société traite les données des personnes physiques (bénéficiaires directs/indirects ou représentants d’entreprises/organisations) et précise vos droits conformément aux lois en vigueur en Côte d’Ivoire, à l’Acte additionnel CEDEAO, à la Convention de l’Union Africaine sur la cybersécurité et à la protection des données, etc.") }}
+      </div>
+
+      <h2 id="pourquoi">{{ _("Pourquoi AMOAMAN & ASSOCIÉS traite-t-il vos données à caractère personnel ?") }}</h2>
+      <p>{{ _("AMOAMAN & ASSOCIÉS traite les données strictement nécessaires à la fourniture de solutions numériques à la clientèle et à la gestion clientèle, de manière raisonnable et conforme aux lois en vigueur.") }}</p>
+      <p>{{ _("Plus précisément, les traitements poursuivent les finalités suivantes :") }}</p>
+      <ul>
+        <li>{{ _("La gestion de ses systèmes informatiques et leur sécurité ;") }}</li>
+        <li>{{ _("La gestion de fourniture de service informatique ;") }}</li>
+        <li>{{ _("Les enquêtes concernant des plaintes et la réponse à ces dernières, ainsi que l’établissement, l’exercice et la défense de droits ;") }}</li>
+        <li>{{ _("La formation du personnel, et l’amélioration continue des procédures et modalités internes.") }}</li>
+      </ul>
+
+      <h2 id="donnees-traitees">{{ _("Quelles données à caractère personnel AMOAMAN & ASSOCIÉS traite-t-il ?") }}</h2>
+      <p>{{ _("AMOAMAN & ASSOCIÉS collecte et traite des données telles que le nom, les coordonnées et l’adresse e-mail. Les renseignements fournis sont utilisés aux seules fins d’identification et/ou de paiement sur la plateforme et le site web de la société.") }}</p>
+
+      <h2 id="obtention">{{ _("Comment AMOAMAN & ASSOCIÉS obtient-il vos données ?") }}</h2>
+      <p>{{ _("Les données peuvent provenir directement de vous, ou d’un intermédiaire partie à une opération que vous avez initiée (entreprise/organisation que vous représentez ou à laquelle vous êtes associé).") }}</p>
+      <p>{{ _("Si vous êtes bénéficiaire des services, certaines informations peuvent être collectées à partir de listes de sanctions internationales et d’autres sources accessibles publiquement.") }}</p>
+
+      <h2 id="destinataires">{{ _("À qui vos données sont-elles transmises ?") }}</h2>
+      <ul>
+        <li>{{ _("En interne, aux directions et/ou services concernés ;") }}</li>
+        <li>{{ _("À l’entité/organisation à laquelle vous êtes associé, aux intermédiaires et correspondants impliqués ;") }}</li>
+        <li>{{ _("Aux régulateurs ou autorités judiciaires ;") }}</li>
+        <li>{{ _("Aux conseillers juridiques ;") }}</li>
+        <li>{{ _("À toute autorité compétente dûment habilitée.") }}</li>
+      </ul>
+
+      <h2 id="securite">{{ _("Confidentialité et sécurité") }}</h2>
+      <p>{{ _("AMOAMAN & ASSOCIÉS prend des précautions techniques et organisationnelles raisonnables pour garder vos données confidentielles et protégées, et empêcher toute mauvaise manipulation. L’accès par des tiers non autorisés est empêché dans la mesure du possible.") }}</p>
+
+      <h2 id="cookies">{{ _("Cookies") }}</h2>
+      <p>{{ _("Nos pages utilisent des cookies (petits fichiers texte) et parfois des pixels invisibles pour mesurer l’usage et la performance. Certains cookies/pixels proviennent de prestataires tiers. Vous pouvez gérer vos préférences via les réglages du navigateur et notre page dédiée aux cookies.") }}</p>
+      <p>{{ _("Pour plus d’informations, consultez la page :") }} <a href="/gestion-des-cookies">/gestion-des-cookies</a>.</p>
+
+      <h2 id="transferts">{{ _("Transfert de données hors zone CEDEAO") }}</h2>
+      <p>{{ _("Vos informations peuvent être traitées et stockées sur des systèmes situés en dehors de la Côte d’Ivoire. En acceptant cette politique et en nous transmettant vos informations, vous consentez à ces transferts.") }}</p>
+      <p>{{ _("Nous prenons toutes les mesures nécessaires, conformément à la loi n°2013-450 du 19 juin 2013, pour garantir un traitement sécurisé et confidentiel. Aucun transfert ne sera effectué sans garanties appropriées (mesures techniques/contractuelles).") }}</p>
+
+      <h2 id="droits">{{ _("Vos droits et comment les exercer") }}</h2>
+      <p>{{ _("Vous pouvez demander à AMOAMAN & ASSOCIÉS de :") }}</p>
+      <ul>
+        <li>{{ _("Fournir plus d’informations sur l’utilisation de vos données ;") }}</li>
+        <li>{{ _("Accéder à vos données (copie fournie le cas échéant) ;") }}</li>
+        <li>{{ _("Corriger/mettre à jour vos données ;") }}</li>
+        <li>{{ _("Supprimer vos données ;") }}</li>
+        <li>{{ _("Restreindre certains traitements ;") }}</li>
+      </ul>
+      <p>{{ _("Vous pouvez également vous opposer à certains traitements. Pour exercer vos droits :") }}</p>
+      <ul>
+        <li>{{ _("Par téléphone : (+225) 27 24-31-15-61") }}</li>
+        <li>{{ _("En ligne :") }} <a href="/contact">/contact</a></li>
+      </ul>
+      <p>{{ _("Vous pouvez en outre déposer une plainte auprès de l’Autorité de protection (ARTCI).") }}</p>
+
+      <h2 id="liens">{{ _("Liens vers d’autres sites web") }}</h2>
+      <p>{{ _("Notre service peut contenir des liens vers des sites tiers. Nous vous invitons à consulter leur politique de confidentialité. AMOAMAN & ASSOCIÉS n’exerce aucun contrôle sur les contenus et pratiques de ces sites et décline toute responsabilité à leur égard.") }}</p>
+
+      <h2 id="maj">{{ _("Modification de la politique de confidentialité") }}</h2>
+      <p>{{ _("Nous pouvons mettre à jour cette politique. Toute nouvelle version sera publiée sur cette page, avec notification visible le cas échéant, et mise à jour de la date « Dernière mise à jour ». Les changements prennent effet à la publication.") }}</p>
+    </article>
+
+    <!-- Sommaire -->
+    <aside class="card toc" aria-label="{{ _('Sommaire de la page') }}">
+      <div class="toc-title">{{ _("Table des matières") }}</div>
+      <nav>
+        <ol class="toc-list">
+          <li><a href="#pourquoi">{{ _("Pourquoi nous traitons vos données ?") }}</a></li>
+          <li><a href="#donnees-traitees">{{ _("Données traitées") }}</a></li>
+          <li><a href="#obtention">{{ _("Comment nous les obtenons") }}</a></li>
+          <li><a href="#destinataires">{{ _("Destinataires") }}</a></li>
+          <li><a href="#securite">{{ _("Confidentialité & sécurité") }}</a></li>
+          <li><a href="#cookies">{{ _("Cookies") }}</a></li>
+          <li><a href="#transferts">{{ _("Transferts hors CEDEAO") }}</a></li>
+          <li><a href="#droits">{{ _("Vos droits") }}</a></li>
+          <li><a href="#liens">{{ _("Liens tiers") }}</a></li>
+          <li><a href="#maj">{{ _("Mises à jour") }}</a></li>
+        </ol>
+      </nav>
+    </aside>
+
+  </div>
+</div>
+{% endblock %}

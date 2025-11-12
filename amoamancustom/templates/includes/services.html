@@ -1,0 +1,14 @@
+<section class="container" id="services">
+<div class="row g-3 justify-content-center">
+{% for s in services %}
+<div class="col-6 col-md-4 col-lg-2">
+<a href="{{ s.href or '#' }}" class="text-decoration-none">
+<div class="service-tile h-100">
+<div class="service-icon"><i class="bi {{ s.icon }}" aria-hidden="true"></i></div>
+<div class="small fw-semibold text-dark">{{ s.label }}</div>
+</div>
+</a>
+</div>
+{% endfor %}
+</div>
+</section>
