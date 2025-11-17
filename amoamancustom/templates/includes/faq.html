@@ -1,33 +1,48 @@
-<section class="py-5" id="faq">
-<div class="container">
-<h2 class="headline">{{ _("Vos objectifs nous inspirent ") }}<span class="grad">{{ _("des solutions faites") }}</span> {{ _("pour vous permettre de") }} <span class="grad">{{ _("les atteindre.") }}</span></h2>
-<div class="row g-4 align-items-start">
-<div class="col-lg-5">
-<span class="pill">FAQ</span>
-<h3 class="display-6 mt-3 mb-3">{{ _("Les questions fréquentes") }}</h3>
-<p class="text-secondary">{{ _("Vous avez d’autres questions ? Contactez-nous par WhatsApp en cliquant sur le bouton ci-dessous") }}</p>
-<a href="#contact" class="btn btn-contact">{{ _("Contactez-nous") }}</a>
-</div>
-<div class="col-lg-7">
-<div class="faq-wrap" data-faq>
-{% set items = [
-( _("Comment engager une mission avec AMOAMAN ?"), _("Un entretien de cadrage gratuit → proposition détaillée (périmètre, livrables, planning) → démarrage avec jalons et points d’étape.") ),
-( _("Est-ce que vos services peuvent être sollicités séparément ?"), _("Oui, chaque offre (ERP, Big Data, Sourcing, Sécurité, Formation) peut être engagée de façon indépendante en fonction de votre besoin.") ),
-( _("ERPNext propose-t-il une reprise des données existantes ?"), _("Oui, nous vous accompagnons dans l’import de vos données existantes de structure, référentiel et transactionnel.
-Notre équipe ERPNext vous aide à structurer et intégrer ces données pour garantir une transition fluide et opérationnelle dès le premier jour.") ),
-( _("Quel accompagnement est prévu lors du déploiement ERPNext ?"), _("Dès votre engagement, vous êtes pris en charge par un chef de projet dédié qui vous accompagne tout au long de l’implémentation. L’onboarding comprend un audit de vos besoins, le paramétrage personnalisé, des formations et un accompagnement au changement. Objectif : un déploiement fluide et rapide, adapté à votre organisation.") ),
-( _("En quoi la Big Data peut-elle améliorer ma prise de décision ?"), _("Par la consolidation de vos sources, des tableaux de bord fiables, des modèles prédictifs et des alertes opérationnelles.") ),
-( _("Pourquoi investir dans la conformité RGPD et la protection des données ?"), _("Pour réduire les risques juridiques, renforcer la confiance client et sécuriser vos opérations, en conformité avec la loi ivoirienne et les standards internationaux.") )
+<section class="py-5 d-flex  flex-md-column justify-content-between align-items-center" id="faq">
+    <div class="container section-faq">
+        <h2 class="headline ">  <span class="grad"> {{ _("Vos objectifs nous inspirent des solutions ") }} </span> <span class="grad-red">{{ _("faites")}} <br/>  </span> <span class="grad"> {{ _("pour vous permettre de les atteindre.")}} </span></h2>
+        <div class="row g-4 align-items-start">
+            <div class="col-lg-5">
+                <span class="section-capsule">FAQ</span>
+                <h3 class="display-6 subtitle mt-3 mb-3 section-big-title">{{ _("Les questions <br/> fréquentes") }}</h3>
+                <p class="text-secondary section-content">{{ _("Vous avez d’autres questions ? Contactez-nous par WhatsApp en cliquant
+                    sur le bouton ci-dessous") }}</p>
+                <a href="#contact" class="btn btn-contact">{{ _("Contactez-nous") }}</a>
+            </div>
+            <div class="col-lg-7">
+                <div class="faq-wrap" data-faq>
+                    {% set items = [
+                    ( _("Comment engager une mission avec AMOAMAN ?"), _("Un entretien de cadrage gratuit → proposition
+                    détaillée (périmètre, livrables, planning) → démarrage avec jalons et points d’étape.") ),
+                    ( _("Est-ce que vos services peuvent être sollicités séparément ?"), _("Oui, chaque offre (ERP, Big
+                    Data, Sourcing, Sécurité, Formation) peut être engagée de façon indépendante en fonction de votre
+                    besoin.") ),
+                    ( _("ERPNext propose-t-il une reprise des données existantes ?"), _("Oui, nous vous accompagnons
+                    dans l’import de vos données existantes de structure, référentiel et transactionnel.
+                    Notre équipe ERPNext vous aide à structurer et intégrer ces données pour garantir une transition
+                    fluide et opérationnelle dès le premier jour.") ),
+                    ( _("Quel accompagnement est prévu lors du déploiement ERPNext ?"), _("Dès votre engagement, vous
+                    êtes pris en charge par un chef de projet dédié qui vous accompagne tout au long de
+                    l’implémentation. L’onboarding comprend un audit de vos besoins, le paramétrage personnalisé, des
+                    formations et un accompagnement au changement. Objectif : un déploiement fluide et rapide, adapté à
+                    votre organisation.") ),
+                    ( _("En quoi la Big Data peut-elle améliorer ma prise de décision ?"), _("Par la consolidation de
+                    vos sources, des tableaux de bord fiables, des modèles prédictifs et des alertes opérationnelles.")
+                    ),
+                    ( _("Pourquoi investir dans la conformité RGPD et la protection des données ?"), _("Pour réduire les
+                    risques juridiques, renforcer la confiance client et sécuriser vos opérations, en conformité avec la
+                    loi ivoirienne et les standards internationaux.") )
 
-] %}
-{% for q,a in items %}
-<div class="faq-item">
-<button class="faq-btn" type="button"><span>{{ q }}</span><span class="faq-icon">+</span></button>
-<div class="faq-body">{{ a }}</div>
-</div>
-{% endfor %}
-</div>
-</div>
-</div>
-</div>
+                    ] %}
+                    {% for q,a in items %}
+                    <div class="faq-item">
+                        <button class="faq-btn" type="button"><span>{{ q }}</span><span
+                                class="faq-icon">+</span></button>
+                        <div class="faq-body">{{ a }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
 </section>

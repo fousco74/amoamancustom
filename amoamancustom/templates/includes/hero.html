@@ -1,7 +1,7 @@
 {%- from "templates/includes/ui/button.html" import ui_button -%}
 <section class="hero-section  has-glows" id="hero">
     <div class="text-content fade-in-up">
-        <h1 class="display-4 fw-bold">{{ _(title) }}</h1>
+        <h1 class="fw-bold" >{{ _(title) }}</h1>
         <span class="d-block">{{ _(subtitle) }}</span>
     </div>
 
@@ -37,11 +37,11 @@
 
 <!-- SECTION DATA -->
 <section class="d-flex data flex-column justify-content-center p-4 align-items-center" id="data-intro">
-    <h1 class="fw-semibold" style="font-size: 40px; line-height: 48px;">
+    <h1 class="fw-semibold" >
         {{ _("Les données, ce sont toutes les informations que") }} <br> {{ _("votre entreprise génère ou reçoit chaque
         jour.") }}
     </h1>
-    <h3 class="fw-medium p-2" style="font-size: 20px; line-height: 28px; color: #081A2A !important;">
+    <h3 class="fw-medium p-2" >
         {{ _("Vos données bien exploitées, ce sont : des décisions plus justes,") }} <br>{{ _("des processus plus
         fluides et des performances qui s'envolent !") }}
     </h3>
@@ -49,9 +49,9 @@
     <div class="w-100 d-flex flex-column justify-content-center p-4 align-items-center m-4"
         style="position: relative !important; color: #081A2A !important;">
         <div class="card" style="border-radius: 30px; transform: rotate(-10deg); position: relative !important;" >
-            <div class="card-body d-flex flex-column justify-content-center p-4 align-items-center"
+            <div class="card-body d-flex flex-column justify-content-center align-items-center"
                 style="text-align:start;">
-                <h5 class="card-title fw-semibold" style="font-size:18px; line-height:30px;">
+                <h5 class="card-title fw-semibold">
                     {{ _("Collectées, organisées et") }} <br> {{ _("protégées, elles vous aider à :") }}
                 </h5>
                 <ul style="list-style:none; padding-left:0;">
@@ -65,8 +65,8 @@
                         vos performances") }}</li>
                 </ul>
             </div>
-            <img src="assets/amoamancustom/images/solar_cup-star-outline.svg" alt="solar_cup-star-outline" style="position: absolute; bottom:70px; right: 5px; width: 40px; transform:rotate(45deg);">
-            <img id="img2" src="assets/amoamancustom/images/solar_cup-star-outline.svg" alt="solar_cup-star-outline" style="position: absolute; bottom:5px; right: 5px; width: 60px;">
+            <img id="img2" src="assets/amoamancustom/images/solar_cup-star-outline.svg" alt="solar_cup-star-outline" style="position: absolute; bottom:130px; right: 5px; width: 60px; transform:rotate(45deg);">
+            <img id="img1" src="assets/amoamancustom/images/solar_cup-star-outline.svg" alt="solar_cup-star-outline" style="position: absolute; bottom:30px; right: 5px; width: 110px;">
         </div>
         <span class="glow" style="--x:35%; --y:50%; --size:54vmin; --blur:48px;"></span>
         <span class="glow" style="--x:65%; --y:50%; --size:54vmin; --blur:48px;"></span>
@@ -114,12 +114,12 @@
         <svg viewBox="0 0 1200 350" class="wavy-lines" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
             <defs>
                 <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" style="stop-color:#ff6b6b;stop-opacity:0" />
-                    <stop offset="20%" style="stop-color:#ff6b6b;stop-opacity:1" />
-                    <stop offset="40%" style="stop-color:#4ecdc4;stop-opacity:1" />
-                    <stop offset="60%" style="stop-color:#45b7d1;stop-opacity:1" />
-                    <stop offset="80%" style="stop-color:#96e6a1;stop-opacity:1" />
-                    <stop offset="100%" style="stop-color:#96e6a1;stop-opacity:0" />
+                    <stop offset="0%" style="stop-color:#081A2A;stop-opacity:0" />
+                    <stop offset="20%" style="stop-color:#081A2A;stop-opacity:0" />
+                    <stop offset="40%" style="stop-color:#081A2A;stop-opacity:0" />
+                    <stop offset="60%" style="stop-color:#081A2A;stop-opacity:0" />
+                    <stop offset="80%" style="stop-color:#081A2A;stop-opacity:0" />
+                    <stop offset="100%" style="stop-color:#081A2A;stop-opacity:0" />
                 </linearGradient>
             </defs>
 
@@ -142,6 +142,12 @@
 
    /* -------- HERO -------- */
 
+  :root{
+    --text-service : #2B1D64;
+    --text: #081A2A;
+    --bg-service:  linear-gradient(135deg, #636BC0 35%, #2481EF 100%);
+  }
+
   
 
 /* Animation d'apparition du texte (fade + slide up) */
@@ -156,6 +162,14 @@
   100% { opacity: 1; transform: translateY(0); }
 }
 
+.section-pill{
+  margin-top: 50px !important;
+}
+
+.img-fluid{
+  width: 100% !important;
+  object-fit: cover !important;
+}
 
 /* Section principale */
 .hero-section {
@@ -199,8 +213,10 @@
 .hero-section {
  
       margin-top: 80px !important;
+}
 
-
+.hero-section span{
+line-height: normal;
 }
 
 /* Glows */
@@ -250,6 +266,7 @@
   text-align: center;
 }
 .hero-content h3 {
+  color: #081A2A !important;
   text-wrap: nowrap;
   font-size: 20px;
   line-height: 1.8;
@@ -260,12 +277,15 @@
 /* Titres */
 .text-content, .text-content h1 {
   font-weight: bold;
-  line-height: 65px;
-  font-size: 45px;
+  line-height: 65px !important;
+  font-size: 55px !important;
   text-align: center;
   text-wrap: nowrap;
+  color: #081A2A !important; 
+
 }
-.text-content span { color: #081A2A !important; text-wrap: nowrap; }
+
+
 .text-content h1 {
   background: linear-gradient(90deg, var(--blue-bright, #0756C5) 20%, var(--pink-fuchsia, #F32A57) 80%);
   -webkit-background-clip: text;
@@ -276,8 +296,8 @@
 /* CTA */
 .btn-voir-services {
   background: #fff;
-  color: #2B1D64;
-  border: 1px solid #2B1D64;
+  color: var(--text-service) !important;
+  border: 1px solid var(--text-service) !important;
   padding: .6rem  2rem !important;
   border-radius: 8px;
   font-weight: 500;
@@ -286,9 +306,12 @@
 }
 .btn-voir-services:hover {
   transform: translateY(-2px);
-  border: 1px solid #2B1D64;
+  border: none !important;
+  background: var(--bg-service) !important;
+  color: #fff !important;
   box-shadow: 0 6px 20px rgba(0,0,0,.15);
 }
+
 
 
 /* Carte + bouton superposé */
@@ -311,7 +334,7 @@
 
 .line-path {
   fill: none;
-  stroke: #081A2A;
+  stroke: #081A2A !important;
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -345,7 +368,7 @@
             border-radius: 30px;
             width: 100%;
             padding: 30px;
-            top: -50px;
+            top: -10px;
 }
 
 .button-row {
@@ -364,9 +387,8 @@
 /* Animation des boutons à l'intérieur (apparition douce après la ligne) */
 .pill-button {
   --r: 0deg;
-  background: #fff;
-  border: 2px solid #333;
-  padding: .8rem 1.2rem;
+  background: transparent !important;
+  padding: .5rem 1rem;
   border-radius: 50px;
   font-size: 13px;
   font-weight: 500;
@@ -381,11 +403,7 @@
   animation-play-state: paused;
 }
 
-.pill-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0,0,0,.12);
-  border-color: #6366f1;
-}
+
 
 /* Keyframes */
 @keyframes fadeDownRow {
@@ -402,11 +420,6 @@
 .menu-section .button-row:nth-child(2) { animation-delay: 0.8s; }
 .menu-section .button-row:nth-child(1) { animation-delay: 0.2s }
 
-/* Effet d'activation visuelle */
-.pill-button.active {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99,102,241,.15);
-}
 
 /* Rotations utilitaires */
 .rot-15 { --r: 15deg; }
@@ -416,6 +429,46 @@
 .rot--15 { --r: -15deg; }
 .rot--25 { --r: -25deg; }
 .pr-10 { padding-right: 10px !important; }
+
+  .data h1{
+      font-size: 40 !important;
+      line-height: 48px !important;
+      font-weight: 600 !important; /* semi-bold */
+      color: var(--text);
+     }
+
+
+  .data h3{
+    font-size: 20px !important;
+    line-height: 28px !important;
+    font-weight: 500 !important; /* semi-bold */
+    color: var(--text);
+
+   }
+
+   @media (min-width: 1199.98px) {
+
+   .card{
+  width: 431px !important;
+  height: 345px !important;
+}
+
+.card-body h5{
+ font-size: 22px !important;
+ line-height: 30px !important;
+ font-weight: 600 !important;
+}
+
+.card-body ul li{
+ font-size: 17px !important;
+ line-height: 38px !important;
+ font-weight: 500 !important;
+}
+
+
+
+   }
+
 
 /* ------- Responsive ------- */
 @media (max-width: 1199.98px) {
@@ -472,6 +525,31 @@
 
 @media (max-width: 767.98px) {
 
+  .data h1{
+      font-size: 12px !important;
+      line-height: 20px !important;
+      font-weight: 600 !important; /* semi-bold */
+      color: var(--text);
+     }
+
+
+  .data h3{
+    font-size: 10px !important;
+    line-height: 18px !important;
+    font-weight: 500 !important; /* semi-bold */
+    color: var(--text);
+    border: 1px solid red;
+    width: 100% !important;
+    text-align: center;
+    padding: 0;
+
+   }
+
+   .data{
+    border: 1px solid blue;
+    padding: 0 !important;
+   }
+
   .hero-section{
     margin-top: 0px !important;
   }
@@ -489,7 +567,14 @@
    }
 
    .card #img2{
-    width: 48px !important;
+    width: 25px !important;
+    bottom: 65px !important; 
+
+   }
+
+   .card #img1{
+    width: 45px !important;
+    bottom: 20px !important;
 
    }
 
@@ -502,24 +587,6 @@
     width: 100% !important;
     padding: 0.7rem !important;
     margin-top: 100px !important;
-   }
-
-
-
-   
-
-
-
-     .data h1{
-      font-size: 0.8rem !important;
-      line-height: 20px !important;
-     }
-
-
-  .data h3{
-    font-size: 0.7rem !important;
-          line-height: 20px !important;
-
    }
 
   .menu-section {
@@ -544,8 +611,8 @@
   }
   
   .pill-button {
-    padding: 6px 12px;
-    font-size: 10px;
+    padding: 4px 10px;
+    font-size: 9px;
   }
   
   .wavy-lines {
@@ -604,18 +671,7 @@ section.active {
         // Valeur initiale (étiquette active au chargement) 
         const init = tags.find(t => t.classList.contains('active'));
         if (init && fill) fill.style.width = init.dataset.progress + '%';
-        tags.forEach(tag => {
-            tag.addEventListener('click', () => {
-                // active visuelle 
-                tags.forEach(t => t.classList.toggle('active', t === tag)); 
-                tags.forEach(t => t.classList.toggle('secondary', t !== tag));
-                // anime la largeur (bleu) jusqu'à la position cliquée 
-                const pct = Number(tag.dataset.progress || 0); 
-                // Clamp 0..100 pour éviter tout débordement 
-                const pctClamped = Math.max(0, Math.min(100, pct)); 
-                if (fill) fill.style.width = pctClamped + '%';
-            });
-        });
+       
     })();
 
 

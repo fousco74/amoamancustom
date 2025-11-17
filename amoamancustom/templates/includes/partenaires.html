@@ -1,31 +1,13 @@
-<section class="py-5" id="sourcing">
-    <div class="container step-content text-center">
-        <small class="text-muted">{{ _("Ils nous ont fait confiance.") }}</small>
-        <div class="logos-container px-2 px-md-4 mt-3">
-        <div class="logos-line">
-            {% for l in logos %}
-            <div class="logo-card m-1">
-            <img src="{{ l.src }}" alt="{{ l.alt }}" loading="lazy">
-            </div>
-            {% endfor %}
-            {# Clone une fois la ligne pour effet infini #}
-            {% for l in logos %}
-            <div class="logo-card m-1">
-            <img src="{{ l.src }}" alt="{{ l.alt }}" loading="lazy">
-            </div>
-            {% endfor %}
-        </div>
-        </div>
-
-
-
+<section class="pt-5 mb-5" id="sourcing">
+    <div class="container step-content">
         {# Étapes Sourcing #}
-        <div class="text-end mt-5">
-            <span class="pill">Sourcing</span>
-            <h2 class="fw-bold mt-2">{{ _("Sourcer juste, recruter mieux.") }}</h2>
-            <span class="lead text-end">{{ _("Une méthode rigoureuse, un vivier de talents ciblés, des outils <br/> adaptés : le
-                recrutement à haute valeur ajoutée, nous connectons <br/> votre entreprise aux compétences qui font la
-                différence.") }}</span>
+        <div class="text-end section-sourcing mt-5 mb-5">
+            <span class="section-capsule">Sourcing</span>
+            <h2 class="fw-bold title mt-2 section-title">{{ _("Sourcer juste, recruter mieux.") }}</h2>
+            <p class="lead subtitle text-end section-content">{{ _("Une méthode rigoureuse, un vivier de talents ciblés, des outils <br />
+                adaptés : le
+                recrutement à haute valeur ajoutée, nous connectons <br /> votre entreprise aux compétences qui font la
+                différence.") }}</p>
         </div>
 
         <div class="steps mt-3 mb-4">
@@ -39,7 +21,7 @@
             ] %}
             {% for s in steps %}
             <div class="step-card">
-                <div>
+                <div class="step-head-content">
                     <div class="step-head">{{ _("Étape") }} {{ s.n }}</div>
                     <div class="step-title">{{ s.title }}</div>
                 </div>
@@ -51,11 +33,7 @@
                 {% if not loop.last %}
                 <div class="step-arrow">
                     <div class="step-arrow-content">
-                        <!-- chevron -->
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <path d="M9 18l6-6-6-6" />
-                        </svg>
+                        <img src="assets/amoamancustom/images/solar_arrow-up-linear.svg" alt="solar_arrow">
                     </div>
                 </div>
                 {% endif %}
@@ -65,11 +43,32 @@
 
 
 
-        <div class="text-center">
+        <div class="text-center ">
             <div class="d-inline-flex gap-2 flex-wrap">
                 <a href="/contact" class="btn btn-contact px-5">{{ _("Contactez-nous") }}</a>
                 <a href="#" class="btn btn-outline-soft">{{ _("Rejoindre le vivier Amoaman") }}</a>
             </div>
         </div>
+
+
+         <div class="section-partner text-center">
+            <small class="text-muted">{{ _("Ils nous ont fait confiance.") }}</small>
+        <div class="logos-container px-2 px-md-4 mt-3">
+            <div class="logos-line">
+                {% for l in logos %}
+                <div class="logo-card m-1">
+                    <img src="{{ l.src }}" alt="{{ l.alt }}" loading="lazy">
+                </div>
+                {% endfor %}
+                {# Clone une fois la ligne pour effet infini #}
+                {% for l in logos %}
+                <div class="logo-card m-1">
+                    <img src="{{ l.src }}" alt="{{ l.alt }}" loading="lazy">
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+         </div>
+
     </div>
 </section>

@@ -14,6 +14,47 @@
   });
 })();
 
+
+(function () {
+    const fill = document.querySelector('[data-ticks-fill]');
+    const tags = Array.from(document.querySelectorAll('.time-tag'));
+    const timeline = document.querySelector('.timeline');
+
+    // Activer un tag et remplir la barre
+    function activateTag(tag) {
+        tags.forEach(t => t.classList.remove('active'));
+        tag.classList.add('active');
+        fill.style.width = '100%';
+    }
+
+    // Survol de la timeline entière
+    timeline.addEventListener('mouseenter', () => {
+        fill.style.width = '100%';
+        tags.forEach(t => t.classList.add('active'));
+    });
+
+    timeline.addEventListener('mouseleave', () => {
+        fill.style.width = '0%';
+        tags.forEach(t => t.classList.remove('active'));
+    });
+
+    // Survol des tags (optionnel, si tu veux un effet individuel)
+    tags.forEach(tag => {
+        tag.addEventListener('mouseenter', () => {
+            activateTag(tag);
+        });
+        tag.addEventListener('mouseleave', () => {
+            fill.style.width = '0%';
+            tag.classList.remove('active');
+        });
+    });
+})();
+
+
+
+
+
+
 // Smooth scroll pour les liens ancre du menu
 (function(){
   document.querySelectorAll('a[href^="#"]').forEach(function(a){

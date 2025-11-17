@@ -26,11 +26,13 @@
   ] %}
   {% include "templates/includes/services.html" %}
 
-  <div class="container space-x-0 my-5">
+  <div class="container position-relative d-flex justify-content-center align-items-center flex-column space-x-0 my-5">
   <div class="text-center my-8">
+        <span class="glow" style="--x:45%; --y:35%; --size:50vmin; --blur:200px;"></span>
+
     <span class="capsule text-xl">{{ _("Un écosystème interconnecté") }}</span>
-    <h4 class="fw-bold lead text-3xl mt-2 mb-2">{{ _("Modulables seuls, redoutables ensemble :") }}</h4>
-    <p class="lead mb-2  text-2xl">{{ _("nos services s'adaptent à vos enjeux et accélèrent votre évolution.") }}</p>
+    <h4 class="lead text-3xl mt-2 mb-2">{{ _("Modulables seuls, redoutables ensemble :") }}</h4>
+    <p class="lead mb-2  text-2xl">{{ _("nos services s'adaptent à vos enjeux </br> et accélèrent votre évolution.") }}</p>
   </div>
   <div class="kpi-band">
     <div class="row text-center g-2">
@@ -44,8 +46,8 @@
 
 
   {# ---------- ERP ---------- #}
-  {% set title_html = _("Gagnez <strong>en efficacité</strong>, un ERP pour<br> piloter l’ensemble de votre entreprise.") %}
-  {% set desc = _("Chez AMOAMAN & Associés, nous déployons ERPNext, une solution puissante, flexible, entièrement personnalisée à votre réalité métier. De l'analyse à la formation de vos équipes, nous vous accompagnons à chaque étape de votre transformation.") %}
+  {% set title_html = _("Gagnez <strong>en efficacité</strong>, un ERP pour <br> piloter l’ensemble de votre entreprise.") %}
+  {% set desc = _("Chez AMOAMAN & Associés, nous déployons <b>ERPNext</b>, une solution puissante, flexible, <b>entièrement personnalisée à votre réalité métier </b>. De l'analyse à la formation de vos équipes, nous vous accompagnons à chaque étape de votre transformation.") %}
   {% set image = "/assets/amoamancustom/images/erp-services.svg" %}
   {% set cta_label = _("Contactez-nous") %}
   {% set cta_href = "/contact" %}
@@ -53,7 +55,7 @@
 
   {# ---------- BIG DATA ---------- #}
   {% set title = _("Tirez le meilleur parti de vos données") %}
-  {% set paragraph = _("C’est l’analyse de grandes quantités de données (clients, ventes, opérations…) pour en tirer des informations utiles. Et oui vos données peuvent aider à prendre de meilleures décisions et faire croître votre activité.") %}
+  {% set paragraph = _("C’est l’analyse de grandes quantités de données (clients, </br> ventes, opérations…) pour en tirer des informations utiles. </br> Et oui vos données peuvent aider à prendre de meilleures </br> décisions et faire croître votre activité.") %}
   {% set left_img = "/assets/amoamancustom/images/kpi.webp" %}
   {% set right_img = "/assets/amoamancustom/images/analytics.webp" %}
   {% set cta_label = _("Contactez-nous") %}

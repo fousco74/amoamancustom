@@ -1,14 +1,92 @@
-<section class="container py-5" id="bigdata">
-<div class="text-center mb-4">
-<span class="capsule px-4">Big Data</span>
-<h3 class="fw-bold mt-3">{{ title }}</h3>
-</div>
-<div class="row g-4 align-items-center">
-<div class="col-12 col-md-4 text-center"><img src="{{ left_img }}" alt="kpi" class="img-fluid"></div>
-<div class="col-12 col-md-4 text-center">
-<p class="lead">{{ paragraph }}</p>
-<a href="{{ cta_href }}" class="btn btn-contact btn-lg">{{ cta_label }}</a>
-</div>
-<div class="col-12 col-md-4 text-center"><img src="{{ right_img }}" alt="analytics" class="img-fluid"></div>
-</div>
+<section class="container position-relative d-md-flex flex-row flex-md-column justify-content-between align-items-center py-5" id="bigdata">
+
+  <!-- 🌐 Grille décorative -->
+  <div class="grille-bg" aria-hidden="true">
+    {% for i in range(7) %}
+      <span></span>
+    {% endfor %}
+  </div>
+
+  <div class="text-center mb-4 position-relative">
+    <span class="section-capsule">Big Data</span>
+    <h3 class="section-title mt-3">{{ title }}</h3>
+  </div>
+
+  <div class="row g-4 section-big-data align-items-center position-relative">
+    <div class="col-12 col-md-3 text-center">
+      <img src="{{ left_img }}" alt="kpi" class="img-fluid">
+    </div>
+    <div class="col-12 col-md-6 text-center">
+      <p class="text-nowrap 
+        section-content ">{{ paragraph }}</p>
+      <a href="{{ cta_href }}" class="btn btn-contact btn-lg">{{ cta_label }}</a>
+    </div>
+    <div class="col-12 col-md-3 text-center">
+      <img src="{{ right_img }}" alt="analytics" class="img-fluid">
+    </div>
+  </div>
+
 </section>
+
+<style>
+/* 🌐 Grille décorative de fond */
+.grille-bg {
+  position: absolute;
+  top: 0;
+  left: 2%; /* petit espace à gauche */
+  width: 96%; /* laisse un espace à droite */
+  height: 100%;
+  z-index: 0;
+  pointer-events: none; /* ne bloque pas les clics */
+}
+
+/* Lignes horizontales en pointillés (haut et bas) */
+.grille-bg::before,
+.grille-bg::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  border-top: 2px dashed rgba(5, 83, 155, 0.2);
+}
+
+.grille-bg::before {
+  top: 0;
+}
+
+.grille-bg::after {
+  bottom: 0;
+}
+
+/* Lignes verticales */
+.grille-bg span {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: rgba(5, 83, 155, 0.15);
+}
+
+/* 7 lignes verticales réparties équitablement */
+.grille-bg span:nth-child(1) { left: 0%; }
+.grille-bg span:nth-child(2) { left: 16.6%; }
+.grille-bg span:nth-child(3) { left: 33.3%; }
+.grille-bg span:nth-child(4) { left: 50%; }
+.grille-bg span:nth-child(5) { left: 66.6%; }
+.grille-bg span:nth-child(6) { left: 82.3%; }
+.grille-bg span:nth-child(7) { left: 100%; }
+
+/* ✅ S’assure que le contenu reste visible au-dessus de la grille */
+#bigdata > *:not(.grille-bg) {
+  position: relative;
+  z-index: 1;
+}
+
+/* 💡 Version mobile : simplifie la grille */
+@media (max-width: 768px) {
+  .grille-bg span:nth-child(n+2):nth-child(-n+6) {
+    display: none; /* garde uniquement les lignes des bords */
+  }
+}
+</style>
