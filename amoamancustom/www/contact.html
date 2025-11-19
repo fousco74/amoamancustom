@@ -63,6 +63,16 @@ input[type="checkbox"]{ width:18px; height:18px; margin-top:2px; accent-color:#2
 .aside{
   display:flex; flex-direction:column; gap:18px; align-self:flex-end; margin-bottom: 50px; 
 }
+
+.aside a {
+  text-decoration: none !important;
+  color: inherit !important;
+}
+
+
+
+
+
 .info-card{
   background:#fff; border-radius:16px; padding:16px 18px;
   display:flex; align-items:center; gap:14px; min-height:84px;
@@ -200,54 +210,59 @@ input[type="checkbox"]{ width:18px; height:18px; margin-top:2px; accent-color:#2
       </form>
     </div>
 
-    
-    <!-- Cartes d’infos -->
-    <aside class="aside">
+   <!-- Cartes d’infos -->
+<aside class="aside">
 
-      <div class="info-card">
-                        <div class="hours-card-inner">
-
-        <div class="icon"><i class="bi bi-telephone-fill"></i></div>
-        <div>
-          <p class="title">{{ _("Appeller maintenant") }}</p>
-          <p class="desc">(+225) 27 24 31 15 61</p>
-        </div>
-        </div>
+  <!-- Téléphone -->
+  <a href="tel:+2252724311561" class="info-card">
+    <div class="hours-card-inner">
+      <div class="icon"><i class="bi bi-telephone-fill"></i></div>
+      <div>
+        <p class="title">{{ _("Appeler maintenant") }}</p>
+        <p class="desc">(+225) 27 24 31 15 61</p>
       </div>
+    </div>
+  </a>
 
-      <div class="info-card soft">
-                        <div class="hours-card-inner">
-
-        <div class="icon"><i class="bi bi-envelope-fill"></i></div>
-        <div>
-          <p class="title">{{ _("Envoyer un mail") }}</p>
-          <p class="desc">hello@amoaman.com</p>
-        </div>
-        </div>
+  <!-- Email -->
+  <a href="mailto:hello@amoaman.com" class="info-card soft">
+    <div class="hours-card-inner">
+      <div class="icon"><i class="bi bi-envelope-fill"></i></div>
+      <div>
+        <p class="title">{{ _("Envoyer un mail") }}</p>
+        <p class="desc">hello@amoaman.com</p>
       </div>
+    </div>
+  </a>
 
-      <div class="info-card">
-                <div class="hours-card-inner">
+  <!-- Adresse -->
+  <a href="https://www.google.com/maps/search/?api=1&query=925V%2BH82%2C+Abidjan"
 
-        <div class="icon"><i class="bi bi-geo-alt-fill"></i></div>
-        <div>
-          <p class="title">{{ _("Itinéraire") }}</p>
-          <p class="desc">{{ _("Cocody Riviera 3 Sideci – Villa 676") }}</p>
-        </div>
-        </div>
-
+     target="_blank"
+     rel="noopener noreferrer"
+     class="info-card">
+    <div class="hours-card-inner">
+      <div class="icon"><i class="bi bi-geo-alt-fill"></i></div>
+      <div>
+        <p class="title">{{ _("Itinéraire") }}</p>
+        <p class="desc">{{ _("Cocody Riviera 3 Sideci – Villa 676") }}</p>
       </div>
+    </div>
+  </a>
 
-      <div class="info-card hours-card">
-        <div class="hours-card-inner">
-          <div class="icon"><i class="bi bi-clock-history"></i></div>
-          <div>
-            <p class="title">{{ _("Horaires d'ouverture") }}</p>
-            <p class="desc">{{ _("Lundi au Vendredi 09H – 18H") }}</p>
-          </div>
-        </div>
+  <!-- Horaires (statique) -->
+  <div class="info-card hours-card">
+    <div class="hours-card-inner">
+      <div class="icon"><i class="bi bi-clock-history"></i></div>
+      <div>
+        <p class="title">{{ _("Horaires d'ouverture") }}</p>
+        <p class="desc">{{ _("Lundi au Vendredi 09H – 18H") }}</p>
       </div>
-    </aside>
+    </div>
+  </div>
+
+</aside>
+
 
   </div>
 </div>
