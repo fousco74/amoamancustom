@@ -1,3 +1,4 @@
+
 <nav class="navbar navbar-light fixed-top">
   <div class="navbar-fluid p-0 m-0">
 
@@ -30,8 +31,65 @@
       <a class="btn text-nowrap" href="/erp#agenda">Agenda</a>
       <a class="btn text-nowrap" href="/erp#apropos">A propos</a>
       <a class="btn text-nowrap" href="/erp#faq">FAQ</a>
-      <a href="/contact" class="btn text-nowrap btn-contact btn-lg">Contactez-nous</a>
+      <a href="/contact" class="btn text-nowrap btn-contact">Contactez-nous</a>
     </div>
 
   </div>
 </nav>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const sections = document.querySelectorAll("section[id]");
+  const navLinks = document.querySelectorAll(".navbar .btn[href^='/erp#']");
+  const navToggle = document.getElementById("nav-toggle");
+
+  function activateLink() {
+    let scrollPos = window.scrollY + 150;
+    let found = false;
+
+    sections.forEach((section) => {
+      const top = section.offsetTop;
+      const height = section.offsetHeight;
+      const id = section.getAttribute("id");
+
+      if (scrollPos >= top && scrollPos < top + height) {
+        found = true;
+        navLinks.forEach((link) => {
+          link.classList.remove("btn-active");
+          if (link.getAttribute("href") === `/erp#${id}`) {
+            link.classList.add("btn-active");
+          }
+        });
+      }
+    });
+
+    if (!found) {
+      navLinks.forEach((link) => link.classList.remove("btn-active"));
+      const firstLink = document.querySelector(".navbar .btn[href='/erp#services']");
+      if (firstLink) firstLink.classList.add("btn-active");
+    }
+  }
+
+  // Fermer menu mobile après clic
+  navLinks.forEach(link => {
+    link.addEventListener("click", () => {
+      if (navToggle.checked) navToggle.checked = false;
+    });
+  });
+
+  // Fermer menu si clic en dehors
+  document.addEventListener("click", (e) => {
+    if (navToggle.checked && 
+        !e.target.closest(".navbar") && 
+        !e.target.closest(".burger")) {
+      navToggle.checked = false;
+    }
+  });
+
+  window.addEventListener("scroll", activateLink);
+  activateLink();
+});
+
+
+</script>

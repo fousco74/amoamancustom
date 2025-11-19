@@ -1,7 +1,7 @@
 {%- from "templates/includes/ui/button.html" import ui_button -%}
-<section class="hero-section  has-glows" id="hero">
+<section class="hero-section has-glows" id="hero">
     <div class="text-content fade-in-up">
-        <h1 class="fw-bold" >{{ _(title) }}</h1>
+        <h1 class="fw-bold">{{ _(title) }}</h1>
         <span class="d-block">{{ _(subtitle) }}</span>
     </div>
 
@@ -21,9 +21,9 @@
 
     <div class="hero-content text-deep-midnight-blue">
         <h3 class="fs-5 fw-normal">
-            {{ _("Un accompagnement complet pour aligner vos outils, vos talents et vos données au service de votre
-            <br /> performance. Nous vous aidons à structurer, sécuriser et exploiter tout le potentiel de vos
-            données.") }}
+            {{ _("Un accompagnement complet pour aligner vos outils, vos talents et vos données au service de votre") }}
+            <br class="d-none d-md-block" />
+            {{ _("performance. Nous vous aidons à structurer, sécuriser et exploiter tout le potentiel de vos données.") }}
         </h3>
         {{ ui_button(_(cta_label), cta_href, variant='light') }}
     </div>
@@ -37,32 +37,31 @@
 
 <!-- SECTION DATA -->
 <section class="d-flex data flex-column justify-content-center p-4 align-items-center" id="data-intro">
-    <h1 class="fw-semibold" >
-        {{ _("Les données, ce sont toutes les informations que") }} <br> {{ _("votre entreprise génère ou reçoit chaque
-        jour.") }}
+    <h1 class="fw-semibold">
+        {{ _("Les données, ce sont toutes les informations que") }}
+        <br class="d-none d-md-block" />
+        {{ _("votre entreprise génère ou reçoit chaque jour.") }}
     </h1>
-    <h3 class="fw-medium p-2" >
-        {{ _("Vos données bien exploitées, ce sont : des décisions plus justes,") }} <br>{{ _("des processus plus
-        fluides et des performances qui s'envolent !") }}
+    <h3 class="fw-medium p-2">
+        {{ _("Vos données bien exploitées, ce sont : des décisions plus justes,") }}
+        <br class="d-none d-md-block" />
+        {{ _("des processus plus fluides et des performances qui s'envolent !") }}
     </h3>
 
     <div class="w-100 d-flex flex-column justify-content-center p-4 align-items-center m-4"
         style="position: relative !important; color: #081A2A !important;">
-        <div class="card" style="border-radius: 30px; transform: rotate(-10deg); position: relative !important;" >
-            <div class="card-body d-flex flex-column justify-content-center align-items-center"
-                style="text-align:start;">
+        <div class="card" style="border-radius: 30px; transform: rotate(-10deg); position: relative !important;">
+            <div class="card-body d-flex flex-column justify-content-center align-items-center" style="text-align:start;">
                 <h5 class="card-title fw-semibold">
-                    {{ _("Collectées, organisées et") }} <br> {{ _("protégées, elles vous aider à :") }}
+                    {{ _("Collectées, organisées et") }}
+                    <br class="d-none d-md-block" />
+                    {{ _("protégées, elles vous aider à :") }}
                 </h5>
                 <ul style="list-style:none; padding-left:0;">
-                    <li><img src="assets/amoamancustom/images/Mask-group.svg" alt="" style="width:15px;"> {{ _("Prendre
-                        des décisions éclairées") }}</li>
-                    <li><img src="assets/amoamancustom/images/Mask-group.svg" alt="" style="width:15px;"> {{
-                        _("Automatiser vos tâches") }}</li>
-                    <li><img src="assets/amoamancustom/images/Mask-group.svg" alt="" style="width:15px;"> {{
-                        _("Fluidifier vos process") }}</li>
-                    <li><img src="assets/amoamancustom/images/Mask-group.svg" alt="" style="width:15px;"> {{ _("Booster
-                        vos performances") }}</li>
+                    <li><img src="assets/amoamancustom/images/Mask-group.svg" alt="" style="width:15px;"> {{ _("Prendre des décisions éclairées") }}</li>
+                    <li><img src="assets/amoamancustom/images/Mask-group.svg" alt="" style="width:15px;"> {{ _("Automatiser vos tâches") }}</li>
+                    <li><img src="assets/amoamancustom/images/Mask-group.svg" alt="" style="width:15px;"> {{ _("Fluidifier vos process") }}</li>
+                    <li><img src="assets/amoamancustom/images/Mask-group.svg" alt="" style="width:15px;"> {{ _("Booster vos performances") }}</li>
                 </ul>
             </div>
             <img id="img2" src="assets/amoamancustom/images/solar_cup-star-outline.svg" alt="solar_cup-star-outline" style="position: absolute; bottom:130px; right: 5px; width: 60px; transform:rotate(45deg);">
@@ -76,80 +75,77 @@
     <div class="container section-pill position-relative mt-4" style="max-width: 1400px;">
         <div class="menu-section" role="group" aria-label="{{ _('Actions rapides') }}">
             <div class="button-row">
-                    <button class="pill-button">Commandes</button>
-                    <button class="pill-button rot-15" style="transform: rotate(15deg) !important;">Achats</button>
-                    <button class="pill-button " style="transform: rotate(-15deg) !important;">Stocks</button>
-                    <button class="pill-button">Adresse E-Mail</button>
-                    <button class="pill-button rot--25" style="transform: rotate(-25deg) !important;">Achats</button>
-                    <button class="pill-button rot-35 pr-10" style="transform: rotate(30deg) !important;">Commandes</button>
-                    <button class="pill-button rot--15" style="transform: rotate(-15deg) !important;">CV</button>
-                </div>
+                <button class="pill-button">Commandes</button>
+                <button class="pill-button rot-15" style="transform: rotate(15deg) !important;">Achats</button>
+                <button class="pill-button" style="transform: rotate(-15deg) !important;">Stocks</button>
+                <button class="pill-button">Adresse E-Mail</button>
+                <button class="pill-button rot--25" style="transform: rotate(-25deg) !important;">Achats</button>
+                <button class="pill-button rot-35 pr-10" style="transform: rotate(15deg) !important;">Commandes</button>
+                <button class="pill-button rot--15" style="transform: rotate(-15deg) !important;">CV</button>
+            </div>
 
-                <div class="button-row">
-                    <button class="pill-button">Annulations</button>
-                    <button class="pill-button">Nom</button>
-                    <button class="pill-button rot-25" style="transform: rotate(25deg) !important;">Factures</button>
-                    <button class="pill-button">Date</button>
-                    <button class="pill-button">Clients</button>
-                    <button class="pill-button">Ventes</button>
-                    <button class="pill-button rot--25" style="transform: rotate(-25deg) !important;">Interactions</button>
-                    <button class="pill-button">Chiffre</button>
-                    <button class="pill-button">Clic Siteweb</button>
-                </div>
+            <div class="button-row">
+                <button class="pill-button">Annulations</button>
+                <button class="pill-button">Nom</button>
+                <button class="pill-button rot-25" style="transform: rotate(25deg) !important;">Factures</button>
+                <button class="pill-button">Date</button>
+                <button class="pill-button">Clients</button>
+                <button class="pill-button">Ventes</button>
+                <button class="pill-button rot--25" style="transform: rotate(-25deg) !important;">Interactions</button>
+                <button class="pill-button">Chiffre</button>
+                <button class="pill-button">Clic Siteweb</button>
+            </div>
 
-                <div class="button-row">
-                    <button class="pill-button">Retours</button>
-                    <button class="pill-button" style="transform: rotate(-10deg) !important;">Achats</button>
-                    <button class="pill-button">Clic Siteweb</button>
-                    <button class="pill-button">Chiffre</button>
-                    <button class="pill-button">Outils</button>
-                    <button class="pill-button">Équipes</button>
-                    <button class="pill-button">Candidatures</button>
-                    <button class="pill-button">Outils</button>
-                    <button class="pill-button">Équipes</button>
-                </div>
+            <div class="button-row">
+                <button class="pill-button">Retours</button>
+                <button class="pill-button" style="transform: rotate(-10deg) !important;">Achats</button>
+                <button class="pill-button">Clic Siteweb</button>
+                <button class="pill-button">Chiffre</button>
+                <button class="pill-button">Outils</button>
+                <button class="pill-button">Équipes</button>
+                <button class="pill-button">Candidatures</button>
+                <button class="pill-button">Outils</button>
+                <button class="pill-button">Équipes</button>
+            </div>
         </div>
 
-        <!-- Lignes animées -->
-        <svg viewBox="0 0 1200 350" class="wavy-lines" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+        <svg viewBox="0 0 1200 350" class="wavy-lines" aria-hidden="true" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
             <defs>
                 <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" style="stop-color:#081A2A;stop-opacity:0" />
-                    <stop offset="20%" style="stop-color:#081A2A;stop-opacity:0" />
-                    <stop offset="40%" style="stop-color:#081A2A;stop-opacity:0" />
-                    <stop offset="60%" style="stop-color:#081A2A;stop-opacity:0" />
-                    <stop offset="80%" style="stop-color:#081A2A;stop-opacity:0" />
-                    <stop offset="100%" style="stop-color:#081A2A;stop-opacity:0" />
+                    <stop offset="1%" stop-color="#058FFF" stop-opacity="0" />
+                    <stop offset="60%" stop-color="#0756C5" stop-opacity="1" />
+                    <stop offset="60%" stop-color="#058FFF" stop-opacity="0" />
                 </linearGradient>
             </defs>
 
-            <!-- Ligne gauche (très espacée) -->
-            <path class="line-path" d="M 150 30 L 150 80 Q 150 120 200 120 L 500 120 Q 600 120 600 170 L 600 350" />
-            <!-- Ligne droite (très espacée) -->
-            <path class="line-path" d="M 1050 30 L 1050 80 Q 1050 120 1000 120 L 700 120 Q 600 120 600 170 L 600 350" />
+            <!-- Ligne gauche (tracée en fond) -->
+            <path class="line-path" d="M 150 30 L 150 80 Q 150 120 200 120 
+                                        L 500 120 Q 600 120 600 170 L 600 350" />
+
+            <!-- Ligne droite (tracée en fond) -->
+            <path class="line-path" d="M 1050 30 L 1050 80 Q 1050 120 1000 120 
+                                        L 700 120 Q 600 120 600 170 L 600 350" />
 
             <!-- Lignes animées -->
             <path class="animated-line" pathLength="1000"
-                d="M 150 30 L 150 80 Q 150 120 200 120 L 500 120 Q 600 120 600 170 L 600 350" />
+                  d="M 150 30 L 150 80 Q 150 120 200 120 
+                     L 500 120 Q 600 120 600 170 L 600 350" />
+
             <path class="animated-line anim-delay-02" pathLength="1000"
-                d="M 1050 30 L 1050 80 Q 1050 120 1000 120 L 700 120 Q 600 120 600 170 L 600 350" />
+                  d="M 1050 30 L 1050 80 Q 1050 120 1000 120 
+                     L 700 120 Q 600 120 600 170 L 600 350" />
         </svg>
     </div>
 </section>
 
-
-
 <script>
-
     (function () {
         const fill = document.getElementById('ticksFill'); 
         const tags = Array.from(document.querySelectorAll('.time-tag'));
         // Valeur initiale (étiquette active au chargement) 
         const init = tags.find(t => t.classList.contains('active'));
         if (init && fill) fill.style.width = init.dataset.progress + '%';
-       
     })();
-
 
     document.addEventListener("DOMContentLoaded", () => {
         const rows = document.querySelectorAll('.menu-section .button-row');
@@ -165,14 +161,13 @@
         const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                   [...rows].reverse().forEach((row, i) => {
+                    [...rows].reverse().forEach((row, i) => {
                         setTimeout(() => {
                             row.style.animationPlayState = 'running';
                             const innerBtns = row.querySelectorAll('.pill-button');
                             innerBtns.forEach(btn => btn.style.animationPlayState = 'running');
                         }, i * 600);
                     });
-
                     observer.disconnect();
                 }
             });
