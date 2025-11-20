@@ -7,7 +7,6 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
   <link href="/assets/amoamancustom/css/style.css" rel="stylesheet">
 <style>
-
   /* Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
 
@@ -241,15 +240,18 @@ main.container {
   width: 100%;
   padding: var(--navbar-padding);
   position: relative;
+  gap: clamp(0.5rem, 2vw, 2rem);
 }
 
 .navbar-brand {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  position: relative;
   z-index: 2;
   color: var(--blue-night) !important;
   font-size: var(--font-size-brand);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
 }
 
 .navbar-brand img {
@@ -262,7 +264,7 @@ main.container {
   display: flex;
   align-items: center;
   gap: var(--btn-gap);
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   z-index: 1;
 }
 
@@ -301,22 +303,22 @@ main.container {
   box-shadow: 0 4px 15px rgba(38, 107, 204, 0.2);
 }
 
-.btn-contact {
-  background: var(--brand-grad);
+.btn-contact, .btn-primary {
+  background: var(--brand-grad) !important;
   color: #fff !important;
-  border: none;
+  border: none !important;
   padding: .6rem 2rem !important;
-  border-radius: 8px;
-  font-weight: 500;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, .1);
-  transition: all 0.3s;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, .1) !important;
+  transition: all 0.3s !important;
 }
 
-.btn-contact:hover {
-  background: var(--bg-contact);
+.btn-contact:hover, .btn-primary:hover {
+  background: var(--bg-contact) !important;
   color: var(--text) !important;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(38, 107, 204, 0.3);
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(38, 107, 204, 0.3) !important;
 }
 
 /* Burger menu */
@@ -340,6 +342,34 @@ main.container {
 
 .nav-toggle {
   display: none;
+}
+
+/* Layout navbar desktop */
+@media (min-width: 992px) {
+  .navbar-fluid {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(0.5rem, 2vw, 2rem);
+  }
+
+  .left-nav,
+  .right-nav {
+    flex: 1 1 0;
+    flex-wrap: nowrap;
+  }
+
+  .left-nav {
+    justify-content: flex-start;
+  }
+
+  .right-nav {
+    justify-content: flex-end;
+  }
+
+  .navbar-brand {
+    margin-inline: clamp(0.75rem, 1.5vw, 2rem);
+  }
 }
 
 /* ============================
@@ -549,6 +579,7 @@ main.container {
 .section-partner {
   margin-top: 130px !important;
 }
+
 .kpi-band {
   background: var(--bg-kpi);
   border-radius: 14px;
@@ -575,7 +606,9 @@ main.container {
 .erp {
   display: flex;
   align-items: center;
-  width: 95%;
+  justify-content: space-between;
+  width: 100%;
+  gap: clamp(2rem, 4vw, 3rem);
 }
 
 .erp-section {
@@ -583,16 +616,15 @@ main.container {
   background: var(--grad);
   border-radius: 18px;
   position: relative;
-  padding: 70px;
+  padding: clamp(2.5rem, 4vw, 4.5rem);
   border: 1px solid #fff !important;
-  display: flex;
-  justify-content: space-between !important;
   overflow: hidden;
 }
 
 .img-content-erp {
-  align-self: flex-end !important;
-  width: 30%;
+  align-self: center !important;
+  width: 40%;
+  max-width: 420px;
 }
 
 .icon-setting1 {
@@ -648,7 +680,8 @@ main.container {
   font-size: clamp(1.75rem, 4vw, 2.5rem);
   line-height: clamp(2.125rem, 5vw, 3rem);
   font-weight: 600;
-  text-wrap: nowrap;
+  text-wrap: balance;
+  white-space: normal;
 }
 
 .erp-content p {
@@ -898,7 +931,6 @@ main.container {
   width: 18px;
   height: 18px;
 }
-
 
 /* ============================
    A PROPOS / PARTENAIRES
@@ -1480,7 +1512,7 @@ main.container {
 .card-soft h5 { font-weight: 800; }
 
 .btn-soft {
- background: #fff;
+  background: #fff;
   color: var(--text-service) !important;
   border: 1px solid var(--text-service) !important;
   padding: .6rem 2rem !important;
@@ -1648,20 +1680,23 @@ main.container {
   font-size: clamp(0.75rem, 4vw, 2.5rem) !important;
   line-height: clamp(1.25rem, 5vw, 3rem) !important;
   font-weight: 600 !important;
-  text-wrap: nowrap !important;
+  text-wrap: balance;
+  white-space: normal;
 }
 
 .section-subtitle {
   font-size: clamp(0.625rem, 4vw, 1.375rem) !important;
   line-height: clamp(1rem, 4.2vw, 2rem) !important;
   font-weight: 500 !important;
-  text-wrap: nowrap !important;
+  text-wrap: balance;
+  white-space: normal;
 }
 
 .section-content {
   font-size: clamp(0.625rem, 3vw, 1.25rem) !important;
   line-height: clamp(0.875rem, 4vw, 1.75rem) !important;
-  text-wrap: nowrap;
+  text-wrap: balance;
+  white-space: normal;
   font-weight: 450 !important;
 }
 
@@ -1755,7 +1790,8 @@ main.container {
 
 .hero-content h3 {
   color: #081A2A !important;
-  text-wrap: nowrap;
+  text-wrap: balance;
+  white-space: normal;
   font-size: 1.25rem;
   line-height: 1.8;
   margin-bottom: 2rem;
@@ -1769,7 +1805,8 @@ main.container {
   line-height: 65px !important;
   font-size: 55px !important;
   text-align: center;
-  text-wrap: nowrap;
+  text-wrap: balance;
+  white-space: normal;
   color: #081A2A !important;
 }
 
@@ -3063,15 +3100,82 @@ section.active {
     font-size: clamp(1.85rem, 2.3vw + 0.45rem, 2.4rem);
   }
 
-  .about-card-content .card-soft {
-    width: clamp(24rem, 38vw, 28rem) !important;
-  }
 
   .erp-section {
     padding: clamp(3rem, 3.8vw, 4rem);
   }
 }
 
+/* =========================================
+   ADAPTATION 1080px – 1800px
+   (navbar + tailles textes réduites)
+   ========================================= */
+@media (min-width: 1080px) and (max-width: 1800px) {
+  :root {
+    --navbar-padding: 0.5rem;
+    --btn-padding-x: 0.7rem;
+    --btn-padding-y: 0.4rem;
+    --btn-gap: 0.35rem;
+    --logo-height: 32px;
+    --font-size-btn: 0.8rem;
+    --font-size-brand: 0.8rem;
+  }
+
+ 
+
+  .navbar .btn {
+    font-size: var(--font-size-btn);
+  }
+
+  .navbar-brand {
+    font-size: var(--font-size-brand);
+  }
+
+  .section-big-title {
+    font-size: clamp(1.75rem, 2.1vw, 2.3rem) !important;
+  }
+
+  .section-title {
+    font-size: clamp(1.2rem, 1.7vw, 1.8rem) !important;
+    line-height: 1.35 !important;
+  }
+
+  .section-subtitle {
+    font-size: clamp(1rem, 1.3vw, 1.25rem) !important;
+    line-height: 1.5 !important;
+  }
+
+  .section-content {
+    font-size: clamp(0.9rem, 1.1vw, 1.05rem) !important;
+    line-height: 1.6 !important;
+  }
+
+  .hero-content h3 {
+    font-size: clamp(1rem, 1.15vw, 1.2rem) !important;
+    line-height: 1.6 !important;
+  }
+
+  .text-content,
+  .text-content h1 {
+    font-size: clamp(2.1rem, 2.4vw, 2.7rem) !important;
+    line-height: 1.25 !important;
+  }
+
+  .about-section .subtitle {
+    font-size: clamp(2rem, 2.2vw, 2.5rem);
+    line-height: 1.3;
+  }
+
+  .about-section .text {
+    font-size: clamp(1.3rem, 1.7vw, 1.9rem);
+    line-height: 1.35;
+  }
+
+  .lead-strong {
+    font-size: clamp(1.05rem, 1.2vw, 1.25rem);
+    line-height: 1.5;
+  }
+}
 
 </style>
 {% endblock %}
@@ -3096,17 +3200,22 @@ section.active {
 <script>
 /**
  * Stockage & API globale – window.CookieConsent
- * Persiste dans localStorage (fallback cookie)
- * Déclenche l’événement 'consent:applied' après toute mise à jour
  */
 (function () {
+  'use strict';
   const KEY = 'cookie_prefs_v1';
 
   function _supportsLS() {
-    try { localStorage.setItem('__t','1'); localStorage.removeItem('__t'); return true; } catch(e){ return false; }
+    try {
+      if (typeof localStorage === 'undefined') return false;
+      localStorage.setItem('__t', '1');
+      localStorage.removeItem('__t');
+      return true;
+    } catch (e) { return false; }
   }
 
   function _read() {
+    if (typeof document === 'undefined') return null;
     if (_supportsLS()) {
       const raw = localStorage.getItem(KEY);
       if (!raw) return null;
@@ -3122,10 +3231,13 @@ section.active {
     if (_supportsLS()) {
       localStorage.setItem(KEY, payload);
     } else {
-      const exp = new Date(); exp.setFullYear(exp.getFullYear() + 1);
+      const exp = new Date();
+      exp.setFullYear(exp.getFullYear() + 1);
       document.cookie = KEY + '=' + encodeURIComponent(payload) + ';expires=' + exp.toUTCString() + ';path=/';
     }
-    document.dispatchEvent(new CustomEvent('consent:applied', { detail: prefs }));
+    if (typeof document !== 'undefined' && typeof CustomEvent !== 'undefined') {
+      document.dispatchEvent(new CustomEvent('consent:applied', { detail: prefs }));
+    }
   }
 
   window.CookieConsent = {
@@ -3145,159 +3257,329 @@ section.active {
 })();
 
 /**
- * Bannière + Dialog Personnaliser
+ * Bannière + Dialog Personnaliser - VERSION SIMPLIFIÉE + STYLES btn-contact / btn-soft
  */
 frappe.ready(function () {
+  if (typeof window === 'undefined' || typeof document === 'undefined') return;
   if (window.location.pathname === '/cookies') return;
 
   const prefs = window.CookieConsent.get();
-  if (prefs) return; // déjà choisi
+  if (prefs) return;
 
-  // --- style forcé pour le dialog (fond blanc) ---
-  (function injectCookieDialogStyle() {
-    if (document.getElementById('cookie-pref-dialog-style')) return;
+  // --- Styles simples, responsive + height: fit-content ---
+  if (!document.getElementById('cookie-consent-style')) {
     const style = document.createElement('style');
-    style.id = 'cookie-pref-dialog-style';
+    style.id = 'cookie-consent-style';
     style.textContent = `
-      .cookie-pref-dialog .modal-content,
+      /* Bannière (msgprint) */
+      .cc-compact .modal-dialog {
+        max-width: 600px;
+        width: 90%;
+        margin: 20px auto;
+      }
+
+      .cc-compact .modal-content {
+        border-radius: 12px;
+        height: auto;
+        height: fit-content;
+      }
+
+      .cc-compact .modal-body {
+        padding: 20px;
+      }
+
+      .cc-compact .modal-footer {
+        display: none;
+      }
+
+      .cc-banner {
+        color: var(--text-color, #333);
+      }
+
+      .cc-banner p {
+        margin-bottom: 1rem;
+        line-height: 1.5;
+      }
+
+      .cc-actions {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 1rem;
+      }
+
+      /* On garde un style de base léger, les classes btn-contact / btn-soft font le reste */
+      .cc-actions button {
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .cc-actions button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      }
+
+      /* Dialog personnaliser */
+      .cookie-pref-dialog .modal-dialog {
+        max-width: 550px;
+        width: 90%;
+        margin: 20px auto;
+      }
+
+      .btn-primary{
+      }
+
+      .cookie-pref-dialog .modal-content {
+        border-radius: 12px;
+        background: white;
+        height: auto;
+        height: fit-content;
+      }
+
       .cookie-pref-dialog .modal-header,
       .cookie-pref-dialog .modal-body,
       .cookie-pref-dialog .modal-footer {
-        background-color: #ffffff !important;
-        color: var(--text) !important;
+        background: white;
+        color: #333;
+      }
+
+      .cookie-pref-dialog .modal-body {
+        padding: 20px;
+      }
+
+      .cc-custom-dialog .form-check {
+        margin-bottom: 1rem;
+        padding: 10px;
+        border-radius: 8px;
+        transition: background 0.2s;
+      }
+
+      .cc-custom-dialog .form-check:hover {
+        background: #f8f9fa;
+      }
+
+      .cc-custom-dialog .form-check-input {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+      }
+
+      .cc-custom-dialog label {
+        cursor: pointer;
+        margin-left: 10px;
+      }
+
+      .cc-custom-dialog .cc-btns {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #eee;
+      }
+
+      .cc-custom-dialog .cc-btns button {
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .cc-compact .modal-dialog,
+        .cookie-pref-dialog .modal-dialog {
+          width: 95%;
+        }
+
+        .cc-actions {
+          grid-template-columns: 1fr;
+        }
+
+        .cc-custom-dialog .cc-btns {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .cc-compact .modal-dialog,
+        .cookie-pref-dialog .modal-dialog {
+          width: 98%;
+        }
+
+        .cc-banner p {
+          font-size: 13px;
+        }
+
+        .cc-actions button {
+          font-size: 13px;
+        }
       }
     `;
     document.head.appendChild(style);
-  })();
+  }
 
-  const title = __('🍪 Cookies & confidentialité');
-  const desc  = __('Nous utilisons des cookies pour améliorer votre expérience, mesurer l’audience et proposer des contenus pertinents. Vous pouvez modifier vos choix à tout moment dans {0}.', [
-    '<a href="/gestion-des-cookies" class="underline">' + __('Gestion des cookies') + '</a>'
-  ]);
+  // Texte
+  const title = '🍪 Cookies & confidentialité';
+  const desc = `Nous utilisons des cookies pour améliorer votre expérience, mesurer l'audience et proposer des contenus pertinents.
+    <a href="/gestion-des-cookies" style="text-decoration: underline;">En savoir plus</a>`;
 
+  // Bannière HTML avec btn-contact / btn-soft
   const msgHTML = `
-    <div style="text-align:left;">
-      <p style="margin-bottom:10px; color: var(--text);">${desc}</p>
-      <div class="d-flex gap-2">
-        <button id="cc-btn-reject" class="btn btn-outline-soft btn-sm">${__('Tout refuser')}</button>
-        <button id="cc-btn-customize" class="btn btn-contact btn-sm">${__('Personnaliser')}</button>
+    <div class="cc-banner">
+      <p>${desc}</p>
+      <div class="cc-actions">
+        <button id="cc-btn-reject" type="button" class="btn btn-soft btn-sm">
+          Tout refuser
+        </button>
+        <button id="cc-btn-customize" type="button" class="btn btn-contact btn-sm" style="display: block !important;">
+          Personnaliser
+        </button>
+        <button id="cc-btn-accept" type="button" class="btn btn-contact btn-sm" style="display: block !important;">
+          Tout accepter
+        </button>
       </div>
     </div>
   `;
 
-  // Bannière principale
+  // Création bannière
   const banner = frappe.msgprint({
     title: title,
     message: msgHTML,
-    indicator: 'blue',
-    primary_action: {
-      label: __('Tout accepter'),
-      action() {
-        window.CookieConsent.acceptAll();
-        frappe.show_alert({ message: __('Préférences enregistrées.'), indicator: 'green' });
-        banner.hide();
-      }
-    }
+    indicator: 'blue'
   });
 
-  // Uniformiser le bouton primaire de la bannière
-  banner.$wrapper.find('.modal-footer .btn-primary')
-    .removeClass('btn-primary')
-    .addClass('btn-contact');
 
-  // Boutons secondaires bannière
-  banner.$wrapper.on('click', '#cc-btn-reject', function(){
-    window.CookieConsent.rejectAll();
-    frappe.show_alert({ message: __('Préférences enregistrées (cookies nécessaires uniquement).'), indicator: 'green' });
+  banner.$wrapper.find('.modal-header .close').on('click', function () {
+  banner.hide();
+});
+
+
+  banner.$wrapper.addClass('cc-compact');
+
+  // Actions
+  banner.$wrapper.find('#cc-btn-accept').on('click', function () {
+    window.CookieConsent.acceptAll();
+    frappe.show_alert({ message: 'Préférences enregistrées.', indicator: 'green' });
     banner.hide();
   });
 
-  banner.$wrapper.on('click', '#cc-btn-customize', function(){
+  banner.$wrapper.find('#cc-btn-reject').on('click', function () {
+    window.CookieConsent.rejectAll();
+    frappe.show_alert({ message: 'Préférences enregistrées (cookies nécessaires uniquement).', indicator: 'green' });
+    banner.hide();
+  });
+
+  banner.$wrapper.find('#cc-btn-customize').on('click', function () {
     banner.hide();
     openCustomizeDialog();
   });
 
-  // --- Dialog "Personnaliser" via frappe.ui.Dialog ---
+  // Dialog personnaliser
   function openCustomizeDialog() {
-    const current = window.CookieConsent.get() || { analytics:false, functional:false, marketing:false };
+    const current = window.CookieConsent.get() || { analytics: false, functional: false, marketing: false };
 
     const html = `
-      <div class="cc-custom-dialog" style="text-align:left; color: var(--text);">
-        <div class="form-check mb-2">
+      <div class="cc-custom-dialog">
+        <div class="form-check">
           <input class="form-check-input" type="checkbox" id="cc-necessary" checked disabled>
-          <label class="form-check-label" for="cc-necessary"><strong>${__('Nécessaires')}</strong> — ${__('toujours actifs')}</label>
+          <label class="form-check-label" for="cc-necessary">
+            <strong>Nécessaires</strong><br>
+            <small style="color: #666;">Cookies essentiels au fonctionnement du site (toujours actifs)</small>
+          </label>
         </div>
-        <div class="form-check mb-2">
+
+        <div class="form-check">
           <input class="form-check-input" type="checkbox" id="cc-analytics" ${current.analytics ? 'checked' : ''}>
-          <label class="form-check-label" for="cc-analytics">${__('Mesure d’audience')}</label>
+          <label class="form-check-label" for="cc-analytics">
+            <strong>Mesure d'audience</strong><br>
+            <small style="color: #666;">Nous aident à comprendre comment vous utilisez notre site</small>
+          </label>
         </div>
-        <div class="form-check mb-2">
+
+        <div class="form-check">
           <input class="form-check-input" type="checkbox" id="cc-functional" ${current.functional ? 'checked' : ''}>
-          <label class="form-check-label" for="cc-functional">${__('Fonctionnels')}</label>
+          <label class="form-check-label" for="cc-functional">
+            <strong>Fonctionnels</strong><br>
+            <small style="color: #666;">Améliorent votre expérience avec des fonctionnalités personnalisées</small>
+          </label>
         </div>
-        <div class="form-check mb-3">
+
+        <div class="form-check">
           <input class="form-check-input" type="checkbox" id="cc-marketing" ${current.marketing ? 'checked' : ''}>
-          <label class="form-check-label" for="cc-marketing">${__('Marketing')}</label>
+          <label class="form-check-label" for="cc-marketing">
+            <strong>Marketing</strong><br>
+            <small style="color: #666;">Permettent d'afficher des publicités pertinentes</small>
+          </label>
         </div>
-        <div class="d-flex gap-2 justify-content-end">
-          <button id="cc-all-accept" class="btn btn-contact btn-sm">${__('Tout accepter')}</button>
-          <button id="cc-all-reject" class="btn btn-outline-soft btn-sm">${__('Tout refuser')}</button>
+
+        <div class="cc-btns">
+          <button id="cc-all-accept" class="btn btn-contact btn-sm" style="display: block !important;" type="button">
+            Tout accepter
+          </button>
+          <button id="cc-all-reject" class="btn btn-soft btn-sm" style="display: block !important;" type="button">
+            Tout refuser
+          </button>
         </div>
       </div>
     `;
 
     const dlg = new frappe.ui.Dialog({
-      title: __('Préférences cookies'),
-      width: 520,
-      primary_action_label: __('Enregistrer mes choix'),
+      title: 'Préférences cookies',
+      primary_action_label: 'Enregistrer mes choix',
       primary_action() {
         const prefs = {
           necessary: true,
-          analytics: !!$(dlg.body).find('#cc-analytics').prop('checked'),
-          functional: !!$(dlg.body).find('#cc-functional').prop('checked'),
-          marketing:  !!$(dlg.body).find('#cc-marketing').prop('checked')
+          analytics: $('#cc-analytics').prop('checked'),
+          functional: $('#cc-functional').prop('checked'),
+          marketing: $('#cc-marketing').prop('checked')
         };
         window.CookieConsent.set(prefs);
-        frappe.show_alert({ message: __('Préférences enregistrées.'), indicator: 'green' });
+        frappe.show_alert({ message: 'Préférences enregistrées.', indicator: 'green' });
         dlg.hide();
       }
     });
 
-    // Afficher le dialog
     dlg.show();
     dlg.$wrapper.addClass('cookie-pref-dialog');
+    $(dlg.body).html(html);
 
-    // Injection robuste du contenu dans le body (toutes versions de Frappe)
-    const $body = dlg.$wrapper.find('.modal-body').length
-      ? dlg.$wrapper.find('.modal-body')
-      : $(dlg.body);
-    $body.empty().append(html);
-
-    // S'assure que le fond est bien blanc même si le thème surcharge
-    // (le style global avec !important est déjà injecté; ceci aide en inline)
-    dlg.$wrapper.find('.modal-content, .modal-header, .modal-body, .modal-footer').each(function(){
-      this.style.setProperty('background-color', '#ffffff', 'important');
-      this.style.setProperty('color', 'var(--text)', 'important');
+    // Forcer fond blanc
+    dlg.$wrapper.find('.modal-content, .modal-header, .modal-body, .modal-footer').css({
+      'background-color': '#ffffff',
+      'color': '#333333'
     });
 
-    // Remplacer le bouton primaire du footer par btn-contact
-    dlg.$wrapper.find('.modal-footer .btn-primary')
-      .removeClass('btn-primary')
-      .addClass('btn-contact');
+    dlg.$wrapper.find('.modal-header .close').on('click', function () {
+    dlg.hide();
+    if (typeof banner !== 'undefined' && banner && banner.hide) {
+      banner.hide(); // au cas où la bannière serait encore là
+    }
+  });
+
 
     // Boutons internes
-    dlg.$wrapper.on('click', '#cc-all-accept', function(){
-      $body.find('#cc-analytics,#cc-functional,#cc-marketing').prop('checked', true);
+     dlg.$wrapper.find('#cc-all-accept').on('click', function () {
+      $('#cc-analytics, #cc-functional, #cc-marketing').prop('checked', true);
     });
-    dlg.$wrapper.on('click', '#cc-all-reject', function(){
-      $body.find('#cc-analytics,#cc-functional,#cc-marketing').prop('checked', false);
+
+     dlg.$wrapper.find('#cc-all-reject').on('click', function () {
+      $('#cc-analytics, #cc-functional, #cc-marketing').prop('checked', false);
     });
+
+    
   }
-
 });
-
-
 </script>
+
+
+
+
+
+
 
 {% endblock %}
 
