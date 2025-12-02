@@ -12,25 +12,25 @@
 
     <!-- Bloc gauche -->
     <div class="left-nav d-flex align-items-center flex-wrap ">
-      <a class="btn text-nowrap" href="/erp#services">Services</a>
-      <a class="btn btn-active text-nowrap" href="/erp#erp">ERP</a>
-      <a class="btn text-nowrap" href="/erp#bigdata">Big Data</a>
-      <a class="btn text-nowrap" href="/erp#sourcing">Sourcing</a>
-      <a class="btn text-nowrap" href="/erp#formation">Formation</a>
-      <a class="btn text-nowrap" href="/erp#conformite">Mise en Conformité</a>
+      <a class="btn text-nowrap" href="/#services">Services</a>
+      <a class="btn btn-active text-nowrap" href="/#erp">ERP</a>
+      <a class="btn text-nowrap" href="/#bigdata">Big Data</a>
+      <a class="btn text-nowrap" href="/#sourcing">Sourcing</a>
+      <a class="btn text-nowrap" href="/#formation">Formation</a>
+      <a class="btn text-nowrap" href="/#conformite">Mise en Conformité</a>
     </div>
 
     <!-- Logo centré -->
-    <a class="navbar-brand mx-auto d-flex align-items-center gap-1 " href="/erp#">
+    <a class="navbar-brand mx-auto d-flex align-items-center gap-1 " href="/">
       <img src="assets/amoamancustom/images/logo.webp" alt="Logo" />
       <span>AMOAMAN & ASSOCIES</span>
     </a>
 
     <!-- Bloc droit -->
     <div class="right-nav d-flex align-items-center flex-wrap justify-content-end ">
-      <a class="btn text-nowrap" href="/erp#agenda">Agenda</a>
-      <a class="btn text-nowrap" href="/erp#apropos">A propos</a>
-      <a class="btn text-nowrap" href="/erp#faq">FAQ</a>
+      <a class="btn text-nowrap" href="/#agenda">Agenda</a>
+      <a class="btn text-nowrap" href="/#apropos">A propos</a>
+      <a class="btn text-nowrap" href="/#faq">FAQ</a>
       <a href="/contact" class="btn text-nowrap btn-contact">Contactez-nous</a>
     </div>
 
@@ -41,7 +41,7 @@
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   const sections = document.querySelectorAll("section[id]");
-  const navLinks = document.querySelectorAll(".navbar .btn[href^='/erp#']");
+  const navLinks = document.querySelectorAll(".navbar .btn[href^='/#']");
   const navToggle = document.getElementById("nav-toggle");
 
   function activateLink() {
@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
         found = true;
         navLinks.forEach((link) => {
           link.classList.remove("btn-active");
-          if (link.getAttribute("href") === `/erp#${id}`) {
+          if (link.getAttribute("href") === `/#${id}`) {
             link.classList.add("btn-active");
           }
         });
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (!found) {
       navLinks.forEach((link) => link.classList.remove("btn-active"));
-      const firstLink = document.querySelector(".navbar .btn[href='/erp#services']");
+      const firstLink = document.querySelector(".navbar .btn[href='/#services']");
       if (firstLink) firstLink.classList.add("btn-active");
     }
   }
