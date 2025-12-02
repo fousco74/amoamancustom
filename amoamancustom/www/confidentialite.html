@@ -3,148 +3,704 @@
 
 {% block page_content %}
 <style>
-:root{
-  --brand-grad: linear-gradient(135deg,#266BCC 0%,#F32A57 100%);
-  --text:#081A2A; --muted:#6b7280;
-  --card: #fff; --bd:#e5e7eb;
-  --shadow: 0 10px 32px rgba(2,6,23,.06);
-}
+  :root {
+    --brand: #266BCC;
+    --brand-2: #F32A57;
+    --ink: #0F172A;
+    --muted: #64748B;
+    --bd: #E2E8F0;
+    --card: #FFFFFF;
+    --bg-page: #F8FAFC;
+    --ring: rgba(38, 107, 204, 0.2);
+    --grad: linear-gradient(135deg, #266BCC 0%, #F32A57 100%);
+    --bg-soft: linear-gradient(135deg, #EEF2FF 0%, #FEF1F3 100%);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.08);
+    --radius: 16px;
+    --radius-sm: 12px;
+    
+    /* Navigation et safe areas */
+    --nav-height: 60px;
+    --footer-height: 200px;
+    --safe-top: max(var(--nav-height), env(safe-area-inset-top, 60px));
+    --safe-bottom: max(32px, env(safe-area-inset-bottom, 32px));
+  }
 
-/* Héro */
-.priv-hero{
-  background: linear-gradient(135deg,#E8EEFF 0%,#FFE8F0 100%);
-  min-height: 200px; display:flex; align-items:center; justify-content:center;
-  text-align:center; padding: 42px 16px;
-}
-.priv-hero h1{ margin:0; font-weight:800; color:var(--text); }
-.priv-hero .link-hint{ margin-top:8px; color:#475569; }
+  /* Reset et base */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-/* Grille principale */
-.priv-wrap{ max-width:1100px; margin:-60px auto 40px; padding: 0 16px; }
-.priv-grid{ display:grid; grid-template-columns: minmax(0,1fr) 300px; gap: 24px; }
+  body {
+    background: var(--bg-page);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    color: var(--ink);
+    overflow-x: hidden;
+  }
 
-/* Carte contenu + Sommaire */
-.card{ background:var(--card); border:1px solid var(--bd); border-radius:16px; box-shadow:var(--shadow); }
-.card.body{ padding: 24px; }
-.card.toc{ padding: 18px; position: sticky; top: 18px; align-self: start; }
+  /* Container principal - CRUCIAL pour éviter le footer */
+  .privacy-container {
+    min-height: calc(100vh - var(--footer-height));
+    padding-bottom: calc(var(--safe-bottom) + 48px);
+    position: relative;
+    z-index: 1;
+  }
 
-.toc-title{ font-weight:800; margin: 4px 0 10px; color:var(--text); }
-.toc-list{ list-style:none; padding-left:0; margin:0; display:grid; gap:6px; }
-.toc-list a{ display:block; padding:8px 10px; border-radius:10px; text-decoration:none; color:#0f172a; border:1px solid #eef2f7; }
-.toc-list a:hover{ background:#f8fafc; border-color:#e5e7eb; }
+  /* Hero Section */
+  .privacy-hero {
+    background: var(--bg-soft);
+    padding: clamp(48px, 8vw, 80px) 20px clamp(40px, 6vw, 64px);
+    text-align: center;
+    border-bottom: 1px solid var(--bd);
+    position: relative;
+    overflow: hidden;
+  }
 
-/* Typo */
-h2{ font-size:22px; font-weight:800; margin: 22px 0 10px; color:var(--text); }
-h3{ font-size:18px; font-weight:800; margin: 18px 0 8px; color:var(--text); }
-p{ color:#334155; line-height:1.7; margin: 8px 0; }
-ul{ margin: 6px 0 12px 18px; }
-li{ margin: 4px 0; }
+  .privacy-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(38, 107, 204, 0.08) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
 
-/* Bande info */
-.note{ background:#f8fafc; border:1px dashed #cbd5e1; border-radius:12px; padding:12px 14px; margin:10px 0; color:#334155; }
+  .privacy-hero::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: -10%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(243, 42, 87, 0.06) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
 
-/* Responsive */
-@media (max-width: 991.98px){
-  .priv-grid{ grid-template-columns: 1fr; }
-  .card.toc{ position: static; }
-}
+  .hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: white;
+    border: 1px solid var(--bd);
+    border-radius: 999px;
+    font-size: 0.875rem;
+    color: var(--muted);
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .hero-badge svg {
+    width: 16px;
+    height: 16px;
+    stroke: var(--brand);
+  }
+
+  .privacy-hero h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+
+  .hero-subtitle {
+    font-size: clamp(1rem, 2vw, 1.125rem);
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* Main Content Wrapper */
+  .privacy-wrapper {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: clamp(32px, 5vw, 64px) 20px;
+  }
+
+  .privacy-grid {
+    display: grid;
+    gap: 32px;
+    align-items: start;
+  }
+
+  @media (min-width: 1024px) {
+    .privacy-grid {
+      grid-template-columns: 280px 1fr;
+      gap: 40px;
+    }
+  }
+
+  /* Sidebar (Table of Contents) */
+  .privacy-sidebar {
+    position: relative;
+  }
+
+  .toc-card {
+    background: var(--card);
+    border: 1px solid var(--bd);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow-md);
+    position: sticky;
+    top: calc(var(--safe-top) + 20px);
+    max-height: calc(100vh - var(--safe-top) - 40px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .toc-title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .toc-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .toc-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    color: var(--ink);
+    font-size: 0.9375rem;
+    line-height: 1.4;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    border: 1px solid transparent;
+  }
+
+  .toc-link::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    background: var(--muted);
+    border-radius: 50%;
+    opacity: 0.5;
+    transition: all 0.2s ease;
+  }
+
+  .toc-link:hover {
+    background: #F8FAFC;
+    border-color: var(--bd);
+    transform: translateX(4px);
+  }
+
+  .toc-link:hover::before {
+    background: var(--brand);
+    opacity: 1;
+  }
+
+  .toc-link.active {
+    background: linear-gradient(135deg, rgba(38, 107, 204, 0.08) 0%, rgba(243, 42, 87, 0.08) 100%);
+    border-color: var(--brand);
+    color: var(--brand);
+    font-weight: 600;
+  }
+
+  .toc-link.active::before {
+    background: var(--brand);
+    opacity: 1;
+    width: 6px;
+    height: 6px;
+  }
+
+  /* Content Area */
+  .privacy-content {
+    background: var(--card);
+    border: 1px solid var(--bd);
+    border-radius: var(--radius);
+    padding: clamp(28px, 5vw, 48px);
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Typography */
+  .privacy-content h2 {
+    font-size: clamp(1.5rem, 3vw, 1.875rem);
+    font-weight: 700;
+    color: var(--ink);
+    margin-top: 48px;
+    margin-bottom: 20px;
+    line-height: 1.3;
+    scroll-margin-top: calc(var(--safe-top) + 24px);
+  }
+
+  .privacy-content h2:first-child {
+    margin-top: 0;
+  }
+
+  .privacy-content h3 {
+    font-size: clamp(1.125rem, 2vw, 1.375rem);
+    font-weight: 600;
+    color: var(--ink);
+    margin-top: 32px;
+    margin-bottom: 16px;
+    line-height: 1.4;
+  }
+
+  .privacy-content p {
+    font-size: clamp(0.9375rem, 1.5vw, 1.0625rem);
+    line-height: 1.75;
+    color: #334155;
+    margin-bottom: 20px;
+  }
+
+  .privacy-content ul,
+  .privacy-content ol {
+    margin: 20px 0 20px 24px;
+  }
+
+  .privacy-content li {
+    font-size: clamp(0.9375rem, 1.5vw, 1.0625rem);
+    line-height: 1.75;
+    color: #334155;
+    margin-bottom: 12px;
+    padding-left: 8px;
+  }
+
+  .privacy-content li::marker {
+    color: var(--brand);
+  }
+
+  .privacy-content a {
+    color: var(--brand);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+    border-bottom: 1px solid transparent;
+  }
+
+  .privacy-content a:hover {
+    color: var(--brand-2);
+    border-bottom-color: var(--brand-2);
+  }
+
+  /* Info Cards */
+  .info-note {
+    background: linear-gradient(135deg, #EEF2FF 0%, #FEF1F3 100%);
+    border: 1px solid var(--bd);
+    border-radius: var(--radius-sm);
+    padding: 20px 24px;
+    margin: 24px 0;
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: #475569;
+  }
+
+  .info-callout {
+    display: flex;
+    gap: 16px;
+    background: white;
+    border: 2px solid var(--bd);
+    border-radius: var(--radius-sm);
+    padding: 24px;
+    margin: 32px 0;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .callout-icon {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--grad);
+    display: grid;
+    place-items: center;
+    color: white;
+    font-weight: 700;
+    font-size: 1.25rem;
+    box-shadow: 0 4px 12px rgba(38, 107, 204, 0.3);
+  }
+
+  .callout-content {
+    flex: 1;
+  }
+
+  .callout-content strong {
+    display: block;
+    font-size: 1.0625rem;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .callout-content p {
+    margin: 0;
+    font-size: 0.9375rem;
+  }
+
+  /* Back to Top Button */
+  .back-to-top {
+    position: fixed;
+    right: 24px;
+    bottom: calc(var(--footer-height) + 24px);
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 1px solid var(--bd);
+    box-shadow: var(--shadow-lg);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 100;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .back-to-top:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+    background: var(--brand);
+  }
+
+  .back-to-top:hover svg {
+    stroke: white;
+  }
+
+  .back-to-top svg {
+    width: 24px;
+    height: 24px;
+    stroke: var(--ink);
+    transition: stroke 0.2s ease;
+  }
+
+  .back-to-top.visible {
+    display: flex;
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: 1023.98px) {
+    .toc-card {
+      position: static;
+      max-height: none;
+      margin-bottom: 32px;
+    }
+
+    .privacy-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .privacy-hero {
+      padding: 40px 16px 32px;
+    }
+
+    .privacy-wrapper {
+      padding: 32px 16px;
+    }
+
+    .privacy-content {
+      padding: 24px 20px;
+    }
+
+    .back-to-top {
+      right: 16px;
+      bottom: calc(var(--footer-height) + 16px);
+      width: 48px;
+      height: 48px;
+    }
+  }
+
+  /* Accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+
+    .toc-link:hover {
+      transform: none;
+    }
+  }
+
+  /* Smooth Scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  /* Print Styles */
+  @media print {
+    .privacy-sidebar,
+    .back-to-top {
+      display: none;
+    }
+
+    .privacy-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .privacy-content {
+      box-shadow: none;
+      border: none;
+    }
+  }
 </style>
 
-<section class="priv-hero">
-  <div>
+<!-- Hero Section -->
+<section class="privacy-hero">
+  <div class="hero-content">
+    <div class="hero-badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>{{ _("Document légal") }}</span>
+    </div>
     <h1>{{ _("Politique de confidentialité") }}</h1>
-    <p class="link-hint">{{ _("Lien direct :") }} <code>/confidentialite</code></p>
+    <p class="hero-subtitle">
+      {{ _("Dernière mise à jour :") }} {{ frappe.utils.formatdate(frappe.utils.nowdate()) }}
+    </p>
   </div>
 </section>
 
-<div class="priv-wrap">
-  <div class="priv-grid">
+<!-- Main Content -->
+<div class="privacy-container">
+  <div class="privacy-wrapper">
+    <div class="privacy-grid">
+      
+      <!-- Sidebar Navigation -->
+      <aside class="privacy-sidebar">
+        <nav class="toc-card" aria-label="{{ _('Table des matières') }}">
+          <div class="toc-title">{{ _("Navigation") }}</div>
+          <ol class="toc-list" id="tocList">
+            <li><a href="#pourquoi" class="toc-link">{{ _("Pourquoi nous traitons vos données") }}</a></li>
+            <li><a href="#donnees-traitees" class="toc-link">{{ _("Données traitées") }}</a></li>
+            <li><a href="#obtention" class="toc-link">{{ _("Comment nous les obtenons") }}</a></li>
+            <li><a href="#destinataires" class="toc-link">{{ _("Destinataires") }}</a></li>
+            <li><a href="#securite" class="toc-link">{{ _("Confidentialité & sécurité") }}</a></li>
+            <li><a href="#cookies" class="toc-link">{{ _("Cookies") }}</a></li>
+            <li><a href="#transferts" class="toc-link">{{ _("Transferts hors CEDEAO") }}</a></li>
+            <li><a href="#droits" class="toc-link">{{ _("Vos droits") }}</a></li>
+            <li><a href="#liens" class="toc-link">{{ _("Liens tiers") }}</a></li>
+            <li><a href="#maj" class="toc-link">{{ _("Mises à jour") }}</a></li>
+          </ol>
+        </nav>
+      </aside>
 
-    <!-- Contenu principal -->
-    <article class="card body">
-      <div class="note">
-        {{ _("La présente politique de confidentialité fournit des informations concernant le traitement des données à caractère personnel effectué par AMOAMAN & ASSOCIÉS. Elle décrit comment la société traite les données des personnes physiques (bénéficiaires directs/indirects ou représentants d’entreprises/organisations) et précise vos droits conformément aux lois en vigueur en Côte d’Ivoire, à l’Acte additionnel CEDEAO, à la Convention de l’Union Africaine sur la cybersécurité et à la protection des données, etc.") }}
-      </div>
+      <!-- Main Content -->
+      <article class="privacy-content">
+        <div class="info-note">
+          {{ _("La présente politique de confidentialité fournit des informations concernant le traitement des données à caractère personnel effectué par AMOAMAN & ASSOCIÉS. Elle décrit comment la société traite les données des personnes physiques (bénéficiaires directs/indirects ou représentants d'entreprises/organisations) et précise vos droits conformément aux lois en vigueur en Côte d'Ivoire, à l'Acte additionnel CEDEAO, à la Convention de l'Union Africaine sur la cybersécurité et à la protection des données, etc.") }}
+        </div>
 
-      <h2 id="pourquoi">{{ _("Pourquoi AMOAMAN & ASSOCIÉS traite-t-il vos données à caractère personnel ?") }}</h2>
-      <p>{{ _("AMOAMAN & ASSOCIÉS traite les données strictement nécessaires à la fourniture de solutions numériques à la clientèle et à la gestion clientèle, de manière raisonnable et conforme aux lois en vigueur.") }}</p>
-      <p>{{ _("Plus précisément, les traitements poursuivent les finalités suivantes :") }}</p>
-      <ul>
-        <li>{{ _("La gestion de ses systèmes informatiques et leur sécurité ;") }}</li>
-        <li>{{ _("La gestion de fourniture de service informatique ;") }}</li>
-        <li>{{ _("Les enquêtes concernant des plaintes et la réponse à ces dernières, ainsi que l’établissement, l’exercice et la défense de droits ;") }}</li>
-        <li>{{ _("La formation du personnel, et l’amélioration continue des procédures et modalités internes.") }}</li>
-      </ul>
+        <div class="info-callout">
+          <div class="callout-icon">i</div>
+          <div class="callout-content">
+            <strong>{{ _("Besoin d'aide ?") }}</strong>
+            <p>
+              {{ _("Contactez-nous :") }} <a href="mailto:hello@amoaman.com">hello@amoaman.com</a> 
+              <br>{{ _("Téléphone :") }} <a href="tel:+22527243115-61">(+225) 27 24-31-15-61</a>
+            </p>
+          </div>
+        </div>
 
-      <h2 id="donnees-traitees">{{ _("Quelles données à caractère personnel AMOAMAN & ASSOCIÉS traite-t-il ?") }}</h2>
-      <p>{{ _("AMOAMAN & ASSOCIÉS collecte et traite des données telles que le nom, les coordonnées et l’adresse e-mail. Les renseignements fournis sont utilisés aux seules fins d’identification et/ou de paiement sur la plateforme et le site web de la société.") }}</p>
+        <h2 id="pourquoi">{{ _("Pourquoi AMOAMAN & ASSOCIÉS traite-t-il vos données à caractère personnel ?") }}</h2>
+        <p>{{ _("AMOAMAN & ASSOCIÉS traite les données strictement nécessaires à la fourniture de solutions numériques à la clientèle et à la gestion clientèle, de manière raisonnable et conforme aux lois en vigueur.") }}</p>
+        <p>{{ _("Plus précisément, les traitements poursuivent les finalités suivantes :") }}</p>
+        <ul>
+          <li>{{ _("La gestion de ses systèmes informatiques et leur sécurité ;") }}</li>
+          <li>{{ _("La gestion de fourniture de service informatique ;") }}</li>
+          <li>{{ _("Les enquêtes concernant des plaintes et la réponse à ces dernières, ainsi que l'établissement, l'exercice et la défense de droits ;") }}</li>
+          <li>{{ _("La formation du personnel, et l'amélioration continue des procédures et modalités internes.") }}</li>
+        </ul>
 
-      <h2 id="obtention">{{ _("Comment AMOAMAN & ASSOCIÉS obtient-il vos données ?") }}</h2>
-      <p>{{ _("Les données peuvent provenir directement de vous, ou d’un intermédiaire partie à une opération que vous avez initiée (entreprise/organisation que vous représentez ou à laquelle vous êtes associé).") }}</p>
-      <p>{{ _("Si vous êtes bénéficiaire des services, certaines informations peuvent être collectées à partir de listes de sanctions internationales et d’autres sources accessibles publiquement.") }}</p>
+        <h2 id="donnees-traitees">{{ _("Quelles données à caractère personnel AMOAMAN & ASSOCIÉS traite-t-il ?") }}</h2>
+        <p>{{ _("AMOAMAN & ASSOCIÉS collecte et traite des données telles que le nom, les coordonnées et l'adresse e-mail. Les renseignements fournis sont utilisés aux seules fins d'identification et/ou de paiement sur la plateforme et le site web de la société.") }}</p>
 
-      <h2 id="destinataires">{{ _("À qui vos données sont-elles transmises ?") }}</h2>
-      <ul>
-        <li>{{ _("En interne, aux directions et/ou services concernés ;") }}</li>
-        <li>{{ _("À l’entité/organisation à laquelle vous êtes associé, aux intermédiaires et correspondants impliqués ;") }}</li>
-        <li>{{ _("Aux régulateurs ou autorités judiciaires ;") }}</li>
-        <li>{{ _("Aux conseillers juridiques ;") }}</li>
-        <li>{{ _("À toute autorité compétente dûment habilitée.") }}</li>
-      </ul>
+        <h2 id="obtention">{{ _("Comment AMOAMAN & ASSOCIÉS obtient-il vos données ?") }}</h2>
+        <p>{{ _("Les données peuvent provenir directement de vous, ou d'un intermédiaire partie à une opération que vous avez initiée (entreprise/organisation que vous représentez ou à laquelle vous êtes associé).") }}</p>
+        <p>{{ _("Si vous êtes bénéficiaire des services, certaines informations peuvent être collectées à partir de listes de sanctions internationales et d'autres sources accessibles publiquement.") }}</p>
 
-      <h2 id="securite">{{ _("Confidentialité et sécurité") }}</h2>
-      <p>{{ _("AMOAMAN & ASSOCIÉS prend des précautions techniques et organisationnelles raisonnables pour garder vos données confidentielles et protégées, et empêcher toute mauvaise manipulation. L’accès par des tiers non autorisés est empêché dans la mesure du possible.") }}</p>
+        <h2 id="destinataires">{{ _("À qui vos données sont-elles transmises ?") }}</h2>
+        <ul>
+          <li>{{ _("En interne, aux directions et/ou services concernés ;") }}</li>
+          <li>{{ _("À l'entité/organisation à laquelle vous êtes associé, aux intermédiaires et correspondants impliqués ;") }}</li>
+          <li>{{ _("Aux régulateurs ou autorités judiciaires ;") }}</li>
+          <li>{{ _("Aux conseillers juridiques ;") }}</li>
+          <li>{{ _("À toute autorité compétente dûment habilitée.") }}</li>
+        </ul>
 
-      <h2 id="cookies">{{ _("Cookies") }}</h2>
-      <p>{{ _("Nos pages utilisent des cookies (petits fichiers texte) et parfois des pixels invisibles pour mesurer l’usage et la performance. Certains cookies/pixels proviennent de prestataires tiers. Vous pouvez gérer vos préférences via les réglages du navigateur et notre page dédiée aux cookies.") }}</p>
-      <p>{{ _("Pour plus d’informations, consultez la page :") }} <a href="/gestion-des-cookies">/gestion-des-cookies</a>.</p>
+        <h2 id="securite">{{ _("Confidentialité et sécurité") }}</h2>
+        <p>{{ _("AMOAMAN & ASSOCIÉS prend des précautions techniques et organisationnelles raisonnables pour garder vos données confidentielles et protégées, et empêcher toute mauvaise manipulation. L'accès par des tiers non autorisés est empêché dans la mesure du possible.") }}</p>
 
-      <h2 id="transferts">{{ _("Transfert de données hors zone CEDEAO") }}</h2>
-      <p>{{ _("Vos informations peuvent être traitées et stockées sur des systèmes situés en dehors de la Côte d’Ivoire. En acceptant cette politique et en nous transmettant vos informations, vous consentez à ces transferts.") }}</p>
-      <p>{{ _("Nous prenons toutes les mesures nécessaires, conformément à la loi n°2013-450 du 19 juin 2013, pour garantir un traitement sécurisé et confidentiel. Aucun transfert ne sera effectué sans garanties appropriées (mesures techniques/contractuelles).") }}</p>
+        <h2 id="cookies">{{ _("Cookies") }}</h2>
+        <p>{{ _("Nos pages utilisent des cookies (petits fichiers texte) et parfois des pixels invisibles pour mesurer l'usage et la performance. Certains cookies/pixels proviennent de prestataires tiers. Vous pouvez gérer vos préférences via les réglages du navigateur et notre page dédiée aux cookies.") }}</p>
+        <p>{{ _("Pour plus d'informations, consultez la page :") }} <a href="/gestion-des-cookies">/gestion-des-cookies</a>.</p>
 
-      <h2 id="droits">{{ _("Vos droits et comment les exercer") }}</h2>
-      <p>{{ _("Vous pouvez demander à AMOAMAN & ASSOCIÉS de :") }}</p>
-      <ul>
-        <li>{{ _("Fournir plus d’informations sur l’utilisation de vos données ;") }}</li>
-        <li>{{ _("Accéder à vos données (copie fournie le cas échéant) ;") }}</li>
-        <li>{{ _("Corriger/mettre à jour vos données ;") }}</li>
-        <li>{{ _("Supprimer vos données ;") }}</li>
-        <li>{{ _("Restreindre certains traitements ;") }}</li>
-      </ul>
-      <p>{{ _("Vous pouvez également vous opposer à certains traitements. Pour exercer vos droits :") }}</p>
-      <ul>
-        <li>{{ _("Par téléphone : (+225) 27 24-31-15-61") }}</li>
-        <li>{{ _("En ligne :") }} <a href="/contact">/contact</a></li>
-      </ul>
-      <p>{{ _("Vous pouvez en outre déposer une plainte auprès de l’Autorité de protection (ARTCI).") }}</p>
+        <h2 id="transferts">{{ _("Transfert de données hors zone CEDEAO") }}</h2>
+        <p>{{ _("Vos informations peuvent être traitées et stockées sur des systèmes situés en dehors de la Côte d'Ivoire. En acceptant cette politique et en nous transmettant vos informations, vous consentez à ces transferts.") }}</p>
+        <p>{{ _("Nous prenons toutes les mesures nécessaires, conformément à la loi n°2013-450 du 19 juin 2013, pour garantir un traitement sécurisé et confidentiel. Aucun transfert ne sera effectué sans garanties appropriées (mesures techniques/contractuelles).") }}</p>
 
-      <h2 id="liens">{{ _("Liens vers d’autres sites web") }}</h2>
-      <p>{{ _("Notre service peut contenir des liens vers des sites tiers. Nous vous invitons à consulter leur politique de confidentialité. AMOAMAN & ASSOCIÉS n’exerce aucun contrôle sur les contenus et pratiques de ces sites et décline toute responsabilité à leur égard.") }}</p>
+        <h2 id="droits">{{ _("Vos droits et comment les exercer") }}</h2>
+        <p>{{ _("Vous pouvez demander à AMOAMAN & ASSOCIÉS de :") }}</p>
+        <ul>
+          <li>{{ _("Fournir plus d'informations sur l'utilisation de vos données ;") }}</li>
+          <li>{{ _("Accéder à vos données (copie fournie le cas échéant) ;") }}</li>
+          <li>{{ _("Corriger/mettre à jour vos données ;") }}</li>
+          <li>{{ _("Supprimer vos données ;") }}</li>
+          <li>{{ _("Restreindre certains traitements ;") }}</li>
+        </ul>
+        <p>{{ _("Vous pouvez également vous opposer à certains traitements. Pour exercer vos droits :") }}</p>
+        <ul>
+          <li>{{ _("Par téléphone :") }} <a href="tel:+22527243115-61">(+225) 27 24-31-15-61</a></li>
+          <li>{{ _("En ligne :") }} <a href="/contact">/contact</a></li>
+        </ul>
+        <p>{{ _("Vous pouvez en outre déposer une plainte auprès de l'Autorité de protection (ARTCI).") }}</p>
 
-      <h2 id="maj">{{ _("Modification de la politique de confidentialité") }}</h2>
-      <p>{{ _("Nous pouvons mettre à jour cette politique. Toute nouvelle version sera publiée sur cette page, avec notification visible le cas échéant, et mise à jour de la date « Dernière mise à jour ». Les changements prennent effet à la publication.") }}</p>
-    </article>
+        <h2 id="liens">{{ _("Liens vers d'autres sites web") }}</h2>
+        <p>{{ _("Notre service peut contenir des liens vers des sites tiers. Nous vous invitons à consulter leur politique de confidentialité. AMOAMAN & ASSOCIÉS n'exerce aucun contrôle sur les contenus et pratiques de ces sites et décline toute responsabilité à leur égard.") }}</p>
 
-    <!-- Sommaire -->
-    <aside class="card toc" aria-label="{{ _('Sommaire de la page') }}">
-      <div class="toc-title">{{ _("Table des matières") }}</div>
-      <nav>
-        <ol class="toc-list">
-          <li><a href="#pourquoi">{{ _("Pourquoi nous traitons vos données ?") }}</a></li>
-          <li><a href="#donnees-traitees">{{ _("Données traitées") }}</a></li>
-          <li><a href="#obtention">{{ _("Comment nous les obtenons") }}</a></li>
-          <li><a href="#destinataires">{{ _("Destinataires") }}</a></li>
-          <li><a href="#securite">{{ _("Confidentialité & sécurité") }}</a></li>
-          <li><a href="#cookies">{{ _("Cookies") }}</a></li>
-          <li><a href="#transferts">{{ _("Transferts hors CEDEAO") }}</a></li>
-          <li><a href="#droits">{{ _("Vos droits") }}</a></li>
-          <li><a href="#liens">{{ _("Liens tiers") }}</a></li>
-          <li><a href="#maj">{{ _("Mises à jour") }}</a></li>
-        </ol>
-      </nav>
-    </aside>
+        <h2 id="maj">{{ _("Modification de la politique de confidentialité") }}</h2>
+        <p>{{ _("Nous pouvons mettre à jour cette politique. Toute nouvelle version sera publiée sur cette page, avec notification visible le cas échéant, et mise à jour de la date « Dernière mise à jour ». Les changements prennent effet à la publication.") }}</p>
+      </article>
 
+    </div>
   </div>
 </div>
+
+<!-- Back to Top Button -->
+<button class="back-to-top" id="backToTop" aria-label="{{ _('Revenir en haut') }}">
+  <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5">
+    <path d="M18 15l-6-6-6 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</button>
+
+<script>
+(function() {
+  'use strict';
+
+  // Smooth scroll for TOC links
+  const tocLinks = document.querySelectorAll('.toc-link[href^="#"]');
+  tocLinks.forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const targetId = this.getAttribute('href').substring(1);
+      const targetElement = document.getElementById(targetId);
+      
+      if (targetElement) {
+        const offset = 80;
+        const elementPosition = targetElement.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - offset;
+        
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+        
+        // Update URL without jumping
+        history.pushState(null, null, '#' + targetId);
+      }
+    });
+  });
+
+  // Active section highlighting
+  const sections = Array.from(document.querySelectorAll('.privacy-content h2[id]'));
+  const navLinks = Array.from(document.querySelectorAll('.toc-link'));
+
+  function updateActiveLink() {
+    let currentSection = '';
+    const scrollPosition = window.pageYOffset + 120;
+
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop;
+      const sectionHeight = section.offsetHeight;
+      
+      if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+        currentSection = section.getAttribute('id');
+      }
+    });
+
+    navLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === '#' + currentSection) {
+        link.classList.add('active');
+      }
+    });
+  }
+
+  // Back to top button
+  const backToTopBtn = document.getElementById('backToTop');
+  
+  function toggleBackToTop() {
+    if (window.pageYOffset > 500) {
+      backToTopBtn.classList.add('visible');
+    } else {
+      backToTopBtn.classList.remove('visible');
+    }
+  }
+
+  backToTopBtn.addEventListener('click', function() {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
+
+  // Scroll event listener with throttling
+  let scrollTimeout;
+  window.addEventListener('scroll', function() {
+    if (scrollTimeout) {
+      window.cancelAnimationFrame(scrollTimeout);
+    }
+    
+    scrollTimeout = window.requestAnimationFrame(function() {
+      updateActiveLink();
+      toggleBackToTop();
+    });
+  }, { passive: true });
+
+  // Initial calls
+  updateActiveLink();
+  toggleBackToTop();
+
+  // Handle hash on page load
+  if (window.location.hash) {
+    setTimeout(function() {
+      const targetElement = document.querySelector(window.location.hash);
+      if (targetElement) {
+        const offset = 80;
+        const elementPosition = targetElement.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - offset;
+        
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
+    }, 100);
+  }
+})();
+</script>
+
 {% endblock %}

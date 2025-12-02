@@ -1,0 +1,59 @@
+/* =========================================
+   THEME LIGHT (Version Mise à Jour & Fixée)
+   ========================================= */
+
+/* ---------- Variables principales ---------- */
+:root{
+  /* Couleurs de marque */
+ 
+
+  /* Couleurs globales */
+  --color-text-on-accent: #ffffff;
+  --color-page-bg: #e3e8d5;
+  --color-border: var(--border-color); /* si border-color existe déjà ailleurs */
+
+    --color-background : linear-gradient(180deg, #FFFFFF 31.25%, rgba(7, 86, 197, 0.3) 99.43%);
+
+
+  /* Boutons */
+  --btn-primary-bg: linear-gradient(90deg, #0756C5 0%, #F32A57 100%);
+  --btn-primary-text: #ffffff;
+  --btn-primary-icon-bg: var(--color-background);
+
+  /* Typographie */
+  --heading-font-weight: var(--weight-semibold);
+  --heading-letter-spacing: 0.015em;
+  --heading-font-size-lg: var(--text-lg);
+}
+
+/* -----------------------------------------
+   Bouton primaire (scopé au thème)
+   ----------------------------------------- */
+.btn.btn-primary {
+  background: var(--btn-primary-bg) !important;
+  color: var(--btn-primary-text) !important;
+  white-space: nowrap !important;
+
+  --icon-stroke: currentColor !important;
+  --icon-fill-bg: var(--btn-primary-icon-bg) !important;
+
+  font-weight: bold !important;
+}
+
+/* -----------------------------------------
+   Pages Login / Signup / Forgot
+   ----------------------------------------- 
+.for-login .page-card,
+.for-forgot .page-card,
+.for-login-with-email-link .page-card,
+.for-signup .page-card,
+.for-email-login .page-card {
+  padding: 45px 10px !important;
+  background-color: var(--color-page-bg) !important;
+  max-width: 400px !important;
+  margin: 0 auto !important;
+  border-radius: var(--border-radius-md) !important;
+  border: 1px solid var(--color-border) !important;
+}
+
+*/

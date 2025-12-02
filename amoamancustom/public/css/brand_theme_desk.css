@@ -1,0 +1,158 @@
+/* =========================================
+   THEME LIGHT (Version Mise à Jour & Fixée)
+   ========================================= */
+
+/* Variables principales du thème clair */
+:root[data-theme="light"] {
+  /* Couleurs principales */
+  --color-section-title: #fff;
+  --color-bg-section-title: linear-gradient(90deg, #0756C5 0%, #F32A57 100%);
+
+
+  /* États */
+  --color-bg-sidebar-item-selected: linear-gradient(90deg, rgba(255, 255, 255, 0.5) 0%, rgba(243, 42, 87, 0.5) 48.08%);
+  --sibebar-item-selected-box-shadow: 0px 4px 4px 0px #F32A57B2;
+
+
+
+  /* Arrière-plans */
+  --color-bg-sidebar: linear-gradient(180deg, #FFFFFF 31.25%, rgba(7, 86, 197, 0.3) 99.43%);
+  --color-bg-search: linear-gradient(90deg, rgba(243, 42, 87, 0.2) 0%, rgba(7, 86, 197, 0.2) 100%);
+  --color-background : linear-gradient(180deg, #FFFFFF 31.25%, rgba(7, 86, 197, 0.3) 99.43%);
+
+  /* Boutons primaires */
+  --btn-primary-bg: linear-gradient(90deg, #0756C5 0%, #F32A57 100%);
+
+
+  --btn-primary-text: #ffffff;
+  --btn-primary-icon-bg: var(--color-background);
+
+
+
+
+}
+
+
+
+
+/*  section title */
+
+[data-page-route=Workspaces] .codex-editor .codex-editor__redactor .ce-block .ce-block__content .ce-header .h4 {
+    font-size: var(--text-xl);
+    font-weight: var(--weight-semibold);
+    letter-spacing: 0.01em;
+    border: 1px solid;
+    padding: 0.3rem 0.5rem;
+    color: var(--color-section-title) !important;
+    background: var(--color-bg-section-title);
+    border-radius: 999px;
+}
+
+   
+/* -----------------------------------------
+   Sidebar + zones desk
+   ----------------------------------------- */
+[data-theme="light"] .desk-sidebar-item.standard-sidebar-item.selected {
+  background: var( --color-bg-sidebar-item-selected) !important;
+  font-weight: bold !important;
+  box-shadow: var(--sibebar-item-selected-box-shadow) !important;
+}
+
+[data-theme="light"] .col-lg-2.layout-side-section {
+  background: var(--color-bg-sidebar) !important;
+}
+
+[data-theme="light"] #navbar-search {
+  background: var(--color-bg-search) !important;
+}
+
+/* -----------------------------------------
+   Bouton primaire (scopé au thème)
+   ----------------------------------------- */
+[data-theme="light"] .btn.btn-primary {
+  background: var(--btn-primary-bg) !important;
+  color: var(--btn-primary-text) !important;
+
+  white-space: nowrap !important;
+
+  --icon-stroke: currentColor !important;
+  --icon-fill-bg: var(--btn-primary-icon-bg) !important;
+
+  font-weight: bold !important;
+}
+
+.container.page-body{
+  background: var(--color-background) !important;
+}
+
+
+[data-theme="light"] .layout-main-section {
+  background: rgba(255, 255, 255, 0.6); /* blanc avec 60% d’opacité */
+  border: 1px solid #ebe0e0;
+  box-shadow: 0 4px 4px #757172;
+  backdrop-filter: blur(4px); /* optionnel : effet verre dépoli */
+}
+
+
+[data-theme="light"] .avatar .standard-image {
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(180deg, #0756C5 0%, #F32A57 100%);
+    color: white !important;
+}
+
+
+
+
+[data-theme="light"] .form-tabs-list .form-tabs .nav-item .nav-link.active {
+  font-weight: 600;
+  background: linear-gradient(90deg, #0756C5 0%, #F32A57 100%);
+  color: #fff !important;
+  padding: 0.2rem 4rem !important;
+  border-radius: 999px;
+    border-bottom: none !important;
+
+}
+
+[data-theme="light"] .new-timeline .timeline-item {
+  border-radius: 8px !important;
+  padding: 0 8px !important;
+}
+
+
+
+[data-theme="light"]  .btn.icon-btn.btn-default, [data-theme="light"] div#driver-popover-item .driver-popover-footer button.icon-btn.btn-default,[data-theme="light"]  .btn.icon-btn.btn-secondary, [data-theme="light"]  div#driver-popover-item .driver-popover-footer button.icon-btn.btn-secondary,[data-theme="light"]  div#driver-popover-item .driver-popover-footer button.icon-btn.driver-prev-btn {
+  min-width: 28px;
+  background: #0756C5B2;
+  box-shadow: 0px 4px 8px 0px #00000040;
+}
+
+[data-theme="light"]  .dashboard-widget-box .widget-head .widget-label .widget-title .ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  vertical-align: middle;
+  background: linear-gradient(90deg, #0756C5 0%, #F32A57 100%);
+  padding: 0.2rem 0.9rem !important;
+  border-radius: 88px !important;
+  color: white !important;
+}
+
+
+[data-page-route="Workspaces"] .widget.number-widget-box {
+  border: 1px solid var(--border-color);
+  background: var(--btn-primary-bg);
+  color: #fff !important;
+}
+
+
+
+[data-theme="light"] .widget.number-widget-box .widget-head .widget-title {
+  color: white !important;
+}
+
+
+[data-theme="light"]  .widget.number-widget-box .widget-body .widget-content .number {
+  color: white !important;
+}

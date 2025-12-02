@@ -2002,6 +2002,8 @@ section.active {
     padding: 0.7rem 1rem;
     font-size: 0.75rem;
   }
+  
+ 
 }
 
 /* TABLETTE (≤ 991.98px) */
@@ -2150,6 +2152,12 @@ section.active {
     height: 280px;
     top: -25px;
   }
+
+
+  .section-formation .img-content {
+  width: 100% !important;
+  align-self: center !important;
+}
 }
 
 /* MOBILE / TABLETTE PORTRAIT (≤ 768px) */
@@ -2160,6 +2168,8 @@ section.active {
     --fs-subtitle: clamp(0.8125rem, 2.2vw, 0.875rem);
     --fs-body: clamp(0.7rem, 2vw, 0.75rem);
   }
+
+  
 
   .page_content {
     width: 100% !important;
@@ -2535,6 +2545,7 @@ section.active {
   .section-subtitle {
     text-wrap: wrap  !important;
   }
+
 }
 
 /* VERY SMALL (≤ 575.98px) */
@@ -2969,6 +2980,8 @@ section.active {
   .img-content-erp {
     width: clamp(26%, 22vw, 32%) !important;
   }
+
+  
 }
 
 /* DESKTOP MOYEN 1281px – 1440px */
@@ -3037,6 +3050,11 @@ section.active {
 
   .about-card-content .card-soft {
     width: clamp(23rem, 42vw, 27rem) !important;
+  }
+
+   .card-soft p{
+        font-size: clamp(0.6rem, 1vw + 0.3rem, 0.85rem) !important;
+
   }
 
   .erp-section {
@@ -3425,7 +3443,7 @@ frappe.ready(function () {
   // Texte
   const title = '🍪 Cookies & confidentialité';
   const desc = `Nous utilisons des cookies pour améliorer votre expérience, mesurer l'audience et proposer des contenus pertinents.
-    <a href="/gestion-des-cookies" style="text-decoration: underline;">En savoir plus</a>`;
+    <a href="/cookies" style="text-decoration: underline;">En savoir plus</a>`;
 
   // Bannière HTML avec btn-contact / btn-soft
   const msgHTML = `
