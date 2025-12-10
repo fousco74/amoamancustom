@@ -21,9 +21,9 @@
 
     <div class="hero-content text-deep-midnight-blue">
         <h3 class="fs-5 fw-normal">
-            {{ _("Un accompagnement complet pour aligner vos outils, vos talents et vos données au service de votre") }}
+            {{ _("Nous alignons outils, talents et données pour doper votre performance, en") }}
             <br class="d-none d-md-block" />
-            {{ _("performance. Nous vous aidons à structurer, sécuriser et exploiter tout le potentiel de vos données.") }}
+            {{ _("structurant, sécurisant et exploitant tout le potentiel de vos informations.") }}
         </h3>
         {{ ui_button(_(cta_label), cta_href, variant='light') }}
     </div>
@@ -38,38 +38,69 @@
 <!-- SECTION DATA -->
 <section class="d-flex data flex-column justify-content-center p-4 align-items-center" id="data-intro">
     <h1 class="fw-semibold">
-        {{ _("Les données, ce sont toutes les informations que") }}
+        {{ _("Les données regroupent l’ensemble des informations") }}
         <br class="d-none d-md-block" />
-        {{ _("votre entreprise génère ou reçoit chaque jour.") }}
+        {{ _("que votre entreprise génère ou collecte chaque jour.") }}
     </h1>
     <h3 class="fw-medium p-2">
-        {{ _("Vos données bien exploitées, ce sont : des décisions plus justes,") }}
+        {{ _("Des données bien exploitées, c’est la garantie de décisions plus") }}
         <br class="d-none d-md-block" />
-        {{ _("des processus plus fluides et des performances qui s'envolent !") }}
+        {{ _("justes, de processus plus fluides et de performances qui décollent !") }}
     </h3>
 
-    <div class="w-100 d-flex flex-column justify-content-center p-4 align-items-center m-4"
-        style="position: relative !important; color: #081A2A !important;">
-        <div class="card" style="border-radius: 30px; transform: rotate(-10deg); position: relative !important;">
-            <div class="card-body d-flex flex-column justify-content-center align-items-center" style="text-align:start;">
-                <h5 class="card-title fw-semibold">
-                    {{ _("Collectées, organisées et") }}
-                    <br class="d-none d-md-block" />
-                    {{ _("Protégées, elles vous aideront à :") }}
-                </h5>
-                <ul style="list-style:none; padding-left:0;">
-                    <li><img src="assets/amoamancustom/images/Mask-group.svg" alt="" style="width:15px;"> {{ _("Prendre des décisions éclairées") }}</li>
-                    <li><img src="assets/amoamancustom/images/Mask-group.svg" alt="" style="width:15px;"> {{ _("Automatiser vos tâches") }}</li>
-                    <li><img src="assets/amoamancustom/images/Mask-group.svg" alt="" style="width:15px;"> {{ _("Fluidifier vos process") }}</li>
-                    <li><img src="assets/amoamancustom/images/Mask-group.svg" alt="" style="width:15px;"> {{ _("Booster vos performances") }}</li>
-                </ul>
-            </div>
-            <img id="img2" src="assets/amoamancustom/images/solar_cup-star-outline.svg" alt="solar_cup-star-outline" style="position: absolute; bottom:130px; right: 5px; width: 60px; transform:rotate(45deg);">
-            <img id="img1" src="assets/amoamancustom/images/solar_cup-star-outline.svg" alt="solar_cup-star-outline" style="position: absolute; bottom:30px; right: 5px; width: 110px;">
+   <div class="w-100 d-flex flex-column justify-content-center p-4 align-items-center m-4"
+     style="position: relative !important; color: #081A2A !important;">
+    
+        <div class="w-100 d-flex flex-column justify-content-center p-4 align-items-center m-4"
+     style="position: relative; color: #081A2A;">
+
+    <div class="card" style="border-radius: 30px; transform: rotate(-10deg); position: relative;">
+
+        <div class="card-body d-flex flex-column justify-content-center align-items-center" style="text-align:start;">
+            <h5 class="card-title fw-semibold">
+                {{ _("Collectées, <span class='first-letter-color'>O</span>rganisées et") }}
+                <br class="d-none d-md-block" />
+                {{ _("Protégées, elles vous aideront à :") }}
+            </h5>
+
+            <ul style="list-style:none; padding-left:0;">
+                {% for text in [
+                    _("Prendre des décisions éclairées"),
+                    _("Automatiser vos tâches"),
+                    _("Fluidifier vos process"),
+                    _("Booster vos performances")
+                ] %}
+                <li style="display:flex; align-items:center; margin-bottom: 0.5rem;">
+                    {% include "amoamancustom/templates/includes/svg/Mask-group.svg" %}
+                    <span class="ms-2">{{ text }}</span>
+                </li>
+                {% endfor %}
+            </ul>
         </div>
-        <span class="glow" style="--x:35%; --y:50%; --size:54vmin; --blur:48px;"></span>
-        <span class="glow" style="--x:65%; --y:50%; --size:54vmin; --blur:48px;"></span>
+
+        <!-- étoiles décoratives responsive -->
+        <div class="star star-1">
+            {% include "amoamancustom/templates/includes/svg/solar_cup-star-outline.svg" %}
+        </div>
+
+        <div class="star star-2">
+            {% include "amoamancustom/templates/includes/svg/solar_cup-star-outline.svg" %}
+        </div>
+
     </div>
+
+    <!-- glow effect -->
+    <span class="glow" style="--x:35%; --y:50%; --size:54vmin; --blur:48px;"></span>
+    <span class="glow" style="--x:65%; --y:50%; --size:54vmin; --blur:48px;"></span>
+</div>
+
+
+    </div>
+
+    <span class="glow" style="--x:35%; --y:50%; --size:54vmin; --blur:48px;"></span>
+    <span class="glow" style="--x:65%; --y:50%; --size:54vmin; --blur:48px;"></span>
+</div>
+
 
     <!-- MENU SECTION -->
     <div class="container section-pill position-relative mt-4" style="max-width: 1400px;">

@@ -1726,10 +1726,12 @@ main.container {
   font-weight: 500 !important;
 }
 
-.img-fluid {
-  width: 100% !important;
-  object-fit: cover !important;
+.svg-container svg {
+    width: 100%;
+    height: auto;
+    display: block;
 }
+
 
 /* Hero principal */
 .hero-section {
@@ -1972,6 +1974,43 @@ section.active {
   outline-offset: 6px;
   border-radius: 12px;
 }
+
+svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* étoiles décoratives */
+.star {
+    position: absolute;
+    height: auto;
+}
+
+.star-1 {
+    bottom: 38%;
+    right: 2%;
+    width: 15%; /* ajustable selon besoin */
+    transform: rotate(45deg);
+}
+
+.star-2 {
+    bottom: 2%;
+    right: 2%;
+    width: 20%;
+}
+
+/* pour les SVG de la liste */
+.card-body ul li svg {
+    width: 15px; /* taille icône */
+    height: auto;
+}
+
+
+.first-letter-color{
+  color: #ff9300 !important;
+}
+
 
 /* ============================
    RESPONSIVE

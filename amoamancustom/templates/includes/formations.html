@@ -9,11 +9,15 @@
 
                 <span class="section-capsule">{{ _("Formation") }}</span>
                 <h2 class="display-6 fw-bold mt-3 lead mb-3 section-title">{{ _("Se former pour performer") }}</h2>
-                <p class="lead section-content">{{ _("Des formations ciblées pour booster la performance ") }}          <br class="d-none d-md-block" />
-{{_("de  vos équipes techniques,
-                    métiers et décisionnelles.") }}</p>
+                <p class="lead section-content">{{ _("Des formations ciblées pour booster la performance de") }}          
+                    <br class="d-none d-md-block" />
+                    {{_("vos équipes techniques, métiers et décisionnelles.") }}
+                </p>
                <p class="section-content">
-                    {{ _("Les technologies évoluent vite. <strong>Pour rester <br class='d-none d-md-block'> compétitive, une entreprise doit s’appuyer sur des <br class='d-none d-md-block'> collaborateurs capables</strong> de comprendre, piloter et <br class='d-none d-md-block'> transformer les données en leviers de performance.") }}
+                    {{ _("Les technologies évoluent vite. <strong>Pour rester <br class='d-none d-md-block'> 
+                        compétitive, une entreprise doit s’appuyer sur des <br class='d-none d-md-block'> 
+                        collaborateurs capables</strong> de comprendre, piloter et <br class='d-none d-md-block'> 
+                        ettransformer les données en véritables leviers de <br class='d-none d-md-block'> performance.") }}
                 </p>
 
                 <div class="d-flex flex-wrap gap-2 mt-3">
@@ -23,10 +27,12 @@
                 </div>
             </div>
             <div class="col-lg-6 img-content text-center">
-                <img src="/assets/amoamancustom/images/services.svg" alt="services" class="img-fluid">
+                <div class="svg-container">
+                    {% include "amoamancustom/templates/includes/svg/services.svg" %}
+                </div>
                 <span class="glow" style="--x:40%; --y:50%; --size:65vmin; --blur:28px;"></span>
-
             </div>
+
         </div>
     </div>
 </section>
