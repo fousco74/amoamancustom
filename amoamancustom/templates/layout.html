@@ -2011,6 +2011,29 @@ svg {
   color: #ff9300 !important;
 }
 
+.icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    /* Ajuste la taille de base */
+    width: 32px;
+    height: 32px;
+}
+
+/* Style appliqué à l’intérieur du SVG inclus */
+.icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Si tu veux changer la couleur de l’icône */
+.icon svg path {
+    fill: #333; /* ou la couleur de ton thème */
+}
+
+
+
 
 /* ============================
    RESPONSIVE
@@ -2933,73 +2956,6 @@ svg {
   }
 }
 
-@media (min-width: 1080px) and (max-width: 1800px) {
-  :root {
-    --navbar-padding: 0.5rem;
-    --btn-padding-x: 0.7rem;
-    --btn-padding-y: 0.4rem;
-    --btn-gap: 0.35rem;
-    --logo-height: 32px;
-    --font-size-btn: 0.8rem;
-    --font-size-brand: 0.8rem;
-  }
-
- 
-
-  .navbar .btn {
-    font-size: var(--font-size-btn);
-  }
-
-  .navbar-brand {
-    font-size: var(--font-size-brand);
-  }
-
-  .section-big-title {
-    font-size: clamp(1.75rem, 2.1vw, 2.3rem) !important;
-  }
-
-  .section-title {
-    font-size: clamp(1.2rem, 1.7vw, 1.8rem) !important;
-    line-height: 1.35 !important;
-  }
-
-  .section-subtitle {
-    font-size: clamp(1rem, 1.3vw, 1.25rem) !important;
-    line-height: 1.5 !important;
-  }
-
-  .section-content {
-    font-size: clamp(0.9rem, 1.1vw, 1.05rem) !important;
-    line-height: 1.6 !important;
-  }
-
-  .hero-content h3 {
-    font-size: clamp(1rem, 1.15vw, 1.2rem) !important;
-    line-height: 1.6 !important;
-  }
-
-  .text-content,
-  .text-content h1 {
-    font-size: clamp(2.1rem, 2.4vw, 2.7rem) !important;
-    line-height: 1.25 !important;
-  }
-
-  .about-section .subtitle {
-    font-size: clamp(2rem, 2.2vw, 2.5rem);
-    line-height: 1.3;
-  }
-
-  .about-section .text {
-    font-size: clamp(1.3rem, 1.7vw, 1.9rem);
-    line-height: 1.35;
-  }
-
-  .lead-strong {
-    font-size: clamp(1.05rem, 1.2vw, 1.25rem);
-    line-height: 1.5;
-  }
-}
-
 /* DESKTOP PETIT 1081px – 1280px */
 @media (min-width: 1081px) and (max-width: 1280px) {
   .container {
@@ -3086,15 +3042,6 @@ svg {
     width: clamp(26%, 22vw, 32%) !important;
   }
 
-.card-soft  p {
-  color: #081A2A;
-    font-size: 12px !important;
-}
-
-.left-nav {
-  justify-content: flex-start;
-  flex-wrap: nowrap !important;
-}
   
 }
 
@@ -3242,7 +3189,72 @@ svg {
    ADAPTATION 1080px – 1800px
    (navbar + tailles textes réduites)
    ========================================= */
+@media (min-width: 1080px) and (max-width: 1800px) {
+  :root {
+    --navbar-padding: 0.5rem;
+    --btn-padding-x: 0.7rem;
+    --btn-padding-y: 0.4rem;
+    --btn-gap: 0.35rem;
+    --logo-height: 32px;
+    --font-size-btn: 0.8rem;
+    --font-size-brand: 0.8rem;
+  }
 
+ 
+
+  .navbar .btn {
+    font-size: var(--font-size-btn);
+  }
+
+  .navbar-brand {
+    font-size: var(--font-size-brand);
+  }
+
+  .section-big-title {
+    font-size: clamp(1.75rem, 2.1vw, 2.3rem) !important;
+  }
+
+  .section-title {
+    font-size: clamp(1.2rem, 1.7vw, 1.8rem) !important;
+    line-height: 1.35 !important;
+  }
+
+  .section-subtitle {
+    font-size: clamp(1rem, 1.3vw, 1.25rem) !important;
+    line-height: 1.5 !important;
+  }
+
+  .section-content {
+    font-size: clamp(0.9rem, 1.1vw, 1.05rem) !important;
+    line-height: 1.6 !important;
+  }
+
+  .hero-content h3 {
+    font-size: clamp(1rem, 1.15vw, 1.2rem) !important;
+    line-height: 1.6 !important;
+  }
+
+  .text-content,
+  .text-content h1 {
+    font-size: clamp(2.1rem, 2.4vw, 2.7rem) !important;
+    line-height: 1.25 !important;
+  }
+
+  .about-section .subtitle {
+    font-size: clamp(2rem, 2.2vw, 2.5rem);
+    line-height: 1.3;
+  }
+
+  .about-section .text {
+    font-size: clamp(1.3rem, 1.7vw, 1.9rem);
+    line-height: 1.35;
+  }
+
+  .lead-strong {
+    font-size: clamp(1.05rem, 1.2vw, 1.25rem);
+    line-height: 1.5;
+  }
+}
 
 </style>
 {% endblock %}
