@@ -1,19 +1,24 @@
 /* =========================================
-   THEME LIGHT (Version Mise à Jour & Fixée)
+   THEME LIGHT – WEB (STABLE & SAFE)
    ========================================= */
 
-/* ---------- Variables principales ---------- */
-:root{
-  /* Couleurs de marque */
- 
-
+/* ---------- Variables globales (light only) ---------- */
+:root[data-theme="light"] {
   /* Couleurs globales */
   --color-text-on-accent: #ffffff;
   --color-page-bg: #e3e8d5;
-  --color-border: var(--border-color); /* si border-color existe déjà ailleurs */
 
-    --color-background : linear-gradient(180deg, #FFFFFF 31.25%, rgba(7, 86, 197, 0.3) 99.43%);
+  /* Fallbacks sécurité */
+  --border-color: #d1d5db;
+  --weight-semibold: 600;
+  --text-lg: 1.125rem;
 
+  /* Backgrounds */
+  --color-background: linear-gradient(
+    180deg,
+    #FFFFFF 31.25%,
+    rgba(7, 86, 197, 0.3) 99.43%
+  );
 
   /* Boutons */
   --btn-primary-bg: linear-gradient(90deg, #0756C5 0%, #F32A57 100%);
@@ -27,33 +32,30 @@
 }
 
 /* -----------------------------------------
-   Bouton primaire (scopé au thème)
+   Bouton primaire
    ----------------------------------------- */
-.btn.btn-primary {
+[data-theme="light"] .btn.btn-primary {
   background: var(--btn-primary-bg) !important;
   color: var(--btn-primary-text) !important;
-  white-space: nowrap !important;
-
-  --icon-stroke: currentColor !important;
-  --icon-fill-bg: var(--btn-primary-icon-bg) !important;
-
   font-weight: bold !important;
+  white-space: nowrap;
+
+  --icon-stroke: currentColor;
+  --icon-fill-bg: var(--btn-primary-icon-bg);
 }
 
 /* -----------------------------------------
-   Pages Login / Signup / Forgot
-   ----------------------------------------- 
-.for-login .page-card,
-.for-forgot .page-card,
-.for-login-with-email-link .page-card,
-.for-signup .page-card,
-.for-email-login .page-card {
-  padding: 45px 10px !important;
-  background-color: var(--color-page-bg) !important;
-  max-width: 400px !important;
-  margin: 0 auto !important;
-  border-radius: var(--border-radius-md) !important;
-  border: 1px solid var(--color-border) !important;
+   Pages Login / Signup / Forgot (WEB)
+   ----------------------------------------- */
+[data-theme="light"] .for-login .page-card,
+[data-theme="light"] .for-forgot .page-card,
+[data-theme="light"] .for-login-with-email-link .page-card,
+[data-theme="light"] .for-signup .page-card,
+[data-theme="light"] .for-email-login .page-card {
+  padding: 45px 20px;
+  background: var(--color-page-bg);
+  max-width: 400px;
+  margin: 0 auto;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
 }
-
-*/

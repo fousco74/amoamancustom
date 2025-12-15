@@ -31,11 +31,11 @@ expense_claim.get_total_reimbursed_amount = get_total_reimbursed_amount
 # ------------------
 
 # include js, css files in header of desk.html
-#app_include_css = "/assets/amoamancustom/css/brand_theme_desk.css"
+app_include_css = "/assets/amoamancustom/css/brand_theme_desk.css"
 #app_include_js = "/assets/amoamancustom/js/brand_theme_web.js"
 
 # include js, css files in header of web template
-# web_include_css = "/assets/amoamancustom/css/amoamancustom.css"
+web_include_css = "/assets/amoamancustom/css/brand_theme_web.css"
 # web_include_js = "/assets/amoamancustom/js/amoamancustom.js"
 
 # include custom scss in every website theme (without file extension ".scss")
