@@ -110,6 +110,12 @@
   /* Hero services */
   --text-service: #2B1D64;
   --bg-service: linear-gradient(135deg, #636BC0 35%, #2481EF 100%);
+
+  
+  /* irixflow poppup css / notification popup */
+   --primary-dark: #081A2A;
+    --primary-pink: #D82A60;
+
 }
 
 /* ============================
@@ -3248,10 +3254,93 @@ svg {
   }
 }
 
+
+/* irixflow poppup css / notification popup */
+/* Overlay */
+.irixflow-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 26, 42, 0.6);
+    z-index: 1050;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Popup */
+.irixflow-popup {
+    position: relative;
+    width: 90%;
+    max-width: 900px;
+    border-radius: 20px;
+    padding: 40px;
+    background: linear-gradient(135deg, #ffe1eb, #e9f1ff);
+}
+
+/* Close */
+.irixflow-close {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 32px;
+    color: var(--primary-dark);
+}
+
+/* Content */
+.irixflow-content h2 {
+    color: var(--primary-dark);
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.irixflow-content .highlight {
+    color: var(--primary-pink);
+}
+
+.irixflow-content p {
+    color: var(--primary-dark);
+    margin-bottom: 24px;
+}
+
+/* Button */
+.irixflow-btn {
+    padding: .6rem 2rem !important;
+  border-radius: 8px !important;
+    color: #fff !important;
+    font-weight: 600 !important;
+    background: linear-gradient(
+        90deg,
+        rgba(255,161,182,0.8) 0%,
+        #F32A57 100%
+    ) !important;
+    border: none !important;
+}
+
+/* Floating Button */
+.irixflow-fab {
+    position: fixed;
+    left: 0;
+    top: 40%;
+    z-index: 1040;
+    background: var(--primary-pink);
+    padding: 12px;
+    border-radius: 0 12px 12px 0;
+    cursor: pointer;
+}
+
+.irixflow-fab img {
+    height: 150px;
+}
+
+
 </style>
 {% endblock %}
 
 {% block navbar %} {% include "templates/includes/navbar.html" %} {% endblock %}
+
+{% include "amoamancustom/templates/includes/irixflow_popup.html" %}
 
 
 {# ——— Page content ——— #}
@@ -3269,6 +3358,8 @@ svg {
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="assets/amoamancustom/js/main.js"></script>
 <script>
+
+  
 /**
  * Stockage & API globale – window.CookieConsent
  */
@@ -3644,6 +3735,62 @@ frappe.ready(function () {
     
   }
 });
+
+
+/**
+ * irixflow poppup css / notification popup 
+ */
+
+ (function () {
+    const DELAY_MS = 3000;
+
+    function waitForCookies(callback) {
+        const observer = new MutationObserver(() => {
+            const cookieBanner = document.querySelector(
+                '[id*="cookie"], .cookie, .cookie-banner, .cc-window'
+            );
+            if (!cookieBanner || cookieBanner.offsetParent === null) {
+                observer.disconnect();
+                callback();
+            }
+        });
+
+        observer.observe(document.body, { childList: true, subtree: true });
+
+        // fallback
+        setTimeout(callback, 5000);
+    }
+
+    function openPopup() {
+        document.getElementById("irixflow-overlay")?.classList.remove("d-none");
+    }
+
+    function closePopup() {
+        document.getElementById("irixflow-overlay")?.classList.add("d-none");
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        waitForCookies(() => {
+            setTimeout(openPopup, DELAY_MS);
+        });
+
+        document
+            .getElementById("irixflow-fab")
+            ?.addEventListener("click", openPopup);
+
+        document
+            .querySelector(".irixflow-close")
+            ?.addEventListener("click", closePopup);
+
+        document
+            .getElementById("irixflow-overlay")
+            ?.addEventListener("click", (e) => {
+                if (e.target.id === "irixflow-overlay") closePopup();
+            });
+    });
+})();
+
+
 </script>
 
 
