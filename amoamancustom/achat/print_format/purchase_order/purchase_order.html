@@ -6,7 +6,6 @@
         {{ frappe.render_template(print_heading_template, {"doc":doc}) }}
     {% endif %}
 
-{% set logo_url = frappe.db.get_value("Website Settings", None, "app_logo") %}
     {%- if doc.meta.is_submittable and doc.docstatus==2 -%}
     <div class="text-center" document-status="cancelled">
         <h4 style="margin:0; color:#032A5F;">{{ _("ANNULÉ") }}</h4>
@@ -127,6 +126,9 @@
         .desc { font-size: 9.5px; }
         {% endif %}
     </style>
+
+    {% set logo_url = frappe.db.get_value("Website Settings", None, "app_logo") %}
+
 
     <div class="print-format">
         <!-- TOUT le contenu “scalable” est dans .content-fit -->
