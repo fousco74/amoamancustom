@@ -1,0 +1,55 @@
+{# AMOAMAN EVENT - Row Template (1 card) #}
+
+{% set title = doc.title or doc.name %}
+{% set date_value = doc.event_date or doc.start_date %}
+{% set time_value = doc.event_time or doc.start_time %}
+{% set plain_desc = (doc.description or "") | striptags %}
+{% set excerpt = (plain_desc[:160] ~ "…") if plain_desc|length > 160 else plain_desc %}
+
+<article class="event-card" aria-label="{{ title }}">
+  <div class="event-media">
+    <a href="/{{ doc.route }}" class="event-media-link" aria-label="{{ title }}">
+      {% if doc.image %}
+        <img
+          src="{{ doc.image }}"
+          alt="{{ title }}"
+          class="event-image"
+          loading="lazy"
+        >
+      {% else %}
+        <div class="event-image placeholder" aria-hidden="true">
+          <span>📅</span>
+        </div>
+      {% endif %}
+    </a>
+  </div>
+
+  <div class="event-content">
+    {% if date_value %}
+      <div class="event-date">
+        <time datetime="{{ date_value }}">
+          {{ frappe.utils.format_date(date_value, "dd MMMM yyyy") }}
+        </time>
+        {% if time_value %}<span class="event-time"> · {{ time_value }}</span>{% endif %}
+      </div>
+    {% endif %}
+
+    <h3 class="event-title">
+      <a href="/{{ doc.route }}">{{ title }}</a>
+    </h3>
+
+    {% if excerpt %}
+      <p class="event-excerpt">{{ excerpt }}</p>
+    {% endif %}
+
+    <div class="event-meta">
+      {% if doc.location %}
+        <span class="event-location">
+          <i class="bi bi-geo-alt-fill"></i> {{ doc.location }}
+        </span>
+      {% endif %}
+
+      <a href="/{{ doc.route }}" class="read-more">{{ _("Voir plus") }}</a>
+    </div>
+  </div>
+</article>

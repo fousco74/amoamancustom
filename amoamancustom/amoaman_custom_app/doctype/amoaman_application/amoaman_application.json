@@ -1,0 +1,138 @@
+{
+ "actions": [],
+ "allow_guest_to_view": 1,
+ "allow_rename": 1,
+ "creation": "2026-01-01 12:51:23.381201",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_q36f",
+  "amended_from",
+  "program",
+  "column_break_uxnb",
+  "application_type",
+  "identit\u00e9_candidat_section",
+  "full_name",
+  "email",
+  "type",
+  "phone",
+  "column_break_svgu",
+  "company",
+  "job_title",
+  "consent_to_contact",
+  "source"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_q36f",
+   "fieldtype": "Section Break",
+   "label": "R\u00e9f\u00e9rence"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Amoaman Application",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "program",
+   "fieldtype": "Link",
+   "label": "Program",
+   "options": "Amoaman Event"
+  },
+  {
+   "fieldname": "column_break_uxnb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "application_type",
+   "fieldtype": "Data",
+   "label": "Application type"
+  },
+  {
+   "fieldname": "identit\u00e9_candidat_section",
+   "fieldtype": "Section Break",
+   "label": "Identit\u00e9 candidat"
+  },
+  {
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "label": "Full name"
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email"
+  },
+  {
+   "default": "0",
+   "fieldname": "type",
+   "fieldtype": "Check",
+   "label": "Type",
+   "options": "\nParticular\nStudent\nIn entreprise"
+  },
+  {
+   "fieldname": "phone",
+   "fieldtype": "Phone",
+   "label": "Phone"
+  },
+  {
+   "fieldname": "column_break_svgu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Data",
+   "label": "Company"
+  },
+  {
+   "fieldname": "job_title",
+   "fieldtype": "Data",
+   "label": "Job title"
+  },
+  {
+   "default": "0",
+   "fieldname": "consent_to_contact",
+   "fieldtype": "Check",
+   "label": "Consent to contact"
+  },
+  {
+   "fieldname": "source",
+   "fieldtype": "Data",
+   "label": "Source"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-01-01 13:02:09.080702",
+ "modified_by": "Administrator",
+ "module": "Amoaman Custom App",
+ "name": "Amoaman Application",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "route": "events",
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

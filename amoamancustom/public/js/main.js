@@ -14,6 +14,29 @@
   });
 })();
 
+(function () {
+  if (!window.Swiper) return;
+
+  document.querySelectorAll(".mySwiper").forEach(function (el) {
+    new Swiper(el, {
+      spaceBetween: 30,
+      centeredSlides: true,
+      autoplay: {
+        delay: 2500,
+        disableOnInteraction: false,
+      },
+      pagination: {
+        el: el.querySelector(".swiper-pagination"),
+        clickable: true,
+      },
+      navigation: {
+        nextEl: el.querySelector(".swiper-button-next"),
+        prevEl: el.querySelector(".swiper-button-prev"),
+      },
+    });
+  });
+})();
+
 
 (function () {
     const fill = document.querySelector('[data-ticks-fill]');

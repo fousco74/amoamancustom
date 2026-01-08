@@ -65,7 +65,7 @@
    "fieldname": "training",
    "fieldtype": "Link",
    "label": "Training",
-   "options": "Training",
+   "options": "Amoaman Event",
    "reqd": 1
   },
   {
@@ -78,7 +78,7 @@
  "has_web_view": 1,
  "is_published_field": "is_published",
  "links": [],
- "modified": "2025-07-22 23:54:57.783350",
+ "modified": "2026-01-01 13:02:06.367173",
  "modified_by": "Administrator",
  "module": "Amoaman Custom App",
  "name": "Training Attestation",

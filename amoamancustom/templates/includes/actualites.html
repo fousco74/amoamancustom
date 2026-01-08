@@ -16,16 +16,61 @@
                 </div>
             </div>
             <div class="col-lg-5">
-                <div class="news-card mb-4">
-                    <div class="news-title">Amoaman Academy</div>
+
+                          {# --- Slider Amoaman Academy (events/trainings) --- #}
+            <div class="news-card mb-4 swiper mySwiper amoaman-academy-swiper">
+              <div class="swiper-wrapper">
+
+                {% if academy_events and academy_events|length %}
+                  {% for ev in academy_events %}
+                    {% set title = ev.title or ev.program_title or ev.name %}
+                    {% set img = ev.image or ev.cover_image %}
+                    {% set href = '/' ~ (ev.route or '').lstrip('/') %}
+                    {% set badge = ev.badge_label or _("Formation") %}
+
+                    <div class="swiper-slide">
+                      <div class="news-title">{{ _("Amoaman Academy") }}</div>
+
+                      {% if img %}
+                        <a href="{{ href }}" style="text-decoration:none;">
+                          <img class="news-img" src="{{ img }}" alt="{{ title|e }}" loading="lazy">
+                        </a>
+                      {% else %}
+                        <a href="{{ href }}" style="text-decoration:none;">
+                          <div class="news-img" style="display:grid;place-items:center;background:linear-gradient(135deg,#E8EEFF,#FFE8F0);">
+                            <span style="font-size:44px;">🎓</span>
+                          </div>
+                        </a>
+                      {% endif %}
+
+                      <div class="mt-2 d-flex flex-wrap align-items-center justify-content-between">
+                        <div class="tiny">{{ title }}</div>
+
+                        <span class="chip gradient ms-2">
+                          {{ badge }}
+                        </span>
+                      </div>
+                    </div>
+                  {% endfor %}
+                {% else %}
+                  <div class="swiper-slide">
+                    <div class="news-title">{{ _("Amoaman Academy") }}</div>
                     <img class="news-img" src="assets/amoamancustom/images/event2.jpg" alt="Bannière formation">
                     <div class="mt-2 d-flex flex-wrap align-items-center justify-content-between">
-                        <div class="tiny">{{ _("La gestion de vos données en temps réel avec KAFKA") }}</div>
-                        <span class="chip gradient ms-2">{{ _("Formation Payante") }}</span>
+                      <div class="tiny">{{ _("Aucune formation disponible pour le moment.") }}</div>
+                      <span class="chip gradient ms-2">{{ _("Bientôt") }}</span>
                     </div>
-                    <div class="d-flex justify-content-end align-items-center gap-2 mt-2"><span
-                            class="dot active"></span><span class="dot"></span></div>
-                </div>
+                  </div>
+                {% endif %}
+
+              </div>
+
+              <!-- Controls (scoppés à CE swiper) -->
+              <div class="swiper-button-next"></div>
+              <div class="swiper-button-prev"></div>
+              <div class="swiper-pagination"></div>
+            </div>
+
                 <div class="news-card">
                     <div class="news-title">Amoaman Events</div>
                     <div class="text-center py-4">

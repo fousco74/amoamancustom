@@ -261,6 +261,32 @@ scheduler_events = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
+# your_app/hooks.py
+
+website_redirects = [
+    # --- Jobs / Offres ---
+    {"source": r"^/offre/ux-ui-designer/?$", "target": "/jobs/amoaman_%26_associes/ux-/ui-designer"},
+    # Optionnel : toutes les anciennes offres vers la liste des jobs (si /jobs existe chez toi)
+    {"source": "/offre", "target": "/jobs"},
+
+    # --- Anciennes pages WP -> sections (#) sur la home ---
+    {"source": "/big-data",     "target": "/#bigdata"},
+    {"source": "/solutions",    "target": "/#erp"},
+    {"source": "/sourcing",     "target": "/#sourcing"},
+    {"source": "/entreprises",  "target": "/#services"},
+    {"source": "/evenements",   "target": "/events"},
+    {"source": "/agence-web",   "target": "/#services"},
+
+    # --- Anciennes routes EN (si tu n’as pas encore de pages EN dédiées) ---
+    {"source": "/en/about",     "target": "/#apropos"},
+    {"source": "/en/contact",   "target": "/contact"},
+    {"source": "/en/politique-de-confidentialite-2",     "target": "/confidentialite"},
+
+    # --- Canonicalisation générale : enlever le trailing slash (sauf la racine "/") ---
+    {"source": r"^/(.+)/$", "target": r"/\\1"},
+]
+
+
 
 fixtures = [
     # -----------------------------

@@ -1,9 +1,9 @@
-# Copyright (c) 2025, KONE Fousseni and contributors
+# Copyright (c) 2026, KONE Fousseni and contributors
 # For license information, please see license.txt
 
 # import frappe
 from frappe.model.document import Document
 
 
-class Training(Document):
+class AmoamanApplication(Document):
 	pass
