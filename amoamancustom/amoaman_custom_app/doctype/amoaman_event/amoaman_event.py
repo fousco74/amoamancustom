@@ -1,14 +1,29 @@
 import frappe
 from frappe.website.website_generator import WebsiteGenerator
+from frappe import _
 
 class AmoamanEvent(WebsiteGenerator):
-    # Important si ton champ de publication n'est pas "published"
     website = frappe._dict(
-        condition_field="is_published",   # ton checkbox
-        page_title_field="title",   # ou le champ titre que tu utilises
+        condition_field="is_published",
+        page_title_field="title",
+        # ⚠️ ici c’est le template DETAIL (/events/<name>)
+        # laisse vide ou mets un vrai template détail:
+        # template="amoamancustom/templates/generators/amoaman_event.html",
     )
 
     def validate(self):
-        # Générer la route côté serveur (stable, pas de boucle)
         if not self.route:
             self.route = f"events/{self.name}"
+
+
+def get_list_context(context):
+    # plus safe que context.title = ...
+    context.update({
+        "list_template": "amoamancustom/templates/generators/amoaman_event_list.html",
+        "filters": {"is_published": 1},
+        # optionnel:
+        # "order_by": "event_date asc",
+    })
+    return context
+
+

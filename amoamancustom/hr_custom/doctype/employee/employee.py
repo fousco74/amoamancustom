@@ -15,6 +15,7 @@ def employment_type_changed(doc, method):
     # Récupérer la configuration RH
     settings = frappe.get_single("RH Leave Settings")
     employment_type = doc.employment_type
+    employment_gender = doc.gender
 
     # Récupérer la Leave Policy existante pour cet employé
     leave_policy_assignment = frappe.get_all(
@@ -23,9 +24,17 @@ def employment_type_changed(doc, method):
         filters={"employee": doc.name}
     )
 
-    # Déterminer la Leave Policy appropriée en fonction du type d'emploi
-    if employment_type in [settings.cdd_employment_type_id, settings.cdi_employment_type_id]:
-        new_leave_policy_id = settings.cdi_or_cdd_leave_policy_id
+    # Déterminer la Leave Policy appropriée en fonction du type d'emploi et du genre
+    new_leave_policy_id = None
+
+    if employment_type in (settings.cdd_employment_type_id, settings.cdi_employment_type_id):
+        gender_policy_map = {
+            settings.gender_men: settings.cdi_or_cdd_leave_policy_id_men,
+            settings.gender_women: settings.cdi_or_cdd_leave_policy_id_women,
+        }
+        new_leave_policy_id = gender_policy_map.get(employment_gender)
+
+
     elif employment_type == settings.training_employment_type_id:
         new_leave_policy_id = settings.training_leave_policy_id
     else:

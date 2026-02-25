@@ -1,41 +1,60 @@
-{# AMOAMAN EVENT - Row Template (1 card) #}
+{# AMOAMAN EVENT — Row Template (1 card) #}
 
-{% set title = doc.title or doc.name %}
+{# --- SAFE-ish fields (compat Document/dict) --- #}
+{% set title = (doc.title or doc.name) %}
+{% set route = doc.route %}
+{% set image = doc.image %}
 {% set date_value = doc.event_date or doc.start_date %}
 {% set time_value = doc.event_time or doc.start_time %}
+{% set loc = (doc.location or "") | striptags %}
 {% set plain_desc = (doc.description or "") | striptags %}
-{% set excerpt = (plain_desc[:160] ~ "…") if plain_desc|length > 160 else plain_desc %}
+{% set excerpt = (plain_desc[:150] ~ "…") if plain_desc|length > 150 else plain_desc %}
+
+{# Evite doc.type (type est un mot “sensible”/réservé) : préfère category/event_type si dispo #}
+{% set category = (doc.event_type or doc.category or doc.type) %}
 
 <article class="event-card" aria-label="{{ title }}">
-  <div class="event-media">
-    <a href="/{{ doc.route }}" class="event-media-link" aria-label="{{ title }}">
-      {% if doc.image %}
+  <a href="/{{ route }}" class="event-media-link" aria-label="{{ title }}">
+    <div class="event-media">
+      {% if image %}
         <img
-          src="{{ doc.image }}"
+          src="{{ image }}"
           alt="{{ title }}"
           class="event-image"
           loading="lazy"
         >
       {% else %}
         <div class="event-image placeholder" aria-hidden="true">
-          <span>📅</span>
+          <span class="ph">📅</span>
         </div>
       {% endif %}
-    </a>
-  </div>
+
+      <div class="event-overlay" aria-hidden="true"></div>
+
+      {% if category %}
+        <div class="event-badge" title="{{ category }}">
+          <i class="bi bi-lightning-charge-fill"></i>
+          <span>{{ category }}</span>
+        </div>
+      {% endif %}
+
+      {% if date_value %}
+        <div class="event-chip">
+          <i class="bi bi-calendar-event"></i>
+          <span>{{ frappe.utils.format_date(date_value, "dd MMM yyyy") }}</span>
+          {% if time_value %}
+            <span class="sep" aria-hidden="true">•</span>
+            <i class="bi bi-clock"></i>
+            <span>{{ time_value }}</span>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  </a>
 
   <div class="event-content">
-    {% if date_value %}
-      <div class="event-date">
-        <time datetime="{{ date_value }}">
-          {{ frappe.utils.format_date(date_value, "dd MMMM yyyy") }}
-        </time>
-        {% if time_value %}<span class="event-time"> · {{ time_value }}</span>{% endif %}
-      </div>
-    {% endif %}
-
     <h3 class="event-title">
-      <a href="/{{ doc.route }}">{{ title }}</a>
+      <a href="/{{ route }}">{{ title }}</a>
     </h3>
 
     {% if excerpt %}
@@ -43,13 +62,162 @@
     {% endif %}
 
     <div class="event-meta">
-      {% if doc.location %}
-        <span class="event-location">
-          <i class="bi bi-geo-alt-fill"></i> {{ doc.location }}
+      {% if loc %}
+        <span class="event-location" title="{{ loc }}">
+          <i class="bi bi-geo-alt-fill"></i>
+          <span class="loc">{{ loc }}</span>
         </span>
       {% endif %}
 
-      <a href="/{{ doc.route }}" class="read-more">{{ _("Voir plus") }}</a>
+      <a href="/{{ route }}" class="read-more" aria-label="{{ _('Voir plus') }}: {{ title }}">
+        {{ _("Voir plus") }}
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
     </div>
   </div>
 </article>
+
+{# Styles locaux (scopés) : si tu préfères, mets-les dans un css public #}
+<style>
+  .event-card{
+    background: rgba(255,255,255,.84);
+    border-radius: 22px;
+    border: 1px solid rgba(8,26,42,.08);
+    overflow: hidden;
+    box-shadow: 0 10px 35px rgba(8,26,42,.08);
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    display:flex; flex-direction:column;
+  }
+  .event-card:hover{
+    transform: translateY(-6px);
+    border-color: rgba(38,107,204,.25);
+    box-shadow: 0 18px 55px rgba(8,26,42,.12);
+  }
+
+  .event-media-link{ display:block; }
+
+  .event-media{ position:relative; }
+  .event-image{
+    width:100%; height: 220px;
+    object-fit: cover; display:block;
+    filter: saturate(1.02);
+  }
+  .event-image.placeholder{
+    height: 220px;
+    background:
+      radial-gradient(700px 280px at 12% 18%, rgba(38,107,204,.18), transparent 60%),
+      radial-gradient(700px 280px at 88% 22%, rgba(243,42,87,.14), transparent 60%),
+      linear-gradient(135deg, #F5F8FF 0%, #FFF3F7 100%);
+    display:grid; place-items:center;
+  }
+  .event-image.placeholder .ph{
+    width: 56px; height:56px;
+    border-radius: 16px;
+    display:grid; place-items:center;
+    background: rgba(255,255,255,.72);
+    border: 1px solid rgba(8,26,42,.10);
+    box-shadow: 0 10px 28px rgba(8,26,42,.10);
+    font-size: 22px;
+    color: rgba(38,107,204,.95);
+  }
+
+  .event-overlay{
+    position:absolute; inset:0;
+    background: linear-gradient(to top, rgba(8,26,42,.55), rgba(8,26,42,.05) 55%, rgba(8,26,42,0));
+    pointer-events:none;
+  }
+
+  .event-badge{
+    position:absolute;
+    left: 14px; top: 14px;
+    display:inline-flex;
+    align-items:center; gap:8px;
+    padding: 8px 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.86);
+    border: 1px solid rgba(8,26,42,.10);
+    font-weight: 950;
+    font-size: 12px;
+    color: #081A2A;
+    backdrop-filter: blur(10px);
+    max-width: calc(100% - 28px);
+  }
+  .event-badge span{
+    overflow:hidden; text-overflow: ellipsis; white-space: nowrap;
+    max-width: 220px;
+  }
+
+  .event-chip{
+    position:absolute;
+    left: 14px; bottom: 14px;
+    display:inline-flex;
+    align-items:center; gap:8px;
+    padding: 9px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.20);
+    border: 1px solid rgba(255,255,255,.28);
+    color:#fff;
+    font-weight: 900;
+    font-size: 12px;
+    backdrop-filter: blur(10px);
+  }
+  .event-chip .sep{ opacity:.85; }
+
+  .event-content{
+    padding: 16px 16px 14px;
+    display:flex; flex-direction:column;
+    gap: 10px;
+  }
+
+  .event-title{
+    margin:0;
+    font-size: 18px;
+    font-weight: 950;
+    line-height: 1.25;
+    color:#081A2A;
+  }
+  .event-title a{ color: inherit !important; text-decoration:none !important; }
+
+  .event-excerpt{
+    margin:0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba(8,26,42,.62);
+  }
+
+  .event-meta{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap: 10px;
+    margin-top: 2px;
+  }
+
+  .event-location{
+    display:flex; align-items:center; gap:6px;
+    color: rgba(8,26,42,.62);
+    font-size: 13px;
+    min-width: 0;
+  }
+  .event-location .loc{
+    overflow:hidden; text-overflow: ellipsis; white-space: nowrap;
+    max-width: 190px;
+  }
+
+  .read-more{
+    display:inline-flex;
+    align-items:center; gap: 8px;
+    padding: 9px 14px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #266BCC 0%, #F32A57 100%);
+    color:#fff !important;
+    font-weight: 950;
+    font-size: 13px;
+    white-space: nowrap;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .read-more:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 14px 34px rgba(38,107,204,.22);
+  }
+</style>

@@ -189,7 +189,7 @@ def user_project(employee):
     customers = list({p.customer for p in projects_all if p.customer})  # set() pour éviter les doublons
     activity_types = frappe.get_all(
         "Activity Type",
-        filters={"custom_user": employee.company_email},
+        filters={"custom_user": employee.name},
         fields=["name"]
     )
 
@@ -208,7 +208,7 @@ def user_activity_type(employee):
     employee = frappe.get_doc("Employee", employee)
     activity_types = frappe.get_all(
         "Activity Type",
-        filters={"custom_user": employee.company_email},
+        filters={"custom_user": employee.name},
         fields=["name"]
     )
 

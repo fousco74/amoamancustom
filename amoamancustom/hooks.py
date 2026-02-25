@@ -31,7 +31,7 @@ expense_claim.get_total_reimbursed_amount = get_total_reimbursed_amount
 # ------------------
 
 # include js, css files in header of desk.html
-app_include_css = "/assets/amoamancustom/css/brand_theme_desk.css"
+#app_include_css = "/assets/amoamancustom/css/brand_theme_desk.css"
 #app_include_js = "/assets/amoamancustom/js/brand_theme_web.js"
 
 # include js, css files in header of web template
@@ -57,6 +57,8 @@ doctype_js = {
     "Employee" : "public/js/employee/employee.js",
     "Contract" : "public/js/contract/contract.js",
     "Item" : "public/js/item/item.js",
+    "Loan Application" : "public/js/loan_application/loan_application.js",
+    "Item" : "public/js/item/item.js",    
     "Salary Slip" : "public/js/salary_slip/salary_slip.js",
     "Salary Structure Assignment" : "public/js/salary_structure _assignment/salary_structure _assignment.js"
     }
@@ -84,7 +86,7 @@ doctype_js = {
 # ----------
 
 # automatically create page for each record of this doctype
-# website_generators = ["Web Page"]
+website_generators = ["Amoaman Event"]
 
 # Jinja
 # ----------
@@ -289,14 +291,14 @@ website_redirects = [
 ]
 
 
-
 fixtures = [
     # -----------------------------
-    # 1. Custom Fields
+    # 1. Custom Fields (SANS LOAN)
     # -----------------------------
     {
         "doctype": "Custom Field",
         "filters": [
+            # DocTypes autorisés
             [
                 "dt", "in", [
                     # --- Département RH ---
@@ -336,7 +338,7 @@ fixtures = [
                     "Tax Rule",
                     "Pricing Rule",
 
-                    # --- Autres DocTypes fréquemment utilisés ---
+                    # --- Autres DocTypes ---
                     "Project",
                     "Task",
                     "Issue",
@@ -356,7 +358,23 @@ fixtures = [
                     "Communication",
                     "ToDo"
                 ]
-            ]
+            ],
+
+            # Exclure champs système (Loan, etc.)
+            ["is_system_generated", "=", 0],
+
+            # Sécurité anti-loan
+            ["fieldname", "not like", "%loan%"],
+            ["label", "not like", "%Loan%"],
+            ["options", "not in", [
+                "Loan",
+                "Loan Disbursement",
+                "Loan Repayment",
+                "Loan Transfer",
+                "Loan Demand Offset Order",
+                "Loan Classification Range",
+                "Loan IRAC Provisioning Configuration"
+            ]]
         ]
     },
 
@@ -368,7 +386,6 @@ fixtures = [
         "filters": [
             [
                 "doc_type", "in", [
-                    # --- Département RH ---
                     "Employee",
                     "Employment Contract",
                     "Employee Grade",
@@ -383,7 +400,6 @@ fixtures = [
                     "Department",
                     "Designation",
 
-                    # --- Département Comptabilité / Finance ---
                     "Item",
                     "Sales Invoice",
                     "Purchase Invoice",
@@ -405,7 +421,6 @@ fixtures = [
                     "Tax Rule",
                     "Pricing Rule",
 
-                    # --- Autres DocTypes utilisés ---
                     "Project",
                     "Task",
                     "Issue",
@@ -437,7 +452,6 @@ fixtures = [
         "filters": [
             [
                 "document_type", "in", [
-                    # RH
                     "Employee",
                     "Employment Contract",
                     "Expense Claim",
@@ -446,7 +460,6 @@ fixtures = [
                     "Payroll Entry",
                     "Salary Slip",
 
-                    # Comptabilité
                     "Sales Invoice",
                     "Purchase Invoice",
                     "Sales Order",
@@ -456,12 +469,10 @@ fixtures = [
                     "Payment Entry",
                     "Journal Entry",
 
-                    # Stock
                     "Stock Entry",
                     "Material Request",
                     "Work Order",
 
-                    # Contacts et adresses
                     "Address",
                     "Contact"
                 ]
@@ -475,9 +486,7 @@ fixtures = [
     {
         "doctype": "Workflow State",
         "filters": [
-            [
-                "workflow_state_name", "not like", "%Recruitment%"
-            ]
+            ["workflow_state_name", "not like", "%Recruitment%"]
         ]
     },
 
@@ -487,21 +496,18 @@ fixtures = [
     {
         "doctype": "Workflow Action",
         "filters": [
-            [
-                "name", "not like", "%Recruitment%"
-            ]
+            ["name", "not like", "%Recruitment%"]
         ]
     },
 
     # -----------------------------
-    # 6. Roles (incluant RH + Comptabilité)
+    # 6. Roles
     # -----------------------------
     {
         "doctype": "Role",
         "filters": [
             [
                 "name", "in", [
-                    # RH
                     "HR Manager",
                     "HR User",
                     "Employee",
@@ -510,7 +516,6 @@ fixtures = [
                     "Payroll Manager",
                     "Timesheet Approver",
 
-                    # Comptabilité
                     "Accounts Manager",
                     "Accounts User",
                     "Auditor",
@@ -521,7 +526,6 @@ fixtures = [
                     "Purchase Manager",
                     "Purchase User",
 
-                    # Autres
                     "System Manager",
                     "Administrator",
                     "Project Manager",
@@ -539,14 +543,12 @@ fixtures = [
         "filters": [
             [
                 "doc_type", "in", [
-                    # RH
                     "Employee",
                     "Employment Contract",
                     "Expense Claim",
                     "Timesheet",
                     "Salary Slip",
 
-                    # Comptabilité
                     "Sales Invoice",
                     "Purchase Invoice",
                     "Quotation",
@@ -559,7 +561,6 @@ fixtures = [
                     "Address",
                     "Contact",
 
-                    # Autres
                     "Project",
                     "Task",
                     "Stock Entry",
@@ -578,7 +579,6 @@ fixtures = [
         "filters": [
             [
                 "ref_doctype", "in", [
-                    # RH
                     "Employee",
                     "Employment Contract",
                     "Expense Claim",
@@ -587,7 +587,6 @@ fixtures = [
                     "Payroll Entry",
                     "Salary Slip",
 
-                    # Comptabilité
                     "Sales Invoice",
                     "Purchase Invoice",
                     "Quotation",
@@ -603,7 +602,6 @@ fixtures = [
                     "Address",
                     "Contact",
 
-                    # Autres
                     "Project",
                     "Task",
                     "Stock Entry",
@@ -614,7 +612,3 @@ fixtures = [
         ]
     }
 ]
-
-
-
-

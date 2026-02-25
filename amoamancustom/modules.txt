@@ -3,3 +3,4 @@ HR_CUSTOM
 Facturation
 payroll_custom
 site web
+comptabilite

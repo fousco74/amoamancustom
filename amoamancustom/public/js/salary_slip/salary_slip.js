@@ -1,7 +1,10 @@
 frappe.ui.form.on('Salary Slip', {
-  employee: recalc_with_ppl,
+  employee: function (frm) {
+    recalc_with_ppl(frm);
+    get_leave_balance(frm);
+  },
   start_date: recalc_with_ppl,
-  end_date: recalc_with_ppl
+  end_date: recalc_with_ppl,
 });
 
 function recalc_with_ppl(frm) {
@@ -12,7 +15,7 @@ function recalc_with_ppl(frm) {
     args: { doc: frm.doc },
     freeze: true,
     freeze_message: __("Recalcul des composantes..."),
-    callback: function(r) {
+    callback: function (r) {
       if (!r.message) return;
 
       frm.set_value('earnings', r.message.earnings || []);
@@ -24,7 +27,23 @@ function recalc_with_ppl(frm) {
           r.message.paid_days !== undefined) {
         frm.set_value('custom_validated_paid_leave_days', r.message.paid_days);
       }
-      frm.refresh_fields(["earnings","deductions","net_pay","custom_validated_paid_leave_days"]);
+      frm.refresh_fields(["earnings", "deductions", "net_pay", "custom_validated_paid_leave_days"]);
+    }
+  });
+}
+
+function get_leave_balance(frm) {
+  let leave_type = "Congés Payés";
+  frappe.call({
+    method: "amoamancustom.api.get_leave_balance",
+    args: {
+      employee: frm.doc.employee,
+      leave_type: leave_type
+    },
+    callback: function (r) {
+      if (r.message !== undefined) {
+        frm.set_value('custom_leave_balance', r.message);
+      }
     }
   });
 }

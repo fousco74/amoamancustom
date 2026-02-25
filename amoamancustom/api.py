@@ -7,6 +7,21 @@ from frappe.utils.data import flt
 
 
 @frappe.whitelist()
+def get_leave_balance(employee, leave_type="Congés Payés"):
+    balance = frappe.db.get_value(
+        "Leave Ledger Entry",
+        filters={
+            "employee": employee,
+            "leave_type": leave_type,
+            "docstatus": 1  # Only count submitted entries
+        },
+        fieldname="SUM(leaves)"
+    )
+    # balance is already a float, not a tuple
+    return balance if balance else 0
+
+
+@frappe.whitelist()
 def get_table_detail(doctype, name):
     sales_order = frappe.get_doc(doctype, name)
     

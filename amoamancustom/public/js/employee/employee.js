@@ -7,6 +7,10 @@ frappe.ui.form.on('Employee', {
 
     frm.set_value("custom_has_seniority_bonus", value);
     },
+    status: function (frm){
+     const status_flag = frm.doc.status === "Left" ? 1 : 0;
+    frm.set_value('custom_status', status_flag);
+  },
 
   // Recalcule les parts dès qu'un champ pertinent change
   custom_statut_matrimonial_et_charge_de_famille(frm) { frm.trigger('part_number'); },
@@ -40,7 +44,6 @@ frappe.ui.form.on('Employee', {
         parts = 2;
       } else {
 
-        console.log(parts)
         // Marié avec enfants : 2,5 + 0,5 par enfant au-delà du 1er
         parts = 2.5 + (nbEnfants - 1) * 0.5;
 
@@ -55,7 +58,7 @@ frappe.ui.form.on('Employee', {
     }
 
     // +1 part par enfant infirme (même majeur)
-    parts += nbInfirme * 0.5;
+    parts += nbInfirme * 1;
 
     // Plafond à 5 parts (cohérent avec le barème RICF fourni)
     parts = Math.min(5, parts);

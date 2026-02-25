@@ -45,8 +45,6 @@ frappe.ui.form.on('Timesheet', {
 });
 
 
-
-
 function buildMinimalTimesheet(frm) {
   return {
     doctype: 'Timesheet',

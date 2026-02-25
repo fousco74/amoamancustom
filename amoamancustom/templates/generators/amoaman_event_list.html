@@ -1,0 +1,369 @@
+{% extends "templates/layout.html" %}
+{% block title %}{{ _("Événements") }}{% endblock %}
+{% block breadcrumbs %}
+{% endblock %}
+
+{% block header %}
+
+{% endblock %}
+
+{% block page_content %}
+{% set rows = result or [] %}
+{% set q = frappe.form_dict.txt or "" %}
+{% set count = (result_count if result_count is defined else (rows|length)) %}
+
+<style>
+/* ==========================
+   AMOAMAN EVENTS — UI PACK
+   ========================== */
+.am-events{
+  --grad: linear-gradient(135deg, #266BCC 0%, #F32A57 100%);
+  --bg: #ffffff;
+  --surface: rgba(255,255,255,.72);
+  --text: #081A2A;
+  --muted: rgba(8,26,42,.62);
+  --line: rgba(8,26,42,.10);
+  --shadow: 0 18px 55px rgba(8,26,42,.12);
+  --shadow-soft: 0 10px 35px rgba(8,26,42,.08);
+  --ring: 0 0 0 4px rgba(38,107,204,.16);
+  --radius: 22px;
+  --container: 1160px;
+}
+.am-events *{ box-sizing:border-box; }
+.am-events a{ text-decoration:none !important; }
+
+.am-events .hero{
+  position: relative;
+  padding: 64px 16px 112px;
+  overflow: hidden;
+  isolation:isolate;
+  background:
+    radial-gradient(700px 280px at 12% 18%, rgba(38,107,204,.22), transparent 60%),
+    radial-gradient(700px 280px at 88% 22%, rgba(243,42,87,.18), transparent 60%),
+    linear-gradient(135deg, #F5F8FF 0%, #FFF3F7 100%);
+  border-bottom: 1px solid rgba(8,26,42,.06);
+}
+.am-events .hero-inner{
+  max-width: var(--container);
+  margin: 0 auto;
+  display:grid;
+  grid-template-columns: 1.2fr .8fr;
+  gap: 28px;
+  align-items:center;
+}
+@media (max-width: 991.98px){ .am-events .hero-inner{ grid-template-columns:1fr; text-align:center; } }
+
+.am-events .hero h1{
+  margin:0 0 10px;
+  font-weight: 950;
+  letter-spacing:.2px;
+  font-size: clamp(1.9rem, 1rem + 2.8vw, 3.1rem);
+  line-height:1.1;
+  background: var(--grad);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.am-events .hero p{
+  margin:0;
+  max-width: 720px;
+  color: var(--muted);
+  font-size:15px;
+  line-height:1.65;
+}
+
+.am-events .hero-actions{
+  display:flex; gap:10px; flex-wrap:wrap;
+  margin-top:18px;
+}
+@media (max-width: 991.98px){ .am-events .hero-actions{ justify-content:center; } }
+
+.am-events .btn-pill{
+  display:inline-flex; align-items:center; gap:10px;
+  border-radius:999px;
+  padding:10px 14px;
+  font-weight:900; font-size:13px;
+  border:1px solid rgba(8,26,42,.10);
+  background: rgba(255,255,255,.65);
+  backdrop-filter: blur(10px);
+  color: var(--text);
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+.am-events .btn-pill:hover{
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-soft);
+  border-color: rgba(38,107,204,.25);
+}
+.am-events .btn-pill.primary{
+  background: var(--grad);
+  border:0; color:#fff !important;
+  box-shadow: 0 12px 30px rgba(38,107,204,.22);
+}
+.am-events .btn-pill.primary:hover{
+  box-shadow: 0 18px 44px rgba(38,107,204,.28);
+}
+
+.am-events .hero-card{
+  border-radius: var(--radius);
+  background: rgba(255,255,255,.68);
+  border: 1px solid rgba(8,26,42,.08);
+  box-shadow: var(--shadow-soft);
+  padding: 16px;
+  backdrop-filter: blur(10px);
+}
+.am-events .kpis{
+  display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px;
+}
+.am-events .kpi{
+  border-radius:16px;
+  background: rgba(255,255,255,.78);
+  border:1px solid rgba(8,26,42,.08);
+  padding:12px;
+}
+.am-events .kpi .big{ font-weight:950; font-size:18px; color:var(--text); }
+.am-events .kpi .small{ margin-top:4px; font-size:12px; color:var(--muted); line-height:1.4; }
+
+.am-events .wrap{
+  max-width: var(--container);
+  margin: -64px auto 90px;
+  padding: 0 16px;
+}
+
+.am-events .toolbar{
+  display:flex; gap:12px; flex-wrap:wrap;
+  align-items:center; justify-content:space-between;
+  padding:14px;
+  border-radius: var(--radius);
+  background: rgba(255,255,255,.72);
+  border:1px solid rgba(8,26,42,.08);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(10px);
+}
+
+.am-events .search{ flex:1 1 420px; display:flex; gap:10px; align-items:center; }
+.am-events .search .field{ position:relative; flex:1 1 auto; }
+.am-events .search .icon{
+  position:absolute; left:14px; top:50%;
+  transform:translateY(-50%);
+  opacity:.55; font-size:16px;
+}
+.am-events .search input{
+  width:100%;
+  border:1px solid rgba(8,26,42,.12);
+  background: rgba(248,249,250,.9);
+  border-radius:16px;
+  padding:12px 12px 12px 42px;
+  font-size:14px;
+  color: var(--text);
+  transition: box-shadow .15s ease, border-color .15s ease, background .15s ease;
+}
+.am-events .search input:focus{
+  outline:none; background:#fff;
+  border-color: rgba(38,107,204,.45);
+  box-shadow: var(--ring);
+}
+.am-events .btn-search{
+  border-radius:16px;
+  padding:12px 14px;
+  font-weight:950; font-size:13px;
+  border:0;
+  background: var(--grad);
+  color:#fff;
+  transition: transform .15s ease, box-shadow .15s ease;
+  white-space:nowrap;
+}
+.am-events .btn-search:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 14px 34px rgba(243,42,87,.20);
+}
+
+.am-events .toolbar-right{ display:flex; gap:10px; align-items:center; }
+.am-events .count, .am-events .clear{
+  font-size:13px;
+  padding:8px 12px;
+  border-radius:999px;
+  border:1px solid rgba(8,26,42,.10);
+  background: rgba(255,255,255,.75);
+  color: var(--muted);
+}
+.am-events .clear{
+  font-weight:950;
+  color: var(--text) !important;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+.am-events .clear:hover{
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-soft);
+  border-color: rgba(38,107,204,.25);
+}
+
+.am-events .grid{
+  display:grid;
+  grid-template-columns: 1fr 360px;
+  gap: 26px;
+  align-items:start;
+  margin-top: 18px;
+}
+@media (max-width: 991.98px){ .am-events .grid{ grid-template-columns:1fr; } }
+
+.am-events .events-list{
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 18px;
+}
+@media (max-width: 575.98px){ .am-events .events-list{ grid-template-columns:1fr; } }
+
+.am-events .aside{
+  display:flex; flex-direction:column; gap:14px;
+  position: sticky; top:18px;
+}
+@media (max-width: 991.98px){ .am-events .aside{ position:static; } }
+
+.am-events .aside-card{
+  background: rgba(255,255,255,.78);
+  border-radius: var(--radius);
+  padding: 16px;
+  border:1px solid rgba(8,26,42,.08);
+  box-shadow: var(--shadow-soft);
+}
+.am-events .aside-title{ font-weight:950; color:var(--text); margin-bottom:6px; font-size:14px; }
+.am-events .aside-text{ color:var(--muted); font-size:14px; line-height:1.6; }
+
+.am-events .aside-cta{
+  background: var(--grad);
+  color:#fff;
+  border:0;
+}
+.am-events .aside-cta .aside-title,
+.am-events .aside-cta .aside-text{ color:#fff; opacity:.95; }
+.am-events .aside-cta a{
+  display:inline-flex; align-items:center; justify-content:center;
+  margin-top: 12px;
+  background: rgba(255,255,255,.92);
+  color: rgba(38,107,204,.95) !important;
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-weight: 950;
+  box-shadow: 0 12px 30px rgba(255,255,255,.12);
+}
+
+.am-events .empty{
+  grid-column:1/-1;
+  text-align:center;
+  padding: 28px 16px;
+  border-radius: var(--radius);
+  background: rgba(255,255,255,.78);
+  border: 1px dashed rgba(8,26,42,.18);
+  box-shadow: var(--shadow-soft);
+}
+.am-events .empty .emoji{
+  width: 62px; height: 62px;
+  border-radius: 18px;
+  display:grid; place-items:center;
+  margin: 0 auto 12px;
+  background: rgba(255,255,255,.72);
+  border:1px solid rgba(8,26,42,.10);
+  box-shadow: 0 10px 28px rgba(8,26,42,.10);
+  font-size: 26px;
+}
+.am-events .empty .t{ font-weight: 950; color: var(--text); margin:0; }
+.am-events .empty .s{ color: var(--muted); margin-top:6px; font-size:14px; }
+</style>
+
+<div class="am-events">
+  <section class="hero">
+    <div class="hero-inner">
+      <div>
+        <h1>{{ _("Nos Événements") }}</h1>
+        <p>{{ _("Découvrez nos prochains rendez-vous : ateliers, conférences, webinaires et sessions pratiques pour booster votre performance.") }}</p>
+
+        <div class="hero-actions">
+          <a class="btn-pill primary" href="/contact">
+            <i class="bi bi-chat-dots-fill"></i>
+            <span>{{ _("Demander une info") }}</span>
+          </a>
+          <a class="btn-pill" href="/events">
+            <i class="bi bi-calendar-event"></i>
+            <span>{{ _("Voir tous") }}</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-card" aria-label="{{ _('Résumé') }}">
+        <div class="kpis">
+          <div class="kpi">
+            <div class="big">{{ count }}</div>
+            <div class="small">{{ _("résultat(s) sur cette page") }}</div>
+          </div>
+          <div class="kpi">
+            <div class="big">{{ _("Pro") }}</div>
+            <div class="small">{{ _("Design moderne & lisible") }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="toolbar">
+      <form class="search" method="get" action="/events" role="search">
+        <div class="field">
+          <span class="icon"><i class="bi bi-search"></i></span>
+          <input
+            type="search"
+            name="txt"
+            value="{{ q }}"
+            placeholder="{{ _('Rechercher un événement (titre, lieu…)') }}"
+            aria-label="{{ _('Rechercher') }}"
+          >
+        </div>
+        <button class="btn-search" type="submit">{{ _("Rechercher") }}</button>
+      </form>
+
+      <div class="toolbar-right">
+        {% if q %}
+          <a class="clear" href="/events" aria-label="{{ _('Effacer la recherche') }}">
+            <i class="bi bi-x-circle"></i> {{ _("Réinitialiser") }}
+          </a>
+        {% endif %}
+        <div class="count">
+          <i class="bi bi-collection"></i>
+          {{ count }} {{ _("résultat(s)") }}
+        </div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="events-list">
+        {% if rows %}
+          {# ✅ rows = HTML déjà rendu via row_template #}
+          {% for row in rows %}
+            {{ row | safe }}
+          {% endfor %}
+        {% else %}
+          <div class="empty">
+            <div class="emoji">📭</div>
+            <p class="t">{{ _("Aucun événement pour le moment") }}</p>
+            <div class="s">{{ _("Revenez bientôt ou contactez-nous pour une session sur mesure.") }}</div>
+          </div>
+        {% endif %}
+      </div>
+
+      <aside class="aside">
+        <div class="aside-card">
+          <div class="aside-title">{{ _("À venir") }}</div>
+          <div class="aside-text">{{ _("Restez informé des prochaines dates et nouveautés.") }}</div>
+        </div>
+
+        <div class="aside-card aside-cta">
+          <div class="aside-title">{{ _("Intéressé ?") }}</div>
+          <div class="aside-text">{{ _("Besoin d’informations ou d’un accompagnement ?") }}</div>
+          <a href="/contact">
+            <i class="bi bi-send-fill"></i>&nbsp;{{ _("Nous contacter") }}
+          </a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -5,3 +5,10 @@
 [post_model_sync]
 # Patches added in this section will be executed after doctypes are migrated
 amoamancustom.hr_custom.doctype.employee.patches.change_emp_type
+amoamancustom.patches.rename_contact 
+amoamancustom.patches.rename_customer_last 
+amoamancustom.patches.rename_supplier
+amoamancustom.patches.rename_prospect
+amoamancustom.patches.rename_opportunity 
+
+

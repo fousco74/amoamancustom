@@ -10,38 +10,27 @@
   "column_break_kftm",
   "training_employment_type_id",
   "section_break_hnbl",
-  "cdi_or_cdd_leave_policy_id",
+  "cdi_or_cdd_leave_policy_id_men",
+  "cdi_or_cdd_leave_policy_id_women",
   "column_break_scpu",
-  "training_leave_policy_id"
+  "training_leave_policy_id",
+  "gender_men",
+  "gender_women"
  ],
  "fields": [
-  {
-   "fieldname": "cdd_employment_type_id",
-   "fieldtype": "Data",
-   "label": "CDD Employment Type ID"
-  },
-  {
-   "fieldname": "cdi_employment_type_id",
-   "fieldtype": "Data",
-   "label": "CDI Employment Type ID"
-  },
   {
    "fieldname": "column_break_kftm",
    "fieldtype": "Column Break"
   },
   {
    "fieldname": "training_employment_type_id",
-   "fieldtype": "Data",
-   "label": "Training Employment Type ID"
+   "fieldtype": "Link",
+   "label": "Training Employment Type ID",
+   "options": "Employment Type"
   },
   {
    "fieldname": "section_break_hnbl",
    "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "cdi_or_cdd_leave_policy_id",
-   "fieldtype": "Data",
-   "label": "CDI or CDD Leave Policy ID"
   },
   {
    "fieldname": "column_break_scpu",
@@ -49,15 +38,52 @@
   },
   {
    "fieldname": "training_leave_policy_id",
-   "fieldtype": "Data",
-   "label": "Training Leave Policy ID"
+   "fieldtype": "Link",
+   "label": "Training Leave Policy ID",
+   "options": "Leave Policy"
+  },
+  {
+   "fieldname": "cdd_employment_type_id",
+   "fieldtype": "Link",
+   "label": "CDD Employment Type ID",
+   "options": "Employment Type"
+  },
+  {
+   "fieldname": "cdi_employment_type_id",
+   "fieldtype": "Link",
+   "label": "CDI Employment Type ID",
+   "options": "Employment Type"
+  },
+  {
+   "fieldname": "cdi_or_cdd_leave_policy_id_men",
+   "fieldtype": "Link",
+   "label": "CDI or CDD Leave Policy ID Men",
+   "options": "Leave Policy"
+  },
+  {
+   "fieldname": "cdi_or_cdd_leave_policy_id_women",
+   "fieldtype": "Link",
+   "label": "CDI or CDD Leave Policy ID Women",
+   "options": "Leave Policy"
+  },
+  {
+   "fieldname": "gender_men",
+   "fieldtype": "Link",
+   "label": "Gender men",
+   "options": "Gender"
+  },
+  {
+   "fieldname": "gender_women",
+   "fieldtype": "Link",
+   "label": "Gender women",
+   "options": "Gender"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-09-09 16:27:01.715429",
+ "modified": "2026-02-06 17:51:40.012318",
  "modified_by": "Administrator",
  "module": "HR_CUSTOM",
  "name": "RH Leave Settings",

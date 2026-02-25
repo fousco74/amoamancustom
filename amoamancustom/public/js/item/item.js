@@ -13,7 +13,10 @@ item_group(frm){
       case "Gestion de projet interne":
           frm.set_value("naming_series","GPI-.YYYY.-");
           break;
-      
+
+     case "Prestations de Services Vendues" :
+        frm.set_value("naming_series","PSV-.YYYY.-");
+          break;
       case "Assistance technique ou Mise a disposition (Positionnement de ressource)":
           frm.set_value("naming_series","MAD-.YYYY.-");
           break;
