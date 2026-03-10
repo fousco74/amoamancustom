@@ -1,827 +1,752 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>salary slip</title>
 
     <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
 
     <style>
-        .w-15 { width: 15%; }
-        .w-35 { width: 35%; }
-        .w-40 { width: 40%; }
-        .w-60 { width: 60%; }
-        .w-70 { width: 70%; }
-        .size-15 { width: 60px; height: 60px; object-fit: cover; }
-        .bg-olive-100 { background-color: #ebf0dd; }
-        .bg-gray-300 { background-color: #bfbfbf; }
-        .text-13 { font-size: 13px; }
-        /* Removed .text-nowrap override — allow wrapping everywhere */
-        .pre-sp { display: inline-block; min-width: .5rem; }
-        body {
-            background: #f6f7fb;
-            padding: 0 !important;
-            margin: 0 !important;
-        }
+      .w-15 {
+        width: 15%;
+      }
+      .w-35 {
+        width: 35%;
+      }
+      .w-40 {
+        width: 40%;
+      }
+      .w-60 {
+        width: 60%;
+      }
+      .w-70 {
+        width: 70%;
+      }
+      .size-15 {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+      }
+      .bg-olive-100 {
+        background-color: #ebf0dd !important;
+      }
+      .bg-gray-300 {
+        background-color: #bfbfbf !important; 
+      }
+      
+      .text-13 {
+        font-size: 13px;
+      }
+      .pre-sp {
+        display: inline-block;
+        min-width: 0.5rem;
+      }
+      body {
+        background: #f6f7fb;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
 
-        .print-format td, .print-format th {
-            padding: 0 !important;
-        }
+      .print-format td,
+      .print-format th {
+        padding: 0 !important;
+      }
 
-        tr, td, table {
-            border-collapse: collapse;
-            padding: 0 !important;
-        }
+      tr,
+      td,
+      table {
+        border-collapse: collapse;
+        padding: 0 !important;
+      }
 
-        .print-format {
-            padding: 4px !important;
-            margin: 0 !important;
-        }
+      .print-format {
+        padding: 4px !important;
+        margin: 0 !important;
+      }
 
-        /* Allow text wrapping in all cells */
-        td, th, span, div {
-            white-space: normal !important;
-            word-break: break-word;
-        }
+      td,
+      th,
+      span,
+      div {
+        white-space: normal !important;
+        word-break: break-word;
+      }
+
+      /* Padding pour le tableau bas uniquement */
+      .bottom-table td,
+      .bottom-table th {
+        padding: 4px 8px !important;
+      }
     </style>
-</head>
+  </head>
 
-<body class="d-flex justify-content-center align-items-center flex-column">
+  <body class="d-flex justify-content-center align-items-center flex-column">
+    {# ================================================================== #} {#
+    MACRO : Formater un entier avec des espaces (1 000 000) #} {#
+    ================================================================== #} {%
+    macro fmt(n) -%} {%- set n = (n | float | round | int) -%} {%- set is_neg =
+    (n < 0) -%} {%- set n = n | abs -%} {%- set s = n | string -%} {%- set r =
+    namespace(out="", count=0) -%} {%- for ch in s | reverse -%} {%- if r.count
+    > 0 and r.count % 3 == 0 -%} {%- set r.out = "\u00a0" + r.out -%} {%- endif
+    -%} {%- set r.out = ch + r.out -%} {%- set r.count = r.count + 1 -%} {%-
+    endfor -%} {%- if is_neg %}-{% endif %}{{ r.out }} {%- endmacro %} {#
+    ================================================================== #} {#
+    MACRO : Lire le montant d'une composante dans une liste #} {#
+    ================================================================== #} {%
+    macro amt(table, component_name) -%} {%- set row = (table |
+    selectattr("salary_component", "equalto", component_name) | list | first)
+    -%} {{ (row.amount if row else 0) | float | round | int }} {%- endmacro %}
+    {# ================================================================== #} {#
+    VARIABLES GLOBALES #} {#
+    ================================================================== #} {% set
+    logo_url = frappe.db.get_value("Website Settings", None, "app_logo") %} {%
+    set cat = frappe.db.get_value("Employee", doc.employee, "custom_catégorie_")
+    %} {% set sal_base = frappe.db.get_value("Grade Categorie", cat,
+    "salaire_de_base") | float %} {% set sursalaire =
+    frappe.db.get_value("Employee", doc.employee, "custom_sursalaire") | float
+    %} {% set left = frappe.db.get_value("Employee", doc.employee,
+    "custom_left") %} {# Montants des composantes (calculés une seule fois) #}
+    {% set its_amount = amt(doc.deductions, "Retenue ITS") | float %} {% set
+    cnps_amount = amt(doc.deductions, "Retenue CNPS") | float %} {% set
+    cmu_amount = amt(doc.deductions, "Retenue CMU") | float %} {% set
+    grat_amount = amt(doc.earnings, "Gratification") | float %} {% set
+    conge_amount = amt(doc.earnings, "Indemnité de Congés") | float %} {# Total
+    des remboursements de prêts #} {% set ns_loan = namespace(total=0) %} {% for
+    loan in doc.loans %} {% set ns_loan.total = ns_loan.total +
+    (loan.total_payment | float) %} {% endfor %} {# Totaux du bas de bulletin #}
+    {% set gross = doc.gross_pay | float %} {% set imposable = gross - 30000 %}
+    {% set total_ret = (doc.total_deduction | float) + ns_loan.total %}
 
-    {# --- Macros utilitaires : lire un composant dans une liste --- #}
-    {% macro amt(table, component_name) -%}
-        {%- set row = (table | selectattr("salary_component", "equalto", component_name) | list | first) -%}
-        {{ (row.amount if row else 0) | float | round | int }}
-    {%- endmacro %}
-    {% macro base_amt(table, component_name) -%}
-        {%- set row = (table | selectattr("salary_component", "equalto", component_name) | list | first) -%}
-        {{ (row.base if row and row.base is defined else 0) | float | round | int }}
-    {%- endmacro %}
+    <table class="table w-100 border border-2" style="width: 1200px !important">
+      <thead>
+        <tr>
+          <th colspan="2" class="border">
+            <img src="{{ logo_url }}" alt="logo" class="size-15" />
+          </th>
+        </tr>
+      </thead>
 
-    {% set logo_url = frappe.db.get_value("Website Settings", None, "app_logo") %}
+      <tbody class="text-center small">
+        <tr>
+          <!-- Colonne gauche -->
+          <td class="border text-start align-top">
+            <h3 class="h3 fw-semibold mb-2">Amoaman &amp; Associes</h3>
 
+            <div class="d-flex flex-column">
+              <div class="bg-olive-100 d-flex flex-column text-center p-1">
+                <span>11 BP 2624 ABIDJAN 11</span>
+                <span>2724311561</span>
+              </div>
 
-    <table class="table w-100 border border-2" style="width: 1200px !important;">
-        <thead>
-            <tr>
-                <th colspan="2" class="border">
-                    <img src="{{ logo_url }}" alt="logo" class="size-15" />
-                </th>
-            </tr>
-        </thead>
+              <div class="d-flex gap-3 text-13 mt-1">
+                <span>N°CNPS ENTREPRISE</span>
+                <span>336747</span>
+              </div>
 
-        {% set cat = frappe.db.get_value("Employee", doc.employee, "custom_catégorie_") %}
+              <span class="p-2 bg-gray-300 text-13 d-block"></span>
 
-        <tbody class="text-center small">
-            <tr>
-                <!-- Colonne gauche -->
-                <td class="border text-start align-top">
-                    <h3 class="h3 fw-semibold mb-2">Amoaman &amp; Associes</h3>
+              <div class="d-flex">
+                <span class="w-50">Matricule</span>
+                <span class="w-50"
+                  >{{ frappe.db.get_value("Employee", doc.employee,
+                  "custom_matricule") }}</span
+                >
+              </div>
 
-                    <div class="d-flex flex-column">
-                        <div class="bg-olive-100 d-flex flex-column text-center p-1">
-                            <span>11 BP 2624 ABIDJAN 11</span>
-                            <span>2724311561</span>
-                        </div>
+              <div class="d-flex text-13">
+                <span class="w-50">Service</span>
+                <span class="w-50" style="font-size: 11px !important"
+                  >{{ frappe.db.get_value("Employee", doc.employee,
+                  "designation") }}</span
+                >
+              </div>
 
-                        <div class="d-flex gap-3 text-13 mt-1">
-                            <span>N°CNPS ENTREPRISE</span>
-                            <span>336747</span>
-                        </div>
+              <div class="d-flex text-13">
+                <span class="w-50">Nombre de part</span>
+                <span class="w-50"
+                  >{{ frappe.db.get_value("Employee", doc.employee,
+                  "custom_nbre_de_parts") }}</span
+                >
+              </div>
 
-                        <span class="p-2 bg-gray-300 text-13 d-block"></span>
+              <div class="d-flex text-13">
+                <span class="w-50">Nationalité</span>
+                <span class="w-50"
+                  >{{ frappe.db.get_value("Employee", doc.employee,
+                  "custom_nationality") }}</span
+                >
+              </div>
 
-                        <div class="d-flex">
-                            <span class="w-50">Matricule</span>
-                            <span class="w-50">{{ frappe.db.get_value("Employee", doc.employee, "custom_matricule") }}</span>
-                        </div>
+              <div class="d-flex text-13">
+                <span class="w-50">Date d'entrée</span>
+                <span class="w-50"
+                  >{{ frappe.db.get_value("Employee", doc.employee,
+                  "date_of_joining") }}</span
+                >
+              </div>
 
-                        <div class="d-flex text-13">
-                            <span class="w-50">Service</span>
-                            <span class="w-50" style="font-size: 11px !important;">{{ frappe.db.get_value("Employee", doc.employee, "designation") }}</span>
-                        </div>
+              <div class="d-flex text-13">
+                <span class="w-50">Catégorie</span>
+                <span class="w-50">{{ cat }}</span>
+              </div>
 
-                        <div class="d-flex text-13">
-                            <span class="w-50">Nombre de part</span>
-                            <span class="w-50">{{ frappe.db.get_value("Employee", doc.employee, "custom_nbre_de_parts") }}</span>
-                        </div>
-
-                        <div class="d-flex text-13">
-                            <span class="w-50">Nationalité</span>
-                            <span class="w-50">{{ frappe.db.get_value("Employee", doc.employee, "custom_nationality") }}</span>
-                        </div>
-
-                        <div class="d-flex text-13">
-                            <span class="w-50">Date d'entrée</span>
-                            <span class="w-50">{{ frappe.db.get_value("Employee", doc.employee, "date_of_joining") }}</span>
-                        </div>
-
-                        <div class="d-flex text-13">
-                            <span class="w-50">Catégorie</span>
-                            <span class="w-50">{{ cat }}</span>
-                        </div>
-
-                        <div class="d-flex text-13">
-                            <span class="w-50">Salaire catégoriel</span>
-                            <span class="w-50">{{ frappe.db.get_value("Grade Categorie", cat, "salaire_de_base") | float | round | int }}</span>
-                        </div>
-                    </div>
-                </td>
-
-                <!-- Colonne droite -->
-                <td class="border-top border-bottom align-top">
-                    <div class="d-flex flex-column w-100">
-                        <div>
-                            <h2 class="h2 fw-bold border-end pe-2">BULLETIN DE PAIE</h2>
-                        </div>
-
-                        <div class="d-flex flex-column gap-4 mt-2">
-                            <div class="border d-flex">
-                                <div class="d-flex flex-column w-60 border text-center">
-                                    <span class="bg-gray-300">PERIODE DE PAIE</span>
-                                    <span>{{ doc.start_date }} au {{ doc.end_date }}</span>
-                                </div>
-                                <div class="d-flex flex-column w-40 border-top border-bottom text-center">
-                                    <span class="bg-gray-300">DATE EDITION</span>
-                                    <span>{{ doc.posting_date }}</span>
-                                </div>
-                            </div>
-
-                            <div class="border d-flex">
-                                <div class="d-flex flex-column w-50 border text-center">
-                                    <span class="bg-gray-300">NOM ET PRENOMS</span>
-                                    <span>{{ frappe.db.get_value("Employee", doc.employee, "employee_name") }}</span>
-                                </div>
-                                <div class="d-flex flex-column w-50 border-top border-bottom text-center">
-                                    <span class="bg-gray-300">ADRESSE</span>
-                                    <span>{{ frappe.db.get_value("Employee", doc.employee, "current_address") }}</span>
-                                </div>
-                            </div>
-
-                            <div class="border d-flex">
-                                <div class="d-flex flex-column w-25 border text-center">
-                                    <span class="bg-gray-300">N°CNPS</span>
-                                    <span>{{ frappe.db.get_value("Employee", doc.employee, "custom_cnps_number") }}</span>
-                                </div>
-                                <div class="d-flex flex-column flex-grow-1 border-top border-bottom text-center">
-                                    <span class="bg-gray-300">FONCTION</span>
-                                    <span>{{ frappe.db.get_value("Employee", doc.employee, "designation") }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-
-            <!-- En-têtes du tableau principal -->
-            <tr class="border" style="font-size: small;">
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-40 border">CODE</div>
-                        <div class="w-60 border">LIBELLE</div>
-                    </div>
-                </td>
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-25 border">BASE</div>
-                        <div class="w-25 border">TAUX</div>
-                        <div class="w-25 border">RETENUE</div>
-                        <div class="w-25 border">GAINS</div>
-                    </div>
-                </td>
-            </tr>
-
-            <!-- Lignes -->
-            <tr class="border-start border-end">
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-40 border-start border-end">00.1</div>
-                        <div class="w-60 border-start border-end">SALAIRE DE BASE</div>
-                    </div>
-                </td>
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-25 border-start border-end">
-                            {{ ((frappe.db.get_value("Grade Categorie", cat, "salaire_de_base") | float) / 173.33) | round | int }}
-                        </div>
-                        <div class="w-25 border-start border-end">173,33</div>
-                        <div class="w-25 border-start border-end"></div>
-                        <div class="w-25 border-start border-end">
-                            {{ frappe.db.get_value("Grade Categorie", cat, "salaire_de_base") | float | round | int }}
-                        </div>
-                    </div>
-                </td>
-            </tr>
-
-            <tr class="border-start border-end">
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-40 border-start border-end">00.2</div>
-                        <div class="w-60 border-start border-end">SURSALAIRE</div>
-                    </div>
-                </td>
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-25 border-start border-end">
-                            {{ frappe.db.get_value("Employee", doc.employee, "custom_sursalaire") | float | round | int }}
-                        </div>
-                        <div class="w-25 border-start border-end">173,33</div>
-                        <div class="w-25 border-start border-end"></div>
-                        <div class="w-25 border-start border-end">
-                            {{ frappe.db.get_value("Employee", doc.employee, "custom_sursalaire") | float | round | int }}
-                        </div>
-                    </div>
-                </td>
-            </tr>
-
-            <tr class="border-start border-end">
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-40 border-start border-end">-</div>
-                        <div class="w-60 border-start border-end">-</div>
-                    </div>
-                </td>
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-25 border-start border-end">-</div>
-                        <div class="w-25 border-start border-end">173,33</div>
-                        <div class="w-25 border-start border-end"></div>
-                        <div class="w-25 border-start border-end">-</div>
-                    </div>
-                </td>
-            </tr>
-
-            <tr class="border-start border-end">
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-40 border-start border-end">-</div>
-                        <div class="w-60 border-start border-end">-</div>
-                    </div>
-                </td>
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-25 border-start border-end">0</div>
-                        <div class="w-25 border-start border-end">173,33</div>
-                        <div class="w-25 border-start border-end"></div>
-                        <div class="w-25 border-start border-end">-</div>
-                    </div>
-                </td>
-            </tr>
-            {% set left = frappe.db.get_value("Employee",doc.employee, "custom_left") %}
-            {% if left %}
-            <tr class="border-start border-end">
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-40 border-start border-end">00.5</div>
-                        <div class="w-60 border-start border-end">CONGES PAYES</div>
-                    </div>
-                </td>
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-25 border-start border-end">
-                            {{ ((amt(doc.earnings, "Indemnité de Congés") | float) / 173.33) | round | int }}
-                        </div>
-                        <div class="w-25 border-start border-end">173,33</div>
-                        <div class="w-25 border-start border-end"></div>
-                        <div class="w-25 border-start border-end">
-                            {{ amt(doc.earnings, "Indemnité de Congés") }}
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            {% endif %}
-
-            <tr class="border-start border-end">
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-40 border-start border-end">00.6</div>
-                        <div class="w-60 border-start border-end">GRATIFICATION</div>
-                    </div>
-                </td>
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-25 border-start border-end">
-                            {{ ((amt(doc.earnings, "Gratification") | float) / 173.33) | round | int }}
-                        </div>
-                        <div class="w-25 border-start border-end">173,33</div>
-                        <div class="w-25 border-start border-end"></div>
-                        <div class="w-25 border-start border-end">
-                            {{ amt(doc.earnings, "Gratification") }}
-                        </div>
-                    </div>
-                </td>
-            </tr>
-
-            <tr class="border-start border-end">
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-40 border-start border-end">-</div>
-                        <div class="w-60 border-start border-end">-</div>
-                    </div>
-                </td>
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-25 border-start border-end">-</div>
-                        <div class="w-25 border-start border-end">173,33</div>
-                        <div class="w-25 border-start border-end"></div>
-                        <div class="w-25 border-start border-end">-</div>
-                    </div>
-                </td>
-            </tr>
-
-            <tr class="border-start border-end">
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-40 border-start border-end">-</div>
-                        <div class="w-60 border-start border-end">-</div>
-                    </div>
-                </td>
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-25 border-start border-end">-</div>
-                        <div class="w-25 border-start border-end">1,00</div>
-                        <div class="w-25 border-start border-end"></div>
-                        <div class="w-25 border-start border-end">-</div>
-                    </div>
-                </td>
-            </tr>
-
-            <tr class="border-start border-end">
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-40 border-start border-end">500</div>
-                        <div class="w-60 border-start border-end">ITS</div>
-                    </div>
-                </td>
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-25 border-start border-end">{{ amt(doc.deductions, "Retenue ITS") }}</div>
-                        <div class="w-25 border-start border-end"></div>
-                        <div class="w-25 border-start border-end"></div>
-                        <div class="w-25 border-start border-end"></div>
-                    </div>
-                </td>
-            </tr>
-
-            <tr class="border-start border-end">
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-40 border-start border-end">530</div>
-                        <div class="w-60 border-start border-end">CNPS</div>
-                    </div>
-                </td>
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-25 border-start border-end">{{ (amt(doc.deductions, "Retenue CNPS") | float) | round | int }}</div>
-                        <div class="w-25 border-start border-end">6,30</div>
-                        <div class="w-25 border-start border-end">2</div>
-                        <div class="w-25 border-start border-end"></div>
-                    </div>
-                </td>
-            </tr>
-
-            <tr class="border-start border-end">
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-40 border-start border-end">-</div>
-                        <div class="w-60 border-start border-end">-</div>
-                    </div>
-                </td>
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-25 border-start border-end"></div>
-                        <div class="w-25 border-start border-end"></div>
-                        <div class="w-25 border-start border-end"></div>
-                        <div class="w-25 border-start border-end"><span class="pre-sp">&nbsp;</span></div>
-                    </div>
-                </td>
-            </tr>
-
-            <tr class="border-start border-end">
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-40 border-start border-end">787</div>
-                        <div class="w-60 border-start border-end">PRIME DE TRANSPORT</div>
-                    </div>
-                </td>
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-25 border-start border-end">173</div>
-                        <div class="w-25 border-start border-end">173,33</div>
-                        <div class="w-25 border-start border-end"></div>
-                        <div class="w-25 border-start border-end">30 000</div>
-                    </div>
-                </td>
-            </tr>
-
-            <tr class="border-start border-end">
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-40 border-start border-end">-</div>
-                        <div class="w-60 border-start border-end">-</div>
-                    </div>
-                </td>
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-25 border-start border-end">-</div>
-                        <div class="w-25 border-start border-end">30,00</div>
-                        <div class="w-25 border-start border-end"></div>
-                        <div class="w-25 border-start border-end">-</div>
-                    </div>
-                </td>
-            </tr>
-
-            <tr class="border-start border-end">
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-40 border-start border-end">-</div>
-                        <div class="w-60 border-start border-end">-</div>
-                    </div>
-                </td>
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-25 border-start border-end">-</div>
-                        <div class="w-25 border-start border-end">30,00</div>
-                        <div class="w-25 border-start border-end"></div>
-                        <div class="w-25 border-start border-end">-</div>
-                    </div>
-                </td>
-            </tr>
-
-            <tr class="border-start border-end">
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-40 border-start border-end">-</div>
-                        <div class="w-60 border-start border-end">-</div>
-                    </div>
-                </td>
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-25 border-start border-end">-</div>
-                        <div class="w-25 border-start border-end">30,00</div>
-                        <div class="w-25 border-start border-end"></div>
-                        <div class="w-25 border-start border-end"><span class="pre-sp">&nbsp;</span></div>
-                    </div>
-                </td>
-            </tr>
-
-            <tr class="border-start border-end">
-          {% if doc.loans %}
-    {% for loan in doc.loans %}
-        <td>
-            <div class="w-100 d-flex">
-                <div class="w-40 border-start border-end">820</div>
-                <div class="w-60 border-start border-end">
-                    {{ loan.loan_product }}
-                </div>
+              <div class="d-flex text-13">
+                <span class="w-50">Salaire catégoriel</span>
+                <span class="w-50">{{ fmt(sal_base) }}</span>
+              </div>
             </div>
-        </td>
+          </td>
 
-        <td>
-            <div class="w-100 d-flex">
-                <div class="w-25 border-start border-end">
-                    {{ (loan.total_payment / 30) | round | int if loan.total_payment else 0 }}
+          <!-- Colonne droite -->
+          <td class="border-top border-bottom align-top">
+            <div class="d-flex flex-column w-100">
+              <div>
+                <h2 class="h2 fw-bold border-end pe-2">BULLETIN DE PAIE</h2>
+              </div>
+
+              <div class="d-flex flex-column gap-4 mt-2">
+                <div class="border d-flex">
+                  <div class="d-flex flex-column w-60 border text-center">
+                    <span class="bg-gray-300">PERIODE DE PAIE</span>
+                    <span>{{ doc.start_date }} au {{ doc.end_date }}</span>
+                  </div>
+                  <div
+                    class="d-flex flex-column w-40 border-top border-bottom text-center"
+                  >
+                    <span class="bg-gray-300">DATE EDITION</span>
+                    <span>{{ doc.posting_date }}</span>
+                  </div>
                 </div>
-                <div class="w-25 border-start border-end">
-                    30,00
+
+                <div class="border d-flex">
+                  <div class="d-flex flex-column w-50 border text-center">
+                    <span class="bg-gray-300">NOM ET PRENOMS</span>
+                    <span
+                      >{{ frappe.db.get_value("Employee", doc.employee,
+                      "employee_name") }}</span
+                    >
+                  </div>
+                  <div
+                    class="d-flex flex-column w-50 border-top border-bottom text-center"
+                  >
+                    <span class="bg-gray-300">ADRESSE</span>
+                    <span
+                      >{{ frappe.db.get_value("Employee", doc.employee,
+                      "current_address") }}</span
+                    >
+                  </div>
                 </div>
-                <div class="w-25 border-start border-end">
-                    {{ loan.total_payment | round | int }}
+
+                <div class="border d-flex">
+                  <div class="d-flex flex-column w-25 border text-center">
+                    <span class="bg-gray-300">N°CNPS</span>
+                    <span
+                      >{{ frappe.db.get_value("Employee", doc.employee,
+                      "custom_cnps_number") }}</span
+                    >
+                  </div>
+                  <div
+                    class="d-flex flex-column flex-grow-1 border-top border-bottom text-center"
+                  >
+                    <span class="bg-gray-300">FONCTION</span>
+                    <span
+                      >{{ frappe.db.get_value("Employee", doc.employee,
+                      "designation") }}</span
+                    >
+                  </div>
                 </div>
-                <div class="w-25 border-start border-end"></div>
+              </div>
             </div>
-        </td>
-    {% endfor %}
-{% endif %}
-            </tr>
+          </td>
+        </tr>
 
-            <tr class="border-start border-end">
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-40 border-start border-end">830</div>
-                        <div class="w-60 border-start border-end">ASSURANCE</div>
-                    </div>
-                </td>
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-25 border-start border-end">0</div>
-                        <div class="w-25 border-start border-end">30,00</div>
-                        <div class="w-25 border-start border-end">80%</div>
-                        <div class="w-25 border-start border-end"></div>
-                    </div>
-                </td>
-            </tr>
+        <!-- En-têtes du tableau principal -->
+        <tr class="border" style="font-size: small">
+          <td>
+            <div class="w-100 d-flex">
+              <div class="w-40 border">CODE</div>
+              <div class="w-60 border">LIBELLE</div>
+            </div>
+          </td>
+          <td>
+            <div class="w-100 d-flex">
+              <div class="w-25 border">BASE</div>
+              <div class="w-25 border">TAUX</div>
+              <div class="w-25 border">RETENUE</div>
+              <div class="w-25 border">GAINS</div>
+            </div>
+          </td>
+        </tr>
 
-            <tr class="border-start border-end">
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-40 border-start border-end">840</div>
-                        <div class="w-60 border-start border-end">COUVERTURE MALADIE UNIVER</div>
-                    </div>
-                </td>
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-25 border-start border-end">500</div>
-                        <div class="w-25 border-start border-end">0,50</div>
-                        <div class="w-25 border-start border-end">1 000</div>
-                        <div class="w-25 border-start border-end"></div>
-                    </div>
-                </td>
-            </tr>
+        {# ---- 00.1 SALAIRE DE BASE (toujours affiché) ---- #}
+        <tr class="border-start border-end">
+          <td>
+            <div class="w-100 d-flex">
+              <div class="w-40 border-start border-end">00.1</div>
+              <div class="w-60 border-start border-end">SALAIRE DE BASE</div>
+            </div>
+          </td>
+          <td>
+            <div class="w-100 d-flex">
+              <div class="w-25 border-start border-end">
+                {{ fmt(sal_base / 173.33) }}
+              </div>
+              <div class="w-25 border-start border-end">173,33</div>
+              <div class="w-25 border-start border-end"></div>
+              <div class="w-25 border-start border-end">
+                {{ fmt(sal_base) }}
+              </div>
+            </div>
+          </td>
+        </tr>
 
-            <tr class="border-start border-end">
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-40 border-start border-end">-</div>
-                        <div class="w-60 border-start border-end">-</div>
-                    </div>
-                </td>
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-25 border-start border-end">-</div>
-                        <div class="w-25 border-start border-end">30,00</div>
-                        <div class="w-25 border-start border-end"></div>
-                        <div class="w-25 border-start border-end">-</div>
-                    </div>
-                </td>
-            </tr>
+        {# ---- 00.2 SURSALAIRE (masqué si = 0) ---- #} {% if sursalaire > 0 %}
+        <tr class="border-start border-end">
+          <td>
+            <div class="w-100 d-flex">
+              <div class="w-40 border-start border-end">00.2</div>
+              <div class="w-60 border-start border-end">SURSALAIRE</div>
+            </div>
+          </td>
+          <td>
+            <div class="w-100 d-flex">
+              <div class="w-25 border-start border-end">
+                {{ fmt(sursalaire / 173.33) }}
+              </div>
+              <div class="w-25 border-start border-end">173,33</div>
+              <div class="w-25 border-start border-end"></div>
+              <div class="w-25 border-start border-end">
+                {{ fmt(sursalaire) }}
+              </div>
+            </div>
+          </td>
+        </tr>
+        {% endif %} {% for _ in range(5) %}
 
-            <tr class="border-start border-end">
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-40 border-start border-end">-</div>
-                        <div class="w-60 border-start border-end">-</div>
-                    </div>
-                </td>
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-25 border-start border-end">-</div>
-                        <div class="w-25 border-start border-end">30,00</div>
-                        <div class="w-25 border-start border-end"></div>
-                        <div class="w-25 border-start border-end"><span class="pre-sp">&nbsp;</span></div>
-                    </div>
-                </td>
-            </tr>
+        <tr class="border-start border-end">
+          <td>
+            <div class="w-100 d-flex">
+              <div class="w-40 border-start border-end">-</div>
+              <div class="w-60 border-start border-end">-</div>
+            </div>
+          </td>
+          <td>
+            <div class="w-100 d-flex">
+              <div class="w-25 border-start border-end">-</div>
+              <div class="w-25 border-start border-end">173,33</div>
+              <div class="w-25 border-start border-end"></div>
+              <div class="w-25 border-start border-end">-</div>
+            </div>
+          </td>
+        </tr>
 
-            <tr class="border-start border-end py-2">
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-40 border-start border-end">-</div>
-                        <div class="w-60 border-start border-end">-</div>
-                    </div>
-                </td>
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-25 border-start border-end">-</div>
-                        <div class="w-25 border-start border-end">30,00</div>
-                        <div class="w-25 border-start border-end"></div>
-                        <div class="w-25 border-start border-end"><span class="pre-sp">&nbsp;</span></div>
-                    </div>
-                </td>
-            </tr>
+        {% endfor %} {# ---- 00.5 CONGES PAYES (masqué si non-partant ou = 0)
+        ---- #} {% if left and conge_amount > 0 %}
+        <tr class="border-start border-end">
+          <td>
+            <div class="w-100 d-flex">
+              <div class="w-40 border-start border-end">00.5</div>
+              <div class="w-60 border-start border-end">CONGES PAYES</div>
+            </div>
+          </td>
+          <td>
+            <div class="w-100 d-flex">
+              <div class="w-25 border-start border-end">
+                {{ fmt(conge_amount / 173.33) }}
+              </div>
+              <div class="w-25 border-start border-end">173,33</div>
+              <div class="w-25 border-start border-end"></div>
+              <div class="w-25 border-start border-end">
+                {{ fmt(conge_amount) }}
+              </div>
+            </div>
+          </td>
+        </tr>
+        {% endif %} {# ---- 00.6 GRATIFICATION (masqué si = 0) ---- #} {% if
+        grat_amount > 0 %}
+        <tr class="border-start border-end">
+          <td>
+            <div class="w-100 d-flex">
+              <div class="w-40 border-start border-end">00.6</div>
+              <div class="w-60 border-start border-end">GRATIFICATION</div>
+            </div>
+          </td>
+          <td>
+            <div class="w-100 d-flex">
+              <div class="w-25 border-start border-end">
+                {{ fmt(grat_amount / 173.33) }}
+              </div>
+              <div class="w-25 border-start border-end">173,33</div>
+              <div class="w-25 border-start border-end"></div>
+              <div class="w-25 border-start border-end">
+                {{ fmt(grat_amount) }}
+              </div>
+            </div>
+          </td>
+        </tr>
+        {% endif %} {# ---- 500 ITS (masqué si = 0) ---- #} {% if its_amount > 0
+        %}
+        <tr class="border-start border-end">
+          <td>
+            <div class="w-100 d-flex">
+              <div class="w-40 border-start border-end">500</div>
+              <div class="w-60 border-start border-end">ITS</div>
+            </div>
+          </td>
+          <td>
+            <div class="w-100 d-flex">
+              <div class="w-25 border-start border-end">-</div>
+              <div class="w-25 border-start border-end"></div>
+              <div class="w-25 border-start border-end">
+                {{ fmt(its_amount) }}
+              </div>
+              <div class="w-25 border-start border-end"></div>
+            </div>
+          </td>
+        </tr>
+        {% endif %} {# ---- 530 CNPS (masqué si = 0) ---- #} {% if cnps_amount >
+        0 %}
+        <tr class="border-start border-end">
+          <td>
+            <div class="w-100 d-flex">
+              <div class="w-40 border-start border-end">530</div>
+              <div class="w-60 border-start border-end">CNPS</div>
+            </div>
+          </td>
+          <td>
+            <div class="w-100 d-flex">
+              <div class="w-25 border-start border-end">
+                {{ fmt(cnps_amount / 6.3) }}
+              </div>
+              <div class="w-25 border-start border-end">6,30</div>
+              <div class="w-25 border-start border-end">
+                {{ fmt(cnps_amount) }}
+              </div>
+              <div class="w-25 border-start border-end"></div>
+            </div>
+          </td>
+        </tr>
+        {% endif %} {# ---- 787 PRIME DE TRANSPORT (toujours affichée) ---- #}
+        <tr class="border-start border-end">
+          <td>
+            <div class="w-100 d-flex">
+              <div class="w-40 border-start border-end">787</div>
+              <div class="w-60 border-start border-end">PRIME DE TRANSPORT</div>
+            </div>
+          </td>
+          <td>
+            <div class="w-100 d-flex">
+              <div class="w-25 border-start border-end">173</div>
+              <div class="w-25 border-start border-end">173,33</div>
+              <div class="w-25 border-start border-end"></div>
+              <div class="w-25 border-start border-end">30&#8239;000</div>
+            </div>
+          </td>
+        </tr>
 
-            <tr class="border-start border-end">
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-40 border-start border-end"><span class="pre-sp">&nbsp;</span></div>
-                        <div class="w-60 border-start border-end"></div>
-                    </div>
-                </td>
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-25 border-start border-end"></div>
-                        <div class="w-25 border-start border-end"></div>
-                        <div class="w-25 border-start border-end"></div>
-                        <div class="w-25 border-start border-end"><span class="pre-sp">&nbsp;</span></div>
-                    </div>
-                </td>
-            </tr>
-
-            <tr class="border-start border-end">
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-40 border-start border-end"><span class="pre-sp">&nbsp;</span></div>
-                        <div class="w-60 border-start border-end"></div>
-                    </div>
-                </td>
-                <td>
-                    <div class="w-100 d-flex">
-                        <div class="w-25 border-start border-end"></div>
-                        <div class="w-25 border-start border-end"></div>
-                        <div class="w-25 border-start border-end"></div>
-                        <div class="w-25 border-start border-end"><span class="pre-sp">&nbsp;</span></div>
-                    </div>
-                </td>
-            </tr>
-        </tbody>
+        {# ---- 820 PRETS / AVANCES (masqués si = 0) ---- #} {% for loan in
+        doc.loans %} {% if loan.total_payment | float > 0 %}
+        <tr class="border-start border-end">
+          <td>
+            <div class="w-100 d-flex">
+              <div class="w-40 border-start border-end">820</div>
+              <div class="w-60 border-start border-end">
+                {{ frappe.db.get_value("Loan", loan.loan, "loan_product") }}
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="w-100 d-flex">
+              <div class="w-25 border-start border-end">
+                {{ fmt(loan.total_payment / 30) }}
+              </div>
+              <div class="w-25 border-start border-end">30,00</div>
+              <div class="w-25 border-start border-end">
+                {{ fmt(loan.total_payment) }}
+              </div>
+              <div class="w-25 border-start border-end"></div>
+            </div>
+          </td>
+        </tr>
+        {% endif %} {% endfor %} {# ---- 840 CMU (masqué si = 0) ---- #} {% if
+        cmu_amount > 0 %}
+        <tr class="border-start border-end">
+          <td>
+            <div class="w-100 d-flex">
+              <div class="w-40 border-start border-end">840</div>
+              <div class="w-60 border-start border-end">
+                COUVERTURE MALADIE UNIVER
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="w-100 d-flex">
+              <div class="w-25 border-start border-end">1&#8239;000</div>
+              <div class="w-25 border-start border-end">0,50</div>
+              <div class="w-25 border-start border-end">
+                {{ fmt(cmu_amount) }}
+              </div>
+              <div class="w-25 border-start border-end"></div>
+            </div>
+          </td>
+        </tr>
+        {% endif %} {# ---- Lignes vides de remplissage ---- #} {% for _ in
+        range(4) %}
+        <tr class="border-start border-end">
+          <td>
+            <div class="w-100 d-flex">
+              <div class="w-40 border-start border-end">
+                <span class="pre-sp">&nbsp;</span>-
+              </div>
+              <div class="w-60 border-start border-end">-</div>
+            </div>
+          </td>
+          <td>
+            <div class="w-100 d-flex">
+              <div class="w-25 border-start border-end">-</div>
+              <div class="w-25 border-start border-end">30,00</div>
+              <div class="w-25 border-start border-end"></div>
+              <div class="w-25 border-start border-end">
+                -<span class="pre-sp">&nbsp;</span>
+              </div>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
     </table>
 
-    <!-- Totaux -->
+    <!-- ================================================================ -->
+    <!-- Totaux                                                            -->
+    <!-- ================================================================ -->
     <div class="d-flex w-100 fw-semibold">
-        <span class="w-25">TOTAL IMPOSABLE</span>
-        <span class="w-25">TOTAL GAINS</span>
-        <span class="w-25">TOTAL RETENUES</span>
+      <span class="w-25">TOTAL IMPOSABLE</span>
+      <span class="w-25">TOTAL GAINS</span>
+      <span class="w-25">TOTAL RETENUES</span>
     </div>
-    <div class="d-flex w-100 ">
-        <span class="w-25 pl-4">{{ ((doc.gross_pay | float) - 30000) | round | int }}</span>
-        <span class="w-25 pl-4">{{ doc.gross_pay | float | round | int }}</span>
-        <span class="w-25 pl-4">{{ doc.total_deduction | float | round | int }}</span>
-        <div class="d-flex w-25 flex-grow-1">
-            <span class="w-50 fw-semibold">NET A PAYER</span>
-            <span class="w-50 bg-gray-300 text-center">{{ doc.net_pay | float | round | int }}</span>
-        </div>
+    <div class="d-flex w-100">
+      {# total_ret inclut doc.total_deduction + tous les remboursements de prêts
+      #}
+      <span class="w-25 pl-4">{{ fmt(imposable) }}</span>
+      <span class="w-25 pl-4">{{ fmt(gross) }}</span>
+      <span class="w-25 pl-4">{{ fmt(total_ret) }}</span>
+      <div class="d-flex w-25 flex-grow-1">
+        <span class="w-50 fw-semibold">NET A PAYER</span>
+        <span class="w-50 bg-gray-300 text-center">{{ fmt(doc.net_pay) }}</span>
+      </div>
     </div>
 
-    <!-- Tableau bas -->
-    <table class="table w-100 mt-4 mb-3">
-        <thead>
-            <tr class="border bg-gray-300">
-                <th class="border w-35">RETENUES PATRONALES</th>
-                <th class="border w-25">RETENUES SALARIALES</th>
-                <th class="border w-40">CUMULS</th>
-            </tr>
-        </thead>
-        <tbody class="small">
-            <tr class="border-start border-end">
-                <td class="w-35 border-start border-end">
-                    <div class="d-flex text-13">
-                        <span class="w-50">Prestation familiale</span>
-                        <span class="w-50 text-center">4 025</span>
-                    </div>
-                </td>
-                <td class="w-25 border-start border-end">
-                    <div class="d-flex text-13">
-                        <span class="w-50">-</span>
-                        <span class="w-50 text-center">-</span>
-                    </div>
-                </td>
-                <td class="w-40 border-start border-end">
-                    <div class="d-flex text-13">
-                        <span class="w-50">Base jours congés</span>
-                        <span class="w-50 text-center">280</span>
-                    </div>
-                </td>
-            </tr>
+    <!-- ================================================================ -->
+    <!-- Tableau bas — padding ajouté via .bottom-table                   -->
+    <!-- ================================================================ -->
+    <table class="table bottom-table w-100 mt-4 mb-3">
+      <thead>
+        <tr class="border bg-gray-300">
+          <th class="border bg-gray-300 w-35">RETENUES PATRONALES</th>
+          <th class="border bg-gray-300 w-25">RETENUES SALARIALES</th>
+          <th class="border bg-gray-300 w-40">CUMULS</th>
+        </tr>
+      </thead>
+      <tbody class="small">
+        <tr class="border-start border-end">
+          <td class="w-35 border-start border-end">
+            <div class="d-flex text-13">
+              <span class="w-50">Prestation familiale</span>
+              <span class="w-50 text-center">{{ fmt(75000 * 5.75 / 100) }}</span>
+            </div>
+          </td>
+          <td class="w-25 border-start border-end">
+            <div class="d-flex text-13">
+              <span class="w-50">-</span>
+              <span class="w-50 text-center">-</span>
+            </div>
+          </td>
+          <td class="w-40 border-start border-end">
+            <div class="d-flex text-13">
+              <span class="w-50">Base jours congés</span>
+              <span class="w-50 text-center">280</span>
+            </div>
+          </td>
+        </tr>
 
-            <tr class="border-start border-end">
-                <td class="w-35 border-start border-end">
-                    <div class="d-flex text-13">
-                        <span class="w-50">Accident de travail</span>
-                        <span class="w-50 text-center">2 100</span>
-                    </div>
-                </td>
-                <td class="w-25 border-start border-end">
-                    <div class="d-flex text-13">
-                        <span class="w-50">-</span>
-                        <span class="w-50 text-center">-</span>
-                    </div>
-                </td>
-                <td class="w-40 border-start border-end">
-                    <div class="d-flex text-13">
-                        <span class="w-50">Base congés imposable</span>
-                        <span class="w-50 text-center">-</span>
-                    </div>
-                </td>
-            </tr>
+        <tr class="border-start border-end">
+          <td class="w-35 border-start border-end">
+            <div class="d-flex text-13">
+              <span class="w-50">Accident de travail</span>
+              <span class="w-50 text-center">{{ fmt(75000 * 3 / 100) }}</span>
+            </div>
+          </td>
+          <td class="w-25 border-start border-end">
+            <div class="d-flex text-13">
+              <span class="w-50">-</span>
+              <span class="w-50 text-center">-</span>
+            </div>
+          </td>
+          <td class="w-40 border-start border-end">
+            <div class="d-flex text-13">
+              <span class="w-50">Base congés imposable</span>
+              <span class="w-50 text-center">-</span>
+            </div>
+          </td>
+        </tr>
 
-            <tr class="border-start border-end">
-                <td class="w-35 border-start border-end">
-                    <div class="d-flex text-13">
-                        <span class="w-50">Caisse de retraite</span>
-                        <span class="w-50 text-center">{{ ((doc.gross_pay | float) * 7.7 / 100) | round | int }}</span>
-                    </div>
-                </td>
-                <td class="w-25 border-start border-end">
-                    <div class="d-flex text-13">
-                        <span class="w-50">ITS</span>
-                        <span class="w-50 text-center">{{ amt(doc.deductions, "Retenue ITS") }}</span>
-                    </div>
-                </td>
-                <td class="w-40 border-start border-end">
-                    <div class="d-flex text-13">
-                        <span class="w-50">Heures travaillées</span>
-                        <span class="w-50 text-center">{{ ((doc.total_working_days | float) - (doc.leave_without_pay | float)) * 8  }}</span>
-                    </div>
-                </td>
-            </tr>
+        <tr class="border-start border-end">
+          <td class="w-35 border-start border-end">
+            <div class="d-flex text-13">
+              <span class="w-50">Caisse de retraite</span>
+              <span class="w-50 text-center"
+                >{{ fmt(imposable * 7.7 / 100) }}</span
+              >
+            </div>
+          </td>
+          <td class="w-25 border-start border-end">
+            <div class="d-flex text-13">
+              <span class="w-50">ITS</span>
+              <span class="w-50 text-center">{{ fmt(its_amount) }}</span>
+            </div>
+          </td>
+          <td class="w-40 border-start border-end">
+            <div class="d-flex text-13">
+              <span class="w-50">Heures travaillées</span>
+              <span class="w-50 text-center">
+                {{ ((doc.total_working_days | float) - (doc.leave_without_pay |
+                float)) * 8 }}
+              </span>
+            </div>
+          </td>
+        </tr>
 
-            <tr class="border-start border-end">
-                <td class="w-35 border-start border-end">
-                    <div class="d-flex text-13">
-                        <span class="w-50">Formation Continue</span>
-                        <span class="w-50 text-center">{{ ((doc.gross_pay | float) * 0.6 / 100) | round | int }}</span>
-                    </div>
-                </td>
-                <td class="w-25 border-start border-end">
-                    <div class="d-flex text-13">
-                        <span class="w-50">Caisse de retraite</span>
-                        <span class="w-50 text-center">{{ amt(doc.deductions, "Retenue CNPS") }}</span>
-                    </div>
-                </td>
-                <td class="w-40 border-start border-end">
-                    <div class="d-flex text-13">
-                        <span class="w-50">Jours congés acquis</span>
-                        <span class="w-50 text-center">{{doc.custom_leave_balance or 0}}</span>
-                    </div>
-                </td>
-            </tr>
+        <tr class="border-start border-end">
+          <td class="w-35 border-start border-end">
+            <div class="d-flex text-13">
+              <span class="w-50">Formation Continue</span>
+              <span class="w-50 text-center"
+                >{{ fmt(imposable * 0.6 / 100) }}</span
+              >
+            </div>
+          </td>
+          <td class="w-25 border-start border-end">
+            <div class="d-flex text-13">
+              <span class="w-50">Caisse de retraite</span>
+              <span class="w-50 text-center">{{ fmt(cnps_amount) }}</span>
+            </div>
+          </td>
+          <td class="w-40 border-start border-end">
+            <div class="d-flex text-13">
+              <span class="w-50">Jours congés acquis</span>
+              <span class="w-50 text-center"
+                >{{ doc.custom_leave_balance or 0 }}</span
+              >
+            </div>
+          </td>
+        </tr>
 
-            <tr class="border-start border-end">
-                <td class="w-35 border-start border-end">
-                    <div class="d-flex text-13">
-                        <span class="w-50">Taxe d'apprentissage</span>
-                        <span class="w-50 text-center">{{ ((doc.gross_pay | float) * 0.4 / 100) | round | int }}</span>
-                    </div>
-                </td>
-                <td class="w-25 border-start border-end">
-                    <div class="d-flex text-13">
-                        <span class="w-50">Couverture maladie</span>
-                        <span class="w-50 text-center">{{ amt(doc.deductions, "Retenue CMU") }}</span>
-                    </div>
-                </td>
-                <td class="w-40 border-start border-end">
-                    <div class="d-flex text-13">
-                        <span class="w-50">Montant congés acquis</span>
-                        <span class="w-50 text-center">
-                            {% if not left %}
-                            
-                                {{ amt(doc.earnings, "Indemnité de Congés") or "-" }}
+        <tr class="border-start border-end">
+          <td class="w-35 border-start border-end">
+            <div class="d-flex text-13">
+              <span class="w-50">Taxe d'apprentissage</span>
+              <span class="w-50 text-center"
+                >{{ fmt(imposable * 0.4 / 100) }}</span
+              >
+            </div>
+          </td>
+          <td class="w-25 border-start border-end">
+            <div class="d-flex text-13">
+              <span class="w-50">Couverture maladie</span>
+              <span class="w-50 text-center">{{ fmt(cmu_amount) }}</span>
+            </div>
+          </td>
+          <td class="w-40 border-start border-end">
+            <div class="d-flex text-13">
+              <span class="w-50">Montant congés acquis</span>
+              <span class="w-50 text-center">
+                {% if not left %} {{ fmt(conge_amount) if conge_amount > 0 else
+                "-" }} {% endif %}
+              </span>
+            </div>
+          </td>
+        </tr>
 
-                            {% endif %}
+        <tr class="border-start border-end">
+          <td class="w-35 border-start border-end">
+            <div class="d-flex text-13">
+              <span class="w-50">Couverture maladie</span>
+              <span class="w-50 text-center">500,0</span>
+            </div>
+          </td>
+          <td class="w-25 border-start border-end">
+            <div class="d-flex text-13">
+              <span class="w-50">&nbsp;</span>
+              <span class="w-50 text-center">&nbsp;</span>
+            </div>
+          </td>
+          <td class="w-40 border-start border-end">
+            <div class="d-flex text-13">
+              <span class="w-50"></span>
+              <span class="w-50 text-center">-</span>
+            </div>
+          </td>
+        </tr>
 
-                        </span>
-                    </div>
-                </td>
-            </tr>
+        <tr class="border-start border-end">
+          <td class="w-35 border-start border-end">
+            <div class="d-flex text-13">
+              <span class="w-50">IS Patronal</span>
+              <span class="w-50 text-center">-</span>
+            </div>
+          </td>
+          <td class="w-25 border-start border-end">
+            <div class="d-flex text-13">
+              <span class="w-50">&nbsp;</span>
+              <span class="w-50 text-center">&nbsp;</span>
+            </div>
+          </td>
+          <td class="w-40 border-start border-end">
+            <div class="d-flex text-13">
+              <span class="w-50"></span>
+              <span class="w-50 text-center">-</span>
+            </div>
+          </td>
+        </tr>
 
-            <tr class="border-start border-end">
-                <td class="w-35 border-start border-end">
-                    <div class="d-flex text-13">
-                        <span class="w-50">Couverture maladie</span>
-                        <span class="w-50 text-center">500,0</span>
-                    </div>
-                </td>
-                <td class="w-25 border-start border-end">
-                    <div class="d-flex text-13">
-                        <span class="w-50"> </span>
-                        <span class="w-50 text-center"> </span>
-                    </div>
-                </td>
-                <td class="w-40 border-start border-end">
-                    <div class="d-flex text-13">
-                        <span class="w-50"></span>
-                        <span class="w-50 text-center">-</span>
-                    </div>
-                </td>
-            </tr>
-
-             <tr class="border-start border-end">
-                <td class="w-35 border-start border-end">
-                    <div class="d-flex text-13">
-                        <span class="w-50">IS Patronal</span>
-                        <span class="w-50 text-center">-</span>
-                    </div>
-                </td>
-                <td class="w-25 border-start border-end">
-                    <div class="d-flex text-13">
-                        <span class="w-50"> </span>
-                        <span class="w-50 text-center"> </span>
-                    </div>
-                </td>
-                <td class="w-40 border-start border-end">
-                    <div class="d-flex text-13">
-                        <span class="w-50"></span>
-                        <span class="w-50 text-center">-</span>
-                    </div>
-                </td>
-            </tr>
-
-            <tr>
-                <td class="w-35 border-start border-end border-bottom bg-gray-300 fw-semibold">
-                    <span class="bg-gray-300"> Mode de paiement</span>
-                </td>
-                <td class="w-25 border-bottom-0"><span class="pre-sp">&nbsp;</span></td>
-                <td class="w-40">
-                    <div class="text-center w-70 border bg-gray-300 fw-semibold mx-auto">
-                        Par virement
-                    </div>
-                </td>
-            </tr>
-        </tbody>
+        <tr>
+          <td
+            class="w-35 border-start border-end border-bottom bg-gray-300 fw-semibold"
+          >
+            <span class="bg-gray-300">Mode de paiement</span>
+          </td>
+          <td class="w-25 border-bottom-0">
+            <span class="pre-sp">&nbsp;</span>
+          </td>
+          <td class="w-40">
+            <div
+              class="text-center w-70 border bg-gray-300 fw-semibold mx-auto"
+            >
+              Par virement
+            </div>
+          </td>
+        </tr>
+      </tbody>
     </table>
 
     <div class="w-100">
-        Pour vous aider à faire valoir vos droits, conservez ce bulletin de paie sans limitation de durée.
+      Pour vous aider à faire valoir vos droits, conservez ce bulletin de paie
+      sans limitation de durée.
     </div>
 
     <div class="w-100 px-4 fw-bold d-flex pb-5">
-        <div class="w-70">TRAVAILLEUR</div>
-        <div class="flex-grow-1">EMPLOYEUR</div>
+      <div class="w-70">TRAVAILLEUR</div>
+      <div class="flex-grow-1">EMPLOYEUR</div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
-</body>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      defer
+    ></script>
+  </body>
 </html>

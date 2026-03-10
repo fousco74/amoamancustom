@@ -5,11 +5,6 @@ app_description = "custom amoaman erpnet app"
 app_email = "fkone@amoaman.com"
 app_license = "mit"
 
-from hrms.hr.doctype.expense_claim import expense_claim
-from amoamancustom.overrides.expense_claim import get_total_reimbursed_amount
-
-# Patch de la fonction originale
-expense_claim.get_total_reimbursed_amount = get_total_reimbursed_amount
 
 # Apps
 # ------------------
@@ -60,7 +55,9 @@ doctype_js = {
     "Loan Application" : "public/js/loan_application/loan_application.js",
     "Item" : "public/js/item/item.js",    
     "Salary Slip" : "public/js/salary_slip/salary_slip.js",
-    "Salary Structure Assignment" : "public/js/salary_structure _assignment/salary_structure _assignment.js"
+    "Salary Structure Assignment" : "public/js/salary_structure _assignment/salary_structure _assignment.js",
+    "Loan" : "public/js/loan.js"
+
     }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -150,21 +147,21 @@ jinja = {
 # ---------------
 # Override standard doctype classes
 
-# override_doctype_class = {
-# 	"ToDo": "custom_app.overrides.CustomToDo"
-# }
+override_doctype_class = {
+    "Expense Claim": "amoamancustom.overrides.expense_claim.CustomExpenseClaim"
+}
 
 # Document Events
 # ---------------
 # Hook on document methods and events
 
 doc_events = {
-	"Employee": {
-		"on_update": "amoamancustom.hr_custom.doctype.employee.employee.employment_type_changed",
-	},
-   #"Sales Invoice" :{
-	   #"before_save" : "amoamancustom.hr_custom.doctype.sales_invoice.sales_invoice.before_submit_link_so_items"
-   #}
+    "Employee": {
+        "on_update": "amoamancustom.hr_custom.doctype.employee.employee.employment_type_changed",
+    },
+    "Loan Application": {
+        "on_update": "amoamancustom.servers.loan_application.set_status_from_workflow",
+    },
 }
 
 
