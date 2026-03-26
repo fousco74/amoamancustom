@@ -1,0 +1,121 @@
+{
+ "actions": [],
+ "creation": "2026-03-17 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_api",
+  "access_token",
+  "token_expiry",
+  "column_break_1",
+  "base_url",
+  "api_version",
+  "section_org",
+  "org_id",
+  "default_limit",
+  "column_break_2",
+  "org_name",
+  "org_linkedin_url"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_api",
+   "fieldtype": "Section Break",
+   "label": "Authentification API"
+  },
+  {
+   "fieldname": "access_token",
+   "fieldtype": "Password",
+   "label": "Access Token",
+   "description": "Bearer token LinkedIn. Commande : bench set-config linkedin_access_token \"TOKEN\"",
+   "in_list_view": 0
+  },
+  {
+   "fieldname": "token_expiry",
+   "fieldtype": "Datetime",
+   "label": "Expiration du token",
+   "read_only": 1,
+   "description": "Mis \u00e0 jour automatiquement lors du renouvellement OAuth2."
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "base_url",
+   "fieldtype": "Data",
+   "label": "Base URL",
+   "default": "https://api.linkedin.com/v2",
+   "reqd": 1,
+   "description": "URL de base de l'API LinkedIn (ne pas modifier sauf changement de version)."
+  },
+  {
+   "fieldname": "api_version",
+   "fieldtype": "Data",
+   "label": "Version API",
+   "default": "v2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_org",
+   "fieldtype": "Section Break",
+   "label": "Organisation"
+  },
+  {
+   "fieldname": "org_id",
+   "fieldtype": "Data",
+   "label": "ID Organisation",
+   "default": "70907752",
+   "reqd": 1,
+   "description": "ID num\u00e9rique de votre organisation LinkedIn."
+  },
+  {
+   "fieldname": "default_limit",
+   "fieldtype": "Int",
+   "label": "Nombre de posts par d\u00e9faut",
+   "default": "6",
+   "description": "Nombre de posts affich\u00e9s sur le site (max 50)."
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "org_name",
+   "fieldtype": "Data",
+   "label": "Nom de l'organisation",
+   "default": "Amoaman & Associ\u00e9s"
+  },
+  {
+   "fieldname": "org_linkedin_url",
+   "fieldtype": "Data",
+   "label": "URL page LinkedIn",
+   "default": "https://www.linkedin.com/company/amoaman-associes",
+   "description": "URL de la page LinkedIn de l'organisation."
+  }
+ ],
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-03-17 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Amoaman Custom App",
+ "name": "LinkedIn Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 0,
+   "print": 1,
+   "read": 1,
+   "report": 0,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

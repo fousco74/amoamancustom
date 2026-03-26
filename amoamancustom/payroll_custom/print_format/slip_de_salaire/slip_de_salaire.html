@@ -105,7 +105,7 @@
     VARIABLES GLOBALES #} {#
     ================================================================== #} {% set
     logo_url = frappe.db.get_value("Website Settings", None, "app_logo") %} {%
-    set cat = frappe.db.get_value("Employee", doc.employee, "custom_catégorie_")
+    set cat = frappe.db.get_value("Employee", doc.employee, "custom_categorie")
     %} {% set sal_base = frappe.db.get_value("Grade Categorie", cat,
     "salaire_de_base") | float %} {% set sursalaire =
     frappe.db.get_value("Employee", doc.employee, "custom_sursalaire") | float

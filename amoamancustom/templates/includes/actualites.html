@@ -1,99 +1,317 @@
 <section class="py-5" id="agenda">
-    <div class="d-flex  flex-column justify-content-between align-items-center">
+    <div class="d-flex flex-column justify-content-between align-items-center">
         <h2 class="headline section-title">{{ _("Notre actualité en un clic") }}</h2>
         <div class="row actualite g-4">
+
+            {# ── LinkedIn (colonne gauche) ── #}
             <div class="col-lg-7">
-                <div class="news-card h-100">
+                <div class="news-card h-100 li-card">
                     <div class="news-title">LinkedIn</div>
-                    <img class="news-img" src="assets/amoamancustom/images/event1.jpg" alt="Post LinkedIn">
+
+                    {# Swiper LinkedIn — slides contiennent uniquement l'image #}
+                    <div class="swiper linkedin-swiper">
+                        <div class="swiper-wrapper" id="linkedin-slides">
+                            {# Skeleton affiché pendant le chargement #}
+                            <div class="swiper-slide">
+                                <div class="news-img li-skeleton-img"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Légende du post courant — mise à jour par JS au changement de slide #}
+                    <div id="linkedin-caption" class="mt-2 d-flex flex-wrap align-items-center justify-content-between" style="min-height:1.8rem;">
+                        <div class="li-skeleton-line" style="width:65%;"></div>
+                        <div class="li-skeleton-line ms-2" style="width:20%;"></div>
+                    </div>
+
                     <div class="d-flex justify-content-between align-items-center mt-2">
                         <small class="text-secondary">{{ _("Récemment postés") }}</small>
-                        <div class="d-flex align-items-center gap-2"><span class="dot"></span><span
-                                class="dot active"></span><span class="dot"></span></div>
+                        <div class="swiper-pagination linkedin-pagination"></div>
                     </div>
-                    <div class="tiny text-center mt-2">{{ _("Suivez-nous sur") }} <a href="https://www.linkedin.com/company/amoaman-associes"
+
+                    <div class="tiny text-center li-suivez">{{ _("Suivez-nous sur") }} <a href="https://www.linkedin.com/company/amoaman-associes"
                             class="fw-bold text-decoration-none">LinkedIn</a></div>
                 </div>
             </div>
+
+            {# ── Colonne droite ── #}
             <div class="col-lg-5">
 
-                          {# --- Slider Amoaman Academy (events/trainings) --- #}
-            <div class="news-card mb-4 swiper mySwiper amoaman-academy-swiper">
-              <div class="swiper-wrapper">
+                {# --- Slider Amoaman Academy (events/trainings) --- #}
+                <div class="news-card mb-4 swiper mySwiper amoaman-academy-swiper">
+                    <div class="swiper-wrapper">
 
-                {% if academy_events and academy_events|length %}
-                  {% for ev in academy_events %}
-                    {% set title = ev.title or ev.program_title or ev.name %}
-                    {% set img = ev.image or ev.cover_image %}
-                    {% set href = '/' ~ (ev.route or '').lstrip('/') %}
-                    {% set badge = ev.badge_label or _("Formation") %}
+                        {% if academy_events and academy_events|length %}
+                            {% for ev in academy_events %}
+                                {% set title = ev.title or ev.program_title or ev.name %}
+                                {% set img = ev.image or ev.cover_image %}
+                                {% set href = '/' ~ (ev.route or '').lstrip('/') %}
+                                {% set badge = ev.badge_label or _("Formation") %}
 
-                    <div class="swiper-slide">
-                      <div class="news-title">{{ _("Amoaman Academy") }}</div>
+                                <div class="swiper-slide">
+                                    <div class="news-title">{{ _("Amoaman Academy") }}</div>
 
-                      {% if img %}
-                        <a href="{{ href }}" style="text-decoration:none;">
-                          <img class="news-img" src="{{ img }}" alt="{{ title|e }}" loading="lazy">
-                        </a>
-                      {% else %}
-                        <a href="{{ href }}" style="text-decoration:none;">
-                          <div class="news-img" style="display:grid;place-items:center;background:linear-gradient(135deg,#E8EEFF,#FFE8F0);">
-                            <span style="font-size:44px;">🎓</span>
-                          </div>
-                        </a>
-                      {% endif %}
+                                    {% if img %}
+                                        <a href="{{ href }}" style="text-decoration:none;">
+                                            <img class="news-img" src="{{ img }}" alt="{{ title|e }}" loading="lazy">
+                                        </a>
+                                    {% else %}
+                                        <a href="{{ href }}" style="text-decoration:none;">
+                                            <div class="news-img" style="display:grid;place-items:center;background:linear-gradient(135deg,#E8EEFF,#FFE8F0);">
+                                                <span style="font-size:44px;">🎓</span>
+                                            </div>
+                                        </a>
+                                    {% endif %}
 
-                      <div class="mt-2 d-flex flex-wrap align-items-center justify-content-between">
-                        <div class="tiny">{{ title }}</div>
+                                    <div class="mt-2 d-flex flex-wrap align-items-center justify-content-between">
+                                        <div class="tiny">{{ title }}</div>
+                                        <span class="chip gradient ms-2">{{ badge }}</span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="swiper-slide">
+                                <div class="news-title">{{ _("Amoaman Academy") }}</div>
+                                <img class="news-img" src="assets/amoamancustom/images/event2.jpg" alt="Bannière formation">
+                                <div class="mt-2 d-flex flex-wrap align-items-center justify-content-between">
+                                    <div class="tiny">{{ _("Aucune formation disponible pour le moment.") }}</div>
+                                    <span class="chip gradient ms-2">{{ _("Bientôt") }}</span>
+                                </div>
+                            </div>
+                        {% endif %}
 
-                        <span class="chip gradient ms-2">
-                          {{ badge }}
-                        </span>
-                      </div>
                     </div>
-                  {% endfor %}
-                {% else %}
-                  <div class="swiper-slide">
-                    <div class="news-title">{{ _("Amoaman Academy") }}</div>
-                    <img class="news-img" src="assets/amoamancustom/images/event2.jpg" alt="Bannière formation">
-                    <div class="mt-2 d-flex flex-wrap align-items-center justify-content-between">
-                      <div class="tiny">{{ _("Aucune formation disponible pour le moment.") }}</div>
-                      <span class="chip gradient ms-2">{{ _("Bientôt") }}</span>
-                    </div>
-                  </div>
-                {% endif %}
-
-              </div>
-
-              <!-- Controls (scoppés à CE swiper) -->
-              <div class="swiper-button-next"></div>
-              <div class="swiper-button-prev"></div>
-              <div class="swiper-pagination"></div>
-            </div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-pagination"></div>
+                </div>
 
                 <div class="news-card">
                     <div class="news-title">Amoaman Events</div>
                     <div class="text-center py-4">
-                         <!-- Icône agenda -->
                         <span class="icon">
-                                {% include "amoamancustom/templates/includes/svg/agenda.svg" %}
-                            </span>
-
+                            {% include "amoamancustom/templates/includes/svg/agenda.svg" %}
+                        </span>
                         <div class="mt-2 fw-semibold text-primary">{{ _("Bientôt, des évènements exclusifs !") }}</div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="py-4"></div>
-        <h2 class="big-gradient mb-5 section-big-title">{{ _("Des solutions conçues pour") }} <span class="g">{{ _("vos ambitions.") }}</span>
-        </h2>
+        <h2 class="big-gradient mb-5 section-big-title">{{ _("Des solutions conçues pour") }} <span class="g">{{ _("vos ambitions.") }}</span></h2>
         <div class="d-flex mt-5 justify-content-center">
-            <!-- Bouton avec texte traduisible -->
             <a href="/contact" class="btn btn-contact">
                 {{ _("Débuter un accompagnement personnalisé pour votre entreprise") }}
                 <span class="arrow">→</span>
             </a>
         </div>
-
     </div>
 </section>
+
+<style>
+/* ── Skeleton LinkedIn ───────────────────────────── */
+.li-skeleton-img {
+    background: linear-gradient(90deg, #e8e8e8 25%, #f5f5f5 50%, #e8e8e8 75%);
+    background-size: 200% 100%;
+    animation: li-shimmer 1.4s infinite;
+}
+.li-skeleton-line {
+    height: 13px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #e8e8e8 25%, #f5f5f5 50%, #e8e8e8 75%);
+    background-size: 200% 100%;
+    animation: li-shimmer 1.4s infinite;
+}
+@keyframes li-shimmer {
+    0%   { background-position:  200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ── Card LinkedIn : flex-column pour contrôler la hauteur ─ */
+.li-card {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Swiper : même proportion que .news-img (16/9), ne s'étire pas */
+.li-card .linkedin-swiper {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    flex-shrink: 0;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* Image placeholder (post sans photo) */
+.li-no-img {
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, #E8EEFF, #ddeeff);
+    font-size: 44px;
+    width: 100%;
+    height: 100%;
+}
+
+/* "Suivez-nous" poussé en bas de la card */
+.li-card .li-suivez {
+    margin-top: auto;
+    padding-top: 0.5rem;
+}
+
+/* ── Pagination inline (à côté de "Récemment postés") ─── */
+.linkedin-pagination {
+    position: static !important;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+.linkedin-pagination .swiper-pagination-bullet {
+    margin: 0 !important;
+}
+</style>
+
+<script>
+frappe.ready(async function () {
+
+    function _formatDate(ms) {
+        if (!ms) return "";
+        return new Date(ms).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" });
+    }
+
+    function _cleanText(text) {
+        return text
+            .replace(/[\u{1D400}-\u{1D7FF}]/gu, c => {
+                const cp = c.codePointAt(0);
+                if (cp >= 0x1D400 && cp <= 0x1D419) return String.fromCharCode(cp - 0x1D400 + 65);
+                if (cp >= 0x1D41A && cp <= 0x1D433) return String.fromCharCode(cp - 0x1D41A + 97);
+                if (cp >= 0x1D7CE && cp <= 0x1D7D7) return String.fromCharCode(cp - 0x1D7CE + 48);
+                return c;
+            })
+            .replace(/#\w+/g, "").replace(/@\w+/g, "")
+            .replace(/https?:\/\/\S+/g, "").replace(/_{3,}/g, "")
+            .replace(/\s+/g, " ").trim();
+    }
+
+    function _excerpt(text, n = 30) {
+        const words = text.split(" ").filter(Boolean);
+        if (words.length <= n) return text;
+        return words.slice(0, n).join(" ").replace(/[,;:—–-]+$/, "") + "\u2026";
+    }
+
+    function _buildSlide(post) {
+
+            console.log("posts :", post.content.contentEntities[0].entityLocation)
+
+        const text     = post.text?.text || "";
+        const date     = _formatDate(post.created?.time);
+        const postUrl  = post.activity
+            ? `https://www.linkedin.com/feed/update/${post.activity}`
+            : "https://www.linkedin.com/company/amoaman-associes";
+        const clean    = _excerpt(_cleanText(text));
+        const entities = post.content?.contentEntities || [];
+        const thumb    =  entities[0]?.entityLocation || "" || entities[0]?.thumbnails?.[0]?.resolvedUrl;
+        
+        console.log("thumb :", thumb)
+
+
+        const link = document.createElement("a");
+        link.href = postUrl;
+        link.target = "_blank";
+        link.rel = "noopener";
+        link.style.textDecoration = "none";
+        link.style.display = "block";
+        link.style.height = "100%";
+
+        if (thumb) {
+            const img = document.createElement("img");
+            img.className = "news-img";
+            img.src = "/api/method/amoamancustom.api.linkedin_img_proxy?url=" + encodeURIComponent(thumb);
+            img.alt = "";
+            img.loading = "eager";
+            img.style.width = "100%";
+            img.style.height = "100%";
+            img.style.objectFit = "cover";
+            img.addEventListener("error", function () {
+                const fallback = document.createElement("div");
+                fallback.className = "li-no-img news-img";
+                fallback.innerHTML = "<span>💼</span>";
+                link.replaceChild(fallback, img);
+            });
+            link.appendChild(img);
+        } else {
+            const fallback = document.createElement("div");
+            fallback.className = "li-no-img news-img";
+            fallback.innerHTML = "<span>💼</span>";
+            link.appendChild(fallback);
+        }
+
+        const slide = document.createElement("div");
+        slide.className = "swiper-slide";
+        slide.style.height = "100%";
+        slide.dataset.clean = clean;
+        slide.dataset.date  = date;
+        slide.appendChild(link);
+        return slide;
+    }
+
+    function _buildErrorSlide() {
+        const slide = document.createElement("div");
+        slide.className = "swiper-slide";
+        slide.dataset.clean = "";
+        slide.dataset.date  = "";
+        slide.innerHTML = `
+            <div class="li-no-img news-img">
+                <div class="text-center text-secondary" style="font-size:.85rem;">
+                    <div style="font-size:2rem;">🔗</div>
+                    Impossible de charger les posts.
+                </div>
+            </div>`;
+        return slide;
+    }
+
+    function _updateCaption(swiper) {
+        const caption = document.getElementById("linkedin-caption");
+        if (!caption) return;
+        const slide = swiper.slides?.[swiper.activeIndex];
+        const clean = slide?.dataset?.clean || "";
+        const date  = slide?.dataset?.date  || "";
+        if (!clean && !date) { caption.innerHTML = ""; return; }
+        caption.innerHTML =
+            `<div class="tiny">${frappe.utils.escape_html(clean)}</div>` +
+            (date ? `<span class="chip gradient ms-2">${date}</span>` : "");
+    }
+
+    const liEl = document.querySelector(".linkedin-swiper");
+    if (!liEl) return;
+
+    try {
+        const r     = await frappe.call({ method: "amoamancustom.api.get_linkedln_post" });
+        const posts = r?.message?.elements || [];
+
+        const wrapper = document.getElementById("linkedin-slides");
+        wrapper.innerHTML = "";
+        posts.length
+            ? posts.forEach(p => wrapper.appendChild(_buildSlide(p)))
+            : wrapper.appendChild(_buildErrorSlide());
+    } catch (e) {
+        console.warn("LinkedIn feed:", e);
+        const wrapper = document.getElementById("linkedin-slides");
+        if (wrapper) { wrapper.innerHTML = ""; wrapper.appendChild(_buildErrorSlide()); }
+    } finally {
+        if (liEl.swiper) liEl.swiper.destroy(true, true);
+        const sw = new Swiper(liEl, {
+            spaceBetween: 16,
+            autoplay: { delay: 5000, disableOnInteraction: false },
+            pagination: {
+                el: document.querySelector(".linkedin-pagination"),
+                clickable: true,
+            },
+            on: {
+                init:        s => _updateCaption(s),
+                slideChange: s => _updateCaption(s),
+            },
+        });
+        _updateCaption(sw);
+    }
+});
+</script>

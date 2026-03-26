@@ -1,0 +1,200 @@
+[
+ {
+  "completed_by": "skouakou@amoaman.com",
+  "completed_by_role": "Employee",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-02-24 16:47:52.008762",
+  "name": "nhgn6doc1a",
+  "permitted_roles": [
+   {
+    "role": "Employee"
+   }
+  ],
+  "reference_doctype": "Timesheet",
+  "reference_name": "TS-2026-00001",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Brouillon"
+ },
+ {
+  "completed_by": "skouakou@amoaman.com",
+  "completed_by_role": "Sales Manager",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-02-24 16:58:38.513149",
+  "name": "tris7qjo8o",
+  "permitted_roles": [
+   {
+    "role": "Sales Manager"
+   }
+  ],
+  "reference_doctype": "Timesheet",
+  "reference_name": "TS-2026-00001",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "En attente facturation"
+ },
+ {
+  "completed_by": "nkakou@amoaman.com",
+  "completed_by_role": "HR Manager",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-02-25 12:39:06.681215",
+  "name": "hhbcjcmsj4",
+  "permitted_roles": [
+   {
+    "role": "HR Manager"
+   }
+  ],
+  "reference_doctype": "Timesheet",
+  "reference_name": "TS-2026-00001",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "En attente RH"
+ },
+ {
+  "completed_by": "damoakon@amoaman.com",
+  "completed_by_role": "Directeur Général",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-02-25 12:45:04.379456",
+  "name": "l147uu0p9i",
+  "permitted_roles": [
+   {
+    "role": "Directeur Général"
+   }
+  ],
+  "reference_doctype": "Timesheet",
+  "reference_name": "TS-2026-00001",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "En attente DG"
+ },
+ {
+  "completed_by": "mkobri@amoaman.com",
+  "completed_by_role": "Employee",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-02-26 12:36:42.256756",
+  "name": "rs6a3tqccb",
+  "permitted_roles": [
+   {
+    "role": "Employee"
+   }
+  ],
+  "reference_doctype": "Timesheet",
+  "reference_name": "TS-2026-00002",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Brouillon"
+ },
+ {
+  "completed_by": null,
+  "completed_by_role": null,
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-02-26 12:36:50.239255",
+  "name": "rum0bg5jjm",
+  "permitted_roles": [
+   {
+    "role": "Sales Manager"
+   }
+  ],
+  "reference_doctype": "Timesheet",
+  "reference_name": "TS-2026-00002",
+  "status": "Open",
+  "user": null,
+  "workflow_state": "En attente facturation"
+ },
+ {
+  "completed_by": "skouakou@amoaman.com",
+  "completed_by_role": "Employee",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-02-27 15:35:25.527584",
+  "name": "gb704h4pdf",
+  "permitted_roles": [
+   {
+    "role": "Employee"
+   }
+  ],
+  "reference_doctype": "Loan Application",
+  "reference_name": "ACC-LOAP-2026-00005",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Brouillon"
+ },
+ {
+  "completed_by": "nkakou@amoaman.com",
+  "completed_by_role": "HR Manager",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-02-27 15:35:29.395993",
+  "name": "gcehabd4t0",
+  "permitted_roles": [
+   {
+    "role": "HR Manager"
+   }
+  ],
+  "reference_doctype": "Loan Application",
+  "reference_name": "ACC-LOAP-2026-00005",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "En attente RH"
+ },
+ {
+  "completed_by": "nkakou@amoaman.com",
+  "completed_by_role": "Employee",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-03-10 15:56:27.830140",
+  "name": "ttmurpf053",
+  "permitted_roles": [
+   {
+    "role": "Employee"
+   }
+  ],
+  "reference_doctype": "Leave Application",
+  "reference_name": "HR-LAP-2026-00003",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Brouillon"
+ },
+ {
+  "completed_by": "nkakou@amoaman.com",
+  "completed_by_role": "HR Manager",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-03-10 15:57:10.978591",
+  "name": "ub5472h9ji",
+  "permitted_roles": [
+   {
+    "role": "HR Manager"
+   }
+  ],
+  "reference_doctype": "Leave Application",
+  "reference_name": "HR-LAP-2026-00003",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "En attente RH"
+ },
+ {
+  "completed_by": "damoakon@amoaman.com",
+  "completed_by_role": "Directeur Général",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-03-10 16:00:27.798022",
+  "name": "08mhcm899c",
+  "permitted_roles": [
+   {
+    "role": "Directeur Général"
+   }
+  ],
+  "reference_doctype": "Leave Application",
+  "reference_name": "HR-LAP-2026-00003",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "En attente DG"
+ }
+]

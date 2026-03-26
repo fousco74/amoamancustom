@@ -55,7 +55,7 @@ doctype_js = {
     "Loan Application" : "public/js/loan_application/loan_application.js",
     "Item" : "public/js/item/item.js",    
     "Salary Slip" : "public/js/salary_slip/salary_slip.js",
-    "Salary Structure Assignment" : "public/js/salary_structure _assignment/salary_structure _assignment.js",
+    #"Salary Structure Assignment" : "public/js/salary_structure _assignment/salary_structure _assignment.js",
     "Loan" : "public/js/loan.js"
 
     }
@@ -160,7 +160,7 @@ doc_events = {
         "on_update": "amoamancustom.hr_custom.doctype.employee.employee.employment_type_changed",
     },
     "Loan Application": {
-        "on_update": "amoamancustom.servers.loan_application.set_status_from_workflow",
+        #"on_update": "amoamancustom.servers.loan_application.set_status_from_workflow",
     },
 }
 
