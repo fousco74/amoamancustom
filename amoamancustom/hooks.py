@@ -186,6 +186,16 @@ scheduler_events = {
  	],
  }
 
+
+scheduled_jobs = {
+    "cron": {
+        # Exécution QUOTIDIENNE à 08h00
+        "0 8 * * *": [
+            "amoamancustom.schedulers.attendance_reminder.send_attendance_reminder_continuous"
+        ],
+    }
+}
+
 # Testing
 # -------
 
@@ -289,6 +299,11 @@ website_redirects = [
 
 
 fixtures = [
+    # -----------------------------
+    # 0. Website Settings
+    # -----------------------------
+    {"doctype": "Website Settings"},
+
     # -----------------------------
     # 1. Custom Fields (SANS LOAN)
     # -----------------------------
