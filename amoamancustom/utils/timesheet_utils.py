@@ -129,9 +129,6 @@ def build_time_log_rows(doc):
     full_abs, half_abs, pres_set = _attendance_sets(employee, global_start, global_end)
     
    
-    print("full_abs :", len(full_abs))
-    print("half_abs :", len(half_abs))
-    print("pres_set :", len(pres_set))
 
     
     # Construction des lignes alignées sur header_dates
