@@ -99,8 +99,10 @@ def calculate_work_days(doc, method=None):
         if days < 0:
             days = 0.0
 
-        # Stocke des JOURS dans un champ custom de la ligne
+        # Stocke des JOURS dans le champ custom et dans billing_hours
+        # (billing_hours est utilisé par ERPNext pour les Sales Invoices et les totaux)
         tl.custom_days = days
+        tl.billing_hours = days
         last_days = days
         total_days += days
 

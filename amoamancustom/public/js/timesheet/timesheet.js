@@ -71,9 +71,8 @@ const recalc_row = frappe.utils.debounce(async function (frm, cdt, cdn) {
     );
 
     frappe.model.set_value(cdt, cdn, 'custom_days', r.days);
-
-    console.log('Jours (ligne):', r.days);
-    console.log('Total jours (timesheet):', r.total_days);
+    // billing_hours est utilisé par ERPNext pour les Sales Invoices et les totaux
+    frappe.model.set_value(cdt, cdn, 'billing_hours', r.days);
 
     // en-tête (si le champ existe chez toi)
     if (frm.get_field('custom_total_working_days')) {

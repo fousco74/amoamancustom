@@ -161,6 +161,10 @@ doc_events = {
     "Loan Application": {
         #"on_update": "amoamancustom.servers.loan_application.set_status_from_workflow",
     },
+    "Timesheet": {
+        "before_save":   "amoamancustom.facturation.doctype.timesheet.timesheet.calculate_work_days",
+        "before_submit": "amoamancustom.facturation.doctype.timesheet.timesheet.calculate_work_days",
+    },
 }
 
 
