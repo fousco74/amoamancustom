@@ -53,7 +53,6 @@ doctype_js = {
     "Contract" : "public/js/contract/contract.js",
     "Item" : "public/js/item/item.js",
     "Loan Application" : "public/js/loan_application/loan_application.js",
-    "Item" : "public/js/item/item.js",    
     "Salary Slip" : "public/js/salary_slip/salary_slip.js",
     #"Salary Structure Assignment" : "public/js/salary_structure _assignment/salary_structure _assignment.js",
     "Loan" : "public/js/loan.js"
@@ -294,7 +293,7 @@ website_redirects = [
     {"source": "/en/politique-de-confidentialite-2",     "target": "/confidentialite"},
 
     # --- Canonicalisation générale : enlever le trailing slash (sauf la racine "/") ---
-    {"source": r"^/(.+)/$", "target": r"/\\1"},
+    {"source": r"^/(.+)/$", "target": r"/\1"},
 ]
 
 

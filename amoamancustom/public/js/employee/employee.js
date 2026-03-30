@@ -36,7 +36,6 @@ frappe.ui.form.on('Employee', {
       } else {
         // Célibataire/Divorcé avec enfants : 2 + 0,5 par enfant au-delà du 1er
         parts = 2 + (nbEnfants - 1) * 0.5;
-        console.log("parts ",parts)
 
       }
     } else if (isMarie) {

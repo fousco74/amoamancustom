@@ -21,7 +21,7 @@ frappe.ui.form.on('Loan', {
     } 
 },
 async loan_amount(frm){
-
+    const avance_sur_salaire = await frappe.db.get_single_value('Loan Settings', 'avance_sur_salaire');
     if ( frm.doc.loan_product && (frm.doc.loan_product === avance_sur_salaire)) {
 
 

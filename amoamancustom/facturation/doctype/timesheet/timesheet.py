@@ -28,7 +28,6 @@ def calculate_work_days(doc, method=None):
             ignore_permissions=True
         ):
             holiday_dates.add(getdate(h.holiday_date))
-    print("holiday_dates :", holiday_dates)
 
     def daterange(d1, d2):
         cur = d1
@@ -89,14 +88,11 @@ def calculate_work_days(doc, method=None):
         # 3) Jours ouvrés (lun–ven, hors fériés) ✅ (on exclut les week-ends)
         business_days = [d for d in daterange(start_date, end_date)
                          if d.weekday() < 5 and d not in holiday_dates]
-        print("Jours ouvrés (lun–ven, hors fériés) :", len(business_days))
 
         # 4) Absences
         full_abs, half_abs = set(), set()
         if getattr(doc, "employee", None):
             full_abs, half_abs = get_absence_dates(doc.employee, start_date, end_date)
-            print("total full_abs :", len(full_abs))
-            print("total half_abs :", len(half_abs) / 2)
 
         # 5) Jours nets
         days = len(business_days) - (len(full_abs) + len(half_abs) / 2)
@@ -110,7 +106,6 @@ def calculate_work_days(doc, method=None):
 
     # 6) Totaux (parent)
     doc.custom_total_working_days = total_days  # champ custom en entête si tu l’as créé
-    print("TOTAL DAYS (doc):", total_days)
 
     return {"days": last_days, "total_days": total_days}
 
@@ -137,7 +132,6 @@ def recalc_timesheet_row(timesheet, row_name: str):
 
         # 3) Construire le doc et calculer
         doc = frappe.get_doc(timesheet)
-        print("recalc_timesheet_row -> row_name:", row_name)
         _ = calculate_work_days(doc)  # met à jour tl.days + doc.total_days
 
         # 4) Ligne ciblée + totaux
@@ -148,8 +142,6 @@ def recalc_timesheet_row(timesheet, row_name: str):
         row_days = flt(getattr(row, "custom_days", 0))
         total_days = flt(getattr(doc, "custom_total_working_days", 0))
         
-        print("days (row):", row_days)
-        print("total_days (doc):", total_days)
 
         return {
             "days": row_days,        # jours pour la ligne

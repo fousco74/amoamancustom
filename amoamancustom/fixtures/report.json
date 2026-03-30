@@ -10,7 +10,7 @@
   "is_standard": "Yes",
   "javascript": null,
   "json": null,
-  "letter_head": "ALYF GmbH",
+  "letter_head": null,
   "modified": "2023-10-11 00:58:30.639078",
   "module": "Projects",
   "name": "Timesheet Billing Summary",
@@ -54,7 +54,7 @@
   "is_standard": "Yes",
   "javascript": null,
   "json": null,
-  "letter_head": "",
+  "letter_head": null,
   "modified": "2018-02-13 04:47:04.158213",
   "module": "Manufacturing",
   "name": "Work Order Stock Report",
@@ -454,7 +454,7 @@
   "is_standard": "Yes",
   "javascript": null,
   "json": null,
-  "letter_head": "",
+  "letter_head": null,
   "modified": "2019-02-12 14:32:16.392521",
   "module": "Manufacturing",
   "name": "Production Analytics",
@@ -876,7 +876,7 @@
   "is_standard": "Yes",
   "javascript": null,
   "json": null,
-  "letter_head": "",
+  "letter_head": null,
   "modified": "2019-06-17 12:45:07.324014",
   "module": "Stock",
   "name": "Delayed Item Report",
@@ -917,7 +917,7 @@
   "is_standard": "Yes",
   "javascript": null,
   "json": null,
-  "letter_head": "",
+  "letter_head": null,
   "modified": "2019-06-17 12:45:56.359322",
   "module": "Stock",
   "name": "Delayed Order Report",
@@ -996,7 +996,7 @@
   "is_standard": "Yes",
   "javascript": null,
   "json": null,
-  "letter_head": "",
+  "letter_head": null,
   "modified": "2020-03-06 11:38:05.789851",
   "module": "Manufacturing",
   "name": "Production Planning Report",
@@ -1031,7 +1031,7 @@
   "is_standard": "Yes",
   "javascript": null,
   "json": null,
-  "letter_head": "Gadgets International",
+  "letter_head": null,
   "modified": "2020-04-19 16:59:47.979278",
   "module": "Manufacturing",
   "name": "Work Order Summary",
@@ -1136,7 +1136,7 @@
   "is_standard": "Yes",
   "javascript": null,
   "json": null,
-  "letter_head": "",
+  "letter_head": null,
   "modified": "2020-05-15 05:18:55.838030",
   "module": "Manufacturing",
   "name": "Exponential Smoothing Forecasting",
@@ -1595,7 +1595,7 @@
   "is_standard": "Yes",
   "javascript": null,
   "json": null,
-  "letter_head": "Gadgets International",
+  "letter_head": null,
   "modified": "2021-11-22 17:36:14.999091",
   "module": "Manufacturing",
   "name": "Work Order Consumed Materials",
@@ -1668,7 +1668,7 @@
   "is_standard": "Yes",
   "javascript": null,
   "json": null,
-  "letter_head": "",
+  "letter_head": null,
   "modified": "2022-02-23 13:07:30.347861",
   "module": "Payroll",
   "name": "Income Tax Computation",
@@ -2979,7 +2979,7 @@
   "modified": "2026-02-06 15:18:53.690604",
   "module": "HR",
   "name": "Employee Leave Balance",
-  "prepared_report": 1,
+  "prepared_report": 0,
   "query": null,
   "ref_doctype": "Employee",
   "reference_report": null,
@@ -3134,7 +3134,7 @@
   "timeout": 0
  },
  {
-  "add_total_row": 1,
+  "add_total_row": 0,
   "add_translate_data": 0,
   "columns": [],
   "disabled": 0,
@@ -3172,7 +3172,7 @@
   "timeout": 0
  },
  {
-  "add_total_row": 1,
+  "add_total_row": 0,
   "add_translate_data": 0,
   "columns": [],
   "disabled": 0,
@@ -3210,7 +3210,7 @@
   "timeout": 0
  },
  {
-  "add_total_row": 1,
+  "add_total_row": 0,
   "add_translate_data": 0,
   "columns": [],
   "disabled": 0,
@@ -3251,7 +3251,7 @@
   "timeout": 0
  },
  {
-  "add_total_row": 1,
+  "add_total_row": 0,
   "add_translate_data": 0,
   "columns": [],
   "disabled": 0,
@@ -3283,7 +3283,7 @@
   "timeout": 0
  },
  {
-  "add_total_row": 1,
+  "add_total_row": 0,
   "add_translate_data": 0,
   "columns": [],
   "disabled": 0,
@@ -3318,7 +3318,7 @@
   "timeout": 0
  },
  {
-  "add_total_row": 1,
+  "add_total_row": 0,
   "add_translate_data": 0,
   "columns": [],
   "disabled": 0,
@@ -3356,7 +3356,7 @@
   "timeout": 0
  },
  {
-  "add_total_row": 1,
+  "add_total_row": 0,
   "add_translate_data": 0,
   "columns": [],
   "disabled": 0,

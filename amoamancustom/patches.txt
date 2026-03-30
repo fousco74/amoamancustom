@@ -9,6 +9,7 @@ amoamancustom.patches.rename_contact
 amoamancustom.patches.rename_customer_last 
 amoamancustom.patches.rename_supplier
 amoamancustom.patches.rename_prospect
-amoamancustom.patches.rename_opportunity 
+amoamancustom.patches.rename_opportunity
+amoamancustom.patches.remove_duplicate_docperms
 
 
