@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>LinkedIn OAuth</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            display: flex; align-items: center; justify-content: center;
+            min-height: 100vh; margin: 0;
+            background: #f4f5f7;
+        }
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 2.5rem 3rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,.1);
+            max-width: 420px;
+        }
+        .icon { font-size: 3rem; margin-bottom: 1rem; }
+        h2 { margin: 0 0 .75rem; font-size: 1.3rem; }
+        p  { color: #6c757d; margin: 0; font-size: .9rem; }
+    </style>
+</head>
+<body>
+<div class="card">
+    {% if success %}
+        <div class="icon">✅</div>
+        <h2>{{ message }}</h2>
+        <p>Cette fenêtre va se fermer automatiquement…</p>
+    {% else %}
+        <div class="icon">❌</div>
+        <h2>Échec de la connexion</h2>
+        <p>{{ message }}</p>
+    {% endif %}
+</div>
+<script>
+    if (window.opener) {
+        window.opener.postMessage({
+            type:    "linkedin_oauth",
+            status:  {{ ("'success'" if success else "'error'") }},
+            message: {{ message | tojson }}
+        }, "*");
+    }
+    {% if success %}
+    setTimeout(() => window.close(), 2000);
+    {% endif %}
+</script>
+</body>
+</html>
