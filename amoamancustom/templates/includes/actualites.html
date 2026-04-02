@@ -1,104 +1,111 @@
 <section class="py-5" id="agenda">
-    <div class="d-flex flex-column justify-content-between align-items-center">
+    <div class="d-flex flex-column align-items-center">
         <h2 class="headline section-title">{{ _("Notre actualité en un clic") }}</h2>
-        <div class="row actualite g-4">
 
-            {# ── LinkedIn (colonne gauche) ── #}
-            <div class="col-lg-7">
-                <div class="news-card h-100 p-3 li-card">
-                    <div class="news-title">LinkedIn</div>
+        <div class="row actualite g-4 justify-content-center w-100">
 
-                    {# Swiper LinkedIn — slides contiennent uniquement l'image #}
-                    <div class="swiper  linkedin-swiper">
-                        <div class="swiper-wrapper" id="linkedin-slides">
-                            {# Skeleton affiché pendant le chargement #}
-                            <div class="swiper-slide">
-                                <div class="news-img li-skeleton-img"></div>
-                            </div>
+            {# ══════════════ LinkedIn ══════════════ #}
+            <div class="col-12 col-md-6 col-xl-5">
+                <div class="actu-feed-card">
+
+                    {# En-tête fixe de la card #}
+                    <div class="actu-feed-header">
+                        <div class="actu-feed-avatar li-avatar">in</div>
+                        <div>
+                            <div class="actu-feed-name">Amoaman &amp; Associés</div>
+                            <div class="actu-feed-sub">{{ _("Actualités LinkedIn") }}</div>
                         </div>
                     </div>
 
-                    {# Légende du post courant — mise à jour par JS au changement de slide #}
-                    <div id="linkedin-caption" class="mt-2 d-flex flex-wrap align-items-center justify-content-between" style="min-height:1.8rem;">
-                        <div class="li-skeleton-line" style="width:65%;"></div>
-                        <div class="li-skeleton-line ms-2" style="width:20%;"></div>
+                    {# Swiper — chaque slide = 1 post complet #}
+                    <div class="swiper linkedin-swiper">
+                        <div class="swiper-wrapper" id="linkedin-slides">
+                            
+                        </div>
                     </div>
 
-                    <div class="d-flex justify-content-between gap-2 align-items-center mt-2">
-                        <small class="text-secondary text-nowrap">{{ _("Récemment postés") }}</small>
-                        <div class="swiper-pagination linkedin-pagination"></div>
+                    {# Pied de card #}
+                    <div class="actu-feed-footer">
+                        <div class="swiper-pagination actu-pagination linkedin-pagination"></div>
+                        <a href="https://www.linkedin.com/company/amoaman-associes"
+                           target="_blank" rel="noopener" class="actu-feed-cta">
+                            {{ _("Suivre sur LinkedIn") }} →
+                        </a>
                     </div>
-
-                    <div class="tiny text-center li-suivez">{{ _("Suivez-nous sur") }} <a href="https://www.linkedin.com/company/amoaman-associes"
-                            class="fw-bold text-decoration-none">LinkedIn</a></div>
                 </div>
             </div>
 
-            {# ── Colonne droite ── #}
-            <div class="col-lg-5">
+            {# ══════════════ Amoaman Academy ══════════════ #}
+            <div class="col-12 col-md-6 col-xl-5">
+                <div class="actu-feed-card">
 
-                {# --- Slider Amoaman Academy (events/trainings) --- #}
-                <div class="news-card p-3 mb-4 swiper mySwiper amoaman-academy-swiper">
-                    <div class="swiper-wrapper">
+                    <div class="actu-feed-header">
+                        <div class="actu-feed-avatar ac-avatar">🎓</div>
+                        <div>
+                            <div class="actu-feed-name">{{ _("Amoaman Academy") }}</div>
+                            <div class="actu-feed-sub">{{ _("Formations & Événements") }}</div>
+                        </div>
+                    </div>
 
-                        {% if academy_events and academy_events|length %}
-                            {% for ev in academy_events %}
-                                {% set title = ev.title or ev.program_title or ev.name %}
-                                {% set img = ev.image or ev.cover_image %}
-                                {% set href = '/' ~ (ev.route or '').lstrip('/') %}
-                                {% set badge = ev.badge_label or _("Formation") %}
+                    <div class="swiper academy-swiper">
+                        <div class="swiper-wrapper">
 
-                                <div class="swiper-slide">
-                                    <div class="news-title">{{ _("Amoaman Academy") }}</div>
+                            {% if academy_events and academy_events|length %}
+                                {% for ev in academy_events %}
+                                    {% set title = ev.title or ev.program_title or ev.name %}
+                                    {% set img   = ev.image or ev.cover_image %}
+                                    {% set href  = '/' ~ (ev.route or '').lstrip('/') %}
+                                    {% set badge = ev.badge_label or _("Formation") %}
 
-                                    {% if img %}
-                                        <a href="{{ href }}" style="text-decoration:none;">
-                                            <img class="news-img" src="{{ img }}" alt="{{ title|e }}" loading="lazy">
-                                        </a>
-                                    {% else %}
-                                        <a href="{{ href }}" style="text-decoration:none;">
-                                            <div class="news-img" style="display:grid;place-items:center;background:linear-gradient(135deg,#E8EEFF,#FFE8F0);">
-                                                <span style="font-size:44px;">🎓</span>
+                                    <div class="swiper-slide">
+                                        <div class="actu-slide-text">
+                                            <span class="actu-slide-badge">{{ badge }}</span>
+                                            <p class="actu-slide-title mt-1 mb-0">{{ title }}</p>
+                                        </div>
+                                        <a href="{{ href }}" class="actu-slide-media-link">
+                                            <div class="actu-ac-media-wrap">
+                                                {% if img %}
+                                                    <img src="{{ img }}" alt="{{ title|e }}" loading="lazy">
+                                                {% else %}
+                                                    <span style="font-size:48px;">🎓</span>
+                                                {% endif %}
                                             </div>
                                         </a>
-                                    {% endif %}
-
-                                    <div class="mt-2 d-flex flex-wrap align-items-center justify-content-between">
-                                        <div class="tiny">{{ title }}</div>
-                                        <span class="chip gradient ms-2">{{ badge }}</span>
                                     </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="swiper-slide">
+                                    <div class="actu-slide-text">
+                                        <span class="actu-slide-badge">{{ _("Bientôt") }}</span>
+                                        <p class="actu-slide-title mt-1 mb-0">{{ _("Aucune formation disponible pour le moment.") }}</p>
+                                    </div>
+                                    <a href="/amoaman-academy" class="actu-slide-media-link">
+                                        <div class="actu-ac-media-wrap">
+                                            <img src="assets/amoamancustom/images/event2.jpg"
+                                                 alt="Bannière formation" loading="lazy">
+                                        </div>
+                                    </a>
                                 </div>
-                            {% endfor %}
-                        {% else %}
-                            <div class="swiper-slide">
-                                <div class="news-title">{{ _("Amoaman Academy") }}</div>
-                                <img class="news-img" src="assets/amoamancustom/images/event2.jpg" alt="Bannière formation">
-                                <div class="mt-2 d-flex flex-wrap align-items-center justify-content-between">
-                                    <div class="tiny">{{ _("Aucune formation disponible pour le moment.") }}</div>
-                                    <span class="chip gradient ms-2">{{ _("Bientôt") }}</span>
-                                </div>
-                            </div>
-                        {% endif %}
+                            {% endif %}
 
+                        </div>
                     </div>
-                    <div class="swiper-button-next"></div>
-                    <div class="swiper-button-prev"></div>
-                    <div class="swiper-pagination"></div>
-                </div>
 
-                <div class="news-card p-2">
-                    <div class="news-title">Amoaman Events</div>
-                    <div class="text-center py-4">
-                        <span class="icon">
-                            {% include "amoamancustom/templates/includes/svg/agenda.svg" %}
-                        </span>
-                        <div class="mt-2 fw-semibold text-primary">{{ _("Bientôt, des évènements exclusifs !") }}</div>
+                    <div class="actu-feed-footer">
+                        <div class="swiper-pagination actu-pagination academy-pagination"></div>
+                        <a href="/amoaman-academy" class="actu-feed-cta">
+                            {{ _("Voir nos formations") }} →
+                        </a>
                     </div>
                 </div>
             </div>
+
         </div>
+
         <div class="py-4"></div>
-        <h2 class="big-gradient mb-5 section-big-title">{{ _("Des solutions conçues pour") }} <span class="g">{{ _("vos ambitions.") }}</span></h2>
+        <h2 class="big-gradient mb-5 section-big-title">
+            {{ _("Des solutions conçues pour") }} <span class="g">{{ _("vos ambitions.") }}</span>
+        </h2>
         <div class="d-flex mt-5 justify-content-center">
             <a href="/contact" class="btn btn-contact">
                 {{ _("Débuter un accompagnement personnalisé pour votre entreprise") }}
@@ -109,16 +116,18 @@
 </section>
 
 <style>
-/* ── Skeleton LinkedIn ───────────────────────────── */
-.li-skeleton-img {
-    background: linear-gradient(90deg, #e8e8e8 25%, #f5f5f5 50%, #e8e8e8 75%);
+/* ══ Skeleton ═══════════════════════════════════════════ */
+.li-skel-img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: linear-gradient(90deg, #e8e8e8 25%, #f2f2f2 50%, #e8e8e8 75%);
     background-size: 200% 100%;
     animation: li-shimmer 1.4s infinite;
 }
-.li-skeleton-line {
-    height: 13px;
+.li-skel-line {
+    height: 12px;
     border-radius: 6px;
-    background: linear-gradient(90deg, #e8e8e8 25%, #f5f5f5 50%, #e8e8e8 75%);
+    background: linear-gradient(90deg, #e8e8e8 25%, #f2f2f2 50%, #e8e8e8 75%);
     background-size: 200% 100%;
     animation: li-shimmer 1.4s infinite;
 }
@@ -127,58 +136,190 @@
     100% { background-position: -200% 0; }
 }
 
-/* ── Card LinkedIn : flex-column pour contrôler la hauteur ─ */
-.li-card {
+/* ══ Card conteneur ════════════════════════════════════ */
+.actu-feed-card {
+    background: var(--card);
+    border: 1px solid var(--stroke);
+    border-radius: 16px;
+    box-shadow: 0 14px 36px rgba(16,24,40,.08);
+    overflow: hidden;
     display: flex;
     flex-direction: column;
 }
 
-/* Swiper : même proportion que .news-img (16/9), ne s'étire pas */
-.li-card .linkedin-swiper {
-    width: 100%;
-    aspect-ratio: 16 / 9;
+/* ══ En-tête card ══════════════════════════════════════ */
+.actu-feed-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid var(--stroke);
+}
+.actu-feed-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 1.1rem;
     flex-shrink: 0;
-    border-radius: 12px;
-    overflow: hidden;
+}
+.li-avatar  { background: #0a66c2; color: #fff; }
+.ac-avatar  { background: linear-gradient(135deg,#6366f1,#a855f7); color: #fff; }
+.actu-feed-name { font-weight: 600; font-size: .95rem; line-height: 1.2; }
+.actu-feed-sub  { font-size: .78rem; color: var(--muted); }
+
+/* ══ Slide : texte en haut, média en bas ═══════════════ */
+.swiper-slide {
+    display: flex;
+    flex-direction: column;
+}
+.actu-slide-text {
+    padding: 12px 16px;
+    font-size: .88rem;
+    color: var(--text);
+    line-height: 1.55;
+}
+.actu-slide-date {
+    font-size: .75rem;
+    color: var(--muted);
+    margin-bottom: 6px;
+    display: block;
+}
+.actu-slide-badge {
+    display: inline-block;
+    background: linear-gradient(135deg,#6366f1,#a855f7);
+    color: #fff;
+    font-size: .72rem;
+    font-weight: 600;
+    border-radius: 20px;
+    padding: 2px 10px;
+}
+.actu-slide-title {
+    font-size: .9rem;
+    font-weight: 600;
+    color: var(--text);
 }
 
-/* Image placeholder (post sans photo) */
-.li-no-img {
-    display: grid;
-    place-items: center;
-    background: linear-gradient(135deg, #E8EEFF, #ddeeff);
-    font-size: 44px;
+/* ══ Média : image / vidéo ═════════════════════════════ */
+.actu-slide-media {
+    width: 100%;
+    line-height: 0;
+}
+.actu-slide-media-link {
+    display: block;
+    width: 100%;
+    line-height: 0;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+/* ══ Conteneur image Academy — même principe que LinkedIn ══ */
+.actu-ac-media-wrap {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: #f4f5f7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+}
+.actu-ac-media-wrap img {
     width: 100%;
     height: 100%;
+    object-fit: contain;
+    display: block;
 }
 
-/* "Suivez-nous" poussé en bas de la card */
-.li-card .li-suivez {
-    margin-top: auto;
-    padding-top: 0.5rem;
+/* Swiper : ne jamais déborder de la card */
+.linkedin-swiper,
+.academy-swiper {
+    overflow: hidden;
+    width: 100%;
+}
+.actu-slide-noimg {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    display: grid;
+    place-items: center;
+    font-size: 64px;
+    background: linear-gradient(135deg,#E8EEFF,#FFE8F0);
 }
 
-/* ── Pagination inline (à côté de "Récemment postés") ─── */
-.linkedin-pagination {
-    position: static !important;
+/* ══ Pied de card ══════════════════════════════════════ */
+.actu-feed-footer {
     display: flex;
-    gap: 6px;
     align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px 14px;
+    border-top: 1px solid var(--stroke);
+    margin-top: auto;
 }
-.linkedin-pagination .swiper-pagination-bullet {
-    margin: 0 !important;
+.actu-feed-cta {
+    font-size: .8rem;
+    font-weight: 600;
+    color: #6366f1;
+    text-decoration: none;
+    white-space: nowrap;
 }
+.actu-feed-cta:hover { text-decoration: underline; }
+
+/* ══ Pagination inline ═════════════════════════════════ */
+.actu-pagination {
+    position: static !important;
+    display: flex; gap: 5px; align-items: center;
+}
+.actu-pagination .swiper-pagination-bullet { margin: 0 !important; }
+
+/* ══ Conteneur image LinkedIn — dimensions fixes avant chargement ══
+   Ratio 1:1 (carré) comme les posts LinkedIn standard.
+   L'image s'y inscrit entièrement grâce à object-fit:contain.       */
+.actu-li-media-wrap {
+    width: 100%;
+    aspect-ratio: 1 / 1;     /* hauteur connue AVANT chargement → pas de layout shift */
+    overflow: hidden;
+    background: #f4f5f7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+}
+.actu-li-media-wrap img,
+.actu-li-media-wrap video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;      /* image entière, sans crop */
+    display: block;
+}
+
+/* ══ Wrapper vidéo avec bouton play ════════════════════ */
+.actu-video-wrap {
+    position: relative;
+    width: 100%;
+    line-height: 0;
+    cursor: pointer;
+}
+.actu-video-wrap video { width: 100%; height: auto; display: block; }
+.actu-play-btn {
+    position: absolute;
+    inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,.3);
+    transition: background .2s;
+}
+.actu-play-btn svg { width: 56px; height: 56px; fill: #fff; opacity: .9; }
+.actu-video-wrap:hover .actu-play-btn { background: rgba(0,0,0,.15); }
+.actu-video-wrap.playing .actu-play-btn { display: none; }
 </style>
 
 <script>
 frappe.ready(async function () {
 
-    function _formatDate(ms) {
+    /* ── Utilitaires ───────────────────────────────────── */
+    function _fmt(ms) {
         if (!ms) return "";
-        return new Date(ms).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" });
+        return new Date(ms).toLocaleDateString("fr-FR",
+            { day: "numeric", month: "short", year: "numeric" });
     }
-
-    function _cleanText(text) {
+    function _clean(text) {
         return text
             .replace(/[\u{1D400}-\u{1D7FF}]/gu, c => {
                 const cp = c.codePointAt(0);
@@ -191,127 +332,141 @@ frappe.ready(async function () {
             .replace(/https?:\/\/\S+/g, "").replace(/_{3,}/g, "")
             .replace(/\s+/g, " ").trim();
     }
-
-    function _excerpt(text, n = 30) {
-        const words = text.split(" ").filter(Boolean);
-        if (words.length <= n) return text;
-        return words.slice(0, n).join(" ").replace(/[,;:—–-]+$/, "") + "\u2026";
+    function _excerpt(text, n = 35) {
+        const w = text.split(" ").filter(Boolean);
+        return w.length <= n ? text : w.slice(0, n).join(" ").replace(/[,;:—–-]+$/, "") + "\u2026";
+    }
+    function _isVideo(url) {
+        return /\.(mp4|webm|ogg|mov)([\?#]|$)/i.test(url);
     }
 
+    /* ── Élément média (image ou vidéo) ────────────────── */
+    function _buildMedia(url) {
+        const proxyUrl = "/api/method/amoamancustom.api.linkedin_img_proxy?url=" + encodeURIComponent(url);
+
+        if (_isVideo(url)) {
+            // Vidéo avec bouton play superposé
+            const wrap = document.createElement("div");
+            wrap.className = "actu-video-wrap";
+
+            const video = document.createElement("video");
+            video.src = url;
+            video.preload = "metadata";
+            video.playsInline = true;
+            video.style.cssText = "width:100%;height:auto;display:block;";
+
+            const btn = document.createElement("div");
+            btn.className = "actu-play-btn";
+            btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
+
+            wrap.addEventListener("click", () => {
+                if (video.paused) { video.play(); wrap.classList.add("playing"); }
+                else              { video.pause(); wrap.classList.remove("playing"); }
+            });
+
+            wrap.appendChild(video);
+            wrap.appendChild(btn);
+            return wrap;
+        }
+
+        // Image via proxy
+        const img = document.createElement("img");
+        img.src = proxyUrl;
+        img.alt = "";
+        img.loading = "eager";
+        img.addEventListener("error", () => {
+            const ph = document.createElement("div");
+            ph.className = "actu-slide-noimg";
+            ph.innerHTML = "<span>💼</span>";
+            img.replaceWith(ph);
+        });
+        return img;
+    }
+
+    /* ── Slide LinkedIn ────────────────────────────────── */
     function _buildSlide(post) {
-
-            console.log("posts :", post.content.contentEntities[0].entityLocation)
-
-        const text     = post.text?.text || "";
-        const date     = _formatDate(post.created?.time);
+        const text     = _clean(post.text?.text || "");
+        const date     = _fmt(post.created?.time);
         const postUrl  = post.activity
             ? `https://www.linkedin.com/feed/update/${post.activity}`
             : "https://www.linkedin.com/company/amoaman-associes";
-        const clean    = _excerpt(_cleanText(text));
         const entities = post.content?.contentEntities || [];
-        const thumb    =  entities[0]?.entityLocation || "" || entities[0]?.thumbnails?.[0]?.resolvedUrl;
-        
-        console.log("thumb :", thumb)
-
-
-        const link = document.createElement("a");
-        link.href = postUrl;
-        link.target = "_blank";
-        link.rel = "noopener";
-        link.style.textDecoration = "none";
-        link.style.display = "block";
-        link.style.height = "100%";
-
-        if (thumb) {
-            const img = document.createElement("img");
-            img.className = "news-img";
-            img.src = "/api/method/amoamancustom.api.linkedin_img_proxy?url=" + encodeURIComponent(thumb);
-            img.alt = "";
-            img.loading = "eager";
-            img.style.width = "100%";
-            img.style.height = "100%";
-            img.style.objectFit = "cover";
-            img.addEventListener("error", function () {
-                const fallback = document.createElement("div");
-                fallback.className = "li-no-img news-img";
-                fallback.innerHTML = "<span>💼</span>";
-                link.replaceChild(fallback, img);
-            });
-            link.appendChild(img);
-        } else {
-            const fallback = document.createElement("div");
-            fallback.className = "li-no-img news-img";
-            fallback.innerHTML = "<span>💼</span>";
-            link.appendChild(fallback);
-        }
+        const thumb    = entities[0]?.entityLocation || entities[0]?.thumbnails?.[0]?.resolvedUrl;
 
         const slide = document.createElement("div");
         slide.className = "swiper-slide";
-        slide.style.height = "100%";
-        slide.dataset.clean = clean;
-        slide.dataset.date  = date;
-        slide.appendChild(link);
+
+        // ── Texte en haut
+        const textDiv = document.createElement("div");
+        textDiv.className = "actu-slide-text";
+        if (date) textDiv.innerHTML += `<span class="actu-slide-date">${date}</span>`;
+        if (text) textDiv.innerHTML += `<p class="mb-0">${frappe.utils.escape_html(_excerpt(text))}</p>`;
+        slide.appendChild(textDiv);
+
+        // ── Média en bas (dans un conteneur contraint)
+        if (thumb) {
+            const a = document.createElement("a");
+            a.href = postUrl;
+            a.target = "_blank";
+            a.rel = "noopener";
+            a.className = "actu-slide-media-link";
+
+            const wrap = document.createElement("div");
+            wrap.className = "actu-li-media-wrap";
+            wrap.appendChild(_buildMedia(thumb));
+            a.appendChild(wrap);
+            slide.appendChild(a);
+        }
+
         return slide;
     }
 
     function _buildErrorSlide() {
         const slide = document.createElement("div");
         slide.className = "swiper-slide";
-        slide.dataset.clean = "";
-        slide.dataset.date  = "";
         slide.innerHTML = `
-            <div class="li-no-img news-img">
-                <div class="text-center text-secondary" style="font-size:.85rem;">
-                    <div style="font-size:2rem;">🔗</div>
-                    Impossible de charger les posts.
-                </div>
-            </div>`;
+            <div class="actu-slide-text">
+                <p class="mb-0 text-muted" style="font-size:.85rem;">
+                    Impossible de charger les posts LinkedIn.
+                </p>
+            </div>
+            <div class="actu-slide-noimg"><span>🔗</span></div>`;
         return slide;
     }
 
-    function _updateCaption(swiper) {
-        const caption = document.getElementById("linkedin-caption");
-        if (!caption) return;
-        const slide = swiper.slides?.[swiper.activeIndex];
-        const clean = slide?.dataset?.clean || "";
-        const date  = slide?.dataset?.date  || "";
-        if (!clean && !date) { caption.innerHTML = ""; return; }
-        caption.innerHTML =
-            `<div class="tiny">${frappe.utils.escape_html(clean)}</div>` +
-            (date ? `<span class="chip gradient ms-2">${date}</span>` : "");
+    /* ── Init LinkedIn ─────────────────────────────────── */
+    const liEl = document.querySelector(".linkedin-swiper");
+    if (liEl) {
+        try {
+            const r     = await frappe.call({ method: "amoamancustom.api.get_linkedln_post" });
+            const posts = r?.message?.elements || [];
+            const wrapper = document.getElementById("linkedin-slides");
+            wrapper.innerHTML = "";
+            posts.length
+                ? posts.forEach(p => wrapper.appendChild(_buildSlide(p)))
+                : wrapper.appendChild(_buildErrorSlide());
+        } catch (e) {
+            console.warn("LinkedIn feed:", e);
+            const wrapper = document.getElementById("linkedin-slides");
+            if (wrapper) { wrapper.innerHTML = ""; wrapper.appendChild(_buildErrorSlide()); }
+        } finally {
+            if (liEl.swiper) liEl.swiper.destroy(true, true);
+            new Swiper(liEl, {
+                spaceBetween: 0,
+                autoplay: { delay: 5000, disableOnInteraction: false },
+                pagination: { el: ".linkedin-pagination", clickable: true },
+            });
+        }
     }
 
-    const liEl = document.querySelector(".linkedin-swiper");
-    if (!liEl) return;
-
-    try {
-        const r     = await frappe.call({ method: "amoamancustom.api.get_linkedln_post" });
-        const posts = r?.message?.elements || [];
-
-        const wrapper = document.getElementById("linkedin-slides");
-        wrapper.innerHTML = "";
-        posts.length
-            ? posts.forEach(p => wrapper.appendChild(_buildSlide(p)))
-            : wrapper.appendChild(_buildErrorSlide());
-    } catch (e) {
-        console.warn("LinkedIn feed:", e);
-        const wrapper = document.getElementById("linkedin-slides");
-        if (wrapper) { wrapper.innerHTML = ""; wrapper.appendChild(_buildErrorSlide()); }
-    } finally {
-        if (liEl.swiper) liEl.swiper.destroy(true, true);
-        const sw = new Swiper(liEl, {
-            spaceBetween: 16,
-            autoplay: { delay: 5000, disableOnInteraction: false },
-            pagination: {
-                el: document.querySelector(".linkedin-pagination"),
-                clickable: true,
-            },
-            on: {
-                init:        s => _updateCaption(s),
-                slideChange: s => _updateCaption(s),
-            },
+    /* ── Init Academy ──────────────────────────────────── */
+    const acEl = document.querySelector(".academy-swiper");
+    if (acEl && !acEl.swiper) {
+        new Swiper(acEl, {
+            spaceBetween: 0,
+            autoplay: { delay: 6000, disableOnInteraction: false },
+            pagination: { el: ".academy-pagination", clickable: true },
         });
-        _updateCaption(sw);
     }
 });
 </script>
