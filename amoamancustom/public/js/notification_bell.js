@@ -44,6 +44,13 @@
 				});
 			}
 
+			// Surcharge render_notifications_dropdown pour mettre à jour le badge
+			// à chaque rendu (chargement initial inclus)
+			render_notifications_dropdown() {
+				super.render_notifications_dropdown();
+				_update_notif_badge(this.dropdown_items.length);
+			}
+
 			// Recharge et réaffiche la liste des notifs non lues
 			_refresh_bell() {
 				this.get_notifications_list(this.max_length).then((r) => {
@@ -52,7 +59,6 @@
 					frappe.update_user_info(r.message.user_info);
 					this.container.empty();
 					this.render_notifications_dropdown();
-					_update_notif_badge(this.dropdown_items.length);
 				});
 			}
 		}
@@ -79,21 +85,30 @@
 		});
 	};
 
+	// Injecte le CSS une seule fois
+	if (!document.getElementById("am-notif-badge-css")) {
+		const s = document.createElement("style");
+		s.id = "am-notif-badge-css";
+		s.textContent = `
+			.sidebar-notification .sidebar-item-icon { position: relative !important; }
+			.am-notif-badge {
+				position: absolute; top: 1px; right: 1px;
+				background: #e74c3c; color: #fff;
+				font-size: 10px; font-weight: 700;
+				min-width: 16px; height: 16px;
+				border-radius: 8px; line-height: 16px;
+				text-align: center; padding: 0 3px;
+				pointer-events: none; box-sizing: border-box;
+			}
+		`;
+		document.head.appendChild(s);
+	}
+
 	function _update_notif_badge(count) {
 		const $icon = $(".sidebar-notification .sidebar-item-icon");
 		$icon.find(".am-notif-badge").remove();
 		if (count > 0) {
-			$icon.append(
-				`<span class="am-notif-badge" style="
-					position:absolute;top:1px;right:1px;
-					background:#e74c3c;color:#fff;
-					font-size:10px;font-weight:700;
-					min-width:16px;height:16px;
-					border-radius:8px;line-height:16px;
-					text-align:center;padding:0 3px;
-					pointer-events:none;box-sizing:border-box;
-				">${count > 99 ? "99+" : count}</span>`
-			);
+			$icon.append(`<span class="am-notif-badge">${count > 99 ? "99+" : count}</span>`);
 		}
 	}
 })();
