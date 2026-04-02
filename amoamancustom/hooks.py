@@ -155,6 +155,9 @@ override_doctype_class = {
 # Hook on document methods and events
 
 doc_events = {
+    "Attendance": {
+        "validate": "amoamancustom.hr_custom.doctype.attendance.attendance.validate",
+    },
     "Employee": {
         "on_update": "amoamancustom.hr_custom.doctype.employee.employee.employment_type_changed",
     },
