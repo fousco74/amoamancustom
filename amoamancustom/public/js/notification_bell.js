@@ -92,7 +92,7 @@
 		s.textContent = `
 			.sidebar-notification .sidebar-item-icon { position: relative !important; }
 			.am-notif-badge {
-				position: absolute; top: 1px; right: 1px;
+				position: absolute; top: -4px; right: -2px;
 				background: #e74c3c; color: #fff;
 				font-size: 10px; font-weight: 700;
 				min-width: 16px; height: 16px;
@@ -105,10 +105,15 @@
 	}
 
 	function _update_notif_badge(count) {
-		const $icon = $(".sidebar-notification .sidebar-item-icon");
-		$icon.find(".am-notif-badge").remove();
+		const $iconSidebar = $(".sidebar-notification .sidebar-item-icon");
+		const $iconHome = $(".dropdown-notifications .btn-reset");
+
+		$iconSidebar.find(".am-notif-badge").remove();
+		$iconHome.find(".am-notif-badge").remove();
 		if (count > 0) {
-			$icon.append(`<span class="am-notif-badge">${count > 99 ? "99+" : count}</span>`);
+			$iconSidebar.append(`<span class="am-notif-badge">${count > 99 ? "99+" : count}</span>`);
+			$iconHome.append(`<span class="am-notif-badge">${count > 99 ? "99+" : count}</span>`);
+
 		}
 	}
 })();
