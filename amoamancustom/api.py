@@ -4,6 +4,7 @@ from frappe.utils import getdate, get_first_day, get_last_day
 from frappe.utils.data import flt
 import requests
 from requests.exceptions import Timeout, ConnectionError as RequestsConnectionError
+from urllib.parse import urlencode
 
 
 # =============================================================================
@@ -145,12 +146,18 @@ def _get_linkedin_settings():
     return settings
 
 
+_LINKEDIN_CACHE_KEY = "amoamancustom:linkedin_posts"
+_LINKEDIN_CACHE_TTL = 3600  # 1 heure
+
+
 @frappe.whitelist(allow_guest=True)
 def get_linkedln_post(limit: int = None, org_id: str = None) -> dict:
     """
     Recupere les posts d'une organisation LinkedIn via /v2/shares.
 
     Les parametres par defaut sont lus depuis LinkedIn Settings.
+    Les resultats sont mis en cache Redis (1h). En cas d'indisponibilite
+    reseau, le cache precedent est retourne plutot qu'une liste vide.
 
     Structure retournee par element :
         post.text.text                                         → texte
@@ -166,7 +173,7 @@ def get_linkedln_post(limit: int = None, org_id: str = None) -> dict:
     """
     try:
         settings = _get_linkedin_settings()
-        token    = settings.get_token()
+        token    = settings.get_valid_token()
 
         resolved_org_id = org_id or settings.org_id or "70907752"
         resolved_limit  = min(int(limit or settings.default_limit or 6), 50)
@@ -182,28 +189,105 @@ def get_linkedln_post(limit: int = None, org_id: str = None) -> dict:
         try:
             resp = requests.get(url, params=params, headers=headers, timeout=10)
             resp.raise_for_status()
-            return resp.json()
+            data = resp.json()
+            # Mettre en cache si on a des resultats
+            if data.get("elements"):
+                frappe.cache().set_value(_LINKEDIN_CACHE_KEY, data, expires_in_sec=_LINKEDIN_CACHE_TTL)
+            return data
         except Exception as e:
             frappe.log_error(str(e), "LinkedIn feed")
+            # Retourner le cache si disponible
+            cached = frappe.cache().get_value(_LINKEDIN_CACHE_KEY)
+            if cached:
+                return cached
             return {"elements": []}
     except Exception as e:
         frappe.log_error(str(e), "LinkedIn feed")
+        cached = frappe.cache().get_value(_LINKEDIN_CACHE_KEY)
+        if cached:
+            return cached
         return {"elements": []}
+
+
+@frappe.whitelist()
+def linkedin_oauth_init() -> dict:
+    """
+    Genere l'URL d'autorisation LinkedIn OAuth2 et un state CSRF.
+    Le front-end ouvre cette URL dans un popup.
+
+    Prerequis dans LinkedIn Settings : client_id renseigne.
+    Redirect URI a enregistrer dans le LinkedIn Developer Portal :
+        https://{votre-site}/linkedin-oauth-callback
+    """
+    import secrets
+    settings = _get_linkedin_settings()
+
+    if not settings.client_id:
+        frappe.throw(_("Client ID manquant dans LinkedIn Settings."), frappe.ValidationError)
+
+    state = secrets.token_urlsafe(32)
+    frappe.cache().set_value(f"linkedin_oauth_state:{state}", True, expires_in_sec=300)
+
+    redirect_uri = frappe.utils.get_url("/linkedin-oauth-callback")
+
+    auth_url = "https://www.linkedin.com/oauth/v2/authorization?" + urlencode({
+        "response_type": "code",
+        "client_id":     settings.client_id,
+        "redirect_uri":  redirect_uri,
+        "scope":         "r_organization_social",
+        "state":         state,
+    })
+
+    return {"auth_url": auth_url, "redirect_uri": redirect_uri}
+
+
+@frappe.whitelist()
+def refresh_linkedin_cache() -> dict:
+    """Force le rafraichissement du cache LinkedIn (appel manuel ou scheduler)."""
+    frappe.cache().delete_value(_LINKEDIN_CACHE_KEY)
+    return get_linkedln_post()
 
 
 @frappe.whitelist(allow_guest=True)
 def linkedin_img_proxy(url: str):
-    """Proxy une image LinkedIn CDN avec le Bearer token du serveur."""
-    import re
+    """
+    Proxy une image LinkedIn CDN avec le Bearer token du serveur.
+    Cache disque local dans sites/{site}/public/files/linkedin_cache/.
+    Si le fichier est deja en cache, il est servi directement sans appel reseau.
+    """
+    import re, hashlib, os
     if not re.match(r'^https://media\.licdn\.com/', url):
         frappe.local.response.http_status_code = 403
         return
+
+    url_hash  = hashlib.md5(url.encode()).hexdigest()
+    cache_dir = frappe.get_site_path("public", "files", "linkedin_cache")
+    os.makedirs(cache_dir, exist_ok=True)
+    cached_file = os.path.join(cache_dir, f"li_{url_hash}.jpg")
+
+    # Servir depuis le cache disque si disponible
+    if os.path.exists(cached_file):
+        with open(cached_file, "rb") as f:
+            content = f.read()
+        frappe.local.response.update({
+            "type":         "binary",
+            "filecontent":  content,
+            "content_type": "image/jpeg",
+            "filename":     "li.jpg",
+        })
+        return
+
     try:
         settings = _get_linkedin_settings()
-        token    = settings.get_token()
+        token    = settings.get_valid_token()
         headers  = _build_headers(token=token)
         resp = requests.get(url, headers=headers, timeout=10)
         resp.raise_for_status()
+
+        # Sauvegarder sur disque pour les prochaines requetes
+        with open(cached_file, "wb") as f:
+            f.write(resp.content)
+
         frappe.local.response.update({
             "type":         "binary",
             "filecontent":  resp.content,

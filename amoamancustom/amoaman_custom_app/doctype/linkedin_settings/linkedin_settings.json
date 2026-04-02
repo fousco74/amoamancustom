@@ -10,6 +10,11 @@
   "column_break_1",
   "base_url",
   "api_version",
+  "section_oauth",
+  "client_id",
+  "client_secret",
+  "column_break_oauth",
+  "refresh_token",
   "section_org",
   "org_id",
   "default_limit",
@@ -27,14 +32,13 @@
    "fieldname": "access_token",
    "fieldtype": "Password",
    "label": "Access Token",
-   "description": "Bearer token LinkedIn. Commande : bench set-config linkedin_access_token \"TOKEN\"",
+   "description": "Bearer token LinkedIn. Renouvel\u00e9 automatiquement si client_id / client_secret / refresh_token sont renseign\u00e9s.",
    "in_list_view": 0
   },
   {
    "fieldname": "token_expiry",
    "fieldtype": "Datetime",
    "label": "Expiration du token",
-   "read_only": 1,
    "description": "Mis \u00e0 jour automatiquement lors du renouvellement OAuth2."
   },
   {
@@ -55,6 +59,33 @@
    "label": "Version API",
    "default": "v2",
    "read_only": 1
+  },
+  {
+   "fieldname": "section_oauth",
+   "fieldtype": "Section Break",
+   "label": "OAuth 2.0 (renouvellement automatique)"
+  },
+  {
+   "fieldname": "client_id",
+   "fieldtype": "Data",
+   "label": "Client ID",
+   "description": "Client ID de votre app LinkedIn Developer Portal."
+  },
+  {
+   "fieldname": "client_secret",
+   "fieldtype": "Password",
+   "label": "Client Secret",
+   "description": "Client Secret de votre app LinkedIn Developer Portal."
+  },
+  {
+   "fieldname": "column_break_oauth",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "refresh_token",
+   "fieldtype": "Password",
+   "label": "Refresh Token",
+   "description": "Refresh Token obtenu lors de l'autorisation OAuth2 initiale."
   },
   {
    "fieldname": "section_org",
@@ -96,7 +127,7 @@
  ],
  "issingle": 1,
  "links": [],
- "modified": "2026-03-17 00:00:00.000000",
+ "modified": "2026-04-01 00:00:00.000000",
  "modified_by": "Administrator",
  "module": "Amoaman Custom App",
  "name": "LinkedIn Settings",
