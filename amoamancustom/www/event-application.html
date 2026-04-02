@@ -171,6 +171,23 @@ main.container {
 .field-error { font-size: 11px; color: #dc2626; display: none; }
 .fg.has-error .field-error { display: block; }
 
+/* COMPANY FIELDS TOGGLE */
+.company-fields {
+  display: contents;
+}
+.company-fields .fg {
+  overflow: hidden;
+  transition: max-height .25s ease, opacity .25s ease, margin .25s ease;
+  max-height: 200px;
+  opacity: 1;
+}
+.company-fields.hidden .fg {
+  max-height: 0;
+  opacity: 0;
+  pointer-events: none;
+  margin: 0;
+}
+
 /* CONSENT */
 .consent-row {
   display: flex; align-items: flex-start; gap: 10px;
@@ -337,14 +354,18 @@ main.container {
               </select>
             </div>
 
-            <div class="fg">
-              <label for="f-company">{{ _("Entreprise") }}</label>
-              <input type="text" id="f-company" placeholder="{{ _('Nom de votre entreprise') }}" autocomplete="organization">
-            </div>
+            <div class="company-fields hidden" id="company-fields">
+              <div class="fg" id="fg-company">
+                <label for="f-company">{{ _("Entreprise") }} <span class="req">*</span></label>
+                <input type="text" id="f-company" placeholder="{{ _('Nom de votre entreprise') }}" autocomplete="organization">
+                <span class="field-error">{{ _("Ce champ est obligatoire.") }}</span>
+              </div>
 
-            <div class="fg">
-              <label for="f-job_title">{{ _("Poste") }}</label>
-              <input type="text" id="f-job_title" placeholder="{{ _('Ex : Responsable RH') }}" autocomplete="organization-title">
+              <div class="fg" id="fg-job_title">
+                <label for="f-job_title">{{ _("Poste") }} <span class="req">*</span></label>
+                <input type="text" id="f-job_title" placeholder="{{ _('Ex : Responsable RH') }}" autocomplete="organization-title">
+                <span class="field-error">{{ _("Ce champ est obligatoire.") }}</span>
+              </div>
             </div>
 
           </div>
@@ -395,21 +416,18 @@ main.container {
   const formWrap   = document.getElementById("form-wrap");
   const formSuccess = document.getElementById("form-success");
   const formError  = document.getElementById("form-error");
-
+  
   document.getElementById("f-application_type").addEventListener("change", function () {
-  const isCompany = this.value === "En entreprise";
-
-  const companyLabel = document.querySelector("label[for='f-company']");
-  const jobLabel = document.querySelector("label[for='f-job_title']");
-
-  if (isCompany) {
-    companyLabel.innerHTML = 'Entreprise <span class="req">*</span>';
-    jobLabel.innerHTML = 'Poste <span class="req">*</span>';
-  } else {
-    companyLabel.innerHTML = 'Entreprise';
-    jobLabel.innerHTML = 'Poste';
-  }
-});
+    const isCompany = this.value === "En entreprise";
+    const companyFields = document.getElementById("company-fields");
+    companyFields.classList.toggle("hidden", !isCompany);
+    if (!isCompany) {
+      document.getElementById("f-company").value = "";
+      document.getElementById("f-job_title").value = "";
+      setError("fg-company", false);
+      setError("fg-job_title", false);
+    }
+  });
 
   function setError(groupId, hasError) {
     const el = document.getElementById(groupId);

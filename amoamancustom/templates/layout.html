@@ -3266,7 +3266,7 @@ svg {
     position: fixed;
     inset: 0;
     background: rgba(8, 26, 42, 0.6);
-    z-index: 1050;
+    z-index: 99999;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -3809,6 +3809,8 @@ frappe.ready(function () {
     }
 
     function openPopup() {
+        // Fermer tout select ouvert pour éviter que ses options passent au-dessus du popup
+        document.querySelectorAll("select").forEach(function(s) { s.blur(); });
         document.getElementById("irixflow-overlay")?.classList.remove("d-none");
     }
 
