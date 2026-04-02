@@ -5,7 +5,7 @@
         <div class="row actualite g-4 justify-content-center w-100">
 
             {# ══════════════ LinkedIn ══════════════ #}
-            <div class="col-12 col-md-6 col-xl-5">
+            <div class="col-12 col-sm-8 col-md-6 col-lg-4">
                 <div class="actu-feed-card">
 
                     {# En-tête fixe de la card #}
@@ -36,7 +36,7 @@
             </div>
 
             {# ══════════════ Amoaman Academy ══════════════ #}
-            <div class="col-12 col-md-6 col-xl-5">
+            <div class="col-12 col-sm-8 col-md-6 col-lg-4">
                 <div class="actu-feed-card">
 
                     <div class="actu-feed-header">
@@ -177,6 +177,8 @@
     font-size: .88rem;
     color: var(--text);
     line-height: 1.55;
+    height: 90px;          /* hauteur fixe identique sur les deux cards */
+    overflow: hidden;
 }
 .actu-slide-date {
     font-size: .75rem;
@@ -211,7 +213,7 @@
     text-decoration: none;
     flex-shrink: 0;
 }
-/* ══ Conteneur image Academy — même principe que LinkedIn ══ */
+/* ══ Conteneur image — identique pour LinkedIn et Academy ══ */
 .actu-ac-media-wrap {
     width: 100%;
     aspect-ratio: 4 / 5;
@@ -269,12 +271,10 @@
 }
 .actu-pagination .swiper-pagination-bullet { margin: 0 !important; }
 
-/* ══ Conteneur image LinkedIn — dimensions fixes avant chargement ══
-   Ratio 1:1 (carré) comme les posts LinkedIn standard.
-   L'image s'y inscrit entièrement grâce à object-fit:contain.       */
+/* ══ Conteneur image LinkedIn — même ratio que Academy (4/5) ══ */
 .actu-li-media-wrap {
     width: 100%;
-    aspect-ratio: 1 / 1;     /* hauteur connue AVANT chargement → pas de layout shift */
+    aspect-ratio: 4 / 5;
     overflow: hidden;
     background: #f4f5f7;
     display: flex;
