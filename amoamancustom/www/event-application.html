@@ -1,0 +1,499 @@
+{% extends "amoamancustom/templates/layout.html" %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block page_content %}
+<style>
+main.container {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0;
+  padding: 0;
+}
+
+.am-apply {
+  --grad: linear-gradient(135deg, #266BCC 0%, #F32A57 100%);
+  --text: #081A2A;
+  --muted: #6b7280;
+  --border: #EEF1F6;
+  --soft: #F8F9FA;
+  --shadow: 0 10px 40px rgba(0,0,0,.08);
+  --ring: 0 0 0 3px rgba(38,107,204,.14);
+  --radius: 20px;
+  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--text);
+}
+.am-apply * { box-sizing: border-box; }
+
+/* HERO */
+.am-apply .hero {
+  background: linear-gradient(135deg, #E8EEFF 0%, #FFE8F0 100%);
+  padding: 52px 16px 80px;
+  text-align: center;
+  border-bottom: 1px solid rgba(8,26,42,.06);
+}
+.am-apply .hero h1 {
+  margin: 0 0 8px;
+  font-weight: 900;
+  font-size: clamp(1.6rem, 1rem + 2.5vw, 2.4rem);
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.am-apply .hero p {
+  margin: 0 auto;
+  max-width: 680px;
+  color: #475569;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* WRAP */
+.am-apply .wrap {
+  max-width: 1000px !important;
+  margin: -52px auto 80px;
+  padding: 0 16px;
+}
+
+/* CARD */
+.am-apply .card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px;
+  width: 100% !important;
+}
+@media (max-width: 575.98px) {
+  .am-apply .card { padding: 20px 16px; }
+}
+
+/* EVENT SUMMARY */
+.ev-summary {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--soft);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin-bottom: 28px;
+}
+.ev-summary .ev-thumb {
+  width: 64px; height: 64px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.ev-summary .ev-icon {
+  width: 64px; height: 64px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #E8EEFF, #FFE8F0);
+  display: grid; place-items: center;
+  font-size: 28px; flex-shrink: 0;
+}
+.ev-summary .ev-info { min-width: 0; }
+.ev-summary .ev-info strong {
+  display: block; font-size: 15px; font-weight: 900;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ev-summary .ev-info .ev-meta-line {
+  margin-top: 4px; font-size: 12px; color: var(--muted);
+  display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+}
+.ev-summary .ev-info .ev-meta-line span {
+  display: inline-flex; align-items: center; gap: 4px;
+}
+
+/* CLOSED BANNER */
+.closed-banner {
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  border-radius: 14px;
+  padding: 24px;
+  text-align: center;
+  color: #991B1B;
+}
+.closed-banner .closed-icon { font-size: 36px; margin-bottom: 10px; }
+.closed-banner strong { display: block; font-size: 16px; font-weight: 900; }
+.closed-banner p { margin: 6px 0 0; font-size: 13px; color: #B91C1C; }
+
+/* SECTION TITLE */
+.section-label {
+  font-size: 11px; font-weight: 900;
+  letter-spacing: .6px; text-transform: uppercase;
+  color: #94a3b8; margin: 0 0 14px;
+}
+
+/* FORM GRID */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-bottom: 20px;
+  padding: 12px 15px;
+}
+@media (max-width: 575.98px) { .form-grid { grid-template-columns: 1fr; } }
+
+.fg { display: flex; flex-direction: column; gap: 5px; }
+.fg.full { grid-column: 1 / -1; }
+
+.fg label {
+  font-size: 12px; font-weight: 700; color: #374151;
+}
+.fg label .req { color: #e74c3c; margin-left: 2px; }
+
+.fg input,
+.fg select,
+.fg textarea {
+  border: 1px solid #D1D5DB;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--text);
+  background: #fff;
+  width: 100%;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.fg input:focus,
+.fg select:focus,
+.fg textarea:focus {
+  border-color: #266BCC;
+  box-shadow: var(--ring);
+}
+.fg textarea { resize: vertical; min-height: 80px; }
+
+/* ERROR STATE */
+.fg.has-error input,
+.fg.has-error select { border-color: #dc2626 !important; }
+.field-error { font-size: 11px; color: #dc2626; display: none; }
+.fg.has-error .field-error { display: block; }
+
+/* CONSENT */
+.consent-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 14px;
+  background: var(--soft);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+.consent-row input[type="checkbox"] {
+  width: 16px; height: 16px;
+  margin-top: 2px; flex-shrink: 0;
+  padding: 0; border-radius: 4px;
+}
+.consent-row label {
+  font-size: 12px; color: #374151; line-height: 1.55; cursor: pointer;
+}
+
+/* FOOTER */
+.form-event-footer {
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+.btn-submit {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 11px 22px; border-radius: 999px;
+  font-size: 14px; font-weight: 900;
+  border: none; cursor: pointer;
+  background: var(--grad); color: #fff;
+  box-shadow: 0 10px 26px rgba(38,107,204,.16);
+  transition: transform .12s ease, opacity .12s;
+  font-family: inherit;
+}
+.btn-submit:hover { transform: translateY(-1px); }
+.btn-submit:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+.btn-back {
+  font-size: 13px; color: var(--muted);
+  text-decoration: none; font-weight: 700;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-back:hover { color: var(--text); }
+
+
+
+/* SUCCESS */
+.success-box {
+  text-align: center; padding: 32px 16px;
+}
+.success-box .s-icon { font-size: 52px; line-height: 1; margin-bottom: 16px; }
+.success-box h2 { font-size: 22px; font-weight: 900; margin: 0 0 8px; }
+.success-box p { color: var(--muted); font-size: 14px; margin: 0 0 20px; }
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 18px; border-radius: 999px;
+  font-size: 13px; font-weight: 900;
+  background: #fff; border: 1px solid var(--border);
+  color: var(--text); text-decoration: none;
+}
+.btn-ghost:hover { background: var(--soft); }
+
+/* ALERT */
+.alert-box {
+  padding: 12px 16px; border-radius: 10px;
+  font-size: 13px; font-weight: 700;
+  display: none; margin-bottom: 14px;
+}
+.alert-box.error { background: #FEF2F2; border: 1px solid #FECACA; color: #991B1B; }
+</style>
+
+<div class="am-apply">
+  <section class="hero">
+    <h1>{{ _("Postuler à l'événement") }}</h1>
+    <p>{{ event.title }}</p>
+  </section>
+
+  <div class="wrap">
+    <div class="card">
+
+      {# ── Résumé de l'événement ── #}
+      <div class="ev-summary">
+        {% if event.image %}
+          <img src="{{ event.image }}" alt="{{ event.title | e }}" class="ev-thumb">
+        {% else %}
+          <div class="ev-icon">📅</div>
+        {% endif %}
+        <div class="ev-info">
+          <strong>{{ event.title | e }}</strong>
+          <div class="ev-meta-line">
+            {% if event.start_date %}
+              <span><i class="bi bi-calendar3"></i> {{ frappe.utils.format_date(event.start_date, "dd MMMM yyyy") }}</span>
+            {% endif %}
+            {% if event.start_time %}
+              <span><i class="bi bi-clock"></i> {{ event.start_time }}</span>
+            {% endif %}
+            {% if event.delivery_mode %}
+              <span><i class="bi bi-broadcast-pin"></i>
+                {% if event.delivery_mode == "Onsite" %}{{ _("Présentiel") }}
+                {% elif event.delivery_mode == "Online" %}{{ _("En ligne") }}
+                {% elif event.delivery_mode == "Hybrid" %}{{ _("Hybride") }}
+                {% else %}{{ event.delivery_mode }}{% endif %}
+              </span>
+            {% endif %}
+            {% if event.location_name or event.city %}
+              <span><i class="bi bi-geo-alt"></i>
+                {{ event.location_name or "" }}{% if event.location_name and event.city %} · {% endif %}{{ event.city or "" }}
+              </span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      {% if is_closed %}
+      {# ── Inscriptions fermées ── #}
+      <div class="closed-banner">
+        <div class="closed-icon">🔒</div>
+        <strong>{{ _("Inscriptions fermées") }}</strong>
+        <p>{{ _("Les inscriptions à cet événement ne sont plus acceptées.") }}</p>
+      </div>
+      <div style="margin-top: 20px; text-align: center;">
+        <a class="btn-ghost" href="/events">
+          <i class="bi bi-arrow-left"></i> {{ _("Voir les autres événements") }}
+        </a>
+      </div>
+
+      {% else %}
+      {# ── Formulaire ── #}
+      <div id="form-wrap">
+        <div class="alert-box error" id="form-error"></div>
+
+        <form id="apply-form" novalidate>
+          <input type="hidden" id="f-event" value="{{ event.name | e }}">
+
+          {# Identité #}
+          <p class="section-label">{{ _("Vos informations") }}</p>
+          <div class="form-grid">
+
+            <div class="fg" id="fg-full_name">
+              <label for="f-full_name">{{ _("Nom complet") }} <span class="req">*</span></label>
+              <input type="text" id="f-full_name" placeholder="{{ _('Prénom NOM') }}" autocomplete="name">
+              <span class="field-error">{{ _("Ce champ est obligatoire.") }}</span>
+            </div>
+
+            <div class="fg" id="fg-email">
+              <label for="f-email">{{ _("Email") }} <span class="req">*</span></label>
+              <input type="email" id="f-email" placeholder="vous@exemple.com" autocomplete="email">
+              <span class="field-error">{{ _("Adresse email invalide.") }}</span>
+            </div>
+
+            <div class="fg">
+              <label for="f-phone">{{ _("Téléphone") }}</label>
+              <input type="tel" id="f-phone" placeholder="+225 07 XX XX XX XX" autocomplete="tel">
+            </div>
+
+            <div class="fg">
+              <label for="f-application_type">{{ _("Profil") }}</label>
+              <select id="f-application_type">
+                <option value="">{{ _("Choisir…") }}</option>
+                <option value="Particulier">{{ _("Particulier") }}</option>
+                <option value="Étudiant">{{ _("Étudiant") }}</option>
+                <option value="En entreprise">{{ _("En entreprise") }}</option>
+              </select>
+            </div>
+
+            <div class="fg">
+              <label for="f-company">{{ _("Entreprise") }}</label>
+              <input type="text" id="f-company" placeholder="{{ _('Nom de votre entreprise') }}" autocomplete="organization">
+            </div>
+
+            <div class="fg">
+              <label for="f-job_title">{{ _("Poste") }}</label>
+              <input type="text" id="f-job_title" placeholder="{{ _('Ex : Responsable RH') }}" autocomplete="organization-title">
+            </div>
+
+          </div>
+
+          {# Consentement #}
+          <div class="consent-row">
+            <input type="checkbox" id="f-consent" value="1">
+            <label for="f-consent">
+              {{ _("J'accepte d'être recontacté(e) par Amoaman concernant cet événement ou d'autres formations similaires.") }}
+            </label>
+          </div>
+
+          <div class="form-event-footer">
+            <a class="btn-back" href="/events/{{ (event.route or '').split('/')[-1] or event.name }}">
+              <i class="bi bi-arrow-left"></i> {{ _("Retour à l'événement") }}
+            </a>
+            <button type="submit" class="btn-submit" id="btn-submit">
+              <i class="bi bi-send"></i> {{ _("Envoyer ma candidature") }}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {# ── Succès ── #}
+      <div id="form-success" style="display: none;">
+        <div class="success-box">
+          <div class="s-icon">🎉</div>
+          <h2>{{ _("Candidature envoyée !") }}</h2>
+          <p>{{ _("Merci pour votre intérêt. Nous avons bien reçu votre candidature et vous recontacterons prochainement.") }}</p>
+          <a class="btn-ghost" href="/events">
+            <i class="bi bi-calendar-event"></i> {{ _("Voir tous les événements") }}
+          </a>
+        </div>
+      </div>
+
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const form    = document.getElementById("apply-form");
+  if (!form) return;
+
+  const btnSubmit  = document.getElementById("btn-submit");
+  const formWrap   = document.getElementById("form-wrap");
+  const formSuccess = document.getElementById("form-success");
+  const formError  = document.getElementById("form-error");
+
+  document.getElementById("f-application_type").addEventListener("change", function () {
+  const isCompany = this.value === "En entreprise";
+
+  const companyLabel = document.querySelector("label[for='f-company']");
+  const jobLabel = document.querySelector("label[for='f-job_title']");
+
+  if (isCompany) {
+    companyLabel.innerHTML = 'Entreprise <span class="req">*</span>';
+    jobLabel.innerHTML = 'Poste <span class="req">*</span>';
+  } else {
+    companyLabel.innerHTML = 'Entreprise';
+    jobLabel.innerHTML = 'Poste';
+  }
+});
+
+  function setError(groupId, hasError) {
+    const el = document.getElementById(groupId);
+    if (!el) return;
+    el.classList.toggle("has-error", hasError);
+  }
+
+  function showAlert(msg) {
+    formError.textContent = msg;
+    formError.style.display = "block";
+    formError.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  function hideAlert() {
+    formError.style.display = "none";
+  }
+
+ function validate() {
+  let ok = true;
+
+  const fullName = document.getElementById("f-full_name").value.trim();
+  setError("fg-full_name", !fullName);
+  if (!fullName) ok = false;
+
+  const email = document.getElementById("f-email").value.trim();
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  setError("fg-email", !emailOk);
+  if (!emailOk) ok = false;
+
+  const profile = document.getElementById("f-application_type").value;
+  const company = document.getElementById("f-company").value.trim();
+  const job = document.getElementById("f-job_title").value.trim();
+
+  
+
+  const isCompanyProfile = profile === "En entreprise";
+
+  setError("fg-company", isCompanyProfile && !company);
+  setError("fg-job_title", isCompanyProfile && !job);
+
+  if (isCompanyProfile && !company) ok = false;
+  if (isCompanyProfile && !job) ok = false;
+
+  return ok;
+}
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    hideAlert();
+
+    if (!validate()) return;
+
+    btnSubmit.disabled = true;
+    btnSubmit.innerHTML = '<i class="bi bi-hourglass-split"></i> Envoi en cours…';
+
+    frappe.call({
+      method: "amoamancustom.amoaman_custom_app.doctype.amoaman_event.amoaman_event.submit_event_application",
+      args: {
+        event:            document.getElementById("f-event").value,
+        full_name:        document.getElementById("f-full_name").value.trim(),
+        email:            document.getElementById("f-email").value.trim(),
+        phone:            document.getElementById("f-phone").value.trim(),
+        company:          document.getElementById("f-company").value.trim(),
+        job_title:        document.getElementById("f-job_title").value.trim(),
+        application_type: document.getElementById("f-application_type").value,
+        consent_to_contact: document.getElementById("f-consent").checked ? 1 : 0,
+      },
+      callback: function (r) {
+        if (r.message) {
+          formWrap.style.display = "none";
+          formSuccess.style.display = "block";
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      },
+      error: function (r) {
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = '<i class="bi bi-send"></i> Envoyer ma candidature';
+        const msg = (r && r._server_messages)
+          ? JSON.parse(r._server_messages).map(function(m){ return JSON.parse(m).message; }).join(" ")
+          : "Une erreur est survenue. Veuillez réessayer.";
+        showAlert(msg);
+      },
+    });
+  });
+})();
+</script>
+{% endblock %}

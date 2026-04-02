@@ -443,8 +443,12 @@
                     <span></span>
                   {% endif %}
 
-                  <div style="display:flex; gap:10px;">
-                    <a class="btn btn-ghost" href="{{ href }}">{{ _("Détails") }}</a>
+                  <div style="display:flex; gap:10px; align-items:center;">
+                    {% if e.status in ("Closed", "Cancelled") %}
+                      <span style="font-size:11px; font-weight:900; color:#991B1B; background:#FEE2E2; border:1px solid #FECACA; border-radius:999px; padding:4px 10px;">
+                        {{ _("Fermé") }}
+                      </span>
+                    {% endif %}
                     <a class="btn btn-primary" href="{{ href }}">{{ _("Voir plus") }}</a>
                   </div>
                 </div>
@@ -548,8 +552,13 @@
             </div>
 
             <div class="detail-actions">
-              {# Remplace l’URL selon ton Web Form (si tu en as un) #}
-              <a class="btn btn-primary" href="/event-application?event={{ doc.name }}">{{ _("Postuler") }}</a>
+              {% if is_closed %}
+                <span class="meta-chip" style="background:#FEE2E2; border-color:#FECACA; color:#991B1B;">
+                  <i class="bi bi-lock-fill"></i> {{ _("Inscriptions fermées") }}
+                </span>
+              {% else %}
+                <a class="btn btn-primary" href="/event-application?event={{ doc.name }}">{{ _("Postuler") }}</a>
+              {% endif %}
               <a class="btn btn-ghost" href="/events">{{ _("Retour à la liste") }}</a>
             </div>
 
