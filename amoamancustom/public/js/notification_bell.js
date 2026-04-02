@@ -52,6 +52,7 @@
 					frappe.update_user_info(r.message.user_info);
 					this.container.empty();
 					this.render_notifications_dropdown();
+					_update_notif_badge(this.dropdown_items.length);
 				});
 			}
 		}
@@ -71,9 +72,28 @@
 			this.tabs.notifications.container.empty();
 			this.tabs.notifications.render_notifications_dropdown();
 		}
+		_update_notif_badge(0);
 		// Marquer comme lu côté serveur
 		frappe.call({
 			method: "frappe.desk.doctype.notification_log.notification_log.mark_all_as_read",
 		});
 	};
+
+	function _update_notif_badge(count) {
+		const $icon = $(".sidebar-notification .sidebar-item-icon");
+		$icon.find(".am-notif-badge").remove();
+		if (count > 0) {
+			$icon.append(
+				`<span class="am-notif-badge" style="
+					position:absolute;top:1px;right:1px;
+					background:#e74c3c;color:#fff;
+					font-size:10px;font-weight:700;
+					min-width:16px;height:16px;
+					border-radius:8px;line-height:16px;
+					text-align:center;padding:0 3px;
+					pointer-events:none;box-sizing:border-box;
+				">${count > 99 ? "99+" : count}</span>`
+			);
+		}
+	}
 })();
