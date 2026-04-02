@@ -27,7 +27,7 @@ app_license = "mit"
 
 # include js, css files in header of desk.html
 #app_include_css = "/assets/amoamancustom/css/brand_theme_desk.css"
-#app_include_js = "/assets/amoamancustom/js/brand_theme_web.js"
+app_include_js = "/assets/amoamancustom/js/notification_bell.js"
 
 # include js, css files in header of web template
 web_include_css = "/assets/amoamancustom/css/brand_theme_web.css"
@@ -179,7 +179,7 @@ scheduler_events = {
  		"amoamancustom.schedulers.employee.set_seniority"
  	],
  	"hourly": [
- 		#"amoamancustom.tasks.hourly"
+ 		"amoamancustom.api.refresh_linkedin_cache"
  	],
  	"weekly": [
  		#"amoamancustom.tasks.weekly"
@@ -207,9 +207,9 @@ scheduled_jobs = {
 # Overriding Methods
 # ------------------------------
 #
-# override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "amoamancustom.event.get_events"
-# }
+override_whitelisted_methods = {
+	"frappe.desk.doctype.notification_log.notification_log.get_notification_logs": "amoamancustom.overrides.notification_log.get_notification_logs",
+}
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
@@ -506,6 +506,11 @@ fixtures = [
     },
 
     # -----------------------------
+    # 4b. Workflow Action Masters (actions personnalisées)
+    # -----------------------------
+    {"doctype": "Workflow Action Master"},
+
+    # -----------------------------
     # 5. Workflow Actions
     # -----------------------------
     {
@@ -624,6 +629,16 @@ fixtures = [
                     "Work Order"
                 ]
             ]
+        ]
+    },
+
+    # -----------------------------
+    # 9. Workspace Lending (rôles personnalisés)
+    # -----------------------------
+    {
+        "doctype": "Workspace",
+        "filters": [
+            ["name", "=", "Lending"]
         ]
     }
 ]
