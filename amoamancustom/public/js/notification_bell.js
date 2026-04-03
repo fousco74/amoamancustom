@@ -91,10 +91,14 @@
 		s.id = "am-notif-badge-css";
 		s.textContent = `
 			.sidebar-notification .sidebar-item-icon { position: relative !important; }
+			.body-sidebar .standard-sidebar-item .item-anchor {
+  							overflow: visible !important;
+			}
 			.am-notif-badge {
 				position: absolute; top: -4px; right: -2px;
 				background: #e74c3c; color: #fff;
 				font-size: 10px; font-weight: 700;
+				z-index: 9999 !important;
 				min-width: 16px; height: 16px;
 				border-radius: 8px; line-height: 16px;
 				text-align: center; padding: 0 3px;
