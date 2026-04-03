@@ -1,0 +1,32 @@
+[
+ {
+  "address_line1": "Cocody Riviera 3, villa 676",
+  "address_line2": "11 BP 2624 ABJ 11",
+  "address_title": "AMOAMAN & ASSOCIES",
+  "address_type": "Office",
+  "city": "Abidjan",
+  "country": "Ivory Coast",
+  "county": null,
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Address",
+  "email_id": "hello@amoaman.com",
+  "fax": null,
+  "is_primary_address": 0,
+  "is_shipping_address": 0,
+  "is_your_company_address": 1,
+  "links": [
+   {
+    "link_doctype": "Company",
+    "link_name": "AMOAMAN & ASSOCIES",
+    "link_title": "AMOAMAN & ASSOCIES"
+   }
+  ],
+  "modified": "2026-04-02 19:50:09.708119",
+  "name": "AMOAMAN & ASSOCIES-Office",
+  "phone": "+2252724311561",
+  "pincode": null,
+  "state": null,
+  "tax_category": null
+ }
+]

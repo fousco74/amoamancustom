@@ -1,0 +1,13 @@
+[
+ {
+  "bank_name": "Bank of Africa Côte d'Ivoire",
+  "bank_transaction_mapping": [],
+  "docstatus": 0,
+  "doctype": "Bank",
+  "modified": "2026-04-02 19:50:09.785837",
+  "name": "Bank of Africa Côte d'Ivoire",
+  "plaid_access_token": null,
+  "swift_number": null,
+  "website": null
+ }
+]
