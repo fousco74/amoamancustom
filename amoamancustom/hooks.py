@@ -648,5 +648,28 @@ fixtures = [
         "filters": [
             ["name", "=", "Lending"]
         ]
-    }
+    },
+
+    # -----------------------------
+    # 10. Données société AMOAMAN & ASSOCIES
+    # -----------------------------
+    {
+        "doctype": "Company",
+        "filters": [["name", "=", "AMOAMAN & ASSOCIES"]]
+    },
+    {
+        "doctype": "Address",
+        "filters": [["name", "=", "AMOAMAN & ASSOCIES-Office"]]
+    },
+    {
+        "doctype": "Bank",
+        "filters": [["bank_name", "=", "Bank of Africa Côte d'Ivoire"]]
+    },
+    {
+        "doctype": "Bank Account",
+        "filters": [
+            ["company", "=", "AMOAMAN & ASSOCIES"],
+            ["is_company_account", "=", 1]
+        ]
+    },
 ]

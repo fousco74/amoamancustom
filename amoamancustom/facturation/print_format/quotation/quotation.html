@@ -3,391 +3,472 @@
         <div class="letter-head">{{ letter_head }}</div>
     {% endif %}
     {% if print_heading_template %}
-        {{ frappe.render_template(print_heading_template, {"doc":doc}) }}
+        {{ frappe.render_template(print_heading_template, {"doc": doc}) }}
     {% endif %}
-
-    {% set logo_url = frappe.db.get_value("Website Settings", None, "app_logo") %}
-    {%- if doc.meta.is_submittable and doc.docstatus==2 -%}
+    {%- if doc.meta.is_submittable and doc.docstatus == 2 -%}
     <div class="text-center" document-status="cancelled">
-        <h4 style="margin:0; color:#032A5F;">{{ _("ANNULÉ") }}</h4>
+        <h4 style="margin:0; color:#dc2626;">{{ _("ANNULÉ") }}</h4>
     </div>
     {%- endif -%}
 {%- endmacro -%}
 
+{# ─────────────────────────────────────────────
+   Macro : formatage montant (entier pour FCFA)
+───────────────────────────────────────────── #}
 {% macro fmt_money(val) -%}
-    {{ "{:,.2f}".format(val or 0).rstrip('0').rstrip('.').replace(",", "X").replace(".", ",").replace("X", " ") }}
+    {{ "{:,.0f}".format((val or 0) | round(0) | int).replace(",", " ") }}
 {%- endmacro %}
 
-{% set logo_url = frappe.db.get_value("Website Settings", None, "app_logo") %}
-{% set currency_label = "FCFA" if doc.currency in ["XOF", "CFA"] else (doc.currency or "") %}
+{# ─────────────────────────────────────────────
+   Variables globales (calculées une seule fois)
+───────────────────────────────────────────── #}
+{% set logo_url    = frappe.db.get_value("Website Settings", None, "app_logo") %}
+{% set currency_label = "FCFA" if doc.currency in ["XOF", "CFA", "FCFA"] else (doc.currency or "") %}
 
-{# TVA : on essaie de récupérer un taux depuis la 1ère ligne taxes #}
-{% set vat_rate = 0 %}
-{% if doc.taxes and doc.taxes|length > 0 and doc.taxes[0].rate %}
-    {% set vat_rate = doc.taxes[0].rate %}
-{% endif %}
-
-{# Interlocuteur = owner (User) par défaut #}
+{# Interlocuteur = créateur du document #}
 {% set owner_fullname = frappe.db.get_value("User", doc.owner, "full_name") or doc.owner %}
-{% set owner_mobile = frappe.db.get_value("User", doc.owner, "mobile_no") or frappe.db.get_value("User", doc.owner, "phone") or "" %}
-{% set owner_email = frappe.db.get_value("User", doc.owner, "email") or doc.owner %}
+{% set owner_mobile   = frappe.db.get_value("User", doc.owner, "mobile_no") or frappe.db.get_value("User", doc.owner, "phone") or "" %}
+{% set owner_email    = frappe.db.get_value("User", doc.owner, "email") or doc.owner %}
 
-{# Besoin : fallback intelligent #}
+{# TVA : premier taux trouvé dans le tableau des taxes #}
+{% set vat_rate = (doc.taxes[0].rate if (doc.taxes and doc.taxes | length > 0 and doc.taxes[0].rate) else 0) %}
+
+{# Besoin / opportunité #}
 {% set besoin_value = doc.opportunity or doc.enq_det or "" %}
 
+{# ─────────────────────────────────────────────
+   Données société (Company)
+───────────────────────────────────────────── #}
+{% set co = frappe.get_doc("Company", doc.company) %}
+
+{# Adresse société via le doctype Address (lien dynamique) #}
+{% set _addr_name = frappe.db.get_value(
+    "Address",
+    {"is_your_company_address": 1, "link_doctype": "Company", "link_name": doc.company},
+    "name"
+) %}
+{% set co_addr = frappe.get_doc("Address", _addr_name) if _addr_name else None %}
+
+{# Ligne d'adresse pour le footer #}
+{% if co_addr %}
+    {% set co_addr_line =
+        ([co_addr.address_line1, co_addr.address_line2, co_addr.city]
+         | select | join(", "))
+    %}
+{% else %}
+    {% set co_addr_line = co.custom_adresse or "" %}
+{% endif %}
+
+{# Compte bancaire : cherche dans Bank Account par société #}
+{% set _bank_account_name = frappe.db.get_value(
+    "Bank Account",
+    {"company": doc.company, "is_company_account": 1},
+    "name"
+) %}
+{% set _bank_doc = frappe.get_doc("Bank Account", _bank_account_name) if _bank_account_name else None %}
+{% set bank_label = "" %}
+{% if _bank_doc %}
+    {% set _bname = _bank_doc.bank or "" %}
+    {% set _bnum  = _bank_doc.iban or _bank_doc.bank_account_no or "" %}
+    {% set bank_label = (_bname ~ " : " ~ _bnum) if _bnum else _bname %}
+{% endif %}
+
+{# ─────────────────────────────────────────────
+   Fallbacks société (si champs ERPNext vides)
+   → à remplacer par les vraies valeurs ERPNext
+───────────────────────────────────────────── #}
+{% set co_phone   = co.phone_no              or "+(225) 27 24 31 15 61" %}
+{% set co_email   = co.email                 or "contact@amoaman.com" %}
+{% set co_website = co.website               or "www.amoaman.com" %}
+{% set co_rccm    = co.custom_numéro_rccm    or "CI-ABJ6-03-2018-B12-33468" %}
+{% set co_cnps    = co.custom_numéro_cnps    or "" %}
+{% set co_cc      = co.tax_id                or "" %}
+{% set co_addr_display = co_addr_line        or "Cocody Riviera 3, villa 676 — Abidjan" %}
+{% set bank_display = bank_label             or "Bank of Africa CI : CI032 01007 004065390013 37" %}
+
+{# Colonne remise : on l'affiche seulement si au moins un article a une remise #}
+{% set has_discount = namespace(value=false) %}
+{% for item in doc.items %}
+    {% if item.discount_percentage and item.discount_percentage > 0 %}
+        {% set has_discount.value = true %}
+    {% endif %}
+{% endfor %}
+
+{# ─────────────────────────────────────────────
+   Boucle de pages
+───────────────────────────────────────────── #}
 {% for page in layout %}
 <div class="page-break">
 
-    {% if print_settings.repeat_header_footer and (layout|len > 1) %}
+    {% if print_settings.repeat_header_footer and (layout | len > 1) %}
     <div id="header-html" class="hidden-pdf">
-        {{ add_header(loop.index, layout|len, doc, letter_head, no_letterhead, footer, print_settings) }}
+        {{ add_header(loop.index, layout | len, doc, letter_head, no_letterhead, footer, print_settings) }}
     </div>
     {% endif %}
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
 
-        :root{
-            --primary:#032A5F;
-            --accent:#0756C5;
-            --muted:#6b7a90;
-            --soft:#f8fbff;
-            --grey:#e6e6e6;
-            --footer-h: 18mm;
-            --scale: 0.98;
+        :root {
+            --primary: #032A5F;
+            --accent:  #0756C5;
+            --muted:   #6b7a90;
+            --soft:    #f4f7fc;
+            --grey:    #e6ecf5;
+            --border:  #c4d1e8;
         }
-        {% if doc.items|length > 12 %}:root{ --scale:0.97; }{% endif %}
-        {% if doc.items|length > 16 %}:root{ --scale:0.96; }{% endif %}
 
-@page { size: A4; margin: 8mm 8mm 10mm 8mm; }
+        @page { size: A4; margin: 8mm; }
 
-        .print-format{
-            padding: 10px;
-            margin: 10px;
-
-            padding-bottom: var(--footer-h);
+        /* print-format en colonne flex : contenu + footer collé en bas */
+        .print-format {
+            display: flex;
+            flex-direction: column;
+            min-height: 281mm; /* 297mm - 2×8mm marges page */
+            padding: 6px 10px;
             font-size: 11px;
-            line-height: 1.28;
+            line-height: 1.3;
             font-family: 'Montserrat', Arial, Helvetica, sans-serif;
             color: var(--primary);
+              margin: 0px 10px;
         }
+        .print-format * { box-sizing: border-box; }
 
-        .text-strong{ font-weight:700; color: var(--primary); }
-        .small{ font-size: 10px; color: var(--primary); }
-        .muted{ color: var(--muted); }
-        .mt-8{ margin-top: 8px; }
-        .mt-12{ margin-top: 12px; }
-        .mt-16{ margin-top: 16px; }
-        .mb-8{ margin-bottom: 8px; }
-        .mb-12{ margin-bottom: 12px; }
+        /* Le contenu principal prend tout l'espace disponible */
+        .doc-content { flex: 1; }
 
-        /* Tables */
-        table{ width:100%; border-collapse: collapse; }
-        .no-border td, .no-border th { border: none !important; }
-        .table-bordered{ border: 2px solid var(--accent); }
-        .table>thead>tr>th, .table>tbody>tr>td{
+        .text-strong  { font-weight: 700; color: var(--primary); }
+        .small        { font-size: 10px; }
+        .muted        { color: var(--muted); }
+        .text-center  { text-align: center; }
+        .text-right   { text-align: right; }
+        .mt-6  { margin-top: 6px; }
+        .mt-12 { margin-top: 12px; }
+        .mt-18 { margin-top: 18px; }
+        .mb-6  { margin-bottom: 6px; }
+
+        /* ── Tables ── */
+        table { width: 100%; border-collapse: collapse; }
+        .no-border td, .no-border th { border: none !important; background: none !important; }
+
+        .table > thead > tr > th,
+        .table > tbody > tr > td {
             vertical-align: top;
             padding: 4px 6px;
-            line-height: 1.22;
+            line-height: 1.25;
             color: var(--primary);
-            border: 1px solid #b8c8e6;
+            border: 1px solid var(--border);
         }
-        .table>thead>tr>th{
+        .table > thead > tr > th {
             background-color: var(--accent);
-            color:#fff;
-            font-weight:600;
+            color: #fff;
+            font-weight: 700;
             border-color: var(--accent);
         }
-        .row-alt{ background-color: var(--soft); }
+        .row-alt { background-color: var(--soft); }
 
-        /* Bloc signature */
-        .signature-box{
-            border: 2px solid var(--primary);
-            height: 120px;
-            padding: 10px;
-            font-size: 10px;
-        }
-        .signature-box .line{ margin-top: 18px; }
-
-        /* Totaux à droite (style “image”) */
-        .totals{
+        /* ── Totaux ── */
+        .totals {
             width: 52%;
             margin-left: auto;
             margin-top: 8px;
-            border-collapse: collapse;
         }
-        .totals td{
+        .totals td {
             padding: 4px 8px;
-            border: 1px solid #c9d6ee;
+            border: 1px solid var(--border);
             font-size: 10.5px;
         }
-        .totals .label{
+        .totals .lbl {
             background: var(--grey);
             font-weight: 700;
-            width: 55%;
+            width: 56%;
         }
-        .totals .value{
+        .totals .val {
             text-align: right;
             font-weight: 600;
-            width: 45%;
+            width: 44%;
         }
-        .totals .grand .label{
-            background: #cfd9ef;
+        .totals .grand .lbl { background: #c5d4ef; }
+        .totals .grand .val { font-weight: 800; font-size: 11px; }
+
+        /* ── Signature ── */
+        .signature-box {
+            border: 1.5px solid var(--primary);
+            border-radius: 4px;
+            height: 110px;
+            padding: 8px 10px;
+            font-size: 10px;
         }
-        .totals .grand .value{
-            font-weight: 800;
+        .signature-box .line { margin-top: 16px; }
+
+        /* ── Footer : collé en bas grâce au flex du parent ── */
+        .custom-footer {
+            font-family: 'Montserrat', Arial, sans-serif;
+            font-size: 9px;
+            color: var(--primary);
+            border-top: 1.5px solid var(--accent);
+            padding: 5px 8px 3px;
+            text-align: center;
+            line-height: 1.5;
+            margin-top: 12px;
         }
 
-        /* Impression : scale contenu uniquement */
-        @media print{
-            .content-fit{
-                transform: scale(var(--scale));
-                transform-origin: top left;
-                width: calc(100% / var(--scale));
-            }
-            .custom-footer{
-                position: fixed !important;
-                bottom: 0; left: 0; right: 0;
-            }
-        }
-        @media screen{
-            .custom-footer{ position: static; }
-        }
-
-        /* Compactage progressif */
-        {% if doc.items|length > 10 %}
-        .print-format{ font-size: 10.5px; }
-        .table>thead>tr>th, .table>tbody>tr>td{ padding: 3px 5px; }
+        /* ── Compactage progressif ── */
+        {% if doc.items | length > 10 %}
+        .print-format { font-size: 10.5px; }
+        .table > thead > tr > th, .table > tbody > tr > td { padding: 3px 5px; }
         {% endif %}
-        {% if doc.items|length > 14 %}
-        .print-format{ font-size: 10px; }
-        .table>thead>tr>th, .table>tbody>tr>td{ padding: 2px 4px; }
+        {% if doc.items | length > 14 %}
+        .print-format { font-size: 10px; }
+        .table > thead > tr > th, .table > tbody > tr > td { padding: 2px 4px; }
         {% endif %}
     </style>
 
     <div class="print-format">
-        <div class="content-fit">
+        <div class="doc-content">
 
-            <!-- HEADER (logo gauche / date + client droite) -->
-            <table class="no-border" style="margin-bottom: 6px;">
-                <tr>
-                    <td style="width: 45%; vertical-align: top;">
-                        {% if logo_url %}
-                            <img src="{{ logo_url }}" alt="logo" style="max-width: 220px; max-height: 120px;">
+        <!-- ══ CONTENU ══════════════════════════════════════════════════ -->
+
+        <!-- En-tête : logo gauche | date + client droite -->
+        <table class="no-border" style="margin-bottom:8px;">
+            <tr>
+                <td style="width:45%; vertical-align:top;">
+                    {% if logo_url %}
+                        <img src="{{ logo_url }}" alt="logo"
+                             style="max-width:200px; max-height:110px;">
+                    {% endif %}
+                </td>
+                <td style="width:55%; vertical-align:top;">
+                    <div style="text-align:right; font-size:10px;">
+                        <span class="text-strong">{{ _("Le") }}</span>
+                        {{ frappe.utils.format_date(doc.transaction_date, "dd MMMM yyyy")
+                           if doc.transaction_date
+                           else frappe.utils.format_date(frappe.utils.nowdate(), "dd MMMM yyyy") }}
+                    </div>
+                    <div style="margin-top:20px; text-align:center;">
+                        <div class="text-strong" style="text-transform:uppercase; font-size:12px;">
+                            {{ doc.customer_name or doc.party_name or "" }}
+                        </div>
+                        {% if doc.address_display %}
+                        <div class="small muted" style="margin-top:5px; line-height:1.4;">
+                            {{ doc.address_display.replace("\n", " · ") | safe }}
+                        </div>
                         {% endif %}
-                    </td>
-                    <td style="width: 55%; vertical-align: top;">
-                        <div style="text-align: right; font-size: 10px;">
-                            <span class="text-strong">Le</span>
-                            {{ frappe.utils.format_date(doc.transaction_date, "dd MMMM yyyy") if doc.transaction_date else frappe.utils.format_date(frappe.utils.nowdate(), "dd MMMM yyyy") }}
+                        {% if doc.contact_display %}
+                        <div class="small muted" style="margin-top:3px;">
+                            {{ _("Contact") }} : {{ doc.contact_display }}
                         </div>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+        </table>
 
-                        <div style="margin-top: 22px; text-align: center;">
-                            <div class="text-strong" style="text-transform: uppercase;">{{ doc.customer_name or doc.party_name or "" }}</div>
-                            <div class="small" style="margin-top: 6px; line-height: 1.35;">
-                                {{ (doc.address_display or "").replace("\n","") | safe }}
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            </table>
+        <!-- Interlocuteur -->
+        <table class="no-border" style="margin-top:14px;">
+            <tr>
+                <td style="width:28%; vertical-align:top;" class="text-strong small">
+                    {{ _("Votre interlocuteur") }} :
+                </td>
+                <td style="vertical-align:top;" class="small">
+                    <span class="text-strong">{{ owner_fullname }}</span>
+                    {% if owner_mobile %}
+                    &nbsp;|&nbsp; {{ owner_mobile }}
+                    {% endif %}
+                    &nbsp;|&nbsp; {{ owner_email }}
+                </td>
+            </tr>
+        </table>
 
-            <!-- Votre interlocuteur -->
-            <table class="no-border" style="margin-top: 18px;">
-                <tr>
-                    <td style="width: 28%; vertical-align: top;" class="text-strong">Votre interlocuteur :</td>
-                    <td style="width: 72%; vertical-align: top;">
-                        <div class="text-strong">{{ owner_fullname }}</div>
-                        {% if owner_mobile %}<div class="small">{{ owner_mobile }}</div>{% endif %}
-                        <div class="small">{{ owner_email }}</div>
-                    </td>
-                </tr>
-            </table>
+        <!-- Infos du devis -->
+        <table class="no-border mt-12" style="font-size:10.5px;">
+            <tr>
+                <td style="width:20%;" class="text-strong">{{ _("Objet") }} :</td>
+                <td class="text-strong" style="text-transform:uppercase;">
+                    {{ doc.title or doc.name }}
+                </td>
+            </tr>
+            {% if besoin_value %}
+            <tr>
+                <td class="text-strong">{{ _("Besoin") }} :</td>
+                <td>{{ besoin_value }}</td>
+            </tr>
+            {% endif %}
+            <tr>
+                <td class="text-strong">{{ _("Référence") }} :</td>
+                <td>{{ doc.name }}</td>
+            </tr>
+            {% if doc.valid_till %}
+            <tr>
+                <td class="text-strong">{{ _("Validité") }} :</td>
+                <td>{{ frappe.utils.format_date(doc.valid_till, "dd MMMM yyyy") }}</td>
+            </tr>
+            {% endif %}
+            <tr>
+                <td class="text-strong">{{ _("Devise") }} :</td>
+                <td>{{ currency_label }}</td>
+            </tr>
+        </table>
 
-            <!-- Infos devis -->
-            <table class="no-border" style="margin-top: 12px;">
+        <!-- Table des articles -->
+        <table class="table mt-12" style="font-size:10.5px;">
+            <colgroup>
+                <col style="width:{% if has_discount.value %}34{% else %}40{% endif %}%">
+                {% if has_discount.value %}<col style="width:8%">{% endif %}
+                <col style="width:13%">
+                <col style="width:6%">
+                <col style="width:7%">
+                <col style="width:16%">
+                <col style="width:16%">
+            </colgroup>
+            <thead>
                 <tr>
-                    <td style="width: 18%;" class="text-strong">Titre :</td>
-                    <td style="width: 82%;" class="text-strong" style="text-transform: uppercase;">
-                        {{ (doc.title or doc.name or "") }}
-                    </td>
+                    <th>{{ _("Description") }}</th>
+                    {% if has_discount.value %}
+                    <th class="text-center">{{ _("Remise") }}</th>
+                    {% endif %}
+                    <th class="text-right">{{ _("P.U. HT") }}</th>
+                    <th class="text-center">{{ _("Qté") }}</th>
+                    <th class="text-center">{{ _("TVA") }}</th>
+                    <th class="text-right">{{ _("Montant HT") }}</th>
+                    <th class="text-right">{{ _("Montant TTC") }}</th>
                 </tr>
-                {% if besoin_value %}
-                <tr>
-                    <td class="text-strong">Besoin :</td>
-                    <td>{{ besoin_value }}</td>
-                </tr>
-                {% endif %}
-                <tr>
-                    <td class="text-strong">Devis :</td>
-                    <td>{{ doc.name }}</td>
-                </tr>
-                <tr>
-                    <td class="text-strong">Devise :</td>
-                    <td>{{ currency_label }}</td>
-                </tr>
-            </table>
+            </thead>
+            <tbody>
+                {% set total_ht    = doc.total or 0 %}
+                {% set total_taxes = doc.total_taxes_and_charges or 0 %}
 
-            <!-- TABLE ITEMS (colonnes comme image) -->
-            <table class="table table-bordered table-condensed mt-12" style="font-size:10.5px;">
-                <colgroup>
-                    <col style="width: 40%">
-                    <col style="width: 13%">
-                    <col style="width: 7%">
-                    <col style="width: 7%">
-                    <col style="width: 16.5%">
-                    <col style="width: 16.5%">
-                </colgroup>
-                <thead>
-                    <tr>
-                        <th class="text-center">{{ _("Description") }}</th>
-                        <th class="text-center">{{ _("Tarif HT") }}</th>
-                        <th class="text-center">{{ _("Q") }}</th>
-                        <th class="text-center">{{ _("TVA") }}</th>
-                        <th class="text-center">{{ _("Montant HT") }}</th>
-                        <th class="text-center">{{ _("Montant TTC") }}</th>
+                {% for item in doc.items %}
+                    {% set item_ht  = item.amount or 0 %}
+                    {% set item_tax = (total_taxes * (item_ht / total_ht)) if total_ht else 0 %}
+                    {% set item_ttc = item_ht + item_tax %}
+
+                    <tr class="{% if loop.index % 2 == 0 %}row-alt{% endif %}">
+                        <td>
+                            {% if item.description %}
+                                <div class="small" style="line-height:1.35;">
+                                    {{ item.description.replace("\n", "<br>") | safe }}
+                                </div>
+                            {% else %}
+                                <div class="small">{{ item.item_name or item.item_code }}</div>
+                            {% endif %}
+                        </td>
+                        {% if has_discount.value %}
+                        <td class="text-center small">
+                            {% if item.discount_percentage %}
+                                {{ item.discount_percentage | round(1) }} %
+                            {% else %}—{% endif %}
+                        </td>
+                        {% endif %}
+                        <td class="text-right small">{{ fmt_money(item.rate) }}</td>
+                        <td class="text-center small">{{ item.qty | int }}</td>
+                        <td class="text-center small">
+                            {% if vat_rate %}{{ vat_rate | int }} %{% else %}—{% endif %}
+                        </td>
+                        <td class="text-right small">{{ fmt_money(item_ht) }}</td>
+                        <td class="text-right small">{{ fmt_money(item_ttc) }}</td>
                     </tr>
-                </thead>
-                <tbody>
-                    {% set total_ht = doc.total or 0 %}
-                    {% set total_taxes = doc.total_taxes_and_charges or 0 %}
+                {% endfor %}
+            </tbody>
+        </table>
 
-                    {% for item in doc.items %}
-                        {% set item_ht = item.amount or 0 %}
-                        {# Répartition proportionnelle des taxes (plus fidèle au total) #}
-                        {% set item_tax = (total_taxes * (item_ht / total_ht)) if total_ht else 0 %}
-                        {% set item_ttc = item_ht + item_tax %}
+        <!-- Totaux -->
+        <table class="totals">
+            {% if doc.discount_amount and doc.discount_amount > 0 %}
+            <tr>
+                <td class="lbl">{{ _("Sous-total HT") }}</td>
+                <td class="val">{{ fmt_money(doc.net_total or doc.total) }} {{ currency_label }}</td>
+            </tr>
+            <tr>
+                <td class="lbl">{{ _("Remise globale") }}</td>
+                <td class="val">- {{ fmt_money(doc.discount_amount) }} {{ currency_label }}</td>
+            </tr>
+            {% endif %}
+            <tr>
+                <td class="lbl">{{ _("Total HT") }}</td>
+                <td class="val">{{ fmt_money(doc.total) }} {{ currency_label }}</td>
+            </tr>
+            <tr>
+                <td class="lbl">
+                    {{ _("TVA") }}{% if vat_rate %} {{ vat_rate | int }} %{% endif %}
+                </td>
+                <td class="val">{{ fmt_money(doc.total_taxes_and_charges) }} {{ currency_label }}</td>
+            </tr>
+            <tr class="grand">
+                <td class="lbl">{{ _("Total TTC") }}</td>
+                <td class="val">{{ fmt_money(doc.grand_total) }} {{ currency_label }}</td>
+            </tr>
+        </table>
 
-                        <tr class="{% if loop.index % 2 == 0 %}row-alt{% endif %}">
-                            <td>
-                                {% if item.description %}
-                                    <div class="small" style="line-height:1.35;">
-                                        {{ item.description.replace("\n","<br>") | safe }}
-                                    </div>
-                                {% else %}
-                                    <div class="small">{{ item.item_name or item.item_code }}</div>
-                                {% endif %}
-                            </td>
-                            <td class="text-right">{{ fmt_money(item.rate) }}</td>
-                            <td class="text-center">{{ item.get_formatted("qty", 0) }}</td>
-                            <td class="text-center">
-                                {% if vat_rate %}{{ vat_rate }} %{% else %}—{% endif %}
-                            </td>
-                            <td class="text-right">{{ fmt_money(item_ht) }}</td>
-                            <td class="text-right">{{ fmt_money(item_ttc) }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        {% if doc.in_words %}
+        <div class="small muted mt-6" style="font-style:italic;">
+            {{ _("Arrêté à la somme de") }} : <strong>{{ doc.in_words }}</strong>
+        </div>
+        {% endif %}
 
-            <!-- TOTAUX (à droite) -->
-            <table class="totals">
-                <tr>
-                    <td class="label">Total HT</td>
-                    <td class="value">{{ fmt_money(doc.total) }} {{ currency_label }}</td>
-                </tr>
-                <tr>
-                    <td class="label">Total TVA{% if vat_rate %} {{ vat_rate }} %{% endif %}</td>
-                    <td class="value">{{ fmt_money(doc.total_taxes_and_charges) }} {{ currency_label }}</td>
-                </tr>
-                <tr class="grand">
-                    <td class="label">Total TTC</td>
-                    <td class="value">{{ fmt_money(doc.grand_total) }} {{ currency_label }}</td>
-                </tr>
-            </table>
+        <!-- Conditions + Signature -->
+        <table class="no-border mt-18">
+            <tr>
+                <td style="width:52%; vertical-align:top;">
+                    {% if doc.payment_terms_template or doc.custom_condition_de_réglement %}
+                    <div class="small" style="font-style:italic; margin-bottom:4px;">
+                        <span class="text-strong">{{ _("Conditions de règlement") }} :</span>
+                        {{ doc.custom_condition_de_réglement or doc.payment_terms_template }}
+                    </div>
+                    {% endif %}
+                    {% if doc.terms %}
+                    <div class="small muted" style="font-style:italic; line-height:1.4;">
+                        {{ doc.terms | safe }}
+                    </div>
+                    {% endif %}
+                </td>
+                <td style="width:48%; vertical-align:top; padding-left:12px;">
+                    <div class="signature-box">
+                        <div class="text-strong small">{{ _("Bon pour accord") }} :</div>
+                        <div class="line small muted">{{ _("Signature") }} :</div>
+                        <div class="line small muted">{{ _("Cachet") }} :</div>
+                    </div>
+                </td>
+            </tr>
+        </table>
 
-            <!-- Validité & conditions (bas gauche) + Signature (bas droite) -->
-            <table class="no-border" style="margin-top: 22px;">
-                <tr>
-                    <td style="width: 55%; vertical-align: top;">
-                        <div class="small" style="font-style: italic;">
-                            {% if doc.valid_till %}
-                                Validité de l'offre : {{ frappe.utils.format_date(doc.valid_till) }}
-                            {% endif %}
-                        </div>
-                        <div class="small" style="font-style: italic; margin-top: 5px;">
-                            {% if doc.custom_condition_de_réglement %}
-                                Conditions de règlement : {{ doc.custom_condition_de_réglement }}
-                            {% elif doc.payment_terms_template %}
-                                Conditions de règlement : {{ doc.payment_terms_template }}
-                            {% endif %}
-                        </div>
-                    </td>
-                    <td style="width: 45%; vertical-align: top;">
-                        <div class="signature-box">
-                            <div>Bon pour accord :</div>
-                            <div class="line">Signature :</div>
-                            <div class="line">Cachet :</div>
-                        </div>
-                    </td>
-                </tr>
-            </table>
+        </div><!-- /.doc-content -->
 
-        </div><!-- /.content-fit -->
+        <!-- ══ FOOTER — en bas grâce au flex ═══════════════════════════ -->
+        <div class="custom-footer">
 
-        <!-- FOOTER FIXE (non-scalé) -->
-        <div class="custom-footer" style="
-            color: var(--primary);
-            font-size: 10px;
-            border-top: 1px solid var(--primary);
-            padding: 6px 0 4px 0;
-            background: none !important;
-            text-align: center;
-            line-height: 1.4;
-            font-family: 'Montserrat', Arial, sans-serif;
-        ">
-            <div style="margin-bottom: 2px;">
-                <strong>S.A.R.L au capital de 1.000.000 F CFA</strong> 📍
-                Cocody Riviera 3 villa 676, Abidjan — 11 BP 2624 ABJ 11
+            {# Ligne 1 : Raison sociale · type · adresse #}
+            <div style="margin-bottom:2px;">
+                <strong>{{ co.company_name }}</strong>
+                {% if co.company_type %} · <em>{{ co.company_type }}</em>{% endif %}
+                &nbsp;—&nbsp; {{ co_addr_display }}
             </div>
 
-            <div style="margin-bottom: 2px;">
-                📞 +(225) 27 24 31 15 61 &nbsp;|&nbsp;
-                <strong>RCCM :</strong> CI ABJ6 03 2018 B12 33468 &nbsp;|&nbsp;
-                <strong>Bank of Africa Côte d’Ivoire :</strong> CI032 01007 004065390013 37
+            {# Ligne 2 : Tel | Email | RCCM | CC | CNPS #}
+            <div style="margin-bottom:2px;">
+                {% set _sep = joiner(" &nbsp;|&nbsp; ") %}
+                {{ _sep() }}<span>&#9990;&nbsp;{{ co_phone }}</span>
+                {{ _sep() }}<span>{{ co_email }}</span>
+                {{ _sep() }}<span><strong>RCCM :</strong> {{ co_rccm }}</span>
+                {% if co_cc %}{{ _sep() }}<span><strong>CC :</strong> {{ co_cc }}</span>{% endif %}
+                {% if co_cnps %}{{ _sep() }}<span><strong>CNPS :</strong> {{ co_cnps }}</span>{% endif %}
             </div>
 
+            {# Ligne 3 : Banque | Site web #}
             <div>
-                <a href="http://www.amoaman.com" target="_blank" style="text-decoration:none; color:var(--primary); font-weight:600;">
-                    www.amoaman.com
+                <span><strong>Banque :</strong> {{ bank_display }}</span>
+                &nbsp;|&nbsp;
+                <a href="https://{{ co_website | replace('https://','') | replace('http://','') }}"
+                   target="_blank"
+                   style="text-decoration:none; color:var(--primary); font-weight:700;">
+                    {{ co_website | replace("https://", "") | replace("http://", "") }}
                 </a>
             </div>
+
         </div>
+        <!-- ══ FIN FOOTER ════════════════════════════════════════════════ -->
 
-    </div> <!-- /.print-format -->
+    </div><!-- /.print-format -->
 
-    {% if print_settings.repeat_header_footer and (layout|len > 1) %}
-    <div id="footer-html" class="visible-pdf">
-        <!-- FOOTER FIXE (non-scalé) -->
-        <div class="custom-footer" style="
-            color: var(--primary);
-            font-size: 10px;
-            border-top: 1px solid var(--primary);
-            padding: 6px 0 4px 0;
-            background: none !important;
-            text-align: center;
-            line-height: 1.4;
-            font-family: 'Montserrat', Arial, sans-serif;
-        ">
-            <div style="margin-bottom: 2px;">
-                <strong>S.A.R.L au capital de 1.000.000 F CFA</strong> 📍
-                Cocody Riviera 3 villa 676, Abidjan — 11 BP 2624 ABJ 11
-            </div>
-
-            <div style="margin-bottom: 2px;">
-                📞 +(225) 27 24 31 15 61 &nbsp;|&nbsp;
-                <strong>RCCM :</strong> CI ABJ6 03 2018 B12 33468 &nbsp;|&nbsp;
-                <strong>Bank of Africa Côte d’Ivoire :</strong> CI032 01007 004065390013 37
-            </div>
-
-            <div>
-                <a href="http://www.amoaman.com" target="_blank" style="text-decoration:none; color:var(--primary); font-weight:600;">
-                    www.amoaman.com
-                </a>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-
-</div>
+</div><!-- /.page-break -->
 {% endfor %}

@@ -2737,22 +2737,6 @@
  },
  {
   "default_value": null,
-  "doc_type": "Purchase Receipt",
-  "docstatus": 0,
-  "doctype": "Property Setter",
-  "doctype_or_field": "DocField",
-  "field_name": "provisional_expense_account",
-  "is_system_generated": 1,
-  "modified": "2026-03-03 16:09:27.805808",
-  "module": null,
-  "name": "Purchase Receipt-provisional_expense_account-hidden",
-  "property": "hidden",
-  "property_type": "Check",
-  "row_name": null,
-  "value": "1"
- },
- {
-  "default_value": null,
   "doc_type": "Journal Entry",
   "docstatus": 0,
   "doctype": "Property Setter",
@@ -2878,5 +2862,21 @@
   "property_type": "Text",
   "row_name": null,
   "value": "HR-ATT-.YYYY.-"
+ },
+ {
+  "default_value": null,
+  "doc_type": "Purchase Receipt",
+  "docstatus": 0,
+  "doctype": "Property Setter",
+  "doctype_or_field": "DocField",
+  "field_name": "provisional_expense_account",
+  "is_system_generated": 1,
+  "modified": "2026-04-02 19:50:09.402644",
+  "module": null,
+  "name": "Purchase Receipt-provisional_expense_account-hidden",
+  "property": "hidden",
+  "property_type": "Check",
+  "row_name": null,
+  "value": "1"
  }
 ]

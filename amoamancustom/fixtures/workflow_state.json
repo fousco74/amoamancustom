@@ -29,51 +29,6 @@
  {
   "docstatus": 0,
   "doctype": "Workflow State",
-  "icon": null,
-  "modified": "2026-03-30 18:34:14.241243",
-  "name": "Vivrier",
-  "style": "Info",
-  "workflow_state_name": "Vivrier"
- },
- {
-  "docstatus": 0,
-  "doctype": "Workflow State",
-  "icon": null,
-  "modified": "2026-03-30 18:34:14.247363",
-  "name": "Top Profil",
-  "style": "Warning",
-  "workflow_state_name": "Top Profil"
- },
- {
-  "docstatus": 0,
-  "doctype": "Workflow State",
-  "icon": null,
-  "modified": "2026-03-30 18:34:14.252230",
-  "name": "Rejecté",
-  "style": "Danger",
-  "workflow_state_name": "Rejecté"
- },
- {
-  "docstatus": 0,
-  "doctype": "Workflow State",
-  "icon": null,
-  "modified": "2026-03-30 18:34:14.257401",
-  "name": "En Cours de qualification",
-  "style": "Info",
-  "workflow_state_name": "En Cours de qualification"
- },
- {
-  "docstatus": 0,
-  "doctype": "Workflow State",
-  "icon": null,
-  "modified": "2026-03-30 18:34:14.262465",
-  "name": "Accepté",
-  "style": "Success",
-  "workflow_state_name": "Accepté"
- },
- {
-  "docstatus": 0,
-  "doctype": "Workflow State",
   "icon": "",
   "modified": "2026-02-27 11:29:09.483713",
   "name": "Annulé",
@@ -88,15 +43,6 @@
   "name": "Accepted 1",
   "style": "",
   "workflow_state_name": "Accepted 1"
- },
- {
-  "docstatus": 0,
-  "doctype": "Workflow State",
-  "icon": "",
-  "modified": "2025-09-16 10:19:18.202282",
-  "name": "Open",
-  "style": "",
-  "workflow_state_name": "Open"
  },
  {
   "docstatus": 0,
@@ -286,5 +232,59 @@
   "name": "En attente RH",
   "style": "Warning",
   "workflow_state_name": "En attente RH"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": null,
+  "modified": "2026-03-30 18:34:14.241243",
+  "name": "Vivrier",
+  "style": "Info",
+  "workflow_state_name": "Vivrier"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": null,
+  "modified": "2026-03-30 18:34:14.247363",
+  "name": "Top Profil",
+  "style": "Warning",
+  "workflow_state_name": "Top Profil"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": null,
+  "modified": "2026-03-30 18:34:14.252230",
+  "name": "Rejecté",
+  "style": "Danger",
+  "workflow_state_name": "Rejecté"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": null,
+  "modified": "2026-03-30 18:34:14.257401",
+  "name": "En Cours de qualification",
+  "style": "Info",
+  "workflow_state_name": "En Cours de qualification"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": null,
+  "modified": "2026-03-30 18:34:14.262465",
+  "name": "Accepté",
+  "style": "Success",
+  "workflow_state_name": "Accepté"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "",
+  "modified": "2025-09-16 10:19:18.202282",
+  "name": "Open",
+  "style": "",
+  "workflow_state_name": "Open"
  }
 ]

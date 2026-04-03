@@ -1,5 +1,221 @@
 [
  {
+  "completed_by": "nkakou@amoaman.com",
+  "completed_by_role": "HR Manager",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-03-30 14:09:25.001835",
+  "name": "iii4rjn3jj",
+  "permitted_roles": [
+   {
+    "role": "HR Manager"
+   }
+  ],
+  "reference_doctype": "Leave Application",
+  "reference_name": "HR-LAP-2026-00008",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "En attente RH"
+ },
+ {
+  "completed_by": "gatse@amoaman.com",
+  "completed_by_role": "Employee",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-03-30 14:04:00.105832",
+  "name": "6v49qsblc8",
+  "permitted_roles": [
+   {
+    "role": "Employee"
+   }
+  ],
+  "reference_doctype": "Leave Application",
+  "reference_name": "HR-LAP-2026-00010",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Brouillon"
+ },
+ {
+  "completed_by": "nkakou@amoaman.com",
+  "completed_by_role": "HR Manager",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-03-30 14:11:49.544225",
+  "name": "711iedioiu",
+  "permitted_roles": [
+   {
+    "role": "HR Manager"
+   }
+  ],
+  "reference_doctype": "Leave Application",
+  "reference_name": "HR-LAP-2026-00010",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "En attente RH"
+ },
+ {
+  "completed_by": "damoakon@amoaman.com",
+  "completed_by_role": "Directeur Général",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-03-30 16:08:18.581455",
+  "name": "a6iqvpmuhd",
+  "permitted_roles": [
+   {
+    "role": "Directeur Général"
+   }
+  ],
+  "reference_doctype": "Leave Application",
+  "reference_name": "HR-LAP-2026-00008",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "En attente DG"
+ },
+ {
+  "completed_by": "damoakon@amoaman.com",
+  "completed_by_role": "Directeur Général",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-03-30 16:08:54.558675",
+  "name": "bjno4ql694",
+  "permitted_roles": [
+   {
+    "role": "Directeur Général"
+   }
+  ],
+  "reference_doctype": "Leave Application",
+  "reference_name": "HR-LAP-2026-00010",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "En attente DG"
+ },
+ {
+  "completed_by": "damoakon@amoaman.com",
+  "completed_by_role": "Directeur Général",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-03-30 16:09:35.795502",
+  "name": "c05n0i8khr",
+  "permitted_roles": [
+   {
+    "role": "Directeur Général"
+   }
+  ],
+  "reference_doctype": "Leave Application",
+  "reference_name": "HR-LAP-2026-00009",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "En attente DG"
+ },
+ {
+  "completed_by": "eanoma@amoaman.com",
+  "completed_by_role": "Employee",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-03-30 14:54:40.050421",
+  "name": "t6e7sn67i7",
+  "permitted_roles": [
+   {
+    "role": "Employee"
+   }
+  ],
+  "reference_doctype": "Leave Application",
+  "reference_name": "HR-LAP-2026-00011",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Brouillon"
+ },
+ {
+  "completed_by": null,
+  "completed_by_role": null,
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-03-30 14:54:40.057358",
+  "name": "4n0s78vtvb",
+  "permitted_roles": [
+   {
+    "role": "HR Manager"
+   }
+  ],
+  "reference_doctype": "Leave Application",
+  "reference_name": "HR-LAP-2026-00011",
+  "status": "Open",
+  "user": null,
+  "workflow_state": "En attente RH"
+ },
+ {
+  "completed_by": null,
+  "completed_by_role": null,
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-03-30 20:23:01.137803",
+  "name": "53j9ungmjk",
+  "permitted_roles": [
+   {
+    "role": "Talent Acquisition User"
+   }
+  ],
+  "reference_doctype": "Job Applicant",
+  "reference_name": "konefousseni66@gmail.com",
+  "status": "Open",
+  "user": null,
+  "workflow_state": "Open"
+ },
+ {
+  "completed_by": null,
+  "completed_by_role": null,
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-03-31 14:01:53.150840",
+  "name": "hhbcs5ubi1",
+  "permitted_roles": [
+   {
+    "role": "Helpdesk Contact"
+   }
+  ],
+  "reference_doctype": "Item",
+  "reference_name": "Solution-P2U-2026-00001",
+  "status": "Open",
+  "user": null,
+  "workflow_state": "Brouillon"
+ },
+ {
+  "completed_by": "amenankouakou@amoaman.com",
+  "completed_by_role": "Employee",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-04-02 01:31:54.968986",
+  "name": "himt6ta53l",
+  "permitted_roles": [
+   {
+    "role": "Employee"
+   }
+  ],
+  "reference_doctype": "Leave Application",
+  "reference_name": "HR-LAP-2026-00012",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Brouillon"
+ },
+ {
+  "completed_by": null,
+  "completed_by_role": null,
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-04-02 01:31:54.971289",
+  "name": "hjdi77e49s",
+  "permitted_roles": [
+   {
+    "role": "HR Manager"
+   }
+  ],
+  "reference_doctype": "Leave Application",
+  "reference_name": "HR-LAP-2026-00012",
+  "status": "Open",
+  "user": null,
+  "workflow_state": "En attente RH"
+ },
+ {
   "completed_by": null,
   "completed_by_role": null,
   "docstatus": 0,
@@ -1017,6 +1233,9 @@
   "permitted_roles": [
    {
     "role": "Employee"
+   },
+   {
+    "role": "Employee"
    }
   ],
   "reference_doctype": "Leave Application",
@@ -1035,6 +1254,9 @@
   "permitted_roles": [
    {
     "role": "HR Manager"
+   },
+   {
+    "role": "HR Manager"
    }
   ],
   "reference_doctype": "Leave Application",
@@ -1051,6 +1273,9 @@
   "modified": "2026-03-10 16:00:27.798022",
   "name": "08mhcm899c",
   "permitted_roles": [
+   {
+    "role": "Directeur Général"
+   },
    {
     "role": "Directeur Général"
    }
