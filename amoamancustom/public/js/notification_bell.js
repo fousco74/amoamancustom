@@ -33,22 +33,35 @@
 				this._refresh_bell();
 			}
 
-			// Au clic : marquer lu puis rafraîchir la cloche (ignoré pour Administrator)
-			mark_as_read(docname, $el) {
-				if (frappe.session.user === "Administrator") return;
-				frappe.call({
-					method: "frappe.desk.doctype.notification_log.notification_log.mark_as_read",
-					args: { docname: docname },
-				}).then(() => {
-					this._refresh_bell();
-				});
-			}
-
-			// Surcharge render_notifications_dropdown pour mettre à jour le badge
-			// à chaque rendu (chargement initial inclus)
+			// Met à jour le badge + intercepte les clics sur chaque item
 			render_notifications_dropdown() {
 				super.render_notifications_dropdown();
 				_update_notif_badge(this.dropdown_items.length);
+				this._bind_click_mark_read();
+			}
+
+			// Délégation d'événement sur le conteneur : click sur un item = marquer lu + disparaître
+			_bind_click_mark_read() {
+				// On retire d'abord pour éviter les doublons
+				this.container.off("click.amoaman_mark");
+				this.container.on("click.amoaman_mark", ".notification-item[data-name]", (e) => {
+					const $item = $(e.currentTarget);
+					const docname = $item.data("name");
+					if (!docname) return;
+
+					// Supprimer l'item du DOM
+					$item.remove();
+
+					// Mettre à jour la liste locale et le badge
+					this.dropdown_items = (this.dropdown_items || []).filter(n => n.name !== docname);
+					_update_notif_badge(this.dropdown_items.length);
+
+					// Marquer comme lu côté serveur
+					frappe.call({
+						method: "frappe.desk.doctype.notification_log.notification_log.mark_as_read",
+						args: { docname: docname },
+					});
+				});
 			}
 
 			// Recharge et réaffiche la liste des notifs non lues
@@ -68,18 +81,15 @@
 		item.view = OrigView;
 	};
 
-	// Bouton "Tout marquer comme lu" → vide la cloche immédiatement (ignoré pour Administrator)
+	// Bouton "Tout marquer comme lu" → vide la cloche immédiatement
 	proto.mark_all_as_read = function (e) {
 		e.stopImmediatePropagation();
-		if (frappe.session.user === "Administrator") return;
-		// Suppression immédiate du DOM
 		if (this.tabs?.notifications) {
 			this.tabs.notifications.dropdown_items = [];
 			this.tabs.notifications.container.empty();
 			this.tabs.notifications.render_notifications_dropdown();
 		}
 		_update_notif_badge(0);
-		// Marquer comme lu côté serveur
 		frappe.call({
 			method: "frappe.desk.doctype.notification_log.notification_log.mark_all_as_read",
 		});
@@ -92,7 +102,7 @@
 		s.textContent = `
 			.sidebar-notification .sidebar-item-icon { position: relative !important; }
 			.body-sidebar .standard-sidebar-item .item-anchor {
-  							overflow: visible !important;
+				overflow: visible !important;
 			}
 			.am-notif-badge {
 				position: absolute; top: -4px; right: -2px;
@@ -117,7 +127,6 @@
 		if (count > 0) {
 			$iconSidebar.append(`<span class="am-notif-badge">${count > 99 ? "99+" : count}</span>`);
 			$iconHome.append(`<span class="am-notif-badge">${count > 99 ? "99+" : count}</span>`);
-
 		}
 	}
 })();
