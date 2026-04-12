@@ -106,8 +106,8 @@
     ================================================================== #} {% set
     logo_url = frappe.db.get_value("Website Settings", None, "app_logo") %} {%
     set cat = frappe.db.get_value("Employee", doc.employee, "custom_categorie")
-    %} {% set sal_base = frappe.db.get_value("Grade Categorie", cat,
-    "salaire_de_base") | float %} {% set sursalaire =
+    %} {% set sal_base = frappe.db.get_value("Employee", doc.employee,
+    "custom_salaire_de_base") | float %} {% set sursalaire =
     frappe.db.get_value("Employee", doc.employee, "custom_sursalaire") | float
     %} {% set left = frappe.db.get_value("Employee", doc.employee,
     "custom_left") %} {# Montants des composantes (calculés une seule fois) #}
@@ -162,7 +162,7 @@
                 <span class="w-50">Service</span>
                 <span class="w-50" style="font-size: 11px !important"
                   >{{ frappe.db.get_value("Employee", doc.employee,
-                  "designation") }}</span
+                  "designation") or '-' }}</span
                 >
               </div>
 
@@ -170,7 +170,7 @@
                 <span class="w-50">Nombre de part</span>
                 <span class="w-50"
                   >{{ frappe.db.get_value("Employee", doc.employee,
-                  "custom_nbre_de_parts") }}</span
+                  "custom_nbre_de_parts")  or '-' }}</span
                 >
               </div>
 
@@ -178,7 +178,7 @@
                 <span class="w-50">Nationalité</span>
                 <span class="w-50"
                   >{{ frappe.db.get_value("Employee", doc.employee,
-                  "custom_nationality") }}</span
+                  "custom_nationality") or '-'  }}</span
                 >
               </div>
 
@@ -186,18 +186,18 @@
                 <span class="w-50">Date d'entrée</span>
                 <span class="w-50"
                   >{{ frappe.db.get_value("Employee", doc.employee,
-                  "date_of_joining") }}</span
+                  "date_of_joining") or '-'  }}</span
                 >
               </div>
 
               <div class="d-flex text-13">
                 <span class="w-50">Catégorie</span>
-                <span class="w-50">{{ cat }}</span>
+                <span class="w-50">{{ cat  or '-' }}</span>
               </div>
 
               <div class="d-flex text-13">
                 <span class="w-50">Salaire catégoriel</span>
-                <span class="w-50">{{ fmt(sal_base) }}</span>
+                <span class="w-50">{{ fmt(sal_base) or '-'  }}</span>
               </div>
             </div>
           </td>
@@ -219,7 +219,7 @@
                     class="d-flex flex-column w-40 border-top border-bottom text-center"
                   >
                     <span class="bg-gray-300">DATE EDITION</span>
-                    <span>{{ doc.posting_date }}</span>
+                    <span>{{ doc.posting_date  or '-' }}</span>
                   </div>
                 </div>
 
@@ -228,7 +228,7 @@
                     <span class="bg-gray-300">NOM ET PRENOMS</span>
                     <span
                       >{{ frappe.db.get_value("Employee", doc.employee,
-                      "employee_name") }}</span
+                      "employee_name") or '-'  }}</span
                     >
                   </div>
                   <div
@@ -237,7 +237,7 @@
                     <span class="bg-gray-300">ADRESSE</span>
                     <span
                       >{{ frappe.db.get_value("Employee", doc.employee,
-                      "current_address") }}</span
+                      "current_address") or '-' }}</span
                     >
                   </div>
                 </div>
@@ -247,7 +247,7 @@
                     <span class="bg-gray-300">N°CNPS</span>
                     <span
                       >{{ frappe.db.get_value("Employee", doc.employee,
-                      "custom_cnps_number") }}</span
+                      "custom_cnps_number") or '-' }}</span
                     >
                   </div>
                   <div
