@@ -5,6 +5,7 @@ from frappe.utils.data import flt
 import requests
 from requests.exceptions import Timeout, ConnectionError as RequestsConnectionError
 from urllib.parse import urlencode
+from frappe.query_builder.functions import Sum
 
 
 # =============================================================================
@@ -303,18 +304,21 @@ def linkedin_img_proxy(url: str):
 # DocType helpers
 # =============================================================================
 
+
+
 @frappe.whitelist()
-def get_leave_balance(employee, leave_type="Conges Payes"):
-    balance = frappe.db.get_value(
-        "Leave Ledger Entry",
-        filters={
-            "employee":   employee,
-            "leave_type": leave_type,
-            "docstatus":  1,
-        },
-        fieldname="SUM(leaves)"
-    )
-    return balance if balance else 0
+def get_leave_balance(employee, leave_type="Congés Payés"):
+    LLE = frappe.qb.DocType("Leave Ledger Entry")
+    result = (
+        frappe.qb.from_(LLE)
+        .select(Sum(LLE.leaves))
+        .where(
+            (LLE.employee == employee)
+            & (LLE.leave_type == leave_type)
+            & (LLE.docstatus == 1)
+        )
+    ).run()
+    return result[0][0] or 0
 
 
 @frappe.whitelist()
