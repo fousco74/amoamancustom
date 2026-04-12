@@ -19,7 +19,7 @@
  "modified": "2025-08-25 15:00:04.823257",
  "modified_by": "Administrator",
  "module": "Facturation",
- "name": "Timesheet Print",
+ "name": "Timesheet",
  "owner": "Administrator",
  "page_number": "Hide",
  "pdf_generator": "wkhtmltopdf",

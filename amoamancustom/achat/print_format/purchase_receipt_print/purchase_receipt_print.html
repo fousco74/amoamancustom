@@ -1,0 +1,246 @@
+{%- macro add_header(page_num, max_pages, doc, letter_head, no_letterhead, footer, print_settings=None) -%}
+    {% if letter_head and not no_letterhead %}<div class="letter-head">{{ letter_head }}</div>{% endif %}
+    {%- if doc.meta.is_submittable and doc.docstatus == 2 -%}
+    <div class="text-center" document-status="cancelled"><h4 style="margin:0; color:#032A5F;">{{ _("ANNULÉ") }}</h4></div>
+    {%- endif -%}
+{%- endmacro -%}
+
+{%- macro fmt_amount(value, currency) -%}
+    {%- set formatted = "{:,.0f}".format(value or 0).replace(",", " ") -%}
+    {%- if currency in ["XOF", "CFA", "FCFA"] -%}{{ formatted }} CFA{%- else -%}{{ formatted }} {{ currency or "" }}{%- endif -%}
+{%- endmacro -%}
+
+{%- macro _w1(n) -%}{%- if n|int==1 -%}un{%- elif n|int==2 -%}deux{%- elif n|int==3 -%}trois{%- elif n|int==4 -%}quatre{%- elif n|int==5 -%}cinq{%- elif n|int==6 -%}six{%- elif n|int==7 -%}sept{%- elif n|int==8 -%}huit{%- elif n|int==9 -%}neuf{%- endif -%}{%- endmacro -%}
+{%- macro _w20(n) -%}{%- if n|int==0 -%}zéro{%- elif n|int==1 -%}un{%- elif n|int==2 -%}deux{%- elif n|int==3 -%}trois{%- elif n|int==4 -%}quatre{%- elif n|int==5 -%}cinq{%- elif n|int==6 -%}six{%- elif n|int==7 -%}sept{%- elif n|int==8 -%}huit{%- elif n|int==9 -%}neuf{%- elif n|int==10 -%}dix{%- elif n|int==11 -%}onze{%- elif n|int==12 -%}douze{%- elif n|int==13 -%}treize{%- elif n|int==14 -%}quatorze{%- elif n|int==15 -%}quinze{%- elif n|int==16 -%}seize{%- elif n|int==17 -%}dix-sept{%- elif n|int==18 -%}dix-huit{%- elif n|int==19 -%}dix-neuf{%- endif -%}{%- endmacro -%}
+{%- macro _w100(n) -%}{%- set n=n|int -%}{%- if n<20 -%}{{- _w20(n) -}}{%- elif n<30 -%}{%- if n==20 -%}vingt{%- elif n==21 -%}vingt et un{%- else -%}vingt-{{- _w1(n-20) -}}{%- endif -%}{%- elif n<40 -%}{%- if n==30 -%}trente{%- elif n==31 -%}trente et un{%- else -%}trente-{{- _w1(n-30) -}}{%- endif -%}{%- elif n<50 -%}{%- if n==40 -%}quarante{%- elif n==41 -%}quarante et un{%- else -%}quarante-{{- _w1(n-40) -}}{%- endif -%}{%- elif n<60 -%}{%- if n==50 -%}cinquante{%- elif n==51 -%}cinquante et un{%- else -%}cinquante-{{- _w1(n-50) -}}{%- endif -%}{%- elif n<70 -%}{%- if n==60 -%}soixante{%- elif n==61 -%}soixante et un{%- else -%}soixante-{{- _w1(n-60) -}}{%- endif -%}{%- elif n<80 -%}{%- if n==70 -%}soixante-dix{%- elif n==71 -%}soixante et onze{%- else -%}soixante-{{- _w20(n-60) -}}{%- endif -%}{%- elif n<90 -%}{%- if n==80 -%}quatre-vingts{%- else -%}quatre-vingt-{{- _w1(n-80) -}}{%- endif -%}{%- else -%}{%- if n==90 -%}quatre-vingt-dix{%- else -%}quatre-vingt-{{- _w20(n-80) -}}{%- endif -%}{%- endif -%}{%- endmacro -%}
+{%- macro _w1000(n) -%}{%- set n=n|int -%}{%- set h=n//100 -%}{%- set r=n%100 -%}{%- if h>0 -%}{%- if h==1 -%}cent{%- if r>0 %} {{- _w100(r) -}}{%- endif -%}{%- else -%}{{- _w1(h) }} cent{%- if r>0 %} {{- _w100(r) -}}{%- else -%}s{%- endif -%}{%- endif -%}{%- else -%}{{- _w100(r) -}}{%- endif -%}{%- endmacro -%}
+{%- macro montant_fr(amount) -%}{%- set n=amount|round|int -%}{%- if n==0 -%}zéro franc CFA{%- else -%}{%- set mds=n//1000000000 -%}{%- set r1=n%1000000000 -%}{%- set mns=r1//1000000 -%}{%- set r2=r1%1000000 -%}{%- set mks=r2//1000 -%}{%- set rt=r2%1000 -%}{%- set p_mds=(_w1000(mds)~" milliards") if mds>1 else ("un milliard" if mds==1 else "") -%}{%- set p_mns=(_w1000(mns)~" millions") if mns>1 else ("un million" if mns==1 else "") -%}{%- set p_mks=(_w1000(mks)~" mille") if mks>1 else ("mille" if mks==1 else "") -%}{%- set p_rt=_w1000(rt) if rt>0 else "" -%}{%- set parts=[p_mds,p_mns,p_mks,p_rt]|select|list -%}{{- parts|join(" ") }} franc{%- if n>1 -%}s{%- endif -%} CFA{%- endif -%}{%- endmacro -%}
+
+{% set company = frappe.get_cached_doc("Company", doc.company) %}
+{% set logo_url = company.company_logo or frappe.db.get_value("Website Settings", None, "app_logo") %}
+{% set receiver_full_name = frappe.db.get_value("User", doc.owner, "full_name") or doc.owner %}
+{% set capital_social = company.get("custom_capital_social") or "1.000.000 F CFA" %}
+{% set rccm = company.get("custom_rccm") or "CI ABJ6 03 2018 B12 33468" %}
+{% set bank_info = company.get("custom_bank_account_display") or "Bank of Africa Côte d'Ivoire : CI032 01007 004065390013 37" %}
+{% set company_address_line = company.get("custom_adresse") or company.get("custom_address_line") or "Cocody Riviera 3 villa 676, Abidjan — 11 BP 2624 ABJ 11" %}
+
+{% set billing_addr = frappe.db.get_value("Address", doc.billing_address, ["address_line1","address_line2","city","country","phone","email_id"], as_dict=True) if doc.billing_address else None %}
+{% set supplier_addr = frappe.db.get_value("Address", doc.supplier_address, ["address_line1","address_line2","city","country","phone","email_id"], as_dict=True) if doc.supplier_address else None %}
+{% set vat_rate = (doc.taxes[0].rate if doc.taxes and doc.taxes|length > 0 else 0) %}
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+    :root { --primary: #032A5F; --accent: #0756C5; }
+    @page { size: A4; margin: 8mm 8mm 50mm 8mm; }
+    .print-format { padding: 0 20px 90px 20px !important; font-size: 10.5px; line-height: 1.25; font-family: 'Montserrat', Arial, Helvetica, sans-serif; color: var(--primary); }
+    .text-strong { font-weight: 700; color: var(--primary); }
+    .small { font-size: 9.5px; color: var(--primary); }
+    .desc { font-size: 9.5px; color: var(--primary); }
+    h2.text-strong { margin: 0 !important; font-size: 13px; text-transform: uppercase; }
+    table { width: 100%; border-collapse: collapse; }
+    .table-bordered { border: 1.5px solid var(--accent); }
+    .table>thead>tr>th, .table>tbody>tr>td { vertical-align: top; padding: 3px 5px; line-height: 1.2; color: var(--primary); }
+    .table>thead>tr>th { background-color: var(--accent); color: #fff; font-weight: 600; }
+    .box { border: 1.5px solid var(--accent); padding: 5px 7px; border-radius: 5px; background-color: #f8fbff; }
+    .logo-cell { width: 180px; height: 90px; }
+    .row-alt { background-color: #f8fbff; }
+    .signature-box { position: fixed; bottom: 32mm; right: 8mm; width: 45%; border: 1.5px solid var(--accent); border-radius: 4px; padding: 4px 10px 5px 10px; background-color: #f8fbff; z-index: 10; }
+    .signature-box .signature-title { font-weight: 700; color: var(--accent); font-size: 9px; text-transform: uppercase; letter-spacing: 0.4px; border-bottom: 1px solid var(--accent); padding-bottom: 2px; margin-bottom: 4px; text-align: center; }
+    .signature-space { height: 18px; border-bottom: 1px dashed var(--primary); margin-top: 3px; }
+    .custom-footer { position: fixed; bottom: 0; left: 0; right: 0; color: #032A5F; font-size: 9px; border-top: 1.5px solid var(--accent); padding: 5px 8mm 3px 8mm; text-align: center; line-height: 1.35; font-family: 'Montserrat', Arial, sans-serif; background: #fff; }
+    .custom-footer a { color: #032A5F; text-decoration: none; font-weight: 600; }
+    .terms-block { font-size: 8.5px; line-height: 1.3; color: var(--primary); border-top: 1px solid var(--accent); padding-top: 3px; margin-top: 3px; }
+</style>
+
+{% for page in layout %}
+<div class="page-break">
+    <div class="print-format">
+
+        <!-- Titre -->
+        <div class="row text-center">
+            <h2 class="text-strong">{{ _("Bon de Réception") }}</h2>
+        </div>
+
+        <!-- Logo -->
+        <div class="row mb-4">
+            <div class="col-xs-6 logo-cell">
+                {% if logo_url %}<img src="{{ logo_url }}" alt="logo" style="max-width:100%; max-height:100%;">{% endif %}
+            </div>
+        </div>
+
+        <!-- En-tête infos -->
+        <div class="row mb-10">
+            <div class="col-xs-7">
+                <div><span class="text-strong">Réceptionné par :</span> {{ receiver_full_name }}</div>
+                <div><span class="text-strong">Devise :</span> {{ "Franc CFA" if doc.currency in ["XOF", "CFA", "FCFA"] else (doc.currency or "") }}</div>
+                <div><span class="text-strong">Date d'émission :</span> {{ frappe.utils.format_date(doc.posting_date) }}</div>
+                <div class="small"><span class="text-strong">Date d'impression :</span> {{ frappe.utils.format_datetime(frappe.utils.now_datetime(), "dd-MM-yyyy HH:mm:ss") }}</div>
+                {% if doc.contact_display %}
+                <div style="margin-top:4px;">
+                    <div class="text-strong" style="margin-bottom:2px;">Contact Fournisseur :</div>
+                    <div class="small">{{ doc.contact_display }}</div>
+                    {% if doc.contact_email %}<div class="small">{{ doc.contact_email }}</div>{% endif %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-xs-5">
+                <div class="mb-10"><div><span class="text-strong">N° de réception :</span> {{ doc.name }}</div></div>
+                <div class="mb-10"><div><span class="text-strong">Date de réception :</span> {{ frappe.utils.format_date(doc.posting_date) }}</div></div>
+                {% if doc.purchase_order %}<div class="mb-10"><div><span class="text-strong">Bon de commande :</span> {{ doc.purchase_order }}</div></div>{% endif %}
+                {% if doc.purchase_invoice %}<div class="mb-10"><div><span class="text-strong">Facture d'achat :</span> {{ doc.purchase_invoice }}</div></div>{% endif %}
+                {% if doc.lr_no %}<div class="mb-10"><div><span class="text-strong">Lettre de voiture :</span> {{ doc.lr_no }}</div></div>{% endif %}
+                {% if doc.vehicle_no %}<div class="mb-10"><div><span class="text-strong">Véhicule :</span> {{ doc.vehicle_no }}</div></div>{% endif %}
+            </div>
+        </div>
+
+        <!-- Adresses -->
+        <div class="row mb-10">
+            <div class="col-xs-6">
+                <div class="box">
+                    <div class="text-strong" style="margin-bottom:3px;">Adresse de livraison :</div>
+                    <div class="small"><strong>Nom :</strong> {{ company.company_name }}</div>
+                    {% if billing_addr %}
+                        <div class="small"><strong>Adresse :</strong> {{ billing_addr.address_line1 or "" }} {{ billing_addr.address_line2 or "" }}</div>
+                        <div class="small"><strong>Ville / Pays :</strong> {{ billing_addr.city or "" }} {{ billing_addr.country or "" }}</div>
+                    {% endif %}
+                    <div class="small"><strong>NCC :</strong> {{ company.tax_id or "" }}</div>
+                    <div class="small"><strong>RCCM :</strong> {{ company.custom_rccm or rccm }}</div>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div class="box">
+                    <div class="text-strong" style="margin-bottom:3px;">Adresse du fournisseur :</div>
+                    <div class="small"><strong>Nom :</strong> {{ doc.supplier_name or doc.supplier or "" }}</div>
+                    {% if supplier_addr %}
+                        <div class="small"><strong>Adresse :</strong> {{ supplier_addr.address_line1 or "" }} {{ supplier_addr.address_line2 or "" }}</div>
+                        <div class="small"><strong>Ville / Pays :</strong> {{ supplier_addr.city or "" }} {{ supplier_addr.country or "" }}</div>
+                        {% if supplier_addr.phone %}<div class="small"><strong>Tél :</strong> {{ supplier_addr.phone }}</div>{% endif %}
+                    {% endif %}
+                    <div class="small"><strong>NCC :</strong> {{ frappe.db.get_value('Supplier', doc.supplier, 'tax_id') or "" }}</div>
+                    <div class="small"><strong>RCCM :</strong> {{ frappe.db.get_value('Supplier', doc.supplier, 'custom_rccm') or "" }}</div>
+                </div>
+            </div>
+        </div>
+
+        {% if doc.custom_observation %}
+        <div class="row mb-10">
+            <div class="col-12"><strong>Observation :</strong> {{ doc.custom_observation }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Table des articles -->
+        <table class="table table-bordered table-condensed mb-0" style="font-size:10.5px;">
+            <colgroup>
+                <col style="width:4%"><col style="width:10%"><col style="width:21%">
+                <col style="width:5%"><col style="width:8%">
+                <col style="width:7%"><col style="width:6%"><col style="width:6%"><col style="width:11%"><col style="width:11%">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th class="text-center">N°</th>
+                    <th class="text-center">Code article</th>
+                    <th class="text-center">Description</th>
+                    <th class="text-center">Remise %</th>
+                    <th class="text-right">Montant remise</th>
+                    <th class="text-center">Qté reçue</th>
+                    <th class="text-center">UdM</th>
+                    <th class="text-center">TVA</th>
+                    <th class="text-right">Prix unit. HT</th>
+                    <th class="text-right">Montant HT</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for item in doc.items %}
+                <tr class="{% if loop.index % 2 == 0 %}row-alt{% endif %}">
+                    <td class="text-center">{{ loop.index }}</td>
+                    <td class="text-center text-strong">{{ item.item_code }}</td>
+                    <td>
+                        <div class="text-strong">{{ item.item_name }}</div>
+                        {% if item.description and (item.description != item.item_name) %}<div class="desc">{{ item.description }}</div>{% endif %}
+                        {% if item.warehouse %}<div class="small" style="color:#0756C5; margin-top:1px;">Entrepôt : {{ item.warehouse }}</div>{% endif %}
+                    </td>
+                    <td class="text-center small">
+                        {% if item.discount_percentage and item.discount_percentage > 0 %}{{ item.discount_percentage|round(2) }}%{% else %}—{% endif %}
+                    </td>
+                    <td class="text-right small" style="color:#dc2626;">
+                        {% if item.discount_percentage and item.discount_percentage > 0 and item.discount_amount and item.discount_amount > 0 %}- {{ fmt_amount(item.discount_amount, doc.currency) }}{% else %}—{% endif %}
+                    </td>
+                    <td class="text-center text-strong">{{ item.qty|int }}</td>
+                    <td class="text-center">{{ item.uom }}</td>
+                    <td class="text-center">{% if vat_rate %}{{ vat_rate|int }}%{% else %}—{% endif %}</td>
+                    <td class="text-right">{{ fmt_amount(item.rate, doc.currency) }}</td>
+                    <td class="text-right text-strong">{{ fmt_amount(item.amount, doc.currency) }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Totaux -->
+        <div class="row" style="margin-top:5px;">
+            <div class="col-xs-6 col-xs-offset-6">
+                <div class="row" style="padding:3px 0; border-bottom:1px solid var(--accent);">
+                    <div class="col-xs-6">Total Net HT</div>
+                    <div class="col-xs-6 text-right">{{ fmt_amount(doc.total, doc.currency) }}</div>
+                </div>
+                {% if doc.discount_amount and doc.discount_amount > 0 %}
+                <div class="row" style="padding:2px 0; border-bottom:1px solid var(--accent);">
+                    <div class="col-xs-6 desc" style="color:#dc2626;">Remise globale{% if doc.additional_discount_percentage %} ({{ "{:.1f}".format(doc.additional_discount_percentage) }}%){% endif %}</div>
+                    <div class="col-xs-6 text-right desc" style="color:#dc2626;">- {{ fmt_amount(doc.discount_amount, doc.currency) }}</div>
+                </div>
+                <div class="row" style="padding:2px 0; border-bottom:1px solid var(--accent);">
+                    <div class="col-xs-6">Total après remise</div>
+                    <div class="col-xs-6 text-right">{{ fmt_amount(doc.net_total, doc.currency) }}</div>
+                </div>
+                {% endif %}
+                {% if doc.taxes %}
+                    {% for tax in doc.taxes %}{% if tax.tax_amount %}
+                    <div class="row" style="padding:2px 0; border-bottom:1px dashed #c8d8f0;">
+                        <div class="col-xs-7 desc">{{ tax.description or tax.account_head }}</div>
+                        <div class="col-xs-5 text-right desc">{{ fmt_amount(tax.tax_amount, doc.currency) }}</div>
+                    </div>
+                    {% endif %}{% endfor %}
+                {% endif %}
+                <div class="row" style="padding:4px 0; background-color:var(--accent); color:#fff; border-radius:4px; margin-top:3px;">
+                    <div class="col-xs-6"><span class="text-strong" style="color:#fff;">Total TTC</span></div>
+                    <div class="col-xs-6 text-right text-strong" style="color:#fff;">{{ fmt_amount(doc.grand_total, doc.currency) }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Montant en lettres -->
+        <div class="small" style="font-style:italic; margin-top:4px;">
+            Arrêté à la somme de : <strong style="text-transform:capitalize;">{{ montant_fr(doc.grand_total) }}</strong>
+        </div>
+
+        <!-- Termes et conditions -->
+        {% if doc.terms %}
+        <div class="terms-block">
+            <span class="text-strong">Termes et Conditions :</span>
+            <div style="white-space:pre-line; word-break:break-word; margin-top:2px;">{{ doc.terms }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Signature -->
+        <div class="signature-box">
+            <div class="signature-title">{{ _("Signature et Cachet") }}</div>
+            <div style="display:flex; gap:18px; font-size:9px;">
+                <div><strong>Date :</strong></div>
+                <div><strong>Signature / Cachet :</strong></div>
+            </div>
+            <div class="signature-space"></div>
+        </div>
+
+        <!-- Footer fixe -->
+        <div class="custom-footer">
+            <div style="margin-bottom:2px;"><strong>S.A.R.L au capital de {{ capital_social }}</strong>{% if company_address_line %} — {{ company_address_line }}{% endif %}</div>
+            <div style="margin-bottom:2px;">
+                {% if company.phone_no %}Tél : {{ company.phone_no }}{% endif %}
+                {% if rccm %} &nbsp;|&nbsp; <strong>RCCM :</strong> {{ rccm }}{% endif %}
+                {% if bank_info %} &nbsp;|&nbsp; <strong>{{ bank_info }}</strong>{% endif %}
+            </div>
+            {% if company.website %}<div><a href="{{ company.website }}">{{ company.website }}</a></div>{% endif %}
+        </div>
+
+    </div>
+</div>
+{% endfor %}
