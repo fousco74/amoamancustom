@@ -1,5 +1,59 @@
 [
  {
+  "completed_by": "Administrator",
+  "completed_by_role": "Talent Acquisition User",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-04-13 02:31:32.856181",
+  "name": "q4m2ir7vmq",
+  "permitted_roles": [
+   {
+    "role": "Talent Acquisition User"
+   }
+  ],
+  "reference_doctype": "Job Applicant",
+  "reference_name": "konefousseni66@gmail.com",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Open"
+ },
+ {
+  "completed_by": null,
+  "completed_by_role": null,
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-04-13 01:46:23.175751",
+  "name": "ran4q9kda1",
+  "permitted_roles": [
+   {
+    "role": "Talent Acquisition User"
+   }
+  ],
+  "reference_doctype": "Job Applicant",
+  "reference_name": "konefousseni66@gmail.com",
+  "status": "Open",
+  "user": null,
+  "workflow_state": "En Cours de qualification"
+ },
+ {
+  "completed_by": null,
+  "completed_by_role": null,
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-04-13 02:31:32.860471",
+  "name": "lpgkfa6lbf",
+  "permitted_roles": [
+   {
+    "role": "Talent Acquisition User"
+   }
+  ],
+  "reference_doctype": "Job Applicant",
+  "reference_name": "konefousseni66@gmail.com",
+  "status": "Open",
+  "user": null,
+  "workflow_state": "Top Profil"
+ },
+ {
   "completed_by": "nkakou@amoaman.com",
   "completed_by_role": "HR Manager",
   "docstatus": 0,

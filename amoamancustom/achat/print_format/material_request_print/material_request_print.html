@@ -1,7 +1,11 @@
 {%- macro add_header(page_num, max_pages, doc, letter_head, no_letterhead, footer, print_settings=None) -%}
-    {% if letter_head and not no_letterhead %}<div class="letter-head">{{ letter_head }}</div>{% endif %}
+    {% if letter_head and not no_letterhead %}
+        <div class="letter-head">{{ letter_head }}</div>
+    {% endif %}
     {%- if doc.meta.is_submittable and doc.docstatus == 2 -%}
-    <div class="text-center" document-status="cancelled"><h4 style="margin:0; color:#032A5F;">{{ _("ANNULÉ") }}</h4></div>
+        <div class="text-center" document-status="cancelled">
+            <h4 style="margin:0; color:#032A5F;">{{ _("ANNULÉ") }}</h4>
+        </div>
     {%- endif -%}
 {%- endmacro -%}
 
@@ -64,7 +68,7 @@
         <div class="text-center" style="margin-bottom:6px;">
             <span class="type-badge">{{ doc.material_request_type }}</span>
             {% if doc.priority == "High" or doc.priority == "Urgent" %}
-            <span class="urgent-badge">{{ _("URGENT") }}</span>
+                <span class="urgent-badge">{{ _("URGENT") }}</span>
             {% endif %}
         </div>
 
@@ -80,7 +84,7 @@
             <div class="col-xs-7">
                 <div><span class="text-strong">Société :</span> {{ company.company_name }}</div>
                 <div><span class="text-strong">Adresse :</span> {{ company_address_line }}</div>
-                <div><span class="text-strong">NCC :</span> {{ company.tax_id or "" }}</div>
+                {% if company.tax_id %}<div><span class="text-strong">NCC :</span> {{ company.tax_id }}</div>{% endif %}
                 <div><span class="text-strong">RCCM :</span> {{ rccm }}</div>
                 <div class="small"><span class="text-strong">Demandeur :</span> {{ owner_fullname }}</div>
                 {% if doc.requested_by %}<div class="small"><span class="text-strong">Pour :</span> {{ doc.requested_by }}</div>{% endif %}
@@ -88,12 +92,17 @@
             <div class="col-xs-5">
                 <div class="mb-10"><div><span class="text-strong">N° de demande :</span> {{ doc.name }}</div></div>
                 <div class="mb-10"><div><span class="text-strong">Date de la demande :</span> {{ frappe.utils.format_date(doc.transaction_date, "dd MMMM yyyy") }}</div></div>
-                {% if doc.schedule_date %}<div class="mb-10"><div><span class="text-strong">Date requise :</span> {{ frappe.utils.format_date(doc.schedule_date, "dd MMMM yyyy") }}</div></div>{% endif %}
-                {% if doc.project %}<div class="mb-10"><div><span class="text-strong">Projet :</span> {{ doc.project }}</div></div>{% endif %}
+                {% if doc.schedule_date %}
+                    <div class="mb-10"><div><span class="text-strong">Date requise :</span> {{ frappe.utils.format_date(doc.schedule_date, "dd MMMM yyyy") }}</div></div>
+                {% endif %}
+                {% if doc.project %}
+                    <div class="mb-10"><div><span class="text-strong">Projet :</span> {{ doc.project }}</div></div>
+                {% endif %}
             </div>
         </div>
 
-        {% if doc.purpose %}
+        <!-- Objet / Motif -->
+        {% if doc.purpose and doc.purpose|trim != "" %}
         <div class="row mb-10">
             <div class="col-xs-12">
                 <div class="box">
@@ -128,21 +137,28 @@
                     <td class="text-center text-strong">{{ item.item_code }}</td>
                     <td>
                         <div class="text-strong">{{ item.item_name }}</div>
-                        {% if item.description and (item.description != item.item_name) %}<div class="desc">{{ item.description }}</div>{% endif %}
+                        {% if item.description and (item.description != item.item_name) %}
+                            <div class="desc">{{ item.description }}</div>
+                        {% endif %}
                     </td>
                     <td class="text-center text-strong">{{ item.qty|int }}</td>
                     <td class="text-center">{{ item.uom }}</td>
                     <td class="text-center small">{{ item.warehouse or "—" }}</td>
-                    <td class="text-center small">{% if item.schedule_date %}{{ frappe.utils.format_date(item.schedule_date, "dd/MM/yyyy") }}{% else %}—{% endif %}</td>
+                    <td class="text-center small">
+                        {% if item.schedule_date %}{{ frappe.utils.format_date(item.schedule_date, "dd/MM/yyyy") }}{% else %}—{% endif %}
+                    </td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
 
         <!-- Résumé -->
+        {% if doc.items and doc.items|length > 0 %}
         <div class="small" style="margin-top:6px; font-style:italic;">
-            <strong>Total articles :</strong> {{ doc.items|length }} référence(s) — Quantité totale : {{ doc.items|sum(attribute='qty')|int }}
+            <strong>Total articles :</strong> {{ doc.items|length }} référence(s) — 
+            Quantité totale : {{ doc.items|sum(attribute='qty')|int }}
         </div>
+        {% endif %}
 
         <!-- Signature -->
         <div class="signature-box">
@@ -156,12 +172,17 @@
 
         <!-- Footer fixe -->
         <div class="custom-footer">
-            <div style="margin-bottom:2px;"><strong>S.A.R.L au capital de {{ capital_social }}</strong>{% if company_address_line %} — {{ company_address_line }}{% endif %}</div>
+            <div style="margin-bottom:2px;">
+                <strong>S.A.R.L au capital de {{ capital_social }}</strong>
+                {% if company_address_line %} — {{ company_address_line }}{% endif %}
+            </div>
             <div>
                 {% if company.phone_no %}Tél : {{ company.phone_no }}{% endif %}
                 {% if rccm %} &nbsp;|&nbsp; <strong>RCCM :</strong> {{ rccm }}{% endif %}
             </div>
-            {% if company.website %}<div><a href="{{ company.website }}">{{ company.website }}</a></div>{% endif %}
+            {% if company.website %}
+                <div><a href="{{ company.website }}">{{ company.website }}</a></div>
+            {% endif %}
         </div>
 
     </div>

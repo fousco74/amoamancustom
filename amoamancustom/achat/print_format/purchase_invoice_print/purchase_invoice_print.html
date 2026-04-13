@@ -3,9 +3,9 @@
         <div class="letter-head">{{ letter_head }}</div>
     {% endif %}
     {%- if doc.meta.is_submittable and doc.docstatus == 2 -%}
-    <div class="text-center" document-status="cancelled">
-        <h4 style="margin:0; color:#032A5F;">{{ _("ANNULÉ") }}</h4>
-    </div>
+        <div class="text-center" document-status="cancelled">
+            <h4 style="margin:0; color:#032A5F;">{{ _("ANNULÉ") }}</h4>
+        </div>
     {%- endif -%}
 {%- endmacro -%}
 
@@ -33,6 +33,18 @@
 {% set company_address_line = company.get("custom_address_line") or "Cocody Riviera 3 villa 676, Abidjan — 11 BP 2624 ABJ 11" %}
 {% set vat_rate = (doc.taxes[0].rate if doc.taxes and doc.taxes|length > 0 else 0) %}
 
+{# === Détection remise et TVA pour masquer les colonnes === #}
+{% set has_discount = false %}
+{% set has_tva = false %}
+{% for item in doc.items %}
+    {% if item.discount_percentage and item.discount_percentage > 0 %}
+        {% set has_discount = true %}
+    {% endif %}
+    {% if vat_rate and vat_rate > 0 %}
+        {% set has_tva = true %}
+    {% endif %}
+{% endfor %}
+
 {# === Macros nombre en lettres === #}
 {%- macro _w1(n) -%}{%- if n|int==1 -%}un{%- elif n|int==2 -%}deux{%- elif n|int==3 -%}trois{%- elif n|int==4 -%}quatre{%- elif n|int==5 -%}cinq{%- elif n|int==6 -%}six{%- elif n|int==7 -%}sept{%- elif n|int==8 -%}huit{%- elif n|int==9 -%}neuf{%- endif -%}{%- endmacro -%}
 {%- macro _w20(n) -%}{%- if n|int==0 -%}zéro{%- elif n|int==1 -%}un{%- elif n|int==2 -%}deux{%- elif n|int==3 -%}trois{%- elif n|int==4 -%}quatre{%- elif n|int==5 -%}cinq{%- elif n|int==6 -%}six{%- elif n|int==7 -%}sept{%- elif n|int==8 -%}huit{%- elif n|int==9 -%}neuf{%- elif n|int==10 -%}dix{%- elif n|int==11 -%}onze{%- elif n|int==12 -%}douze{%- elif n|int==13 -%}treize{%- elif n|int==14 -%}quatorze{%- elif n|int==15 -%}quinze{%- elif n|int==16 -%}seize{%- elif n|int==17 -%}dix-sept{%- elif n|int==18 -%}dix-huit{%- elif n|int==19 -%}dix-neuf{%- endif -%}{%- endmacro -%}
@@ -49,7 +61,6 @@
 {%- else -%}{%- if n == 90 -%}quatre-vingt-dix{%- else -%}quatre-vingt-{{ _w20(n-80) }}{%- endif -%}
 {%- endif -%}
 {%- endmacro -%}
-
 {%- macro _w1000(n) -%}
 {%- set n = n|int -%}
 {%- set h = n // 100 -%}
@@ -60,7 +71,6 @@
     {%- endif -%}
 {%- else -%}{{ _w100(r) }}{%- endif -%}
 {%- endmacro -%}
-
 {%- macro montant_fr(amount) -%}
 {%- set n = (amount or 0)|round(0)|int -%}
 {%- if n == 0 -%}
@@ -87,14 +97,8 @@
 
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
-    :root {
-        --primary: #032A5F;
-        --accent: #0756C5;
-    }
-    @page {
-        size: A4;
-        margin: 8mm 8mm 50mm 8mm;
-    }
+    :root { --primary: #032A5F; --accent: #0756C5; }
+    @page { size: A4; margin: 8mm 8mm 50mm 8mm; }
     .print-format {
         padding: 0 20px 90px 20px !important;
         font-size: 10.5px;
@@ -102,12 +106,7 @@
         font-family: 'Montserrat', Arial, Helvetica, sans-serif;
         color: var(--primary);
     }
-    label {
-        color: var(--accent);
-        font-size: 9.5px;
-        margin-bottom: 2px;
-        font-weight: 600;
-    }
+    label { color: var(--accent); font-size: 9.5px; margin-bottom: 2px; font-weight: 600; }
     .text-strong { font-weight: 700; color: var(--primary); }
     .small { font-size: 9.5px; color: var(--primary); }
     .desc { font-size: 9.5px; color: var(--primary); }
@@ -115,67 +114,31 @@
 
     table { width:100%; border-collapse: collapse; }
     .table-bordered { border: 1.5px solid var(--accent); }
-    .table>thead>tr>th, .table>tbody>tr>td {
-        vertical-align: top;
-        padding: 3px 5px;
-        line-height: 1.2;
-        color: var(--primary);
-    }
-    .table>thead>tr>th {
-        background-color: var(--accent);
-        color: #fff;
-        font-weight: 600;
-    }
+    .table>thead>tr>th, .table>tbody>tr>td { vertical-align: top; padding: 3px 5px; line-height: 1.2; color: var(--primary); }
+    .table>thead>tr>th { background-color: var(--accent); color: #fff; font-weight: 600; }
 
-    .box {
-        border: 1.5px solid var(--accent);
-        padding: 5px 7px;
-        border-radius: 5px;
-        background-color: #f8fbff;
-    }
-
+    .box { border: 1.5px solid var(--accent); padding: 5px 7px; border-radius: 5px; background-color: #f8fbff; }
     .logo-cell { width: 180px; height: 90px; }
     .row-alt { background-color: #f8fbff; }
 
     .signature-box {
-        position: fixed;
-        bottom: 32mm;
-        right: 8mm;
-        width: 45%;
-        border: 1.5px solid var(--accent);
-        border-radius: 4px;
-        padding: 4px 10px 5px 10px;
-        background-color: #f8fbff;
-        z-index: 10;
+        position: fixed; bottom: 32mm; right: 8mm; width: 45%;
+        border: 1.5px solid var(--accent); border-radius: 4px;
+        padding: 4px 10px 5px 10px; background-color: #f8fbff; z-index: 10;
     }
     .signature-box .signature-title {
-        font-weight: 700;
-        color: var(--accent);
-        font-size: 9px;
-        text-transform: uppercase;
-        letter-spacing: 0.4px;
-        border-bottom: 1px solid var(--accent);
-        padding-bottom: 2px;
-        margin-bottom: 4px;
-        text-align: center;
+        font-weight: 700; color: var(--accent); font-size: 9px;
+        text-transform: uppercase; letter-spacing: 0.4px;
+        border-bottom: 1px solid var(--accent); padding-bottom: 2px;
+        margin-bottom: 4px; text-align: center;
     }
-    .signature-space {
-        height: 18px;
-        border-bottom: 1px dashed var(--primary);
-        margin-top: 3px;
-    }
+    .signature-space { height: 18px; border-bottom: 1px dashed var(--primary); margin-top: 3px; }
 
     .custom-footer {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        color: #032A5F;
-        font-size: 9px;
+        position: fixed; bottom: 0; left: 0; right: 0;
+        color: #032A5F; font-size: 9px;
         border-top: 1px solid #032A5F;
-        padding: 5px 8mm 3px 8mm;
-        text-align: center;
-        line-height: 1.35;
+        padding: 5px 8mm 3px 8mm; text-align: center; line-height: 1.35;
         background: #fff;
     }
     .custom-footer a { color: #032A5F; text-decoration: none; font-weight: 600; }
@@ -191,9 +154,7 @@
 
         <!-- Titre -->
         <div class="row text-center">
-            <h2 class="text-strong" style="margin:0; text-transform:uppercase;">
-                {{ _("Facture d'Achat") }}
-            </h2>
+            <h2 class="text-strong" style="margin:0; text-transform:uppercase;">{{ _("Facture d'Achat") }}</h2>
         </div>
 
         <!-- Logo -->
@@ -210,100 +171,113 @@
                 <div><span class="text-strong">Date d'émission :</span> {{ frappe.utils.format_date(doc.posting_date) }}</div>
                 <div class="small"><span class="text-strong">Date d'impression :</span> {{ frappe.utils.format_datetime(frappe.utils.now_datetime(), "dd-MM-yyyy HH:mm:ss") }}</div>
 
+                {% if doc.contact_display or doc.contact_email or doc.contact_mobile %}
                 <div style="margin-top: 6px;">
                     <div class="text-strong" style="margin-bottom:2px;">Contact Fournisseur :</div>
-                    <div class="small">{{ doc.contact_display or "" }}</div>
-                    <div class="small">{{ doc.contact_email or "" }}</div>
-                    <div class="small">{{ doc.contact_mobile or "" }}</div>
+                    {% if doc.contact_display %}<div class="small">{{ doc.contact_display }}</div>{% endif %}
+                    {% if doc.contact_email %}<div class="small">{{ doc.contact_email }}</div>{% endif %}
+                    {% if doc.contact_mobile %}<div class="small">{{ doc.contact_mobile }}</div>{% endif %}
                 </div>
+                {% endif %}
             </div>
 
             <div class="col-xs-4">
-                <div class="mb-10">
-                    <div><span class="text-strong">N° de facture :</span> {{ doc.name }}</div>
-                </div>
-                <div class="mb-10">
-                    <div><span class="text-strong">Date de facture :</span> {{ frappe.utils.format_date(doc.posting_date) }}</div>
-                </div>
+                <div class="mb-10"><span class="text-strong">N° de facture :</span> {{ doc.name }}</div>
+                <div class="mb-10"><span class="text-strong">Date de facture :</span> {{ frappe.utils.format_date(doc.posting_date) }}</div>
                 {% if doc.bill_no %}
-                <div class="mb-10">
-                    <div><span class="text-strong">N° facture fournisseur :</span> {{ doc.bill_no }}</div>
-                </div>
+                    <div class="mb-10"><span class="text-strong">N° facture fournisseur :</span> {{ doc.bill_no }}</div>
                 {% endif %}
                 {% if doc.bill_date %}
-                <div class="mb-10">
-                    <div><span class="text-strong">Date facture fournisseur :</span> {{ frappe.utils.format_date(doc.bill_date) }}</div>
-                </div>
+                    <div class="mb-10"><span class="text-strong">Date facture fournisseur :</span> {{ frappe.utils.format_date(doc.bill_date) }}</div>
                 {% endif %}
-                <div class="mb-10">
-                    <div><span class="text-strong">Date d'échéance :</span> {{ frappe.utils.format_date(doc.due_date) if doc.due_date else "—" }}</div>
-                </div>
+                <div class="mb-10"><span class="text-strong">Date d'échéance :</span> {{ frappe.utils.format_date(doc.due_date) if doc.due_date else "—" }}</div>
             </div>
         </div>
 
         <!-- Adresses -->
         <div class="row mb-10">
+            <!-- Adresse du fournisseur (à gauche) -->
             <div class="col-xs-6">
                 <div class="box">
-                                        <div class="text-strong" style="margin-bottom:3px;">Adresse du fournisseur :</div>
-
-                    <div class="small"><strong>Nom :</strong> {{ company.company_name }}</div>
-                    {% if billing_addr %}
-                        <div class="small"><strong>Adresse :</strong> {{ billing_addr.address_line1 or "" }} {{ billing_addr.address_line2 or "" }}</div>
-                        <div class="small"><strong>Ville / Pays :</strong> {{ billing_addr.city or "" }} {{ billing_addr.country or "" }}</div>
+                    <div class="text-strong" style="margin-bottom:3px;">Adresse du fournisseur :</div>
+                    <div class="small"><strong>Nom :</strong> {{ doc.supplier_name or doc.supplier or "" }}</div>
+                    {% if supplier_addr %}
+                        {% if supplier_addr.address_line1 or supplier_addr.address_line2 %}
+                            <div class="small"><strong>Adresse :</strong> {{ supplier_addr.address_line1 or "" }} {{ supplier_addr.address_line2 or "" }}</div>
+                        {% endif %}
+                        {% if supplier_addr.city or supplier_addr.country %}
+                            <div class="small"><strong>Ville / Pays :</strong> {{ supplier_addr.city or "" }} {{ supplier_addr.country or "" }}</div>
+                        {% endif %}
+                        {% if supplier_addr.phone %}<div class="small"><strong>Téléphone :</strong> {{ supplier_addr.phone }}</div>{% endif %}
+                        {% if supplier_addr.email_id %}<div class="small"><strong>Email :</strong> {{ supplier_addr.email_id }}</div>{% endif %}
                     {% endif %}
-                    <div class="small"><strong>NCC :</strong> {{ company.tax_id or "" }}</div>
-                    <div class="small"><strong>Régime d'imposition :</strong> {{ company.custom_regime_dimposition or "" }}</div>
-                    <div class="small"><strong>RCCM :</strong> {{ company.custom_rccm or rccm }}</div>
+                    {% set supplier_ncc = frappe.db.get_value('Supplier', doc.supplier, 'tax_id') %}
+                    {% if supplier_ncc %}<div class="small"><strong>NCC :</strong> {{ supplier_ncc }}</div>{% endif %}
+                    {% set supplier_regime = frappe.db.get_value('Supplier', doc.supplier, 'custom_regime_dimposition') %}
+                    {% if supplier_regime %}<div class="small"><strong>Régime d'imposition :</strong> {{ supplier_regime }}</div>{% endif %}
+                    {% set supplier_rccm = frappe.db.get_value('Supplier', doc.supplier, 'custom_rccm') %}
+                    {% if supplier_rccm %}<div class="small"><strong>RCCM :</strong> {{ supplier_rccm }}</div>{% endif %}
                 </div>
             </div>
 
+            <!-- Adresse de facturation et livraison (à droite) -->
             <div class="col-xs-6">
                 <div class="box">
-                                        <div class="text-strong" style="margin-bottom:3px;">Adresse de facturation et de livraison :</div>
-
-                    <div class="small"><strong>Nom :</strong> {{ doc.supplier_name or doc.supplier or "" }}</div>
-                    {% if supplier_addr %}
-                        <div class="small"><strong>Adresse :</strong> {{ supplier_addr.address_line1 or "" }} {{ supplier_addr.address_line2 or "" }}</div>
-                        <div class="small"><strong>Ville / Pays :</strong> {{ supplier_addr.city or "" }} {{ supplier_addr.country or "" }}</div>
-                        <div class="small"><strong>Téléphone :</strong> {{ supplier_addr.phone or "" }}</div>
-                        <div class="small"><strong>Email :</strong> {{ supplier_addr.email_id or "" }}</div>
+                    <div class="text-strong" style="margin-bottom:3px;">Adresse de facturation et de livraison :</div>
+                    <div class="small"><strong>Nom :</strong> {{ company.company_name }}</div>
+                    {% if billing_addr %}
+                        {% if billing_addr.address_line1 or billing_addr.address_line2 %}
+                            <div class="small"><strong>Adresse :</strong> {{ billing_addr.address_line1 or "" }} {{ billing_addr.address_line2 or "" }}</div>
+                        {% endif %}
+                        {% if billing_addr.city or billing_addr.country %}
+                            <div class="small"><strong>Ville / Pays :</strong> {{ billing_addr.city or "" }} {{ billing_addr.country or "" }}</div>
+                        {% endif %}
                     {% endif %}
-                    <div class="small"><strong>NCC :</strong> {{ frappe.db.get_value('Supplier', doc.supplier, 'tax_id') or "" }}</div>
-                    <div class="small"><strong>Régime d'imposition :</strong> {{ frappe.db.get_value('Supplier', doc.supplier, 'custom_regime_dimposition') or "" }}</div>
-                    <div class="small"><strong>RCCM :</strong> {{ frappe.db.get_value('Supplier', doc.supplier, 'custom_rccm') or "" }}</div>
+                    {% if company.tax_id %}<div class="small"><strong>NCC :</strong> {{ company.tax_id }}</div>{% endif %}
+                    {% if company.custom_regime_dimposition %}<div class="small"><strong>Régime d'imposition :</strong> {{ company.custom_regime_dimposition }}</div>{% endif %}
+                    {% if company.custom_rccm or rccm %}<div class="small"><strong>RCCM :</strong> {{ company.custom_rccm or rccm }}</div>{% endif %}
                 </div>
             </div>
         </div>
 
-        {% if doc.custom_observation %}
+        <!-- Observation en flex -->
+        {% if doc.custom_observation and doc.custom_observation|trim != "" %}
         <div class="row mb-10">
             <div class="col-12">
-                <strong>Observation :</strong>
-                <div style="white-space: pre-line; word-break: break-word;">
-                    {{ doc.custom_observation }}
+                <div style="display: flex; gap: 10px; align-items: flex-start;">
+                    <strong style="min-width: 110px;">Observation :</strong>
+                    <div style="white-space: pre-line; word-break: break-word; flex: 1;">
+                        {{ doc.custom_observation }}
+                    </div>
                 </div>
             </div>
         </div>
         {% endif %}
 
-        <!-- Table des articles -->
+        <!-- Table des articles - Colonnes dynamiques -->
         <table class="table table-bordered table-condensed mb-0" style="font-size:10.5px;">
             <colgroup>
-                <col style="width:4%"><col style="width:10%"><col style="width:21%">
-                <col style="width:5%"><col style="width:8%">
-                <col style="width:6%"><col style="width:6%"><col style="width:6%"><col style="width:11%"><col style="width:11%">
+                <col style="width:5%">
+                <col style="width:12%">
+                <col style="width:28%">
+                {% if has_discount %}<col style="width:7%">{% endif %}
+                {% if has_discount %}<col style="width:9%">{% endif %}
+                <col style="width:7%">
+                <col style="width:6%">
+                {% if has_tva %}<col style="width:6%">{% endif %}
+                <col style="width:12%">
+                <col style="width:13%">
             </colgroup>
             <thead>
                 <tr>
                     <th class="text-center">N°</th>
                     <th class="text-center">Code article</th>
                     <th class="text-center">Description</th>
-                    <th class="text-center">Remise %</th>
-                    <th class="text-right">Montant remise</th>
+                    {% if has_discount %}<th class="text-center">Remise %</th>{% endif %}
+                    {% if has_discount %}<th class="text-right">Montant remise</th>{% endif %}
                     <th class="text-center">Qté</th>
                     <th class="text-center">UdM</th>
-                    <th class="text-center">TVA</th>
+                    {% if has_tva %}<th class="text-center">TVA</th>{% endif %}
                     <th class="text-right">Prix unit. HT</th>
                     <th class="text-right">Montant HT</th>
                 </tr>
@@ -319,15 +293,19 @@
                             <div class="desc">{{ item.description }}</div>
                         {% endif %}
                     </td>
+                    {% if has_discount %}
                     <td class="text-center small">
                         {% if item.discount_percentage and item.discount_percentage > 0 %}{{ item.discount_percentage|round(2) }}%{% else %}—{% endif %}
                     </td>
                     <td class="text-right small" style="color:#dc2626;">
                         {% if item.discount_percentage and item.discount_percentage > 0 and item.discount_amount and item.discount_amount > 0 %}- {{ fmt_amount(item.discount_amount, doc.currency) }}{% else %}—{% endif %}
                     </td>
+                    {% endif %}
                     <td class="text-center">{{ item.get_formatted("qty", 0) }}</td>
                     <td class="text-center">{{ item.uom }}</td>
-                    <td class="text-center">{% if vat_rate %}{{ vat_rate|int }}%{% else %}—{% endif %}</td>
+                    {% if has_tva %}
+                    <td class="text-center">{% if vat_rate and vat_rate > 0 %}{{ vat_rate|int }}%{% else %}—{% endif %}</td>
+                    {% endif %}
                     <td class="text-right">{{ fmt_amount(item.rate, doc.currency) }}</td>
                     <td class="text-right text-strong">{{ fmt_amount(item.amount, doc.currency) }}</td>
                 </tr>
@@ -353,12 +331,14 @@
                 </div>
                 {% endif %}
                 {% if doc.taxes %}
-                    {% for tax in doc.taxes %}{% if tax.tax_amount %}
+                    {% for tax in doc.taxes %}
+                        {% if tax.tax_amount %}
                         <div class="row tax-line">
                             <div class="col-xs-7 desc">{{ tax.description or tax.account_head }}</div>
                             <div class="col-xs-5 text-right desc">{{ fmt_amount(tax.tax_amount, doc.currency) }}</div>
                         </div>
-                    {% endif %}{% endfor %}
+                        {% endif %}
+                    {% endfor %}
                 {% endif %}
                 <div class="row" style="padding: 2px 0; border-bottom: 1px solid var(--accent);">
                     <div class="col-xs-6">Total Taxes et Frais</div>
@@ -383,8 +363,7 @@
 
         <!-- Montant en lettres -->
         <div class="small" style="font-style:italic; margin-top:4px;">
-            Arrêté à la somme de :
-            <strong style="text-transform: capitalize;">{{ montant_fr(doc.grand_total) }}</strong>
+            Arrêté à la somme de : <strong style="text-transform: capitalize;">{{ montant_fr(doc.grand_total) }}</strong>
         </div>
 
         <!-- Échéancier de paiement -->
@@ -415,14 +394,12 @@
         {% endif %}
 
         <!-- Termes et conditions -->
-        {% if doc.terms %}
+        {% if doc.terms and doc.terms|trim != "" %}
         <div class="terms-block">
             <span class="text-strong">Termes et Conditions :</span>
             <div style="white-space: pre-line; word-break: break-word; margin-top: 2px;">{{ doc.terms }}</div>
         </div>
         {% endif %}
-
-        
 
         <!-- FOOTER FIXE -->
         <div class="custom-footer">
@@ -436,7 +413,7 @@
                 {% if bank_info %} &nbsp;|&nbsp; <strong>{{ bank_info }}</strong>{% endif %}
             </div>
             {% if company.website %}
-            <div><a href="{{ company.website }}">{{ company.website }}</a></div>
+                <div><a href="{{ company.website }}">{{ company.website }}</a></div>
             {% endif %}
         </div>
 

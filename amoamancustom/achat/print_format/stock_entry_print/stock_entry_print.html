@@ -1,7 +1,11 @@
 {%- macro add_header(page_num, max_pages, doc, letter_head, no_letterhead, footer, print_settings=None) -%}
-    {% if letter_head and not no_letterhead %}<div class="letter-head">{{ letter_head }}</div>{% endif %}
+    {% if letter_head and not no_letterhead %}
+        <div class="letter-head">{{ letter_head }}</div>
+    {% endif %}
     {%- if doc.meta.is_submittable and doc.docstatus == 2 -%}
-    <div class="text-center" document-status="cancelled"><h4 style="margin:0; color:#032A5F;">{{ _("ANNULÉ") }}</h4></div>
+        <div class="text-center" document-status="cancelled">
+            <h4 style="margin:0; color:#032A5F;">{{ _("ANNULÉ") }}</h4>
+        </div>
     {%- endif -%}
 {%- endmacro -%}
 
@@ -85,16 +89,16 @@
             <div class="col-xs-7">
                 <div><span class="text-strong">Société :</span> {{ company.company_name }}</div>
                 <div><span class="text-strong">Adresse :</span> {{ company_address_line }}</div>
-                <div><span class="text-strong">NCC :</span> {{ company.tax_id or "" }}</div>
+                {% if company.tax_id %}<div><span class="text-strong">NCC :</span> {{ company.tax_id }}</div>{% endif %}
                 <div><span class="text-strong">RCCM :</span> {{ rccm }}</div>
                 <div class="small"><span class="text-strong">Réalisé par :</span> {{ owner_fullname }}</div>
             </div>
             <div class="col-xs-5">
-                <div class="mb-10"><div><span class="text-strong">N° de mouvement :</span> {{ doc.name }}</div></div>
-                <div class="mb-10"><div><span class="text-strong">Date :</span> {{ frappe.utils.format_date(doc.posting_date, "dd MMMM yyyy") }}</div></div>
-                <div class="mb-10"><div><span class="text-strong">Type :</span> {{ doc.stock_entry_type }}</div></div>
-                {% if doc.project %}<div class="mb-10"><div><span class="text-strong">Projet :</span> {{ doc.project }}</div></div>{% endif %}
-                {% if doc.work_order %}<div class="mb-10"><div><span class="text-strong">Ordre de fabrication :</span> {{ doc.work_order }}</div></div>{% endif %}
+                <div class="mb-10"><span class="text-strong">N° de mouvement :</span> {{ doc.name }}</div>
+                <div class="mb-10"><span class="text-strong">Date :</span> {{ frappe.utils.format_date(doc.posting_date, "dd MMMM yyyy") }}</div>
+                <div class="mb-10"><span class="text-strong">Type :</span> {{ doc.stock_entry_type }}</div>
+                {% if doc.project %}<div class="mb-10"><span class="text-strong">Projet :</span> {{ doc.project }}</div>{% endif %}
+                {% if doc.work_order %}<div class="mb-10"><span class="text-strong">Ordre de fabrication :</span> {{ doc.work_order }}</div>{% endif %}
             </div>
         </div>
 
@@ -120,10 +124,16 @@
         </div>
         {% endif %}
 
-        {% if doc.remarks %}
+        <!-- Remarques en flex -->
+        {% if doc.remarks and doc.remarks|trim != "" %}
         <div class="row mb-10">
             <div class="col-xs-12">
-                <strong>Remarques :</strong> <span style="white-space:pre-line;">{{ doc.remarks }}</span>
+                <div style="display: flex; gap: 10px; align-items: flex-start;">
+                    <strong style="min-width: 95px;">Remarques :</strong>
+                    <div style="white-space: pre-line; word-break: break-word; flex: 1;">
+                        {{ doc.remarks }}
+                    </div>
+                </div>
             </div>
         </div>
         {% endif %}
@@ -156,7 +166,9 @@
                     <td class="text-center text-strong">{{ item.item_code }}</td>
                     <td>
                         <div class="text-strong">{{ item.item_name }}</div>
-                        {% if item.description and (item.description != item.item_name) %}<div class="desc">{{ item.description }}</div>{% endif %}
+                        {% if item.description and (item.description != item.item_name) %}
+                            <div class="desc">{{ item.description }}</div>
+                        {% endif %}
                         {% if item.serial_no %}<div class="desc">S/N : {{ item.serial_no }}</div>{% endif %}
                         {% if item.batch_no %}<div class="desc">Lot : {{ item.batch_no }}</div>{% endif %}
                     </td>
@@ -194,9 +206,14 @@
         <!-- Frais additionnels détail -->
         {% if doc.additional_costs and doc.additional_costs|length > 0 %}
         <div style="margin-top:6px;">
-            <div class="text-strong" style="font-size:9px; margin-bottom:2px;">Frais additionnels :</div>
+            <div class="text-strong" style="font-size:9px; margin-bottom:2px;">Détail des frais additionnels :</div>
             <table class="table table-bordered" style="font-size:9px;">
-                <thead><tr><th>Description</th><th class="text-right">Montant</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th class="text-right">Montant</th>
+                    </tr>
+                </thead>
                 <tbody>
                 {% for cost in doc.additional_costs %}
                 <tr class="{% if loop.index % 2 == 0 %}row-alt{% endif %}">
@@ -221,12 +238,17 @@
 
         <!-- Footer fixe -->
         <div class="custom-footer">
-            <div style="margin-bottom:2px;"><strong>S.A.R.L au capital de {{ capital_social }}</strong>{% if company_address_line %} — {{ company_address_line }}{% endif %}</div>
+            <div style="margin-bottom:2px;">
+                <strong>S.A.R.L au capital de {{ capital_social }}</strong>
+                {% if company_address_line %} — {{ company_address_line }}{% endif %}
+            </div>
             <div>
                 {% if company.phone_no %}Tél : {{ company.phone_no }}{% endif %}
                 {% if rccm %} &nbsp;|&nbsp; <strong>RCCM :</strong> {{ rccm }}{% endif %}
             </div>
-            {% if company.website %}<div><a href="{{ company.website }}">{{ company.website }}</a></div>{% endif %}
+            {% if company.website %}
+                <div><a href="{{ company.website }}">{{ company.website }}</a></div>
+            {% endif %}
         </div>
 
     </div>
