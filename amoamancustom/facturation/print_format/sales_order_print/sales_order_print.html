@@ -262,13 +262,13 @@
                     {% endif %}
                 {% endif %}
 
-                 <!-- Observation en flex -->
+                <!-- Observation en flex -->
                 {% if doc.custom_observation and doc.custom_observation|trim != "" %}
                 <div class="row mb-10">
                     <div class="col-12">
                         <div style="display:flex; gap:8px; align-items:flex-start;">
                             <strong style="min-width:70px;">Observations :</strong>
-                            <div style="word-break: break-word;">{{ doc.custom_observation }}</div>
+                            <div style=" white-space: pre-line; word-break: break-word;">{{ doc.custom_observation }}</div>
                         </div>
                     </div>
                 </div>
