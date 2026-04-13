@@ -262,12 +262,14 @@
                     {% endif %}
                 {% endif %}
 
-                <!-- Observation en flex -->
+                 <!-- Observation en flex -->
                 {% if doc.custom_observation and doc.custom_observation|trim != "" %}
-                <div style="margin-top: 8px; display: flex; gap: 8px; align-items: flex-start;">
-                    <strong >Observation :</strong>
-                    <div style="word-break: break-word; flex: 1;">
-                        {{ doc.custom_observation }}
+                <div class="row mb-10">
+                    <div class="col-12">
+                        <div style="display:flex; gap:8px; align-items:flex-start;">
+                            <strong style="min-width:70px;">Observations :</strong>
+                            <div style="word-break: break-word;">{{ doc.custom_observation }}</div>
+                        </div>
                     </div>
                 </div>
                 {% endif %}
