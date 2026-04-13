@@ -351,6 +351,7 @@ fixtures = [
                     "Payment Entry",
                     "Customer",
                     "Supplier",
+                    "Supplier Quotation",
                     "Contact",
                     "Address",
                     "Contract",
