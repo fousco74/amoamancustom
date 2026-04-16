@@ -237,11 +237,12 @@
  "index_web_pages_for_search": 1,
  "is_published_field": "is_published",
  "links": [],
- "modified": "2026-01-03 20:58:46.557278",
+ "make_attachments_public": 1,
+ "modified": "2026-04-16 11:08:19.234064",
  "modified_by": "Administrator",
  "module": "Amoaman Custom App",
  "name": "Amoaman Event",
- "naming_rule": "Expression",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {
