@@ -587,6 +587,7 @@ fixtures = [
                     "Purchase Receipt",
                     "Payment Entry",
                     "Journal Entry",
+                    "Subscription",
                     "Address",
                     "Contact",
 
