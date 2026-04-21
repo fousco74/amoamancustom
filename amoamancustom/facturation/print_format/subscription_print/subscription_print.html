@@ -1,0 +1,474 @@
+{# === Formatage monétaire === #}
+{%- macro fmt_amount(value, currency) -%}
+    {%- set formatted = "{:,.2f}".format(value or 0).replace(",", " ").replace(".", ",") -%}
+    {%- if currency in ["XOF", "CFA", "FCFA"] -%}
+        {{ formatted }} CFA
+    {%- else -%}
+        {{ formatted }} {{ currency or "" }}
+    {%- endif -%}
+{%- endmacro -%}
+
+{# === Macros nombre en lettres === #}
+{%- macro _w1(n) -%}{%- if n|int==1 -%}un{%- elif n|int==2 -%}deux{%- elif n|int==3 -%}trois{%- elif n|int==4 -%}quatre{%- elif n|int==5 -%}cinq{%- elif n|int==6 -%}six{%- elif n|int==7 -%}sept{%- elif n|int==8 -%}huit{%- elif n|int==9 -%}neuf{%- endif -%}{%- endmacro -%}
+{%- macro _w20(n) -%}{%- if n|int==0 -%}zéro{%- elif n|int==1 -%}un{%- elif n|int==2 -%}deux{%- elif n|int==3 -%}trois{%- elif n|int==4 -%}quatre{%- elif n|int==5 -%}cinq{%- elif n|int==6 -%}six{%- elif n|int==7 -%}sept{%- elif n|int==8 -%}huit{%- elif n|int==9 -%}neuf{%- elif n|int==10 -%}dix{%- elif n|int==11 -%}onze{%- elif n|int==12 -%}douze{%- elif n|int==13 -%}treize{%- elif n|int==14 -%}quatorze{%- elif n|int==15 -%}quinze{%- elif n|int==16 -%}seize{%- elif n|int==17 -%}dix-sept{%- elif n|int==18 -%}dix-huit{%- elif n|int==19 -%}dix-neuf{%- endif -%}{%- endmacro -%}
+{%- macro _w100(n) -%}
+{%- set n = n|int -%}
+{%- if n < 20 -%}{{- _w20(n) -}}
+{%- elif n < 30 -%}{%- if n == 20 -%}vingt{%- elif n == 21 -%}vingt et un{%- else -%}vingt-{{ _w1(n-20) }}{%- endif -%}
+{%- elif n < 40 -%}{%- if n == 30 -%}trente{%- elif n == 31 -%}trente et un{%- else -%}trente-{{ _w1(n-30) }}{%- endif -%}
+{%- elif n < 50 -%}{%- if n == 40 -%}quarante{%- elif n == 41 -%}quarante et un{%- else -%}quarante-{{ _w1(n-40) }}{%- endif -%}
+{%- elif n < 60 -%}{%- if n == 50 -%}cinquante{%- elif n == 51 -%}cinquante et un{%- else -%}cinquante-{{ _w1(n-50) }}{%- endif -%}
+{%- elif n < 70 -%}{%- if n == 60 -%}soixante{%- elif n == 61 -%}soixante et un{%- else -%}soixante-{{ _w1(n-60) }}{%- endif -%}
+{%- elif n < 80 -%}{%- if n == 70 -%}soixante-dix{%- elif n == 71 -%}soixante et onze{%- else -%}soixante-{{ _w20(n-60) }}{%- endif -%}
+{%- elif n < 90 -%}{%- if n == 80 -%}quatre-vingts{%- else -%}quatre-vingt-{{ _w1(n-80) }}{%- endif -%}
+{%- else -%}{%- if n == 90 -%}quatre-vingt-dix{%- else -%}quatre-vingt-{{ _w20(n-80) }}{%- endif -%}
+{%- endif -%}
+{%- endmacro -%}
+
+{%- macro _w1000(n) -%}
+{%- set n = n|int -%}
+{%- set h = n // 100 -%}
+{%- set r = n % 100 -%}
+{%- if h > 0 -%}
+    {%- if h == 1 -%}cent{%- if r > 0 %} {{ _w100(r) }}{%- endif -%}
+    {%- else -%}{{ _w1(h) }} cent{%- if r > 0 %} {{ _w100(r) }}{%- else %}s{%- endif -%}
+    {%- endif -%}
+{%- else -%}{{ _w100(r) }}{%- endif -%}
+{%- endmacro -%}
+
+{%- macro montant_fr(amount) -%}
+{%- set n = (amount or 0)|round(0)|int -%}
+{%- if n == 0 -%}
+    zéro franc CFA
+{%- else -%}
+    {%- set milliards = n // 1000000000 -%}
+    {%- set reste1 = n % 1000000000 -%}
+    {%- set millions = reste1 // 1000000 -%}
+    {%- set reste2 = reste1 % 1000000 -%}
+    {%- set mille = reste2 // 1000 -%}
+    {%- set reste = reste2 % 1000 -%}
+    {%- set p1 = (_w1000(milliards) ~ " milliards") if milliards > 1 else ("un milliard" if milliards == 1 else "") -%}
+    {%- set p2 = (_w1000(millions) ~ " millions") if millions > 1 else ("un million" if millions == 1 else "") -%}
+    {%- set p3 = (_w1000(mille) ~ " mille") if mille > 1 else ("mille" if mille == 1 else "") -%}
+    {%- set p4 = _w1000(reste) if reste > 0 else "" -%}
+    {%- set text = "" -%}
+    {%- if p1 %}{%- set text = text ~ p1 ~ " " %}{%- endif -%}
+    {%- if p2 %}{%- set text = text ~ p2 ~ " " %}{%- endif -%}
+    {%- if p3 %}{%- set text = text ~ p3 ~ " " %}{%- endif -%}
+    {%- if p4 %}{%- set text = text ~ p4 ~ " " %}{%- endif -%}
+    {{- text | trim }} franc{%- if n > 1 -%}s{%- endif -%}
+{%- endif -%}
+{%- endmacro -%}
+
+{# === Données société === #}
+{% set company = frappe.get_cached_doc("Company", doc.company) %}
+{% set logo_url = company.company_logo or frappe.db.get_value("Website Settings", None, "app_logo") %}
+{% set owner_fullname = frappe.db.get_value("User", doc.owner, "full_name") or doc.owner %}
+
+{% set co_addr_display = company.custom_adresse or company.custom_address_line or "Cocody Riviera 3 villa 676, Abidjan — 11 BP 2624 ABJ 11" %}
+{% set capital_social = company.get("custom_capital_social") or "1.000.000 F CFA" %}
+{% set rccm = company.get("custom_rccm") or company.custom_numéro_rccm or "CI-ABJ6-03-2018-B12-33468" %}
+{% set bank_info = company.get("custom_bank_account_display") or "Bank of Africa Côte d'Ivoire : CI032 01007 004065390013 37" %}
+
+{# === Données client (party) === #}
+{% set customer_name_display = frappe.db.get_value("Customer", doc.party, "customer_name") if doc.party_type == "Customer" else doc.party %}
+{% set customer_address_name = frappe.db.get_value("Dynamic Link",
+    {"link_doctype": doc.party_type, "link_name": doc.party, "parenttype": "Address"},
+    "parent") %}
+{% set billing_addr = frappe.db.get_value("Address", customer_address_name,
+    ["address_line1","address_line2","city","country","phone","email_id"], as_dict=True)
+    if customer_address_name else None %}
+
+{# === Intervalle de facturation en français === #}
+{%- set interval_map = {"Day": "Jour(s)", "Week": "Semaine(s)", "Month": "Mois", "Year": "An(s)"} -%}
+{%- set billing_label = interval_map.get(doc.billing_interval, doc.billing_interval or "") -%}
+{%- set billing_freq = ((doc.billing_interval_count|string ~ " ") if doc.billing_interval_count and doc.billing_interval_count > 1 else "") ~ billing_label -%}
+
+{# === Statut couleur === #}
+{%- set status_colors = {
+    "Active": "#16a34a",
+    "Past Due Date": "#d97706",
+    "Cancelled": "#dc2626",
+    "Completed": "#2563eb",
+    "Trialling": "#7c3aed"
+} -%}
+{%- set status_labels = {
+    "Active": "Actif",
+    "Past Due Date": "En retard",
+    "Cancelled": "Annulé",
+    "Completed": "Terminé",
+    "Trialling": "Période d'essai"
+} -%}
+{%- set status_color = status_colors.get(doc.status, "#6b7280") -%}
+{%- set status_label = status_labels.get(doc.status, doc.status or "") -%}
+
+{# === Calcul des totaux depuis les plans === #}
+{%- set total_ht = namespace(value=0) -%}
+{%- for plan in doc.plans -%}
+    {%- set total_ht.value = total_ht.value + (plan.amount or (plan.qty or 1) * (plan.rate or 0)) -%}
+{%- endfor -%}
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+    :root { --primary: #032A5F; --accent: #0756C5; }
+    @page { size: A4; margin: 5mm 5mm 38mm 5mm; }
+
+    .print-format {
+        padding: 0 12px 60px 12px !important;
+        font-size: 9.8px;
+        line-height: 1.18;
+        font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+        color: var(--primary);
+    }
+
+    label { color: var(--accent); font-size: 9px; margin-bottom: 1px; font-weight: 600; }
+    .text-strong { font-weight: 700; color: var(--primary); }
+    .small { font-size: 8.8px; color: var(--primary); }
+    .desc { font-size: 8.8px; color: var(--primary); }
+
+    h2.text-strong {
+        margin: 0 !important;
+        font-size: 12.5px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+
+    table { width:100%; border-collapse: collapse; }
+    .table-bordered { border: 1.2px solid var(--accent); }
+    .table>thead>tr>th, .table>tbody>tr>td {
+        padding: 2px 4px;
+        line-height: 1.15;
+        vertical-align: top;
+    }
+    .table>thead>tr>th {
+        background-color: var(--accent);
+        color: #fff;
+        font-weight: 600;
+        padding: 3px 4px;
+    }
+
+    .box {
+        border: 1.2px solid var(--accent);
+        padding: 4px 6px;
+        border-radius: 5px;
+        background-color: #f8fbff;
+    }
+
+    .row-alt { background-color: #f8fbff; }
+    .logo-cell { width: 180px; height: 90px; }
+
+    .status-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 8.5px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+    }
+
+    .info-grid {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-top: 6px;
+    }
+    .info-card {
+        flex: 1;
+        min-width: 120px;
+        border: 1.2px solid var(--accent);
+        border-radius: 4px;
+        padding: 4px 6px;
+        background-color: #f8fbff;
+    }
+    .info-card-label {
+        font-size: 7.8px;
+        font-weight: 700;
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        margin-bottom: 2px;
+    }
+    .info-card-value {
+        font-size: 9px;
+        font-weight: 600;
+        color: var(--primary);
+    }
+
+    .signature-box {
+        position: fixed; bottom: 26mm; right: 5mm; width: 48%;
+        border: 1.2px solid var(--accent); border-radius: 3px;
+        padding: 3px 8px 4px; background-color: #f8fbff; z-index: 10;
+    }
+    .signature-box .signature-title {
+        font-weight: 700; color: var(--accent); font-size: 8.5px;
+        text-transform: uppercase; letter-spacing: 0.3px;
+        border-bottom: 1px solid var(--accent); padding-bottom: 2px;
+        margin-bottom: 3px; text-align: center;
+    }
+    .signature-space { height: 15px; border-bottom: 1px dashed var(--primary); margin-top: 2px; }
+
+    .custom-footer {
+        position: fixed; bottom: 0; left: 0; right: 0;
+        color: var(--primary); font-size: 8.5px;
+        border-top: 1.2px solid var(--accent);
+        padding: 4px 6mm 3px 6mm; text-align: center; line-height: 1.3;
+        background: #fff;
+    }
+
+    .terms-block { font-size: 8.5px; line-height: 1.25; margin-top: 5px; }
+    .schedule-table th {
+        background-color: #e8f0fb;
+        color: var(--primary);
+        font-weight: 600;
+        font-size: 8.5px;
+    }
+    .schedule-table td {
+        font-size: 8.5px;
+        padding: 2px 4px !important;
+    }
+</style>
+
+{% for page in layout %}
+<div class="page-break">
+    <div class="print-format">
+
+        <!-- Titre + Statut -->
+        <div class="row text-center" style="position: relative;">
+            <h2 class="text-strong">{{ _("Contrat d'Abonnement") }}</h2>
+            <div style="position: absolute; right: 0; top: 0;">
+                <span class="status-badge" style="background-color: {{ status_color }}; color: #fff;">
+                    {{ status_label }}
+                </span>
+            </div>
+        </div>
+
+        <!-- Logo -->
+        <div class="row mb-10">
+            <div class="col-xs-6 logo-cell">
+                {% if logo_url %}
+                    <img src="{{ logo_url }}" alt="logo" style="max-width:100%; max-height:100%;">
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- En-tête infos société -->
+        <div class="row mb-10">
+            <div class="col-xs-7">
+                <div><span class="text-strong">Société :</span> {{ company.company_name }}</div>
+                <div><span class="text-strong">Adresse :</span> {{ co_addr_display }}</div>
+                {% if company.tax_id %}<div><span class="text-strong">NCC :</span> {{ company.tax_id }}</div>{% endif %}
+                {% if company.custom_regime_dimposition %}<div><span class="text-strong">Régime d'imposition :</span> {{ company.custom_regime_dimposition }}</div>{% endif %}
+                <div><span class="text-strong">RCCM :</span> {{ rccm }}</div>
+                <div class="small"><span class="text-strong">Interlocuteur :</span> {{ owner_fullname }}</div>
+            </div>
+
+            <div class="col-xs-5">
+                <div class="mb-10">
+                    <div><span class="text-strong">N° Abonnement :</span> {{ doc.name }}</div>
+                </div>
+                {% if doc.start_date %}
+                <div class="mb-10">
+                    <div><span class="text-strong">Date de début :</span> {{ frappe.utils.format_date(doc.start_date, "dd MMMM yyyy") }}</div>
+                </div>
+                {% endif %}
+                {% if doc.end_date %}
+                <div class="mb-10">
+                    <div><span class="text-strong">Date de fin :</span> {{ frappe.utils.format_date(doc.end_date, "dd MMMM yyyy") }}</div>
+                </div>
+                {% endif %}
+                {% if billing_freq %}
+                <div class="mb-10">
+                    <div><span class="text-strong">Périodicité :</span> {{ billing_freq }}</div>
+                </div>
+                {% endif %}
+                {% if doc.days_until_due %}
+                <div class="mb-10">
+                    <div><span class="text-strong">Délai de paiement :</span> {{ doc.days_until_due }} jour(s)</div>
+                </div>
+                {% endif %}
+                <div><span class="text-strong">Devise :</span> {{ "Franc CFA" if doc.currency in ["XOF", "CFA", "FCFA"] else (doc.currency or "") }}</div>
+            </div>
+        </div>
+
+        <!-- Adresse client -->
+        <div class="row mb-10" style="display: flex;">
+            <div class="col-xs-6 pl-4" style="margin-left: auto;">
+                <div class="box">
+                    <div class="text-strong" style="margin-bottom:2px;">Adresse de facturation :</div>
+
+                    <div class="small"><strong>Nom :</strong> {{ customer_name_display or doc.party }}</div>
+
+                    {% if billing_addr %}
+                        {% if billing_addr.address_line1 or billing_addr.address_line2 %}
+                            <div class="small"><strong>Adresse :</strong> {{ billing_addr.address_line1 or "" }} {{ billing_addr.address_line2 or "" }}</div>
+                        {% endif %}
+                        {% if billing_addr.city or billing_addr.country %}
+                            <div class="small"><strong>Ville / Pays :</strong> {{ billing_addr.city or "" }} {{ billing_addr.country or "" }}</div>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if doc.party_type == "Customer" %}
+                        {% set customer_ncc = frappe.db.get_value('Customer', doc.party, 'tax_id') %}
+                        {% if customer_ncc %}<div class="small"><strong>NCC :</strong> {{ customer_ncc }}</div>{% endif %}
+
+                        {% set customer_regime = frappe.db.get_value('Customer', doc.party, 'custom_regime_dimposition') %}
+                        {% if customer_regime %}<div class="small"><strong>Régime d'imposition :</strong> {{ customer_regime }}</div>{% endif %}
+
+                        {% set customer_rccm = frappe.db.get_value('Customer', doc.party, 'custom_rccm') %}
+                        {% if customer_rccm %}<div class="small"><strong>RCCM :</strong> {{ customer_rccm }}</div>{% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Période de facturation courante -->
+        {% if doc.current_invoice_start or doc.current_invoice_end %}
+        <div class="row mb-10">
+            <div class="col-xs-12">
+                <div style="display:flex; gap:8px; align-items:flex-start;">
+                    <strong style="min-width:120px;">Période de facturation :</strong>
+                    <div>
+                        {% if doc.current_invoice_start %}{{ frappe.utils.format_date(doc.current_invoice_start, "dd MMMM yyyy") }}{% endif %}
+                        {% if doc.current_invoice_start and doc.current_invoice_end %} au {% endif %}
+                        {% if doc.current_invoice_end %}{{ frappe.utils.format_date(doc.current_invoice_end, "dd MMMM yyyy") }}{% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Période d'essai -->
+        {% if doc.trial_period_start and doc.trial_period_end %}
+        <div class="row mb-10">
+            <div class="col-xs-12">
+                <div style="display:flex; gap:8px; align-items:flex-start;">
+                    <strong style="min-width:120px;">Période d'essai :</strong>
+                    <div>
+                        {{ frappe.utils.format_date(doc.trial_period_start, "dd MMMM yyyy") }}
+                        au
+                        {{ frappe.utils.format_date(doc.trial_period_end, "dd MMMM yyyy") }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Table des plans d'abonnement -->
+        <table class="table table-bordered table-condensed" style="margin-top: 5px;">
+            <colgroup>
+                <col style="width:4%">
+                <col style="width:35%">
+                <col style="width:30%">
+                <col style="width:10%">
+                <col style="width:21%">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th class="text-center">N°</th>
+                    <th class="text-center">Plan d'abonnement</th>
+                    <th class="text-center">Description</th>
+                    <th class="text-center">Qté</th>
+                    <th class="text-right">Montant</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for plan in doc.plans %}
+                    {%- set plan_doc = frappe.get_cached_doc("Subscription Plan", plan.plan) if plan.plan else None -%}
+                    {%- set plan_amount = plan.amount or ((plan.qty or 1) * (plan.rate or 0)) -%}
+                    <tr class="{% if loop.index % 2 == 0 %}row-alt{% endif %}">
+                        <td class="text-center">{{ loop.index }}</td>
+                        <td>
+                            <div class="text-strong">{{ plan.plan }}</div>
+                        </td>
+                        <td>
+                            {% if plan_doc and plan_doc.get("description") and plan_doc.description | trim != "" %}
+                                <div class="desc">{{ plan_doc.description }}</div>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">{{ (plan.qty or 1)|int }}</td>
+                        <td class="text-right text-strong">{{ fmt_amount(plan_amount, doc.currency) }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Totaux -->
+        <div class="row" style="margin-top:6px;">
+            <div class="col-xs-6 col-xs-offset-6">
+                <table style="width:100%; border:1.2px solid var(--accent);">
+                    <tr style="background:var(--accent); color:#fff;">
+                        <td class="text-strong" style="color:#fff;">Total par période</td>
+                        <td class="text-right text-strong" style="color:#fff; font-size:11px;">{{ fmt_amount(total_ht.value, doc.currency) }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Montant en lettres -->
+        <div class="small" style="font-style:italic; margin-top: 12px !important;">
+            Arrêté à la somme de :
+            <strong style="text-transform: capitalize;">{{ montant_fr(total_ht.value) }}</strong>
+        </div>
+
+        <!-- Historique des factures générées -->
+        {% if doc.invoices and doc.invoices|length > 0 %}
+        <div style="margin-top:8px;">
+            <div class="text-strong" style="font-size:9px; margin-bottom:2px;">Factures générées :</div>
+            <table class="table table-bordered schedule-table">
+                <thead>
+                    <tr>
+                        <th class="text-center">N° Facture</th>
+                        <th class="text-center">Type</th>
+                        <th class="text-center">Statut de paiement</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for inv in doc.invoices %}
+                    <tr class="{% if loop.index % 2 == 0 %}row-alt{% endif %}">
+                        <td class="text-center text-strong">{{ inv.invoice or "—" }}</td>
+                        <td class="text-center">{{ inv.document_type or "Sales Invoice" }}</td>
+                        <td class="text-center">
+                            {%- if inv.payment_status == "Paid" -%}
+                                <span style="color:#16a34a; font-weight:700;">Payée</span>
+                            {%- elif inv.payment_status == "Unpaid" -%}
+                                <span style="color:#dc2626; font-weight:700;">Non payée</span>
+                            {%- else -%}
+                                {{ inv.payment_status or "—" }}
+                            {%- endif -%}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        <!-- Signature -->
+        <div class="signature-box">
+            <div class="signature-title">Bon pour accord</div>
+            <div style="display:flex; gap:15px; font-size:8.5px;">
+                <div>Date :</div>
+                <div>Signature / Cachet :</div>
+            </div>
+            <div class="signature-space"></div>
+        </div>
+
+        <!-- FOOTER FIXE -->
+        <div class="custom-footer">
+            <div style="margin-bottom:2px;">
+                <strong>S.A.R.L au capital de {{ capital_social }}</strong>
+            </div>
+            <div style="margin-bottom:2px;">
+                {% if company.phone_no %}Tél : {{ company.phone_no }}{% endif %}
+                {% if rccm %} &nbsp;|&nbsp; <strong>RCCM :</strong> {{ rccm }}{% endif %}
+                {% if bank_info %} &nbsp;|&nbsp; <strong>{{ bank_info }}</strong>{% endif %}
+            </div>
+            {% if company.website %}
+                <div><a href="{{ company.website }}">{{ company.website }}</a></div>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+{% endfor %}
