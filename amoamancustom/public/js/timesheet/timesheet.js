@@ -27,11 +27,20 @@ frappe.ui.form.on('Timesheet', {
                             };
                         });
 
-                           // Appliquer aux lignes existantes
+                           // Appliquer aux lignes existantes — activity_type
                         frm.fields_dict["time_logs"].grid.get_field("activity_type").get_query = function() {
                             return {
                                 filters: {
                                     name: ["in", r.message.activity_types]
+                                }
+                            };
+                        };
+
+                           // Appliquer aux lignes existantes — project
+                        frm.fields_dict["time_logs"].grid.get_field("project").get_query = function() {
+                            return {
+                                filters: {
+                                    name: ["in", r.message.projects]
                                 }
                             };
                         };
