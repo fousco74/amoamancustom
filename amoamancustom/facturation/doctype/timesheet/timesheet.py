@@ -2,6 +2,7 @@ import frappe
 from frappe import _
 from datetime import timedelta
 from frappe.utils import get_datetime, getdate, flt
+import calendar
 
 def calculate_work_days(doc, method=None):
     # 1) Holiday List (sans permissions strictes)
@@ -107,7 +108,29 @@ def calculate_work_days(doc, method=None):
         total_days += days
 
     # 6) Totaux (parent)
-    doc.custom_total_working_days = total_days  # champ custom en entête si tu l’as créé
+    doc.custom_total_working_days = total_days
+
+    # 7) Ajouter les jours ouvrés restants du mois (après le dernier time_log)
+    base_date = getattr(doc, "start_date", None) or getattr(doc, "from_date", None) or getattr(doc, "posting_date", None)
+    if base_date and doc.time_logs:
+        base_date = getdate(base_date)
+        _, last_day = calendar.monthrange(base_date.year, base_date.month)
+        month_end = base_date.replace(day=last_day)
+
+        latest_end = None
+        for tl in doc.time_logs:
+            if tl.to_time:
+                end = getdate(get_datetime(tl.to_time))
+                if latest_end is None or end > latest_end:
+                    latest_end = end
+
+        if latest_end and latest_end < month_end:
+            next_day = latest_end + timedelta(days=1)
+            remaining = [d for d in daterange(next_day, month_end)
+                         if d.weekday() < 5 and d not in holiday_dates]
+            total_days += len(remaining)
+
+    doc.custom_total_working_days = total_days
 
     return {"days": last_days, "total_days": total_days}
 
@@ -156,61 +179,64 @@ def recalc_timesheet_row(timesheet, row_name: str):
 
 @frappe.whitelist()
 def user_project(employee):
-    # Charger l'employé
-    employee = frappe.get_doc("Employee", employee)
+    """Retourne les projets, clients et types d'activité liés à un employé."""
+    emp = frappe.get_doc("Employee", employee)
 
-    # Récupérer tous les projets liés à l'utilisateur
-    project_users = frappe.get_all(
-        "Project User",
-        filters={"user": employee.company_email},
-        fields=["parent"]
-    )
+    # 1) Projets via Project User (liés à l'utilisateur de l'employé)
+    user = emp.user_id or emp.company_email
+    project_user_names = set()
+    if user:
+        for pu in frappe.get_all(
+            "Project User",
+            filters={"user": user},
+            fields=["parent"]
+        ):
+            project_user_names.add(pu.parent)
 
-    project_names = [pu.parent for pu in project_users]
+    # 2) Projets directement liés via custom_employee
+    for p in frappe.get_all(
+        "Project",
+        filters={"custom_employee": employee},
+        fields=["name"]
+    ):
+        project_user_names.add(p.name)
 
-    if not project_names:
-        return {"projects": [], "customers": []}
+    if not project_user_names:
+        return {"projects": [], "customers": [], "activity_types": []}
 
     # Récupérer les détails des projets
     projects_all = frappe.get_all(
         "Project",
-        filters={"name": ["in", project_names]},
+        filters={"name": ["in", list(project_user_names)]},
         fields=["name", "customer"]
     )
 
-    # Construire les listes
     projects = [p.name for p in projects_all]
-    customers = list({p.customer for p in projects_all if p.customer})  # set() pour éviter les doublons
+    customers = list({p.customer for p in projects_all if p.customer})
+
+    # 3) Types d'activité liés via custom_employee
     activity_types = frappe.get_all(
         "Activity Type",
-        filters={"custom_user": employee.name},
+        filters={"custom_employee": employee},
         fields=["name"]
     )
-
-    # Extraire uniquement les noms
-    activity_types = [a["name"] for a in activity_types]
-    
+    activity_type_names = [a["name"] for a in activity_types]
 
     return {
         "projects": projects,
         "customers": customers,
-        "activity_types" : activity_types
+        "activity_types": activity_type_names
     }
+
 
 @frappe.whitelist()
 def user_activity_type(employee):
-    employee = frappe.get_doc("Employee", employee)
+    """Retourne les types d'activité liés à un employé."""
     activity_types = frappe.get_all(
         "Activity Type",
-        filters={"custom_user": employee.name},
+        filters={"custom_employee": employee},
         fields=["name"]
     )
-
-    # Extraire uniquement les noms
-    activity_types = [a["name"] for a in activity_types]
-
     return {
-        "activity_types": activity_types
+        "activity_types": [a["name"] for a in activity_types]
     }
-
-    
