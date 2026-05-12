@@ -139,9 +139,10 @@ jinja = {
 # -----------
 # Permissions evaluated in scripted ways
 
-# permission_query_conditions = {
-# 	"Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
-# }
+permission_query_conditions = {
+    "Project": "amoamancustom.permissions.project.get_permission_query_conditions",
+ #"Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
+}
 #
 # has_permission = {
 # 	"Event": "frappe.desk.doctype.event.event.has_permission",
@@ -168,6 +169,9 @@ doc_events = {
     },
     "Loan Application": {
         #"on_update": "amoamancustom.servers.loan_application.set_status_from_workflow",
+    },
+    "Project": {
+        "after_insert": "amoamancustom.events.project.after_insert",
     },
     "Timesheet": {
         "before_save":   "amoamancustom.facturation.doctype.timesheet.timesheet.calculate_work_days",
@@ -366,6 +370,7 @@ fixtures = [
                     "Project",
                     "Task",
                     "Issue",
+                    "Activity Type",
                     "Stock Entry",
                     "Warehouse",
                     "Batch",
@@ -448,6 +453,7 @@ fixtures = [
                     "Project",
                     "Task",
                     "Issue",
+                    "Activity Type",
                     "Stock Entry",
                     "Warehouse",
                     "Batch",
