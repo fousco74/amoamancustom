@@ -193,14 +193,6 @@ def user_project(employee):
         ):
             project_user_names.add(pu.parent)
 
-    # 2) Projets directement liés via custom_employee
-    for p in frappe.get_all(
-        "Project",
-        filters={"custom_employee": employee},
-        fields=["name"]
-    ):
-        project_user_names.add(p.name)
-
     if not project_user_names:
         return {"projects": [], "customers": [], "activity_types": []}
 
@@ -214,7 +206,7 @@ def user_project(employee):
     projects = [p.name for p in projects_all]
     customers = list({p.customer for p in projects_all if p.customer})
 
-    # 3) Types d'activité liés via custom_employee
+    # 2) Types d'activité liés via custom_employee
     activity_types = frappe.get_all(
         "Activity Type",
         filters={"custom_employee": employee},
