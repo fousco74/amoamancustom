@@ -11,5 +11,6 @@ amoamancustom.patches.rename_supplier
 amoamancustom.patches.rename_prospect
 amoamancustom.patches.rename_opportunity
 amoamancustom.patches.remove_duplicate_docperms
+amoamancustom.patches.role_dg_to_reports
 
 
