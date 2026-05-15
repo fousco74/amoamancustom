@@ -4,15 +4,25 @@ def execute():
     reports = frappe.get_all("Report", fields=["name"])
 
     for report in reports:
-        doc = frappe.get_doc("Report", report["name"])
 
-        existing_roles = [r.role for r in doc.roles]
+        exists = frappe.db.exists(
+            "Has Role",
+            {
+                "parent": report["name"],
+                "parenttype": "Report",
+                "role": "Directeur Général"
+            }
+        )
 
-        if "Directeur Général" not in existing_roles:
-            doc.append("roles", {
+        if not exists:
+            row = frappe.get_doc({
+                "doctype": "Has Role",
+                "parent": report["name"],
+                "parenttype": "Report",
+                "parentfield": "roles",
                 "role": "Directeur Général"
             })
 
-            doc.save(ignore_permissions=True)
+            row.db_insert()
 
     frappe.db.commit()
