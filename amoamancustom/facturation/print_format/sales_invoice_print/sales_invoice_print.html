@@ -387,33 +387,6 @@
             <strong style="text-transform: capitalize;">{{ montant_fr(doc.grand_total) }}</strong>
         </div>
 
-        <!-- Échéancier de paiement -->
-        {% if doc.payment_schedule and doc.payment_schedule|length > 0 %}
-        <div style="margin-top:8px;">
-            <div class="text-strong" style="font-size:9px; margin-bottom:2px;">Échéancier de paiement :</div>
-            <table class="table table-bordered schedule-table">
-                <thead>
-                    <tr>
-                        <th>Terme</th>
-                        <th class="text-center">Date d'échéance</th>
-                        <th class="text-center">Part (%)</th>
-                        <th class="text-right">Montant</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for ps in doc.payment_schedule %}
-                    <tr class="{% if loop.index % 2 == 0 %}row-alt{% endif %}">
-                        <td>{{ ps.payment_term or ps.description or "—" }}</td>
-                        <td class="text-center">{{ frappe.utils.format_date(ps.due_date) if ps.due_date else "—" }}</td>
-                        <td class="text-center">{{ "{:.2f}".format(ps.invoice_portion or 0) }}%</td>
-                        <td class="text-right">{{ fmt_amount(ps.payment_amount, doc.currency) }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {% endif %}
-
         <!-- Termes et conditions -->
         {% if doc.terms and doc.terms|trim != "" %}
         <div class="terms-block">
