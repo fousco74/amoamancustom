@@ -681,15 +681,15 @@ fixtures = [
         ]
     },
     {
-        "dt": "Workspace",
+        "dt": "Workspace Sidebar",
         "filters": [
             ["name", "=", "People"]
         ]
     },
     {
-        "dt": "Workspace Link",
+        "dt": "Workspace",
         "filters": [
-            ["parent", "=", "People"]
+            ["name", "=", "People"]
         ]
     },
     {
