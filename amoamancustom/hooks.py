@@ -680,4 +680,22 @@ fixtures = [
             ["is_company_account", "=", 1]
         ]
     },
+    {
+        "dt": "Workspace",
+        "filters": [
+            ["name", "=", "People"]
+        ]
+    },
+    {
+        "dt": "Workspace Link",
+        "filters": [
+            ["parent", "=", "People"]
+        ]
+    },
+    {
+        "dt": "Desktop Icon",
+        "filters": [
+            ["label", "=", "People"]
+        ]
+    }
 ]
