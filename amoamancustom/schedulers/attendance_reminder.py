@@ -55,11 +55,11 @@ def check_employee_has_attendance(employee_id, year, month):
     last_day = get_last_day(first_day)
     
     count = frappe.db.count(
-        "Employee Checkin",
+        "Attendance",
         filters={
             "employee": employee_id,
             "docstatus": 1,  # Validé
-            "checkin_date": ["between", [first_day, last_day]]
+            "attendance_date": ["between", [first_day, last_day]]
         }
     )
     
@@ -141,9 +141,17 @@ def send_reminder_email(employee, reminder_type, current_day):
     """
     Envoie l'email de rappel avec le contenu approprié
     """
-    
-    user = frappe.get_doc("User", employee.get("user_id"))
-    
+
+    user_id = employee.get("user_id")
+
+    if not user_id:
+        frappe.logger().warning(
+            f"Employee {employee.get('name')} has no linked user_id"
+        )
+        return
+
+    user = frappe.get_doc("User", user_id)
+        
     if not user.email:
         return
     
