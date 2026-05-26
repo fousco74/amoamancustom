@@ -84,58 +84,60 @@ def get_reminder_type(current_day):
         return None         # Pas de rappel
 
 
-def check_send_conditions(employee_id, current_day, reminder_type):
+
+
+def check_send_conditions(employee_email, current_day, reminder_type):
     """
     Vérifie si on doit envoyer le rappel aujourd'hui
     Évite les doublons/surcharge
     """
-    
+
     if reminder_type == "daily":
-        # Envoyer tous les jours du 20-24
+        # Envoyer tous les jours du 20 au 24
         return True
-    
+
     elif reminder_type == "every_2_days":
-        # Envoyer tous les 2 jours après le 24
+
         # Vérifier si un email a déjà été envoyé aujourd'hui
-        
-        last_email_sent = frappe.db.get_value(
-            "Email Log",
-            filters={
-                "recipients": ["like", f"%{employee_id}%"],
+        email_sent_today = frappe.db.exists(
+            "Email Queue",
+            {
+                "recipients": ["like", f"%{employee_email}%"],
                 "subject": ["like", "%Rappel%Présence%"],
+                "status": "Sent",
                 "creation": [">=", today()]
-            },
-            fieldname="creation"
+            }
         )
-        
-        if last_email_sent:
-            # Email déjà envoyé aujourd'hui, ne pas envoyer
+
+        if email_sent_today:
             return False
-        
-        # Vérifier le dernier email envoyé
-        last_emails = frappe.db.get_list(
-            "Email Log",
+
+        # Récupérer le dernier email envoyé
+        last_email = frappe.db.get_list(
+            "Email Queue",
             filters={
-                "recipients": ["like", f"%{employee_id}%"],
-                "subject": ["like", "%Rappel%Présence%"]
+                "recipients": ["like", f"%{employee_email}%"],
+                "subject": ["like", "%Rappel%Présence%"],
+                "status": "Sent"
             },
             fields=["creation"],
             order_by="creation desc",
             limit=1
         )
-        
-        if last_emails:
-            last_date = last_emails[0]["creation"]
-            days_since = (getdate(today()) - getdate(last_date)).days
-            
-            # Envoyer si >= 2 jours depuis dernier email
-            return days_since >= 2
-        
-        # Premier email = envoyer
-        return True
-    
-    return False
 
+        if last_email:
+            last_date = getdate(last_email[0]["creation"])
+            today_date = getdate(today())
+
+            days_since = (today_date - last_date).days
+
+            # Envoyer seulement si >= 2 jours
+            return days_since >= 2
+
+        # Aucun email précédent
+        return True
+
+    return False
 
 def send_reminder_email(employee, reminder_type, current_day):
     """
