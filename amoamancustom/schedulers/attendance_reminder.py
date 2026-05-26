@@ -40,8 +40,11 @@ def send_attendance_reminder_continuous():
         reminder_type = get_reminder_type(current_day)
         
         if reminder_type:
-            should_send = check_send_conditions(emp["name"], current_day, reminder_type)
-            
+            employee_email = emp.get("user_id")
+            if not employee_email:
+                continue
+            should_send = check_send_conditions(employee_email, emp["name"], current_day, reminder_type)
+
             if should_send:
                 send_reminder_email(emp, reminder_type, current_day)
 
@@ -86,55 +89,53 @@ def get_reminder_type(current_day):
 
 
 
-def check_send_conditions(employee_email, current_day, reminder_type):
+def check_send_conditions(employee_email, employee_name, current_day, reminder_type):
     """
-    Vérifie si on doit envoyer le rappel aujourd'hui
-    Évite les doublons/surcharge
+    Vérifie si on doit envoyer le rappel aujourd'hui.
+    Utilise reference_doctype/reference_name pour identifier les emails envoyés
+    car tabEmail Queue ne stocke pas le sujet ni les destinataires directement
+    (les destinataires sont dans tabEmail Queue Recipient, champ `recipient`).
     """
 
     if reminder_type == "daily":
-        # Envoyer tous les jours du 20 au 24
         return True
 
     elif reminder_type == "every_2_days":
 
-        # Vérifier si un email a déjà été envoyé aujourd'hui
-        email_sent_today = frappe.db.exists(
-            "Email Queue",
-            {
-                "recipients": ["like", f"%{employee_email}%"],
-                "subject": ["like", "%Rappel%Présence%"],
-                "status": "Sent",
-                "creation": [">=", today()]
-            }
-        )
+        # Vérifier si un email a déjà été envoyé aujourd'hui pour cet employé
+        email_sent_today = frappe.db.sql("""
+            SELECT eq.name
+            FROM `tabEmail Queue` eq
+            INNER JOIN `tabEmail Queue Recipient` eqr ON eqr.parent = eq.name
+            WHERE eqr.recipient = %(email)s
+              AND eq.reference_doctype = 'Employee'
+              AND eq.reference_name = %(employee_name)s
+              AND eq.status = 'Sent'
+              AND DATE(eq.creation) = CURDATE()
+            LIMIT 1
+        """, {"email": employee_email, "employee_name": employee_name})
 
         if email_sent_today:
             return False
 
-        # Récupérer le dernier email envoyé
-        last_email = frappe.db.get_list(
-            "Email Queue",
-            filters={
-                "recipients": ["like", f"%{employee_email}%"],
-                "subject": ["like", "%Rappel%Présence%"],
-                "status": "Sent"
-            },
-            fields=["creation"],
-            order_by="creation desc",
-            limit=1
-        )
+        # Récupérer la date du dernier email envoyé
+        last_email = frappe.db.sql("""
+            SELECT eq.creation
+            FROM `tabEmail Queue` eq
+            INNER JOIN `tabEmail Queue Recipient` eqr ON eqr.parent = eq.name
+            WHERE eqr.recipient = %(email)s
+              AND eq.reference_doctype = 'Employee'
+              AND eq.reference_name = %(employee_name)s
+              AND eq.status = 'Sent'
+            ORDER BY eq.creation DESC
+            LIMIT 1
+        """, {"email": employee_email, "employee_name": employee_name}, as_dict=True)
 
         if last_email:
             last_date = getdate(last_email[0]["creation"])
-            today_date = getdate(today())
-
-            days_since = (today_date - last_date).days
-
-            # Envoyer seulement si >= 2 jours
+            days_since = (getdate(today()) - last_date).days
             return days_since >= 2
 
-        # Aucun email précédent
         return True
 
     return False
@@ -184,168 +185,140 @@ def send_reminder_email(employee, reminder_type, current_day):
 
 
 def get_urgent_reminder(employee, current_day):
-    """
-    Message urgent pour le 20-24 du mois
-    """
-    
     emp_name = employee.get("employee_name")
-    
-    subject = f"⏰ URGENT: Saisie de présence requise (Jour {current_day}/24)"
-    
     days_remaining = 24 - current_day
-    
+
+    subject = f"Rappel : Saisie de présence requise — échéance dans {days_remaining} jour(s)"
+
     message = f"""
-    <div style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px; border-radius: 5px;">
-        
-        <h3 style="color: #d32f2f;">⏰ RAPPEL URGENT - Saisie de Présence</h3>
-        
-        <p style="color: #333;">Bonjour <strong>{emp_name}</strong>,</p>
-        
-        <p style="color: #d32f2f; font-weight: bold;">
-            ⚠️ Vous avez encore <strong>{days_remaining} jour(s)</strong> pour saisir votre présence du mois !
-        </p>
-        
-        <hr style="border: 1px solid #ddd;">
-        
-        <h4 style="color: #1976d2;">📋 Informations de Saisie:</h4>
-        <ul style="background-color: #fff; padding: 15px; border-left: 4px solid #1976d2;">
-            <li><strong>Période couverte:</strong> Tout le mois (du 1er au 30/31)</li>
-            <li><strong>Délai limite:</strong> <span style="color: #d32f2f;"><strong>Le 24 du mois</strong></span></li>
-            <li><strong>Statut actuel:</strong> ❌ NON SAISI</li>
-            <li><strong>Date actuelle:</strong> {current_day}/24</li>
-        </ul>
-        
-        <h4 style="color: #1976d2;">📝 Étapes à Suivre:</h4>
-        <ol style="background-color: #e8f5e9; padding: 15px; border-radius: 3px;">
-            <li>Connectez-vous à <strong>ERPNext</strong></li>
-            <li>Allez dans le module <strong>Ressources Humaines</strong></li>
-            <li>Sélectionnez <strong>"Saisie de Présence"</strong></li>
-            <li>Cliquez sur <strong>"+ Nouveau"</strong></li>
-            <li>Remplissez:
-                <ul>
-                    <li>📅 <strong>Date de l'enregistrement</strong></li>
-                    <li>🕐 <strong>Heure d'arrivée</strong></li>
-                    <li>🕑 <strong>Heure de départ</strong></li>
-                    <li>💬 <strong>Remarques</strong> (optionnel)</li>
-                </ul>
-            </li>
-            <li>Cliquez sur <strong style="color: #2e7d32;">"Valider"</strong></li>
-        </ol>
-        
-        <div style="background-color: #fff3e0; border-left: 4px solid #f57c00; padding: 15px; margin: 15px 0;">
-            <h4 style="color: #f57c00; margin-top: 0;">⚠️ Conséquences du Non-Respect du Délai:</h4>
-            <ul>
-                <li>❌ Retard de traitement de la paie</li>
-                <li>❌ Problèmes de calcul des allocations</li>
-                <li>❌ Nécessité d'une correction administrative</li>
-                <li>❌ Possible retenue sur la paie du mois suivant</li>
-            </ul>
+    <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 4px; overflow: hidden;">
+
+        <div style="background-color: #1a3c5e; padding: 24px 32px;">
+            <p style="margin: 0; color: #ffffff; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; font-weight: 600;">Amoaman &amp; Associés — Ressources Humaines</p>
         </div>
-        
-        <p style="color: #666; font-size: 12px;">
-            <em>Cet email est envoyé automatiquement. Ne tardez pas !</em><br>
-            <strong>Département Ressources Humaines</strong>
-        </p>
+
+        <div style="padding: 32px;">
+            <h2 style="margin: 0 0 8px 0; color: #1a3c5e; font-size: 20px; font-weight: 700;">Rappel de saisie de présence</h2>
+            <p style="margin: 0 0 24px 0; color: #777; font-size: 13px; border-bottom: 1px solid #e0e0e0; padding-bottom: 16px;">Échéance : le 24 du mois en cours</p>
+
+            <p style="color: #333; font-size: 15px; margin: 0 0 16px 0;">Madame, Monsieur <strong>{emp_name}</strong>,</p>
+
+            <p style="color: #333; font-size: 15px; line-height: 1.6; margin: 0 0 24px 0;">
+                Nous vous informons que votre feuille de présence du mois en cours n'a pas encore été enregistrée dans le système.
+                Il vous reste <strong style="color: #c0392b;">{days_remaining} jour(s)</strong> pour effectuer cette saisie avant la date limite du <strong>24 du mois</strong>.
+            </p>
+
+            <div style="background-color: #f5f7fa; border-left: 4px solid #1a3c5e; padding: 16px 20px; margin: 0 0 24px 0; border-radius: 0 4px 4px 0;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 14px; color: #333;">
+                    <tr><td style="padding: 6px 0; color: #777; width: 160px;">Statut</td><td style="padding: 6px 0; font-weight: 600; color: #c0392b;">Non saisi</td></tr>
+                    <tr><td style="padding: 6px 0; color: #777;">Date actuelle</td><td style="padding: 6px 0; font-weight: 600;">{current_day} du mois</td></tr>
+                    <tr><td style="padding: 6px 0; color: #777;">Date limite</td><td style="padding: 6px 0; font-weight: 600;">24 du mois</td></tr>
+                    <tr><td style="padding: 6px 0; color: #777;">Jours restants</td><td style="padding: 6px 0; font-weight: 600; color: #c0392b;">{days_remaining} jour(s)</td></tr>
+                </table>
+            </div>
+
+            <p style="color: #333; font-size: 14px; font-weight: 600; margin: 0 0 10px 0;">Procédure de saisie :</p>
+            <ol style="color: #333; font-size: 14px; line-height: 1.8; margin: 0 0 24px 0; padding-left: 20px;">
+                <li>Connectez-vous à <strong>ERPNext</strong></li>
+                <li>Accédez au module <strong>Ressources Humaines</strong></li>
+                <li>Sélectionnez <strong>Saisie de Présence</strong> puis cliquez sur <strong>+ Nouveau</strong></li>
+                <li>Renseignez la date, l'heure d'arrivée, l'heure de départ et les éventuelles remarques</li>
+                <li>Cliquez sur <strong>Valider</strong></li>
+            </ol>
+
+            <div style="background-color: #fef9f0; border: 1px solid #f0d9a0; border-radius: 4px; padding: 16px 20px; margin: 0 0 24px 0;">
+                <p style="margin: 0; font-size: 13px; color: #7a5c00; font-weight: 600;">Attention</p>
+                <p style="margin: 6px 0 0 0; font-size: 13px; color: #7a5c00; line-height: 1.6;">
+                    Le non-respect de cette échéance peut entraîner un retard dans le traitement de votre paie ainsi qu'une correction administrative de votre dossier.
+                </p>
+            </div>
+
+            <p style="color: #555; font-size: 14px; line-height: 1.6; margin: 0;">
+                Pour toute difficulté, veuillez contacter le département Ressources Humaines.
+            </p>
+        </div>
+
+        <div style="background-color: #f5f7fa; padding: 16px 32px; border-top: 1px solid #e0e0e0;">
+            <p style="margin: 0; color: #999; font-size: 12px;">Ce message est généré automatiquement par le système ERPNext — Amoaman &amp; Associés. Merci de ne pas y répondre directement.</p>
+        </div>
     </div>
     """
-    
+
     return subject, message
 
 
 def get_relance_reminder(employee, current_day):
-    """
-    Message de relance après le 24 du mois
-    Plus insistant car délai dépassé
-    """
-    
     emp_name = employee.get("employee_name")
     days_late = current_day - 24
-    
-    subject = f"🔴 URGENT - Saisie Présence EN RETARD (Jour {current_day} - {days_late}j après délai)"
-    
+
+    subject = f"Relance — Saisie de présence en retard de {days_late} jour(s)"
+
     message = f"""
-    <div style="font-family: Arial, sans-serif; background-color: #ffebee; padding: 20px; border-radius: 5px; border: 2px solid #d32f2f;">
-        
-        <h2 style="color: #d32f2f; text-align: center;">🔴 RELANCE URGENT</h2>
-        
-        <p style="color: #333; font-size: 16px;"><strong>Bonjour {emp_name},</strong></p>
-        
-        <div style="background-color: #d32f2f; color: white; padding: 15px; border-radius: 3px; margin: 15px 0;">
-            <p style="margin: 0; font-weight: bold; font-size: 18px;">
-                ⚠️ DÉLAI DÉPASSÉ: Vous êtes en retard de <strong>{days_late} jour(s)</strong>
+    <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 4px; overflow: hidden;">
+
+        <div style="background-color: #1a3c5e; padding: 24px 32px;">
+            <p style="margin: 0; color: #ffffff; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; font-weight: 600;">Amoaman &amp; Associés — Ressources Humaines</p>
+        </div>
+
+        <div style="background-color: #c0392b; padding: 14px 32px;">
+            <p style="margin: 0; color: #ffffff; font-size: 14px; font-weight: 600;">Délai dépassé — Action requise immédiatement</p>
+        </div>
+
+        <div style="padding: 32px;">
+            <h2 style="margin: 0 0 8px 0; color: #1a3c5e; font-size: 20px; font-weight: 700;">Relance : saisie de présence non effectuée</h2>
+            <p style="margin: 0 0 24px 0; color: #777; font-size: 13px; border-bottom: 1px solid #e0e0e0; padding-bottom: 16px;">Retard constaté : {days_late} jour(s) après l'échéance du 24 du mois</p>
+
+            <p style="color: #333; font-size: 15px; margin: 0 0 16px 0;">Madame, Monsieur <strong>{emp_name}</strong>,</p>
+
+            <p style="color: #333; font-size: 15px; line-height: 1.6; margin: 0 0 24px 0;">
+                Malgré notre rappel précédent, votre feuille de présence du mois en cours demeure non enregistrée dans le système.
+                La date limite du 24 du mois est dépassée depuis <strong style="color: #c0392b;">{days_late} jour(s)</strong>.
+                Nous vous demandons de régulariser cette situation sans délai.
+            </p>
+
+            <div style="background-color: #fdf2f2; border-left: 4px solid #c0392b; padding: 16px 20px; margin: 0 0 24px 0; border-radius: 0 4px 4px 0;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 14px; color: #333;">
+                    <tr><td style="padding: 6px 0; color: #777; width: 160px;">Statut</td><td style="padding: 6px 0; font-weight: 600; color: #c0392b;">Non saisi</td></tr>
+                    <tr><td style="padding: 6px 0; color: #777;">Date limite</td><td style="padding: 6px 0; font-weight: 600;">24 du mois (dépassée)</td></tr>
+                    <tr><td style="padding: 6px 0; color: #777;">Retard</td><td style="padding: 6px 0; font-weight: 600; color: #c0392b;">{days_late} jour(s)</td></tr>
+                    <tr><td style="padding: 6px 0; color: #777;">Action requise</td><td style="padding: 6px 0; font-weight: 600; color: #c0392b;">Immédiate</td></tr>
+                </table>
+            </div>
+
+            <p style="color: #333; font-size: 14px; font-weight: 600; margin: 0 0 10px 0;">Procédure de régularisation :</p>
+            <ol style="color: #333; font-size: 14px; line-height: 1.8; margin: 0 0 24px 0; padding-left: 20px;">
+                <li>Connectez-vous à <strong>ERPNext</strong></li>
+                <li>Accédez au module <strong>Ressources Humaines &rsaquo; Saisie de Présence</strong></li>
+                <li>Créez une nouvelle saisie et renseignez toutes les données manquantes</li>
+                <li>Cliquez sur <strong>Valider</strong></li>
+            </ol>
+
+            <div style="background-color: #fef9f0; border: 1px solid #f0d9a0; border-radius: 4px; padding: 16px 20px; margin: 0 0 24px 0;">
+                <p style="margin: 0; font-size: 13px; color: #7a5c00; font-weight: 600;">Conséquences potentielles</p>
+                <ul style="margin: 6px 0 0 0; padding-left: 18px; font-size: 13px; color: #7a5c00; line-height: 1.8;">
+                    <li>Retard ou suspension du traitement de la paie</li>
+                    <li>Demande formelle du département Ressources Humaines</li>
+                    <li>Note administrative versée au dossier</li>
+                </ul>
+            </div>
+
+            <p style="color: #555; font-size: 14px; line-height: 1.6; margin: 0;">
+                Pour toute difficulté, veuillez contacter le département Ressources Humaines dans les plus brefs délais.
             </p>
         </div>
-        
-        <hr style="border: 2px solid #d32f2f;">
-        
-        <h4 style="color: #d32f2f;">📊 État de Votre Saisie:</h4>
-        <table style="width: 100%; border-collapse: collapse; background-color: white;">
-            <tr style="background-color: #f5f5f5;">
-                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Statut</strong></td>
-                <td style="padding: 10px; border: 1px solid #ddd; color: #d32f2f;"><strong>❌ NON SAISI</strong></td>
-            </tr>
-            <tr>
-                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Date Limite</strong></td>
-                <td style="padding: 10px; border: 1px solid #ddd;">24 du mois (DÉPASSÉ)</td>
-            </tr>
-            <tr style="background-color: #f5f5f5;">
-                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Retard Actuel</strong></td>
-                <td style="padding: 10px; border: 1px solid #ddd; color: #d32f2f;"><strong>{days_late} jour(s)</strong></td>
-            </tr>
-            <tr>
-                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Action Requise</strong></td>
-                <td style="padding: 10px; border: 1px solid #ddd; color: #d32f2f;"><strong>IMMÉDIATE</strong></td>
-            </tr>
-        </table>
-        
-        <h4 style="color: #d32f2f; margin-top: 20px;">🚨 Procédure d'Urgence:</h4>
-        <ol style="background-color: #fff; padding: 15px; border-left: 4px solid #d32f2f;">
-            <li><strong>Connectez-vous IMMÉDIATEMENT</strong> à ERPNext</li>
-            <li>Allez dans <strong>Ressources Humaines → Saisie de Présence</strong></li>
-            <li>Créez <strong>UNE NOUVELLE SAISIE</strong> pour le mois complet</li>
-            <li>Remplissez <strong>TOUTES les données manquantes</strong></li>
-            <li>Cliquez sur <strong>"Valider"</strong></li>
-            <li><strong>Confirmez l'email</strong> de validation</li>
-        </ol>
-        
-        <div style="background-color: #c62828; color: white; padding: 15px; border-radius: 3px; margin: 15px 0;">
-            <h4 style="margin-top: 0;">❌ Implications du Non-Respect:</h4>
-            <ul style="margin-bottom: 0;">
-                <li>Suspension possible de la paie ce mois</li>
-                <li>Demande formelle du département RH</li>
-                <li>Note administrative au dossier</li>
-                <li>Pénalités selon la politique d'entreprise</li>
-            </ul>
+
+        <div style="background-color: #f5f7fa; padding: 16px 32px; border-top: 1px solid #e0e0e0;">
+            <p style="margin: 0; color: #999; font-size: 12px;">Ce message est généré automatiquement par le système ERPNext — Amoaman &amp; Associés. Merci de ne pas y répondre directement.</p>
         </div>
-        
-        <h4 style="color: #1976d2; margin-top: 20px;">💬 Besoin d'Aide?</h4>
-        <p>Si vous rencontrez un problème:</p>
-        <ul>
-            <li>📧 <strong>Email RH:</strong> rh@company.com</li>
-            <li>📞 <strong>Téléphone:</strong> +225 XX-XX-XX-XX</li>
-            <li>🏢 <strong>Département:</strong> Ressources Humaines - Bureau 3</li>
-        </ul>
-        
-        <p style="color: #d32f2f; font-weight: bold;">
-            Merci de régulariser votre situation sans tarder!
-        </p>
-        
-        <p style="color: #666; font-size: 11px; margin-top: 20px;">
-            <em>Message automatisé envoyé le {current_day} du mois</em><br>
-            <em>Cet email continue à être envoyé quotidiennement jusqu'à votre saisie</em>
-        </p>
     </div>
     """
-    
+
     return subject, message
 
 
 def log_reminder_sent(employee_id, subject, email):
-    """
-    Enregistre l'envoi du rappel pour suivi
-    """
     try:
-        frappe.db.insert({
+        doc = frappe.get_doc({
             "doctype": "Attendance Reminder Log",
             "employee": employee_id,
             "subject": subject,
@@ -353,6 +326,6 @@ def log_reminder_sent(employee_id, subject, email):
             "sent_date": today(),
             "status": "Sent"
         })
-    except:
-        # Table de log optionnelle
+        doc.insert(ignore_permissions=True)
+    except Exception:
         pass
