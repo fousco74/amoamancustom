@@ -1,0 +1,260 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
+:root { --blue:#266BCC; --pink:#F32A57; --dark:#032A5F; --text:#081A2A; --muted:#6b7280; --light:#f4f7ff; }
+body,* { box-sizing:border-box; }
+.pf { font-family:'Montserrat',Arial,sans-serif; font-size:11px; color:var(--text); padding:0; line-height:1.6; }
+
+/* Cover */
+.cover { background:linear-gradient(135deg,#032A5F 0%,#0756C5 60%,#F32A57 100%); color:#fff; padding:40px 32px 32px; border-radius:0 0 20px 20px; margin-bottom:28px; }
+.cover-logo { display:flex; align-items:center; gap:10px; margin-bottom:28px; }
+.cover-logo img { height:36px; }
+.cover-logo span { font-size:16px; font-weight:700; color:#fff; }
+.cover-badge { display:inline-block; background:rgba(255,255,255,.2); border:1px solid rgba(255,255,255,.3); border-radius:99px; padding:4px 14px; font-size:10px; font-weight:600; color:#fff; margin-bottom:16px; }
+.cover h1 { font-size:22px; font-weight:800; color:#fff; margin:0 0 6px; line-height:1.3; }
+.cover h2 { font-size:14px; font-weight:600; color:rgba(255,255,255,.85); margin:0 0 16px; }
+.cover .sub { font-size:12px; color:rgba(255,255,255,.75); margin:0 0 20px; }
+.cover-meta { display:grid; grid-template-columns:1fr 1fr; gap:8px; background:rgba(255,255,255,.1); border-radius:12px; padding:14px 18px; }
+.cover-meta .meta-item { font-size:10px; color:rgba(255,255,255,.85); }
+.cover-meta .meta-label { font-weight:700; color:#fff; font-size:11px; }
+
+/* Sections */
+.section-h { font-size:13px; font-weight:800; color:var(--blue); border-bottom:2px solid var(--blue); padding-bottom:6px; margin:24px 0 14px; }
+.subsection-h { font-size:11px; font-weight:700; color:var(--dark); margin:18px 0 8px; }
+
+/* Blocks */
+.intro-box { background:var(--light); border-radius:12px; padding:16px 20px; margin-bottom:20px; font-size:11px; color:var(--text); line-height:1.7; }
+.intro-box strong { color:var(--dark); }
+
+/* Score */
+.score-block { display:flex; align-items:center; gap:24px; background:linear-gradient(135deg,#f0f4ff 0%,#fff5f7 100%); border-radius:14px; padding:20px 24px; margin-bottom:20px; border:1px solid rgba(38,107,204,.12); }
+.score-circle { width:90px; height:90px; border-radius:50%; background:linear-gradient(135deg,var(--blue) 0%,var(--pink) 100%); display:flex; align-items:center; justify-content:center; flex-shrink:0; color:#fff; font-size:24px; font-weight:800; }
+.score-text h3 { font-size:15px; font-weight:700; color:var(--text); margin:0 0 4px; }
+.score-text p { font-size:11px; color:var(--muted); margin:0; }
+
+/* Stats */
+.stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
+.stat-box { text-align:center; background:#fff; border:1px solid #e8eef8; border-radius:12px; padding:14px; }
+.stat-box .n { font-size:22px; font-weight:800; background:linear-gradient(135deg,var(--blue),var(--pink)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; line-height:1; }
+.stat-box .l { font-size:10px; color:var(--muted); margin-top:4px; }
+
+/* Points forts / faibles */
+.points-forts-block { background:#f0fdf4; border-left:4px solid #16a34a; border-radius:0 12px 12px 0; padding:14px 18px; margin:16px 0; font-size:11px; color:var(--text); line-height:1.7; white-space:pre-line; }
+.points-faibles-block { background:#fef2f2; border-left:4px solid #dc2626; border-radius:0 12px 12px 0; padding:14px 18px; margin:16px 0; font-size:11px; color:var(--text); line-height:1.7; white-space:pre-line; }
+
+/* Analyse thematique */
+.thematic-item { background:#fff; border:1px solid #e8eef8; border-radius:12px; padding:16px 20px; margin-bottom:14px; }
+.thematic-header { display:flex; align-items:flex-start; gap:12px; margin-bottom:8px; }
+.thematic-qnum { background:var(--blue); color:#fff; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; flex-shrink:0; }
+.thematic-title { font-size:12px; font-weight:700; color:var(--dark); flex:1; }
+.thematic-response { margin-left:36px; }
+.thematic-badge { display:inline-block; border-radius:99px; padding:2px 10px; font-weight:700; font-size:9px; margin-bottom:8px; }
+.thematic-comment { font-size:10px; color:var(--text); line-height:1.6; margin-bottom:6px; }
+.thematic-note { font-size:10px; color:var(--muted); font-style:italic; line-height:1.5; }
+.thematic-risk { font-size:9px; margin-bottom:6px; }
+
+/* Recommandations */
+.reco-block { background:#fff8f8; border-left:4px solid var(--pink); border-radius:0 12px 12px 0; padding:14px 18px; margin:16px 0; font-size:11px; color:var(--text); line-height:1.7; white-space:pre-line; }
+
+/* Email template */
+.email-template { background:#fff; border:1px solid #d0d7e5; border-radius:14px; padding:24px 28px; margin-top:20px; font-size:11px; color:var(--text); line-height:1.8; }
+.email-template .email-subject { font-weight:700; font-size:12px; color:var(--dark); margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid #e8eef8; }
+.email-template .email-signature { margin-top:18px; padding-top:14px; border-top:1px solid #e8eef8; color:var(--muted); font-size:10px; line-height:1.6; }
+.email-template .email-signature strong { color:var(--dark); }
+.email-template ul { margin:8px 0; padding-left:20px; }
+.email-template ul li { margin-bottom:4px; }
+.qr-placeholder { display:inline-block; background:var(--light); border:2px dashed #ccc; border-radius:8px; padding:12px 20px; margin:10px 0; font-size:10px; color:var(--muted); text-align:center; }
+
+/* Footer */
+.footer-pdf { border-top:1px solid #e8eef8; padding-top:10px; margin-top:24px; text-align:center; color:var(--muted); font-size:9px; }
+.footer-logo { font-weight:700; color:var(--blue); }
+.page-break { page-break-before:always; margin-top:20px; }
+</style>
+
+{% set oui_count = namespace(n=0) %}
+{% set non_count = namespace(n=0) %}
+{% set nsp_count = namespace(n=0) %}
+{% for row in doc.answers %}
+  {% if row.response == 'Oui' %}{% set oui_count.n = oui_count.n + 1 %}{% endif %}
+  {% if row.response == 'Non' %}{% set non_count.n = non_count.n + 1 %}{% endif %}
+  {% if row.response == 'NSP' %}{% set nsp_count.n = nsp_count.n + 1 %}{% endif %}
+{% endfor %}
+{% set total_q = doc.answers | length %}
+{% set sorted_answers = doc.answers | sort(attribute='question_number') %}
+{% set score = doc.score_conformite or doc.compliance_score or 0 %}
+
+<div class="pf">
+
+  <!-- ===== COUVERTURE ===== -->
+  <div class="cover">
+    <div class="cover-logo">
+      <img src="/assets/amoamancustom/images/logo.webp" alt="Logo" />
+      <span>AMOAMAN &amp; ASSOCIÉS</span>
+    </div>
+    <div class="cover-badge">QUESTIONNAIRE DE PRÉ-AUDIT — PHASE DE DÉMARCHAGE CLIENT</div>
+    <h1>Rapport de Diagnostic de Conformité</h1>
+    <p class="sub">Loi n°2013-450 du 19 juin 2013 — Protection des données à caractère personnel en Côte d'Ivoire</p>
+    <div class="cover-meta">
+      <div class="meta-item"><div class="meta-label">Entreprise</div>{{ doc.company_name or '_____________________' }}</div>
+      <div class="meta-item"><div class="meta-label">Contact</div>{{ doc.contact_person or '_____________________' }}</div>
+      <div class="meta-item"><div class="meta-label">Fonction</div>{{ doc.role or '—' }}</div>
+      <div class="meta-item"><div class="meta-label">Email</div>{{ doc.email or '—' }}</div>
+      <div class="meta-item"><div class="meta-label">Secteur</div>{{ doc.sector or '—' }}</div>
+      <div class="meta-item"><div class="meta-label">Date de soumission</div>{{ frappe.utils.format_date(doc.submission_date, 'dd MMMM yyyy') if doc.submission_date else '—' }}</div>
+    </div>
+  </div>
+
+  <!-- ===== 1. INTRODUCTION ===== -->
+  <div class="section-h">1. Introduction</div>
+  <div class="intro-box">
+    Ce rapport présente le diagnostic réalisé sur le traitement des données à caractère personnel par <strong>{{ doc.company_name }}</strong>. Il vise à mettre en lumière les manquements aux dispositions de la loi n°2013-450 du 19 juin 2013 relative à la protection des données personnelles en Côte d'Ivoire, et à formuler des recommandations pour leur mise en conformité.
+  </div>
+
+  <!-- ===== 2. ENJEUX DE LA PROTECTION DES DONNÉES À CARACTÈRE PERSONNEL ===== -->
+  <div class="section-h">2. Enjeux de la protection des données à caractère personnel</div>
+  <div class="intro-box">
+    <p>La protection des données personnelles ne se limite plus aujourd'hui à une obligation juridique formelle. Elle constitue un véritable levier stratégique pour les organisations, un axe structurant de la gouvernance moderne et un marqueur de leur maturité éthique, digitale et opérationnelle.</p>
+
+    <p>Une entreprise qui garantit un traitement responsable, transparent et sécurisé de ces données inspire la confiance. À l'inverse, une mauvaise gestion ou une violation des données peut briser cette confiance de manière durable.</p>
+
+    <p>Le cadre légal ivoirien (loi n°2013-450) impose désormais aux entités concernées des obligations précises : information des personnes concernées, justification des finalités, limitation de la conservation, sécurité des données, notification des violations, déclaration ou autorisation préalable de certains traitements, etc.</p>
+
+    <p>L'application de la loi n'est pas symbolique : elle est assortie de sanctions administratives et pénales et peut faire l'objet de contrôles de l'ARTCI.</p>
+
+    <p>La façon dont une entreprise traite les données personnelles est désormais au cœur de sa réputation. Les scandales liés à des fuites, piratages ou pratiques abusives ont un impact immédiat : les consommateurs boycottent, les partenaires rompent les relations, les médias s'emparent du sujet.</p>
+
+    <p>Une entreprise conforme, au contraire, peut valoriser sa conformité comme un facteur de différenciation. Elle se positionne comme une organisation responsable, moderne, alignée avec les principes éthiques contemporains.</p>
+
+    <p>La conformité à la législation sur les données personnelles devient progressivement une condition d'accès aux marchés internationaux, notamment dans les appels d'offres, les levées de fonds, ou les partenariats avec les institutions publiques ou financières.</p>
+
+    <p>Une entreprise conforme est plus agile, plus attractive et mieux préparée à répondre aux exigences des donneurs d'ordre internationaux.</p>
+  </div>
+
+  <!-- ===== 3. ANALYSE DU NIVEAU DE CONFORMITÉ GLOBAL ===== -->
+  <div class="page-break"></div>
+  <div class="section-h">3. Analyse du niveau de conformité global</div>
+
+  <div class="intro-box">
+    Le présent diagnostic repose sur les informations déclarées par <strong>{{ doc.company_name }}</strong> via le formulaire de pré-audit, structuré autour des obligations centrales définies par la loi n°2013-450 du 19 juin 2013. Il évalue la conformité sur un ensemble de critères juridiques, organisationnels et techniques.<br><br>
+    Sur cette base, le niveau de conformité global de l'organisation est estimé à <strong>{{ score | int }}%</strong>. Ce score est une approximation indicative permettant de mesurer la maturité générale de l'organisation vis-à-vis de ses responsabilités en matière de gouvernance des données à caractère personnel.
+  </div>
+
+  {% if score %}
+  <div class="score-block">
+    <div class="score-circle">{{ score | int }}%</div>
+    <div class="score-text">
+      <h3>
+        {% if score >= 80 %}Niveau satisfaisant — Bonne maturité
+        {% elif score >= 60 %}Niveau intermédiaire — Actions requises
+        {% elif score >= 40 %}Niveau insuffisant — Risques significatifs
+        {% else %}Niveau critique — Mise en conformité urgente
+        {% endif %}
+      </h3>
+      <p>Score attribué par l'analyste Amoaman &amp; Associés sur la base de l'analyse des {{ total_q }} réponses fournies.</p>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="stats-row">
+    <div class="stat-box"><div class="n" style="color:#16a34a;">{{ oui_count.n }}</div><div class="l">Mesures en place</div></div>
+    <div class="stat-box"><div class="n" style="color:#dc2626;">{{ non_count.n }}</div><div class="l">Mesures absentes</div></div>
+    <div class="stat-box"><div class="n" style="color:#7c3aed;">{{ nsp_count.n }}</div><div class="l">À vérifier</div></div>
+  </div>
+
+  <!-- Points forts -->
+  <div class="subsection-h">Points forts identifiés :</div>
+  <div class="intro-box">
+    Les aspects suivants ont été relevés comme des éléments positifs dans la politique actuelle de l'entreprise :
+  </div>
+  {% if doc.analyst_notes and doc.analyst_notes.strip() %}
+  <div class="points-forts-block">{{ doc.analyst_notes }}</div>
+  {% else %}
+  <div class="points-forts-block" style="color:#94a3b8;font-style:italic;">[POINTS_FORTS] — En attente de l'analyse détaillée de l'auditeur.</div>
+  {% endif %}
+  <div class="intro-box" style="margin-top:8px;font-size:10px;">
+    Ces pratiques témoignent d'une volonté d'anticipation ou d'un niveau de sensibilisation avancé sur certains axes critiques (ex. : sécurité des données, transparence vis-à-vis des personnes concernées, documentation partielle).
+  </div>
+
+  <!-- Points faibles -->
+  <div class="subsection-h">Principaux écarts de conformité observés :</div>
+  <div class="intro-box">
+    Les insuffisances ou manquements suivants ont été constatés et nécessitent une attention immédiate :
+  </div>
+  {% if doc.final_recommendation and doc.final_recommendation.strip() %}
+  <div class="points-faibles-block">{{ doc.final_recommendation }}</div>
+  {% else %}
+  <div class="points-faibles-block" style="color:#94a3b8;font-style:italic;">[POINTS_FAIBLES] — En attente de l'analyse détaillée de l'auditeur.</div>
+  {% endif %}
+  <div class="intro-box" style="margin-top:8px;font-size:10px;">
+    Ces écarts, bien que variables selon les secteurs, constituent des zones à risque élevé tant sur le plan réglementaire que réputationnel.
+  </div>
+
+  <!-- ===== 4. ANALYSE PAR THÉMATIQUE ===== -->
+  <div class="page-break"></div>
+  <div class="section-h">4. Analyse par thématique</div>
+
+  {% for row in sorted_answers %}
+  {% set theme_note = {
+    1: 'Une politique claire, accessible et mise à jour est un socle de transparence indispensable.',
+    2: 'Le registre permet de cartographier les données traitées et de démontrer la conformité en cas de contrôle.',
+    3: 'Les traitements à risque (vidéosurveillance, biométrie, données de santé…) nécessitent une autorisation ou une déclaration préalable.',
+    4: "L'absence de mentions d'information constitue une atteinte directe aux principes de transparence et de loyauté.",
+    5: "La désignation d'un DPO est fortement recommandée, voire obligatoire pour certains types de traitement ou structures.",
+    6: "La conformité dépend de l'implication des équipes. Sans formation, les pratiques quotidiennes restent à risque.",
+    7: "Les contrats avec sous-traitants et partenaires doivent contenir des clauses de protection des données pour engager leur responsabilité.",
+    8: "Tout transfert vers un pays tiers doit faire l'objet de garanties spécifiques ou d'une autorisation expresse de l'ARTCI.",
+    9: "Sans procédure d'alerte ou de documentation, l'entreprise est vulnérable aux sanctions en cas de fuite ou de perte.",
+    10: "L'efficacité des pare-feu, politiques de mot de passe, chiffrement ou traçabilité est au cœur du respect de la confidentialité des données."
+  } %}
+  <div class="thematic-item">
+    <div class="thematic-header">
+      <div class="thematic-qnum">{{ row.question_number }}</div>
+      <div class="thematic-title">{{ row.question }}</div>
+    </div>
+    <div class="thematic-response">
+      {% if row.response == 'Oui' %}
+        <span class="thematic-badge" style="background:#dcfce7;color:#15803d;">✓ Oui</span>
+      {% elif row.response == 'Non' %}
+        <span class="thematic-badge" style="background:#fee2e2;color:#dc2626;">✗ Non</span>
+      {% else %}
+        <span class="thematic-badge" style="background:#ede9fe;color:#7c3aed;">? NSP</span>
+      {% endif %}
+      {% if row.risk_level %}
+        <span class="thematic-risk" style="margin-left:8px;font-weight:600;
+          {% if row.risk_level == 'Faible' %}color:#16a34a;
+          {% elif row.risk_level == 'Modéré' %}color:#d97706;
+          {% elif row.risk_level == 'Élevé' %}color:#dc2626;
+          {% elif row.risk_level == 'Critique' %}color:#7f1d1d;
+          {% endif %}">Risque : {{ row.risk_level }}</span>
+      {% endif %}
+      {% if row.auditor_observation %}
+        <div class="thematic-comment"><strong>Analyse :</strong> {{ row.auditor_observation }}</div>
+      {% endif %}
+      {% if row.client_comment %}
+        <div class="thematic-comment" style="color:var(--muted);"><em>Commentaire client : {{ row.client_comment }}</em></div>
+      {% endif %}
+      <div class="thematic-note">{{ theme_note[row.question_number] or '' }}</div>
+    </div>
+  </div>
+  {% endfor %}
+
+  <!-- ===== 5. RECOMMANDATIONS ===== -->
+  <div class="page-break"></div>
+  <div class="section-h">5. Recommandations du Cabinet Amoaman &amp; Associés</div>
+
+  {% if doc.final_recommendation and doc.final_recommendation.strip() %}
+  <div class="reco-block">{{ doc.final_recommendation }}</div>
+  {% else %}
+  <div class="reco-block" style="color:#94a3b8;font-style:italic;">[RECOMMANDATIONS_GENERALES] — En attente des recommandations personnalisées de l'auditeur.</div>
+  {% endif %}
+
+  <div class="intro-box" style="margin-top:12px;">
+    Nous vous invitons à nous contacter pour établir un plan d'action priorisé, adapté à vos enjeux métiers et à votre secteur d'activité.
+  </div>
+
+  <!-- ===== 6. CONCLUSION ===== -->
+  <div class="section-h">6. Conclusion</div>
+  <div class="intro-box">
+    La conformité avec la loi n°2013-450 est un enjeu juridique, opérationnel et stratégique. <strong>{{ doc.company_name }}</strong> a l'opportunité d'engager une démarche proactive qui renforcera sa crédibilité et limitera ses risques juridiques. Nous restons à votre disposition pour toute assistance technique ou juridique.<br><br>
+    Pour toute question, contactez-nous :<br>
+    <strong>hello@amoaman.com</strong> — <strong>(+225) 27 24 31 15 61</strong>
+  </div>

@@ -1,0 +1,186 @@
+{
+ "actions": [],
+ "autoname": "DCPA-.YYYY.-.#####",
+ "creation": "2026-05-21 00:00:00",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_client",
+  "company_name",
+  "contact_person",
+  "role",
+  "email",
+  "col_break_1",
+  "phone",
+  "sector",
+  "company_size",
+  "submission_date",
+  "score_conformite",
+  "section_analysis",
+  "status",
+  "compliance_score",
+  "col_break_2",
+  "report_generated",
+  "analyst_notes",
+  "final_recommendation",
+  "section_answers",
+  "answers"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_client",
+   "fieldtype": "Section Break",
+   "label": "Informations Client"
+  },
+  {
+   "bold": 1,
+   "fieldname": "company_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Nom de l'entreprise",
+   "reqd": 1
+  },
+  {
+   "bold": 1,
+   "fieldname": "contact_person",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Nom du contact",
+   "reqd": 1
+  },
+  {
+   "fieldname": "role",
+   "fieldtype": "Data",
+   "label": "Fonction"
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Email",
+   "options": "Email",
+   "reqd": 1
+  },
+  {
+   "fieldname": "col_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "phone",
+   "fieldtype": "Data",
+   "label": "T\u00e9l\u00e9phone",
+   "options": "Phone"
+  },
+  {
+   "fieldname": "sector",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Secteur d'activit\u00e9"
+  },
+  {
+   "fieldname": "company_size",
+   "fieldtype": "Select",
+   "label": "Taille de l'entreprise",
+   "options": "\n1\u201310 employ\u00e9s\n11\u201350 employ\u00e9s\n51\u2013200 employ\u00e9s\n201\u2013500 employ\u00e9s\n500+ employ\u00e9s"
+  },
+  {
+   "default": "Today",
+   "fieldname": "submission_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date de soumission",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_analysis",
+   "fieldtype": "Section Break",
+   "label": "Analyse Interne"
+  },
+  {
+   "default": "Nouveau",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Statut",
+   "options": "Nouveau\nEn analyse\nRapport r\u00e9dig\u00e9\nRapport envoy\u00e9\nConverti en client"
+  },
+  {
+   "description": "Score global calcul\u00e9 par l'analyste (0\u2013100)",
+   "fieldname": "compliance_score",
+   "fieldtype": "Float",
+   "label": "Score de conformit\u00e9 (%)"
+  },
+  {
+   "fieldname": "col_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "report_generated",
+   "fieldtype": "Check",
+   "label": "Rapport g\u00e9n\u00e9r\u00e9"
+  },
+  {
+   "fieldname": "analyst_notes",
+   "fieldtype": "Long Text",
+   "label": "Points Fort"
+  },
+  {
+   "fieldname": "final_recommendation",
+   "fieldtype": "Long Text",
+   "label": "Recommandations finales"
+  },
+  {
+   "fieldname": "section_answers",
+   "fieldtype": "Section Break",
+   "label": "R\u00e9ponses au questionnaire"
+  },
+  {
+   "fieldname": "answers",
+   "fieldtype": "Table",
+   "label": "R\u00e9ponses",
+   "options": "Data Compliance Answer"
+  },
+  {
+   "fieldname": "score_conformite",
+   "fieldtype": "Float",
+   "label": "Score Conformit\u00e9"
+  }
+ ],
+ "grid_page_length": 20,
+ "links": [],
+ "modified": "2026-05-22 18:30:05.998285",
+ "modified_by": "Administrator",
+ "module": "site web",
+ "name": "Data Compliance Pre Audit",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "submission_date",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "company_name",
+ "track_changes": 1
+}

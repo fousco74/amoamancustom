@@ -1,0 +1,885 @@
+{% extends "amoamancustom/templates/layout.html" %}
+{% block title %}{{ _("Questionnaire Pré-audit — Protection des données") }}{% endblock %}
+
+{% block page_content %}
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --brand-grad: linear-gradient(135deg, #266BCC 0%, #F32A57 100%);
+  --blue: #266BCC;
+  --pink: #F32A57;
+  --text: #081A2A;
+  --muted: #6b7280;
+  --bg: #f4f7ff;
+  --card-bg: #ffffff;
+  --ring: 0 0 0 3px rgba(38,107,204,.14);
+  --shadow: 0 16px 48px rgba(8,26,42,.1);
+}
+
+main.container { width:100%!important; max-width:100%!important; margin:0; padding:0; }
+body { font-family:'Montserrat',sans-serif; background:var(--bg); }
+
+/* ── LAYOUT ────────────────────────────────────────────────────── */
+.quiz-page {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 100px 20px 60px;
+  background: linear-gradient(160deg, #f0f4ff 0%, #fff5f7 100%);
+  position: relative;
+  overflow: hidden;
+}
+.quiz-page::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(600px 400px at 20% 0%, rgba(38,107,204,.07) 0%, transparent 70%),
+              radial-gradient(500px 300px at 80% 100%, rgba(243,42,87,.06) 0%, transparent 70%);
+}
+
+/* ── PROGRESS BAR ──────────────────────────────────────────────── */
+.progress-outer {
+  position: fixed; top: 0; left: 0; right: 0; height: 4px;
+  background: rgba(38,107,204,.12); z-index: 2000;
+}
+.progress-fill {
+  height: 100%; background: var(--brand-grad);
+  transition: width .4s cubic-bezier(.4,0,.2,1);
+  border-radius: 0 2px 2px 0;
+}
+
+/* ── HEADER QUIZ ───────────────────────────────────────────────── */
+.quiz-header {
+  text-align: center; margin-bottom: 32px; position: relative; z-index: 1;
+  max-width: 700px; width: 100%;
+}
+.quiz-logo-area { margin-bottom: 16px; }
+.quiz-logo-area img { height: 36px; }
+.quiz-step-label {
+  font-size: 13px; font-weight: 600; color: var(--blue);
+  background: rgba(38,107,204,.1); border-radius: 99px;
+  padding: 5px 14px; display: inline-block; margin-bottom: 12px;
+}
+.quiz-header h1 {
+  font-size: clamp(1.3rem, 2.5vw, 1.8rem); font-weight: 800;
+  color: var(--text); margin: 0;
+}
+
+/* ── CARD ──────────────────────────────────────────────────────── */
+.quiz-card {
+  background: var(--card-bg); border-radius: 24px;
+  padding: 40px 44px; box-shadow: var(--shadow);
+  width: 100%; max-width: 700px; position: relative; z-index: 1;
+  border: 1px solid rgba(38,107,204,.08);
+}
+@media (max-width:575px) { .quiz-card { padding: 28px 20px; } }
+
+/* ── ÉTAPE : INFOS CLIENT ──────────────────────────────────────── */
+.step-info-title {
+  font-size: 1.3rem; font-weight: 800; color: var(--text);
+  margin-bottom: 6px;
+}
+.step-info-sub { font-size: 14px; color: var(--muted); margin-bottom: 28px; line-height: 1.6; }
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-row.full { grid-template-columns: 1fr; }
+.field-group { display: flex; flex-direction: column; margin-bottom: 4px; }
+.field-group label {
+  font-size: 12px; font-weight: 600; color: var(--text);
+  margin-bottom: 6px; text-transform: uppercase; letter-spacing: .5px;
+}
+.field-group label .req { color: var(--pink); margin-left: 2px; }
+.field-group input,
+.field-group select {
+  background: #f8f9ff; border: 1.5px solid #e3e7f4;
+  border-radius: 12px; padding: 12px 16px; font-size: 14px;
+  font-family: 'Montserrat', sans-serif; color: var(--text);
+  transition: border-color .15s, box-shadow .15s;
+  appearance: none;
+}
+.field-group input:focus,
+.field-group select:focus {
+  outline: none; background: #fff;
+  border-color: var(--blue); box-shadow: var(--ring);
+}
+.field-group input.error { border-color: var(--pink) !important; }
+.field-group select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M6 8L0 0h12z' fill='%23266BCC'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+@media (max-width:575px) { .form-row { grid-template-columns: 1fr; } }
+
+/* ── ÉTAPE : QUESTION ──────────────────────────────────────────── */
+.question-number {
+  font-size: 12px; font-weight: 700; color: var(--blue);
+  letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px;
+}
+.question-text {
+  font-size: 1.2rem; font-weight: 700; color: var(--text);
+  line-height: 1.5; margin-bottom: 32px;
+}
+.answer-group {
+  display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px;
+}
+.ans-btn {
+  width: 100%; background: #f8f9ff; border: 2px solid #e3e7f4;
+  border-radius: 14px; padding: 16px 20px;
+  display: flex; align-items: center; gap: 14px;
+  cursor: pointer; text-align: left;
+  font-family: 'Montserrat', sans-serif; font-size: 15px; font-weight: 600;
+  color: var(--text); transition: all .2s ease;
+}
+.ans-btn:hover { border-color: var(--blue); background: rgba(38,107,204,.05); }
+.ans-btn.selected-oui  { border-color: #16a34a; background: #f0fdf4; color: #15803d; }
+.ans-btn.selected-non  { border-color: var(--pink); background: #fff5f7; color: var(--pink); }
+.ans-btn.selected-nsp  { border-color: #9333ea; background: #faf5ff; color: #7c3aed; }
+.ans-btn .ans-icon {
+  width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+  display: grid; place-items: center; font-size: 18px;
+  background: rgba(0,0,0,.06);
+}
+.ans-btn.selected-oui .ans-icon { background: rgba(22,163,74,.15); }
+.ans-btn.selected-non .ans-icon { background: rgba(243,42,87,.15); }
+.ans-btn.selected-nsp .ans-icon { background: rgba(147,51,234,.15); }
+.ans-btn .ans-label { flex: 1; }
+.ans-btn .ans-check { margin-left: auto; font-size: 18px; opacity: 0; transition: opacity .2s; }
+.ans-btn.selected-oui .ans-check,
+.ans-btn.selected-non .ans-check,
+.ans-btn.selected-nsp .ans-check { opacity: 1; }
+
+/* ── COMMENTAIRE ─────────────────────────────────────────────── */
+.comment-toggle {
+  background: none; border: none; color: var(--blue);
+  font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 600;
+  cursor: pointer; padding: 0; display: flex; align-items: center; gap: 6px;
+  margin-bottom: 12px;
+}
+.comment-area {
+  max-height: 0; overflow: hidden;
+  transition: max-height .3s ease, opacity .3s ease;
+  opacity: 0;
+}
+.comment-area.open { max-height: 200px; opacity: 1; }
+.comment-area textarea {
+  width: 100%; background: #f8f9ff; border: 1.5px solid #e3e7f4;
+  border-radius: 12px; padding: 12px 16px; font-size: 14px;
+  font-family: 'Montserrat', sans-serif; color: var(--text);
+  resize: vertical; min-height: 90px;
+  transition: border-color .15s, box-shadow .15s;
+  box-sizing: border-box;
+}
+.comment-area textarea:focus {
+  outline: none; background: #fff;
+  border-color: var(--blue); box-shadow: var(--ring);
+}
+
+/* ── NAVIGATION ──────────────────────────────────────────────── */
+.quiz-nav {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 28px; padding-top: 24px;
+  border-top: 1px solid #eef1f8;
+}
+.nav-dots {
+  display: flex; gap: 6px; align-items: center;
+}
+.nav-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #dde1f0; transition: all .25s;
+}
+.nav-dot.active { width: 24px; border-radius: 4px; background: var(--blue); }
+.nav-dot.done   { background: #16a34a; }
+
+.btn-nav {
+  display: inline-flex; align-items: center; gap: 8px;
+  border-radius: 99px; padding: 12px 24px;
+  font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 700;
+  cursor: pointer; transition: all .2s ease; border: 2px solid transparent;
+}
+.btn-prev {
+  background: transparent; border-color: #dde1f0; color: var(--muted);
+}
+.btn-prev:hover { border-color: var(--blue); color: var(--blue); }
+.btn-next, .btn-submit {
+  background: var(--brand-grad); color: #fff; border-color: transparent;
+  box-shadow: 0 6px 20px rgba(38,107,204,.3);
+}
+.btn-next:hover, .btn-submit:hover {
+  box-shadow: 0 10px 28px rgba(38,107,204,.4);
+  transform: translateY(-1px);
+}
+.btn-next:disabled, .btn-submit:disabled {
+  opacity: .45; cursor: not-allowed; transform: none;
+  box-shadow: none;
+}
+
+/* ── ANIMATIONS ──────────────────────────────────────────────── */
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(48px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-48px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.anim-right { animation: slideInRight .35s cubic-bezier(.4,0,.2,1) forwards; }
+.anim-left  { animation: slideInLeft  .35s cubic-bezier(.4,0,.2,1) forwards; }
+.anim-fade  { animation: fadeIn .4s ease forwards; }
+
+/* ── CONFIRMATION ────────────────────────────────────────────── */
+.confirm-icon {
+  width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 24px;
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  display: grid; place-items: center; font-size: 2.5rem;
+  box-shadow: 0 8px 32px rgba(22,163,74,.3);
+}
+.confirm-title {
+  font-size: 1.6rem; font-weight: 800; color: var(--text);
+  text-align: center; margin-bottom: 12px;
+}
+.confirm-body {
+  font-size: 1rem; color: var(--muted); text-align: center;
+  line-height: 1.75; max-width: 520px; margin: 0 auto 32px;
+}
+.confirm-details {
+  background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 14px;
+  padding: 18px 24px; margin-bottom: 28px;
+}
+.confirm-details p { font-size: 14px; color: #15803d; margin: 4px 0; font-weight: 500; }
+.confirm-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn-home {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--brand-grad); color: #fff; border: none;
+  border-radius: 99px; padding: 14px 28px; font-size: 14px; font-weight: 700;
+  text-decoration: none; transition: box-shadow .2s, transform .2s;
+  box-shadow: 0 6px 20px rgba(38,107,204,.3);
+}
+.btn-home:hover { box-shadow: 0 10px 28px rgba(38,107,204,.4); transform: translateY(-1px); color:#fff; }
+.btn-outline {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; color: var(--blue); border: 2px solid #dde1f0;
+  border-radius: 99px; padding: 12px 26px; font-size: 14px; font-weight: 600;
+  text-decoration: none; transition: border-color .2s;
+}
+.btn-outline:hover { border-color: var(--blue); }
+
+/* ── AUTOSAVE ────────────────────────────────────────────────── */
+.autosave-hint {
+  font-size: 12px; color: #94a3b8; text-align: center; margin-top: 14px;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.autosave-dot { width: 6px; height: 6px; border-radius: 50%; background: #16a34a; }
+</style>
+
+<!-- Progress bar -->
+<div class="progress-outer">
+  <div class="progress-fill" id="progressFill" style="width:0%"></div>
+</div>
+
+<div class="quiz-page" id="quizApp">
+
+  <!-- HEADER -->
+  <div class="quiz-header">
+    <div class="quiz-logo-area">
+      <a href="/">
+        <img src="/assets/amoamancustom/images/logo.webp" alt="{{ _('Amoaman & Associés') }}">
+      </a>
+    </div>
+    <span class="quiz-step-label" id="stepLabel">{{ _("Étape 1 / 16") }}</span>
+    <h1 id="quizTitle">{{ _("Pré-audit de conformité — Protection des données personnelles") }}</h1>
+  </div>
+
+  <!-- CARD -->
+  <div class="quiz-card" id="quizCard">
+
+    <!-- ── ÉTAPE 0 : Informations client ──────────────────────── -->
+    <div id="step-0" class="quiz-step">
+      <div class="step-info-title">{{ _("Informations sur votre entreprise") }}</div>
+      <div class="step-info-sub">
+        {{ _("Ces informations nous permettront de personnaliser votre rapport et de vous contacter pour vous le transmettre.") }}
+      </div>
+
+      <div class="form-row">
+        <div class="field-group">
+          <label for="f_company">{{ _("Nom de l'entreprise") }}<span class="req">*</span></label>
+          <input id="f_company" type="text" placeholder="{{ _('Ex : Société ABC SARL') }}">
+        </div>
+        <div class="field-group">
+          <label for="f_contact">{{ _("Nom et prénom du contact") }}<span class="req">*</span></label>
+          <input id="f_contact" type="text" placeholder="{{ _('Ex : Jean KOUASSI') }}">
+        </div>
+        <div class="field-group">
+          <label for="f_role">{{ _("Fonction") }}</label>
+          <input id="f_role" type="text" placeholder="{{ _('Ex : Directeur Général, DPO, DSI...') }}">
+        </div>
+        <div class="field-group">
+          <label for="f_email">{{ _("Email professionnel") }}<span class="req">*</span></label>
+          <input id="f_email" type="email" placeholder="{{ _('Ex : contact@entreprise.ci') }}">
+        </div>
+        <div class="field-group">
+          <label for="f_phone">{{ _("Téléphone") }}</label>
+          <input id="f_phone" type="tel" placeholder="{{ _('Ex : +225 07 00 00 00 00') }}">
+        </div>
+        <div class="field-group">
+          <label for="f_sector">{{ _("Secteur d'activité") }}</label>
+          <input id="f_sector" type="text" placeholder="{{ _('Ex : Finance, Santé, Commerce...') }}">
+        </div>
+      </div>
+      <div class="form-row full" style="margin-top:4px;">
+        <div class="field-group">
+          <label for="f_size">{{ _("Taille de l'entreprise") }}</label>
+          <select id="f_size">
+            <option value="">{{ _("Sélectionnez...") }}</option>
+            <option value="1–10 employés">{{ _("1–10 employés") }}</option>
+            <option value="11–50 employés">{{ _("11–50 employés") }}</option>
+            <option value="51–200 employés">{{ _("51–200 employés") }}</option>
+            <option value="201–500 employés">{{ _("201–500 employés") }}</option>
+            <option value="500+ employés">{{ _("500+ employés") }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="quiz-nav">
+        <div></div>
+        <div class="nav-dots" id="navDots0"></div>
+        <button class="btn-nav btn-next" id="btnNext0" onclick="goNext()">
+          {{ _("Commencer le questionnaire") }} <span>→</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── ÉTAPES 1–15 : Questions ────────────────────────────── -->
+    <div id="step-question" class="quiz-step" style="display:none;">
+      <div class="question-number" id="qNumber"></div>
+      <div class="question-text" id="qText"></div>
+
+      <div class="answer-group" id="answerGroup">
+        <button class="ans-btn" id="btnOui" onclick="selectAnswer('Oui')">
+          <span class="ans-icon">✓</span>
+          <span class="ans-label"><strong>{{ _("Oui") }}</strong> — {{ _("nous avons mis en place cette mesure") }}</span>
+          <span class="ans-check">✓</span>
+        </button>
+        <button class="ans-btn" id="btnNon" onclick="selectAnswer('Non')">
+          <span class="ans-icon">✗</span>
+          <span class="ans-label"><strong>{{ _("Non") }}</strong> — {{ _("cette mesure n'est pas en place") }}</span>
+          <span class="ans-check">✓</span>
+        </button>
+        <button class="ans-btn" id="btnNSP" onclick="selectAnswer('NSP')">
+          <span class="ans-icon">?</span>
+          <span class="ans-label"><strong>{{ _("Je ne sais pas") }}</strong> — {{ _("je n'ai pas l'information") }}</span>
+          <span class="ans-check">✓</span>
+        </button>
+      </div>
+
+      <button class="comment-toggle" id="commentToggle" onclick="toggleComment()">
+        <i class="bi bi-chat-text"></i> <span id="commentToggleLabel">{{ _("Ajouter un commentaire (optionnel)") }}</span>
+      </button>
+      <div class="comment-area" id="commentArea">
+        <textarea id="commentField" placeholder="{{ _('Précisez votre réponse, contexte, remarque...') }}" rows="3"></textarea>
+      </div>
+
+      <div class="quiz-nav">
+        <button class="btn-nav btn-prev" id="btnPrev" onclick="goPrev()">
+          ← {{ _("Précédent") }}
+        </button>
+        <div class="nav-dots" id="navDotsQ"></div>
+        <button class="btn-nav btn-next" id="btnNextQ" onclick="goNext()" disabled>
+          {{ _("Suivant") }} →
+        </button>
+      </div>
+    </div>
+
+    <!-- ── ÉTAPE 16 : Soumission ──────────────────────────────── -->
+    <div id="step-submit" class="quiz-step" style="display:none; text-align:center;">
+      <div class="question-number">{{ _("Dernière étape") }}</div>
+      <div class="question-text" style="text-align:center;">{{ _("Tout est prêt ! Validez et envoyez votre pré-audit.") }}</div>
+
+      <div class="confirm-details" id="summaryBox" style="text-align:left;margin-bottom:20px;">
+        <p id="sumCompany"></p>
+        <p id="sumContact"></p>
+        <p id="sumAnswers"></p>
+      </div>
+
+      <div class="quiz-nav" style="border-top:none;padding-top:0;">
+        <button class="btn-nav btn-prev" onclick="goPrev()">← {{ _("Précédent") }}</button>
+        <div></div>
+        <button class="btn-nav btn-submit" id="btnSubmit" onclick="submitAudit()">
+          <i class="bi bi-send"></i> {{ _("Envoyer mon pré-audit") }}
+        </button>
+      </div>
+    </div>
+
+    <!-- ── ÉTAPE 17 : Confirmation ────────────────────────────── -->
+    <div id="step-confirm" class="quiz-step" style="display:none;">
+      <div class="confirm-icon">✓</div>
+      <div class="confirm-title">{{ _("Merci pour votre participation !") }}</div>
+      <div class="confirm-body">
+        {{ _("Votre pré-audit a bien été transmis à notre équipe.") }}<br>
+        {{ _("Après analyse de vos réponses, un rapport personnalisé vous sera envoyé par email dans les 48 heures ouvrables.") }}
+      </div>
+      <div class="confirm-details">
+        <p>✅ {{ _("Questionnaire de 15 questions complété") }}</p>
+        <p>📧 {{ _("Rapport envoyé à votre adresse email") }}</p>
+        <p>⏱ {{ _("Délai de traitement : 24 heures ouvrables") }}</p>
+      </div>
+      <div class="confirm-actions">
+        <a href="/" class="btn-home">{{ _("Retour à l'accueil") }}</a>
+        <a href="/contact" class="btn-outline">{{ _("Contacter un expert") }}</a>
+      </div>
+    </div>
+
+  </div><!-- .quiz-card -->
+
+  <div class="autosave-hint" id="autosaveHint" style="display:none;">
+    <span class="autosave-dot"></span>
+    {{ _("Progression sauvegardée automatiquement") }}
+  </div>
+
+</div><!-- .quiz-page -->
+
+{% endblock %}
+
+{% block script %}
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  DONNÉES
+// ═══════════════════════════════════════════════════════════════
+const QUESTIONS = [
+  "Avez-vous une politique de confidentialité ou un document similaire ?",
+  "Tenez-vous un registre des traitements de données personnelles ?",
+  "Avez-vous déjà effectué des démarches auprès de l'ARTCI ?",
+  "Les personnes concernées sont-elles informées de leurs droits ?",
+  "Disposez-vous d'un Délégué à la Protection des Données (DPO) ?",
+  "Vos équipes ont-elles été formées sur les obligations liées à la protection des données ?",
+  "Vos contrats contiennent-ils des clauses relatives à la confidentialité et à la protection des données ?",
+  "Effectuez-vous des transferts de données à l'étranger ?",
+  "Avez-vous une procédure en cas de violation ou fuite de données ?",
+  "Avez-vous mis en place des mesures techniques de sécurité (chiffrement, pare-feu, accès restreint, etc.) ?",
+  "Avez-vous identifié toutes les données personnelles que vous collectez (site web, formulaire, RH, etc.) ?",
+  "Avez-vous déjà reçu une plainte ou une demande d'accès aux données d'un client ou employé ?",
+  "Disposez-vous de mentions d'information conformes sur vos formulaires papier ou en ligne ?",
+  "Avez-vous un mécanisme permettant aux personnes d'exercer leurs droits (accès, rectification, opposition) ?",
+  "Vos données sont-elles conservées pour une durée définie et justifiable ?"
+];
+
+// ── État global ────────────────────────────────────────────────
+const STATE = {
+  step: 0,   // 0=info, 1–15=questions, 16=submit, 17=confirm
+  answers: {},  // { qNum: { response, comment } }
+  clientInfo: {}
+};
+
+// ── Éléments DOM ───────────────────────────────────────────────
+const progressFill  = document.getElementById('progressFill');
+const stepLabel     = document.getElementById('stepLabel');
+const quizTitle     = document.getElementById('quizTitle');
+
+// Étapes
+const step0     = document.getElementById('step-0');
+const stepQ     = document.getElementById('step-question');
+const stepSub   = document.getElementById('step-submit');
+const stepConf  = document.getElementById('step-confirm');
+
+// Question UI
+const qNumber     = document.getElementById('qNumber');
+const qText       = document.getElementById('qText');
+const btnOui      = document.getElementById('btnOui');
+const btnNon      = document.getElementById('btnNon');
+const btnNSP      = document.getElementById('btnNSP');
+const commentArea = document.getElementById('commentArea');
+const commentField= document.getElementById('commentField');
+const btnNextQ    = document.getElementById('btnNextQ');
+
+// ═══════════════════════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════════════════════
+
+function showStep(step, direction) {
+  const animClass = (direction === 'forward') ? 'anim-right' : 'anim-left';
+  const card      = document.getElementById('quizCard');
+
+  // Cache toutes les étapes
+  [step0, stepQ, stepSub, stepConf].forEach(el => el.style.display = 'none');
+
+  const totalSteps = 17;  // 0..17
+  const progress = Math.round((step / totalSteps) * 100);
+  progressFill.style.width = progress + '%';
+
+  if (step === 0) {
+    step0.style.display = 'block';
+    step0.className = 'quiz-step ' + animClass;
+    stepLabel.textContent = __("Étape 1 / 16");
+    quizTitle.textContent = __("Informations sur votre entreprise");
+    updateDots('navDots0', 0);
+
+  } else if (step >= 1 && step <= 15) {
+    stepQ.style.display = 'block';
+    stepQ.className = 'quiz-step ' + animClass;
+    renderQuestion(step);
+    stepLabel.textContent = `${ __("Question") } ${step} / 15`;
+    quizTitle.textContent = __("Pré-audit de conformité");
+    updateDots('navDotsQ', step);
+
+  } else if (step === 16) {
+    stepSub.style.display = 'block';
+    stepSub.className = 'quiz-step ' + animClass;
+    stepLabel.textContent = __("Récapitulatif");
+    quizTitle.textContent = __("Vérification avant envoi");
+    renderSummary();
+
+  } else if (step === 17) {
+    stepConf.style.display = 'block';
+    stepConf.className = 'quiz-step anim-fade';
+    stepLabel.textContent = __("Terminé !");
+    quizTitle.textContent = __("Pré-audit soumis avec succès");
+    progressFill.style.width = '100%';
+  }
+
+  STATE.step = step;
+  saveDraft();
+}
+
+function goNext() {
+  const cur = STATE.step;
+
+  if (cur === 0) {
+    if (!validateClientInfo()) return;
+    captureClientInfo();
+    showStep(1, 'forward');
+
+  } else if (cur >= 1 && cur <= 15) {
+    if (!STATE.answers[cur]) {
+      shake(btnNextQ);
+      return;
+    }
+    if (cur === 15) {
+      showStep(16, 'forward');
+    } else {
+      showStep(cur + 1, 'forward');
+    }
+
+  } else if (cur === 16) {
+    submitAudit();
+  }
+}
+
+function goPrev() {
+  const cur = STATE.step;
+  if (cur === 0) return;
+  if (cur === 1) {
+    showStep(0, 'backward');
+  } else if (cur === 16) {
+    showStep(15, 'backward');
+  } else {
+    showStep(cur - 1, 'backward');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  QUESTION UI
+// ═══════════════════════════════════════════════════════════════
+
+function renderQuestion(num) {
+  qNumber.textContent = `${ __("Question") } ${num} / 15`;
+  qText.textContent   = QUESTIONS[num - 1];
+
+  // Reset comment
+  commentArea.classList.remove('open');
+  commentField.value = '';
+  document.getElementById('commentToggleLabel').textContent = __("Ajouter un commentaire (optionnel)");
+
+  // Restore answer if already answered
+  const saved = STATE.answers[num];
+  resetAnswerButtons();
+
+  if (saved) {
+    applyAnswerStyle(saved.response);
+    btnNextQ.disabled = false;
+    if (saved.comment) {
+      commentField.value = saved.comment;
+      commentArea.classList.add('open');
+      document.getElementById('commentToggleLabel').textContent = __("Masquer le commentaire");
+    }
+  } else {
+    btnNextQ.disabled = true;
+  }
+}
+
+function selectAnswer(response) {
+  STATE.answers[STATE.step] = {
+    response,
+    comment: commentField.value.trim()
+  };
+  applyAnswerStyle(response);
+  btnNextQ.disabled = false;
+  saveDraft();
+}
+
+function applyAnswerStyle(response) {
+  resetAnswerButtons();
+  const map = { 'Oui': btnOui, 'Non': btnNon, 'NSP': btnNSP };
+  const cls = { 'Oui': 'selected-oui', 'Non': 'selected-non', 'NSP': 'selected-nsp' };
+  if (map[response]) {
+    map[response].classList.add(cls[response]);
+  }
+}
+
+function resetAnswerButtons() {
+  [btnOui, btnNon, btnNSP].forEach(b => {
+    b.classList.remove('selected-oui', 'selected-non', 'selected-nsp');
+  });
+}
+
+function toggleComment() {
+  const isOpen = commentArea.classList.toggle('open');
+  document.getElementById('commentToggleLabel').textContent =
+    isOpen ? __("Masquer le commentaire") : __("Ajouter un commentaire (optionnel)");
+  if (isOpen) commentField.focus();
+}
+
+// Sync comment on input
+commentField.addEventListener('input', () => {
+  if (STATE.answers[STATE.step]) {
+    STATE.answers[STATE.step].comment = commentField.value.trim();
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════
+//  FORMULAIRE CLIENT
+// ═══════════════════════════════════════════════════════════════
+
+function validateClientInfo() {
+  let valid = true;
+  const checks = {
+    f_company: !!document.getElementById('f_company').value.trim(),
+    f_contact: !!document.getElementById('f_contact').value.trim(),
+    f_email:   isValidEmail(document.getElementById('f_email').value.trim())
+  };
+  for (const [id, ok] of Object.entries(checks)) {
+    const el = document.getElementById(id);
+    el.classList.toggle('error', !ok);
+    if (!ok) valid = false;
+  }
+  if (!valid) {
+    frappe.msgprint({
+      title: __('Champs requis'),
+      message: __('Veuillez remplir les champs obligatoires : Nom de l\'entreprise, Nom du contact, et Email valide.'),
+      indicator: 'red'
+    });
+  }
+  return valid;
+}
+
+function isValidEmail(e) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+}
+
+function captureClientInfo() {
+  STATE.clientInfo = {
+    company_name:   document.getElementById('f_company').value.trim(),
+    contact_person: document.getElementById('f_contact').value.trim(),
+    role:           document.getElementById('f_role').value.trim(),
+    email:          document.getElementById('f_email').value.trim().toLowerCase(),
+    phone:          document.getElementById('f_phone').value.trim(),
+    sector:         document.getElementById('f_sector').value.trim(),
+    company_size:   document.getElementById('f_size').value
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  RÉSUMÉ AVANT SOUMISSION
+// ═══════════════════════════════════════════════════════════════
+
+function renderSummary() {
+  const info    = STATE.clientInfo;
+  const answers = STATE.answers;
+  const answered = Object.keys(answers).length;
+  const oui = Object.values(answers).filter(a => a.response === 'Oui').length;
+  const non = Object.values(answers).filter(a => a.response === 'Non').length;
+  const nsp = Object.values(answers).filter(a => a.response === 'NSP').length;
+
+  document.getElementById('sumCompany').textContent = `🏢 ${info.company_name}  —  ${info.contact_person}`;
+  document.getElementById('sumContact').textContent = `📧 ${info.email}`;
+  document.getElementById('sumAnswers').textContent =
+    `📋 ${answered} ${ __("question(s) répondue(s)") } — ✅ ${oui} ${ __("Oui") } / ❌ ${non} ${ __("Non") } / ❓ ${nsp} ${ __("NSP") }`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  SOUMISSION
+// ═══════════════════════════════════════════════════════════════
+
+function submitAudit() {
+  captureClientInfo();
+
+  const answersPayload = Object.entries(STATE.answers).map(([num, ans]) => ({
+    question_number: parseInt(num),
+    response: ans.response,
+    comment: ans.comment || ''
+  }));
+
+  const payload = {
+    ...STATE.clientInfo,
+    answers: answersPayload
+  };
+
+  const btn = document.getElementById('btnSubmit');
+  btn.disabled = true;
+
+  frappe.call({
+    method: 'amoamancustom.pre_audit_api.submit_pre_audit',
+    type: 'POST',
+    args: { data: payload },
+    callback(r) {
+      if (r && r.message && r.message.success) {
+        localStorage.removeItem('preAuditDraft');
+        showStep(17, 'forward');
+      } else {
+        btn.disabled = false;
+        frappe.msgprint({
+          title: __('Erreur'),
+          message: __('Une erreur est survenue lors de l\'envoi. Veuillez réessayer.'),
+          indicator: 'red'
+        });
+      }
+    },
+    error() {
+      btn.disabled = false;
+      frappe.msgprint({
+        title: __('Erreur réseau'),
+        message: __('Impossible de soumettre le formulaire. Vérifiez votre connexion et réessayez.'),
+        indicator: 'red'
+      });
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  AUTOSAVE (localStorage)
+// ═══════════════════════════════════════════════════════════════
+
+function saveDraft() {
+  try {
+    localStorage.setItem('preAuditDraft', JSON.stringify({
+      step: STATE.step,
+      answers: STATE.answers,
+      clientInfo: STATE.clientInfo,
+      savedAt: Date.now()
+    }));
+    const hint = document.getElementById('autosaveHint');
+    if (hint) hint.style.display = 'flex';
+    clearTimeout(window._saveHintTimer);
+    window._saveHintTimer = setTimeout(() => {
+      if (hint) hint.style.display = 'none';
+    }, 2000);
+  } catch(e) {}
+}
+
+function loadDraft() {
+  try {
+    const raw = localStorage.getItem('preAuditDraft');
+    if (!raw) return false;
+    const d = JSON.parse(raw);
+    // Expire après 2 jours
+    if (Date.now() - (d.savedAt || 0) > 172800000) {
+      localStorage.removeItem('preAuditDraft');
+      return false;
+    }
+    if (d.step && d.step >= 1) {
+      Object.assign(STATE, { answers: d.answers || {}, clientInfo: d.clientInfo || {} });
+
+      // Remplir les champs client si disponibles
+      const ci = STATE.clientInfo;
+      if (ci.company_name)   document.getElementById('f_company').value = ci.company_name;
+      if (ci.contact_person) document.getElementById('f_contact').value = ci.contact_person;
+      if (ci.role)           document.getElementById('f_role').value = ci.role;
+      if (ci.email)          document.getElementById('f_email').value = ci.email;
+      if (ci.phone)          document.getElementById('f_phone').value = ci.phone;
+      if (ci.sector)         document.getElementById('f_sector').value = ci.sector;
+      if (ci.company_size)   document.getElementById('f_size').value = ci.company_size;
+
+      return true;
+    }
+  } catch(e) {}
+  return false;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  NAV DOTS
+// ═══════════════════════════════════════════════════════════════
+
+function updateDots(containerId, currentStep) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  const dotsCount = 5;
+  container.innerHTML = '';
+  const total = 16;
+  const segSize = Math.ceil(total / dotsCount);
+  for (let i = 0; i < dotsCount; i++) {
+    const dot = document.createElement('span');
+    dot.className = 'nav-dot';
+    const segStart = i * segSize + 1;
+    const segEnd   = Math.min((i + 1) * segSize, total);
+    const done = currentStep > segEnd;
+    const active = currentStep >= segStart && currentStep <= segEnd;
+    if (done)   dot.classList.add('done');
+    if (active) dot.classList.add('active');
+    container.appendChild(dot);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════════════════════════
+
+function shake(el) {
+  el.style.animation = 'none';
+  el.offsetHeight; // reflow
+  el.style.animation = 'shake .4s ease';
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+  if (e.key === 'ArrowRight' || e.key === 'Enter') goNext();
+  if (e.key === 'ArrowLeft')  goPrev();
+  if (STATE.step >= 1 && STATE.step <= 15) {
+    if (e.key === '1') selectAnswer('Oui');
+    if (e.key === '2') selectAnswer('Non');
+    if (e.key === '3') selectAnswer('NSP');
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════════
+
+frappe.ready(function () {
+  const hasDraft = loadDraft();
+
+  if (hasDraft && Object.keys(STATE.clientInfo).length > 0) {
+    const lastStep = STATE.step > 15 ? 15 : Math.max(1, STATE.step);
+    frappe.msgprint({
+      title: __('Progression sauvegardée'),
+      message: __('Vous avez une session en cours. Cliquez OK pour la reprendre ou recommencez depuis le début.'),
+      indicator: 'blue',
+      primary_action: {
+        label: __('Reprendre'),
+        action() {
+          showStep(lastStep, 'forward');
+        }
+      }
+    });
+  }
+
+  showStep(0, 'forward');
+});
+</script>
+
+<style>
+@keyframes shake {
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-6px)}
+  75%{transform:translateX(6px)}
+}
+</style>
+{% endblock %}

@@ -286,5 +286,50 @@
   "name": "Open",
   "style": "",
   "workflow_state_name": "Open"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "ok-circle",
+  "modified": "2026-05-21 00:00:00.000000",
+  "name": "Nouveau",
+  "style": "Info",
+  "workflow_state_name": "Nouveau"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "time",
+  "modified": "2026-05-21 00:00:00.000000",
+  "name": "En analyse",
+  "style": "Warning",
+  "workflow_state_name": "En analyse"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "edit",
+  "modified": "2026-05-21 00:00:00.000000",
+  "name": "Rapport rédigé",
+  "style": "Primary",
+  "workflow_state_name": "Rapport rédigé"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "envelope",
+  "modified": "2026-05-21 00:00:00.000000",
+  "name": "Rapport envoyé",
+  "style": "Success",
+  "workflow_state_name": "Rapport envoyé"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "star",
+  "modified": "2026-05-21 00:00:00.000000",
+  "name": "Converti en client",
+  "style": "Success",
+  "workflow_state_name": "Converti en client"
  }
 ]

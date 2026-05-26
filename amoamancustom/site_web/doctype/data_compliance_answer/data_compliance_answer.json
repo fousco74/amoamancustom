@@ -1,0 +1,82 @@
+{
+ "actions": [],
+ "creation": "2026-05-21 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "question_number",
+  "question",
+  "response",
+  "client_comment",
+  "column_break_audit",
+  "internal_score",
+  "risk_level",
+  "auditor_observation"
+ ],
+ "fields": [
+  {
+   "columns": 1,
+   "fieldname": "question_number",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "N°",
+   "read_only": 1
+  },
+  {
+   "columns": 4,
+   "fieldname": "question",
+   "fieldtype": "Long Text",
+   "in_list_view": 1,
+   "label": "Question",
+   "read_only": 1
+  },
+  {
+   "columns": 2,
+   "fieldname": "response",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Réponse client",
+   "options": "\nOui\nNon\nNSP"
+  },
+  {
+   "fieldname": "client_comment",
+   "fieldtype": "Text",
+   "label": "Commentaire client"
+  },
+  {
+   "fieldname": "column_break_audit",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Score de 0 à 10 attribué par l’analyste",
+   "fieldname": "internal_score",
+   "fieldtype": "Int",
+   "label": "Score interne (0–10)"
+  },
+  {
+   "columns": 2,
+   "fieldname": "risk_level",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Niveau de risque",
+   "options": "\nFaible\nModéré\nÉlevé\nCritique"
+  },
+  {
+   "fieldname": "auditor_observation",
+   "fieldtype": "Long Text",
+   "label": "Observation analyste"
+  }
+ ],
+ "grid_page_length": 20,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-05-21 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "site web",
+ "name": "Data Compliance Answer",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "question_number",
+ "sort_order": "ASC",
+ "states": []
+}

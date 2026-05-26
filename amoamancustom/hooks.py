@@ -35,6 +35,8 @@ web_include_css = "/assets/amoamancustom/css/brand_theme_web.css"
 # Route rules — intercept /events before the DocType ListPage renderer
 website_route_rules = [
     {"from_route": "/events", "to_route": "events"},
+    {"from_route": "/data-protection-audit", "to_route": "data-protection-audit"},
+    {"from_route": "/pre-audit", "to_route": "pre-audit"},
 ]
 # web_include_js = "/assets/amoamancustom/js/amoamancustom.js"
 
@@ -504,7 +506,8 @@ fixtures = [
                     "Work Order",
 
                     "Address",
-                    "Contact"
+                    "Contact",
+                    "Data Compliance Pre Audit"
                 ]
             ]
         ]
@@ -571,6 +574,16 @@ fixtures = [
     },
 
     # -----------------------------
+    # 6b. Data Compliance (Pré-audit)
+    # -----------------------------
+    {
+        "doctype": "DocType",
+        "filters": [
+            ["name", "in", ["Data Compliance Pre Audit", "Data Compliance Answer"]]
+        ]
+    },
+
+    # -----------------------------
     # 7. Print Formats
     # -----------------------------
     {
@@ -601,7 +614,8 @@ fixtures = [
                     "Task",
                     "Stock Entry",
                     "Material Request",
-                    "Work Order"
+                    "Work Order",
+                    "Data Compliance Pre Audit"
                 ]
             ]
         ]

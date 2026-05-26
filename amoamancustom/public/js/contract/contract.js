@@ -7,7 +7,7 @@ refresh(frm){
             frm.set_df_property('party_type', 'options', ['Customer', 'Supplier']);
 
         } 
-        else if(userRoles.includes("HR Manager")) {
+        else if(userRoles.includes("HR Manager") || userRoles.includes("System Manager") ) {
             frm.set_df_property('party_type', 'options', ['Employee']);
         } 
 
