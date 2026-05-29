@@ -113,7 +113,7 @@ body { font-family:'Montserrat',sans-serif; background:var(--bg); }
 }
 .question-text {
   font-size: 1.2rem; font-weight: 700; color: var(--text);
-  line-height: 1.5; margin-bottom: 32px;
+  line-height: 1.5;
 }
 .answer-group {
   display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px;
@@ -352,6 +352,8 @@ body { font-family:'Montserrat',sans-serif; background:var(--bg); }
     <div id="step-question" class="quiz-step" style="display:none;">
       <div class="question-number" id="qNumber"></div>
       <div class="question-text" id="qText"></div>
+      <span id="qDesc" style="margin-top: 2px; margin-bottom: 2px; font-style : italic;"></span>
+
 
       <div class="answer-group" id="answerGroup">
         <button class="ans-btn" id="btnOui" onclick="selectAnswer('Oui')">
@@ -415,7 +417,7 @@ body { font-family:'Montserrat',sans-serif; background:var(--bg); }
       <div class="confirm-title">{{ _("Merci pour votre participation !") }}</div>
       <div class="confirm-body">
         {{ _("Votre pré-audit a bien été transmis à notre équipe.") }}<br>
-        {{ _("Après analyse de vos réponses, un rapport personnalisé vous sera envoyé par email dans les 48 heures ouvrables.") }}
+        {{ _("Après analyse de vos réponses, un rapport personnalisé vous sera envoyé par email dans les 24 heures ouvrables.") }}
       </div>
       <div class="confirm-details">
         <p>✅ {{ _("Questionnaire de 15 questions complété") }}</p>
@@ -447,8 +449,8 @@ body { font-family:'Montserrat',sans-serif; background:var(--bg); }
 const QUESTIONS = [
   "Avez-vous une politique de confidentialité ou un document similaire ?",
   "Tenez-vous un registre des traitements de données personnelles ?",
-  "Avez-vous déjà effectué des démarches auprès de l'ARTCI ?",
-  "Les personnes concernées sont-elles informées de leurs droits ?",
+  "Avez-vous déjà effectué des démarches auprès de l'Autorité de Protection ?",
+  "Les personnes concernées sont-elles informées de leurs droits relatifs à la protection des données ?",
   "Disposez-vous d'un Délégué à la Protection des Données (DPO) ?",
   "Vos équipes ont-elles été formées sur les obligations liées à la protection des données ?",
   "Vos contrats contiennent-ils des clauses relatives à la confidentialité et à la protection des données ?",
@@ -461,6 +463,8 @@ const QUESTIONS = [
   "Avez-vous un mécanisme permettant aux personnes d'exercer leurs droits (accès, rectification, opposition) ?",
   "Vos données sont-elles conservées pour une durée définie et justifiable ?"
 ];
+
+const nb = "NB : Le transfert de données designe toute communication, copie ou déplacement de données vers un pays non membre de l'espace CEDEAO";
 
 // ── État global ────────────────────────────────────────────────
 const STATE = {
@@ -489,6 +493,8 @@ const btnNSP      = document.getElementById('btnNSP');
 const commentArea = document.getElementById('commentArea');
 const commentField= document.getElementById('commentField');
 const btnNextQ    = document.getElementById('btnNextQ');
+
+const qDescText    = document.getElementById('qDesc');
 
 // ═══════════════════════════════════════════════════════════════
 //  NAVIGATION
@@ -582,6 +588,11 @@ function goPrev() {
 function renderQuestion(num) {
   qNumber.textContent = `${ __("Question") } ${num} / 15`;
   qText.textContent   = QUESTIONS[num - 1];
+  if (num == 8){
+    qDescText.textContent = nb;
+  }else{
+    qDescText.textContent = '';
+  }
 
   // Reset comment
   commentArea.classList.remove('open');
