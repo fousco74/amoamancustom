@@ -1,0 +1,287 @@
+<p><!DOCTYPE html></p>
+
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="x-apple-disable-message-reformatting">
+<title>Nouveau pré-audit — {{ doc.company_name }}</title>
+<!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><![endif]-->
+<style>
+  body, table, td, p, a, li, blockquote { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+  table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+  img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+  body { margin: 0; padding: 0; width: 100% !important; }
+  #outlook a { padding: 0; }
+  .ReadMsgBody { width: 100%; }
+  .ExternalClass { width: 100%; }
+  .ExternalClass, .ExternalClass p, .ExternalClass td, .ExternalClass div, .ExternalClass span, .ExternalClass font { line-height: 100%; }
+</style>
+</head>
+<body style="margin:0;padding:0;background-color:#f4f7ff;font-family:Montserrat,-apple-system,Segoe UI,Helvetica,Arial,sans-serif;">
+
+  {%- set answers = doc.answers or [] -%}
+  {%- set total = answers | length or 15 -%}
+  {%- set submission_date = doc.submission_date or doc.creation -%}
+
+  {%- set oui_count = answers | selectattr("response", "equalto", "Oui") | list | length -%}
+  {%- set non_count = answers | selectattr("response", "equalto", "Non") | list | length -%}
+  {%- set nsp_count = answers | selectattr("response", "equalto", "NSP") | list | length -%}
+
+  {%- set oui_rate = (oui_count / total * 100) | round(0) | int -%}
+
+<!--[if mso]><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="640" align="center"><tr><td><![endif]-->
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" width="100%" style="max-width:600px;background-color:#f4f7ff;">
+<tr><td style="padding:32px 20px;">
+
+  <!-- Logo -->
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" width="100%"><tr>
+    <td style="text-align:center;padding-bottom:24px;">
+      <a href="{{ frappe.utils.get_url() }}/" target="_blank" style="text-decoration:none;display:inline-block;">
+        <img src="{{ frappe.utils.get_url() }}/assets/amoamancustom/images/logo.webp"
+             alt="Amoaman &amp; Associés" height="32"
+             style="height:32px;width:auto;border:0;display:block;">
+      </a>
+    </td>
+  </tr></table>
+
+  <!-- Card -->
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" width="100%" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(8,26,42,.08);">
+
+    <!-- Hero -->
+    <!-- CORRECTION OUTLOOK : background scindé en background-color (repli solide
+         qu'Outlook comprend) + background-image (dégradé pour les autres clients) -->
+    <tr>
+      <td style="background-color:#266BCC;background-image:linear-gradient(135deg,#266BCC 0%,#1a4f9e 100%);padding:32px 36px;text-align:center;">
+        <span style="display:inline-block;background:rgba(255,255,255,.18);color:#ffffff;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border-radius:99px;padding:4px 14px;margin-bottom:14px;">
+          Pré-audit &bull; Loi 2013-450
+        </span>
+        <h1 style="margin:0 0 8px;font-size:22px;font-weight:800;color:#ffffff;line-height:1.3;">
+          Nouveau questionnaire soumis
+        </h1>
+        <p style="margin:0;font-size:14px;color:rgba(255,255,255,.82);line-height:1.6;">
+          <strong style="color:#ffffff;">{{ doc.company_name }}</strong> a complété le pré-audit de conformité.
+        </p>
+      </td>
+    </tr>
+
+    <!-- Réf + Date + Statut -->
+    <tr>
+      <td style="padding:24px 36px 0;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr>
+
+          <td style="vertical-align:top;padding-right:12px;">
+            <p style="margin:0 0 2px;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;">Référence</p>
+            <p style="margin:0;font-size:15px;font-weight:700;color:#081A2A;">{{ doc.name }}</p>
+          </td>
+
+          <td style="vertical-align:top;padding:0 12px;">
+            <p style="margin:0 0 2px;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;">Date</p>
+            <p style="margin:0;font-size:15px;font-weight:700;color:#081A2A;">
+              {{ frappe.utils.format_date(submission_date, "dd MMMM yyyy") }}
+            </p>
+            <p style="margin:2px 0 0;font-size:12px;color:#6b7280;">
+              {{ frappe.utils.format_datetime(submission_date, "HH:mm") }}
+            </p>
+          </td>
+
+          <td style="vertical-align:top;padding-left:12px;text-align:right;">
+            <p style="margin:0 0 2px;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;">Statut</p>
+            <span style="display:inline-block;background:#eef2ff;color:#266BCC;font-size:13px;font-weight:700;border-radius:99px;padding:4px 14px;">
+              {{ doc.status }}
+            </span>
+          </td>
+
+        </tr></table>
+      </td>
+    </tr>
+
+    <!-- Score résumé -->
+    <tr>
+      <td style="padding:24px 36px 0;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#f8f9ff;border-radius:12px;">
+
+          <tr>
+            <td style="padding:20px 24px 16px;" colspan="3">
+              <p style="margin:0;font-size:13px;font-weight:700;color:#081A2A;text-transform:uppercase;letter-spacing:.5px;">
+                Score de conformité
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:0 0 20px 24px;width:33%;vertical-align:top;">
+              <p style="margin:0 0 4px;font-size:28px;font-weight:800;color:#16a34a;line-height:1;">
+                {{ oui_count }}<span style="font-size:16px;font-weight:600;">/{{ total }}</span>
+              </p>
+              <p style="margin:0;font-size:12px;font-weight:600;color:#15803d;">
+                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#16a34a;margin-right:5px;"></span>
+                Conformité
+              </p>
+            </td>
+            <td style="padding:0 0 20px 0;width:33%;vertical-align:top;">
+              <p style="margin:0 0 4px;font-size:28px;font-weight:800;color:#dc2626;line-height:1;">
+                {{ non_count }}<span style="font-size:16px;font-weight:600;">/{{ total }}</span>
+              </p>
+              <p style="margin:0;font-size:12px;font-weight:600;color:#b91c1c;">
+                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#dc2626;margin-right:5px;"></span>
+                Non-conformité
+              </p>
+            </td>
+            <td style="padding:0 24px 20px 0;width:33%;vertical-align:top;">
+              <p style="margin:0 0 4px;font-size:28px;font-weight:800;color:#9333ea;line-height:1;">
+                {{ nsp_count }}<span style="font-size:16px;font-weight:600;">/{{ total }}</span>
+              </p>
+              <p style="margin:0;font-size:12px;font-weight:600;color:#7c3aed;">
+                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#9333ea;margin-right:5px;"></span>
+                Incertain
+              </p>
+            </td>
+          </tr>
+
+          <!-- Barre -->
+          <tr>
+            <td style="padding:0 24px 8px;" colspan="3">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                <tr>
+                  {%- set oui_pct = (oui_count / total * 100) | round(0, 'floor') | int -%}
+                  {%- set non_pct = (non_count / total * 100) | round(0, 'floor') | int -%}
+                  {%- set nsp_pct = 100 - oui_pct - non_pct -%}
+                  {% if oui_pct > 0 %}<td style="background:#16a34a;height:8px;border-radius:4px 0 0 4px;width:{{ oui_pct }}%;"></td>{% endif %}
+                  {% if non_pct > 0 %}<td style="background:#dc2626;height:8px;width:{{ non_pct }}%;"></td>{% endif %}
+                  {% if nsp_pct > 0 %}<td style="background:#9333ea;height:8px;border-radius:0 4px 4px 0;width:{{ nsp_pct }}%;"></td>{% endif %}
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Taux + Verdict -->
+          <tr>
+            <td style="padding:8px 24px 20px;" colspan="3">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr>
+                <td>
+                  <p style="margin:0;font-size:20px;font-weight:800;color:#081A2A;">
+                    {{ oui_rate }}%<span style="font-size:12px;font-weight:500;color:#6b7280;margin-left:4px;">de conformité</span>
+                  </p>
+                </td>
+                <td style="text-align:right;">
+                {% if oui_rate >= 70 %}
+                  <span style="display:inline-block;background:#ecfdf5;color:#15803d;font-size:13px;font-weight:700;border-radius:99px;padding:5px 14px;border:1px solid #bbf7d0;">
+                    Profil favorable
+                  </span>
+                {% elif oui_rate >= 40 %}
+                  <span style="display:inline-block;background:#fef9c3;color:#a16207;font-size:13px;font-weight:700;border-radius:99px;padding:5px 14px;border:1px solid #fde047;">
+                    Risque modéré
+                  </span>
+                {% else %}
+                  <span style="display:inline-block;background:#fef2f2;color:#dc2626;font-size:13px;font-weight:700;border-radius:99px;padding:5px 14px;border:1px solid #fecaca;">
+                    Risque élevé
+                  </span>
+                {% endif %}
+                </td>
+              </tr></table>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+
+    <!-- Infos entreprise (light) -->
+    <tr>
+      <td style="padding:24px 36px 0;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#f8f9ff;border-radius:12px;">
+
+          <tr>
+            <td style="padding:16px 24px 0;" colspan="6">
+              <p style="margin:0;font-size:13px;font-weight:700;color:#081A2A;text-transform:uppercase;letter-spacing:.5px;">
+                Informations contact
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:14px 24px 0;width:50%;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;">
+              Contact
+            </td>
+            <td style="padding:14px 24px 0;width:50%;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;">
+              Email
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:4px 24px 14px;font-size:14px;font-weight:600;color:#081A2A;">
+              {{ doc.contact_person }}{% if doc.role %}, {{ doc.role }}{% endif %}
+            </td>
+            <td style="padding:4px 24px 14px;font-size:14px;font-weight:600;">
+              <a href="mailto:{{ doc.email }}" target="_blank" style="color:#266BCC;text-decoration:none;">{{ doc.email }}</a>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+
+    <!-- CTA -->
+    <!-- CORRECTION OUTLOOK : deux versions étanches du bouton.
+         (1) VML pour Outlook AVEC width:280px (sinon ni fond ni texte) ;
+         (2) <a> caché à Outlook via [if !mso], background scindé couleur + dégradé. -->
+    <tr>
+      <td style="padding:28px 36px 36px;text-align:center;">
+
+        <!--[if mso]>
+        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word"
+          href="{{ frappe.utils.get_url() }}/app/data-compliance-pre-audit/{{ doc.name }}"
+          style="height:48px;width:280px;v-text-anchor:middle;" arcsize="50%" stroke="f" fillcolor="#266BCC">
+          <w:anchorlock/>
+          <center style="color:#ffffff;font-family:Montserrat,Arial,sans-serif;font-size:14px;font-weight:700;">
+            Voir le dossier complet &rarr;
+          </center>
+        </v:roundrect>
+        <![endif]-->
+
+        <!--[if !mso]><!-->
+        <a href="{{ frappe.utils.get_url() }}/app/data-compliance-pre-audit/{{ doc.name }}" target="_blank"
+           style="display:inline-block;background-color:#266BCC;background-image:linear-gradient(135deg,#266BCC 0%,#1a4f9e 100%);color:#ffffff;font-family:Montserrat,-apple-system,Segoe UI,Helvetica,Arial,sans-serif;font-size:14px;font-weight:700;text-decoration:none;border-radius:99px;padding:14px 36px;box-shadow:0 4px 14px rgba(38,107,204,.35);">
+          Voir le dossier complet &rarr;
+        </a>
+        <!--<![endif]-->
+
+      </td>
+    </tr>
+
+    <!-- Footer -->
+    <tr>
+      <td style="padding:0 36px 28px;text-align:center;border-top:1px solid #eef1f8;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr>
+          <td style="padding-top:18px;">
+            <p style="margin:0 0 6px;font-size:11px;color:#6b7280;line-height:1.7;">
+              Notification automatique — le rapport sera envoyé au client sous 24 à 48h ouvrables après analyse.
+            </p>
+            <p style="margin:0;font-size:11px;font-weight:600;color:#081A2A;">
+              Amoaman &amp; Associés
+            </p>
+            <p style="margin:4px 0 0;font-size:11px;color:#6b7280;">
+              <a href="https://amoaman.com" target="_blank" style="color:#266BCC;text-decoration:none;">amoaman.com</a>
+              &nbsp;&bull;&nbsp;
+              <a href="mailto:dpo@amoaman.com" style="color:#266BCC;text-decoration:none;">dpo@amoaman.com</a>
+            </p>
+          </td>
+        </tr></table>
+      </td>
+    </tr>
+
+  </table>
+
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" width="100%"><tr>
+    <td style="padding-top:16px;text-align:center;font-size:11px;color:#94a3b8;">
+      Vous recevez cet email en tant qu'administrateur de la plateforme.
+    </td>
+  </tr></table>
+
+</td></tr>
+</table>
+<!--[if mso]></td></tr></table><![endif]-->
+
+</body>
+</html>
