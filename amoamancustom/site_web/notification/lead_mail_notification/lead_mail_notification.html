@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nouveau Prospect ERPNext</title>
+
+<style>
+  body { margin:0; padding:0; background:#f0f4f8; font-family:Segoe UI, Arial, sans-serif; }
+  table { border-collapse:collapse; }
+  img { border:0; }
+</style>
+</head>
+
+<body>
+
+<table width="100%" style="background:#f0f4f8;padding:20px;">
+<tr>
+<td align="center">
+
+<table width="600" style="background:#ffffff;border-radius:12px;overflow:hidden;">
+
+  <!-- HERO -->
+  <tr>
+    <td style="background-color:#266BCC;color:#ffffff;padding:40px 20px;text-align:center;">
+      <h1 style="margin:0;font-size:26px;color:#ffffff;">Nouveau Prospect</h1>
+      <p style="margin:6px 0 0;font-size:14px;color:#ffffff;">
+        Demande de soumission ERPNext reçue
+      </p>
+    </td>
+  </tr>
+
+  <!-- CONTENT -->
+  <tr>
+    <td style="padding:30px;">
+
+      <!-- CONTACT -->
+      <h3 style="color:#266BCC;">Contact Principal</h3>
+
+      <p><b>Prénom :</b> {{ first_name or '—' }}</p>
+      <p><b>Nom :</b> {{ last_name or '—' }}</p>
+      <p><b>Fonction :</b> {{ job_title or '—' }}</p>
+
+      {% if email_id %}
+        <p><b>Email :</b> <a href="mailto:{{ email_id }}">{{ email_id }}</a></p>
+      {% endif %}
+
+      <p><b>WhatsApp :</b> {{ whatsapp or '—' }}</p>
+
+      <hr>
+
+      <!-- ENTREPRISE -->
+      <h3 style="color:#266BCC;">Entreprise</h3>
+
+      <p><b>Nom :</b> {{ company_name or '—' }}</p>
+      <p><b>Secteur :</b> {{ secteur or '—' }}</p>
+      <p><b>Taille :</b> {{ no_of_employees or '—' }}</p>
+
+      {% if activite_autres %}
+      <p><b>Autres activités :</b> {{ activite_autres }}</p>
+      {% endif %}
+
+      <hr>
+
+      <!-- MODULES -->
+      {% if has_modules %}
+      <h3 style="color:#266BCC;">Modules demandés</h3>
+
+      <p>
+      {% if m_compta %}✔ Comptabilité & Finance<br>{% endif %}
+      {% if m_immob %}✔ Immobilisation<br>{% endif %}
+      {% if m_achats %}✔ Achats<br>{% endif %}
+      {% if m_stocks %}✔ Gestion des stocks<br>{% endif %}
+      {% if m_ventes %}✔ Ventes & CRM<br>{% endif %}
+      {% if m_pos %}✔ Point de vente<br>{% endif %}
+      {% if m_rh %}✔ RH & Paie<br>{% endif %}
+      {% if m_prod %}✔ Production<br>{% endif %}
+      {% if m_qual %}✔ Qualité<br>{% endif %}
+      {% if m_projet %}✔ Projet<br>{% endif %}
+      {% if m_support %}✔ Support<br>{% endif %}
+      </p>
+      {% endif %}
+
+      <!-- MIGRATION -->
+      {% if has_migration %}
+      <h3 style="color:#266BCC;">Données à migrer</h3>
+
+      <p>
+      {% if mig_clients %}✔ Clients<br>{% endif %}
+      {% if mig_fournisseurs %}✔ Fournisseurs<br>{% endif %}
+      {% if mig_produits %}✔ Produits / Services<br>{% endif %}
+      {% if mig_factures %}✔ Factures<br>{% endif %}
+      {% if mig_stocks %}✔ Stocks<br>{% endif %}
+      {% if mig_salaries %}✔ Salariés<br>{% endif %}
+      </p>
+      {% endif %}
+
+      <hr>
+
+      <!-- BESOIN -->
+      {% if besoin %}
+      <h3 style="color:#266BCC;">Besoin exprimé</h3>
+      <p>{{ besoin }}</p>
+      {% endif %}
+
+      <!-- CTA -->
+      <div style="text-align:center;margin-top:30px;">
+
+        <a href="{{ doc.get_url() }}"
+           style="background-color:#266BCC;color:#ffffff;
+                  padding:14px 28px;
+                  text-decoration:none;
+                  border-radius:6px;
+                  font-weight:bold;
+                  display:inline-block;">
+          Voir le lead complet →
+        </a>
+
+      </div>
+
+    </td>
+  </tr>
+
+
+
+</table>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>
