@@ -148,7 +148,7 @@ def _get_linkedin_settings():
 
 
 _LINKEDIN_CACHE_KEY = "amoamancustom:linkedin_posts"
-_LINKEDIN_CACHE_TTL = 3600  # 1 heure
+_LINKEDIN_CACHE_TTL = 86400  # 24 heures
 
 
 @frappe.whitelist(allow_guest=True)
@@ -179,6 +179,11 @@ def get_linkedln_post(limit: int = None, org_id: str = None) -> dict:
         resolved_org_id = org_id or settings.org_id or "70907752"
         resolved_limit  = min(int(limit or settings.default_limit or 6), 50)
 
+        # Servir depuis le cache Redis si disponible (evite le 429)
+        cached = frappe.cache().get_value(_LINKEDIN_CACHE_KEY)
+        if cached:
+            return cached
+
         headers = _build_headers(token=token)
 
         url = f"{settings.base_url}/shares"
@@ -191,16 +196,11 @@ def get_linkedln_post(limit: int = None, org_id: str = None) -> dict:
             resp = requests.get(url, params=params, headers=headers, timeout=10)
             resp.raise_for_status()
             data = resp.json()
-            # Mettre en cache si on a des resultats
             if data.get("elements"):
                 frappe.cache().set_value(_LINKEDIN_CACHE_KEY, data, expires_in_sec=_LINKEDIN_CACHE_TTL)
             return data
         except Exception as e:
             frappe.log_error(str(e), "LinkedIn feed")
-            # Retourner le cache si disponible
-            cached = frappe.cache().get_value(_LINKEDIN_CACHE_KEY)
-            if cached:
-                return cached
             return {"elements": []}
     except Exception as e:
         frappe.log_error(str(e), "LinkedIn feed")
