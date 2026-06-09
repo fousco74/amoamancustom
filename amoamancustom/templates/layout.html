@@ -3779,16 +3779,15 @@ frappe.ready(function () {
       $('#cc-analytics, #cc-functional, #cc-marketing').prop('checked', false);
     });
 
-    
+
   }
 });
 
 
 /**
- * irixflow poppup css / notification popup 
+ * irixflow popup / notification popup
  */
-
- (function () {
+(function () {
     const DELAY_MS = 3000;
 
     function waitForCookies(callback) {
@@ -3801,15 +3800,11 @@ frappe.ready(function () {
                 callback();
             }
         });
-
         observer.observe(document.body, { childList: true, subtree: true });
-
-        // fallback
         setTimeout(callback, 5000);
     }
 
     function openPopup() {
-        // Fermer tout select ouvert pour éviter que ses options passent au-dessus du popup
         document.querySelectorAll("select").forEach(function(s) { s.blur(); });
         document.getElementById("irixflow-overlay")?.classList.remove("d-none");
     }
@@ -3822,17 +3817,11 @@ frappe.ready(function () {
         waitForCookies(() => {
             setTimeout(openPopup, DELAY_MS);
         });
-
-        document
-            .getElementById("irixflow-fab")
+        document.getElementById("irixflow-fab")
             ?.addEventListener("click", openPopup);
-
-        document
-            .querySelector(".irixflow-close")
+        document.querySelector(".irixflow-close")
             ?.addEventListener("click", closePopup);
-
-        document
-            .getElementById("irixflow-overlay")
+        document.getElementById("irixflow-overlay")
             ?.addEventListener("click", (e) => {
                 if (e.target.id === "irixflow-overlay") closePopup();
             });
