@@ -233,7 +233,7 @@ main.container { width:100%!important; max-width:100%!important; margin:0; paddi
 }
 .cta-section .glow-cta.g1 { width: 400px; height: 400px; left: -80px; top: -80px; background: #266BCC; }
 .cta-section .glow-cta.g2 { width: 350px; height: 350px; right: -60px; bottom: -60px; background: #F32A57; }
-.cta-inner { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; }
+.cta-inner { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; }
 .cta-section h2 { font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 800; color: #fff; margin-bottom: 16px; }
 .cta-section p { font-size: 1rem; color: #94a3b8; margin-bottom: 36px; line-height: 1.7; }
 .cta-btn-wrap { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
@@ -287,12 +287,12 @@ main.container { width:100%!important; max-width:100%!important; margin:0; paddi
 
     <h1>
       {{ _("Votre entreprise est-elle") }}<br>
-      <span class="accent">{{ _("conforme à la loi ivoirienne") }}</span><br>
+      <span class="accent">{{ _("conforme à la loi ivoirienne ou sénégalaise") }}</span><br>
       {{ _("sur la protection des données ?") }}
     </h1>
 
     <p>
-      {{ _("La loi n°2013-450 du 19 juin 2013 impose des obligations strictes à toutes les entreprises traitant des données personnelles en Côte d'Ivoire. Évaluez votre niveau de conformité en répondant à 15 questions simples.") }}
+      {{ _("La loi ivoirienne n°2013-450 du 19 juin 2013 et la loi sénégalaise n°2008-12 du 25 janvier 2008 imposent des obligations strictes à toutes les entreprises traitant des données personnelles en Côte d'Ivoire et au Sénégal. Évaluez votre niveau de conformité en répondant à 15 questions simples.") }}
     </p>
 
     <div class="hero-badges-row">
@@ -325,7 +325,7 @@ main.container { width:100%!important; max-width:100%!important; margin:0; paddi
     </div>
     <div class="stat-item">
       <div class="stat-num">100 M</div>
-      <div class="stat-label">{{ _("FCFA d'amende maximum (art. 97 Loi n°2013-450)") }}</div>
+      <div class="stat-label">{{ _("FCFA d'amende maximum (cf. Autorité de protection)") }}</div>
     </div>
     <div class="stat-item">
       <div class="stat-num">48h</div>
@@ -348,7 +348,7 @@ main.container { width:100%!important; max-width:100%!important; margin:0; paddi
           <span class="grad">{{ _("confidentiel") }}</span>
         </h2>
         <p class="section-body">
-          {{ _("Le pré-audit de conformité est un outil d'auto-évaluation conçu par nos experts en protection des données personnelles. Il vous permet d'identifier rapidement vos lacunes et de prioriser vos actions de mise en conformité avant un audit formel de l'ARTCI.") }}
+          {{ _("Le pré-audit de conformité est un outil d'auto-évaluation conçu par nos experts en protection des données personnelles. Il vous permet d'identifier rapidement vos lacunes et de prioriser vos actions de mise en conformité avant un audit formel de l'Autorité de protection.") }}
         </p>
         <br>
         <p class="section-body">
@@ -386,7 +386,7 @@ main.container { width:100%!important; max-width:100%!important; margin:0; paddi
           <div class="icon-wrap"><i class="bi bi-file-earmark-text"></i></div>
           <div>
             <h4>{{ _("Registre des traitements") }}</h4>
-            <p>{{ _("Vérification du registre ARTCI et de votre conformité aux obligations déclaratives réglementaires.") }}</p>
+            <p>{{ _("Vérification du registre des traitements de données et de votre conformité aux obligations déclaratives réglementaires.") }}</p>
           </div>
         </div>
       </div>
@@ -406,7 +406,7 @@ main.container { width:100%!important; max-width:100%!important; margin:0; paddi
         {{ _("Les conséquences d'une") }} <span class="grad">{{ _("non-conformité") }}</span>
       </h2>
       <p class="section-body" style="color:#94a3b8;margin:0 auto;">
-        {{ _("La loi n°2013-450 du 19 juin 2013 relative à la protection des données à caractère personnel prévoit des sanctions sévères pour les entreprises qui ne respectent pas leurs obligations.") }}
+        {{ _("La loi ivoirienne et sénégalaise relatives à la protection des données à caractère personnel prévoient des sanctions sévères pour les entreprises qui ne respectent pas leurs obligations.") }}
       </p>
     </div>
 
@@ -419,7 +419,7 @@ main.container { width:100%!important; max-width:100%!important; margin:0; paddi
       <div class="risk-card">
         <span class="risk-icon"><i class="bi bi-x-octagon"></i></span>
         <h4>{{ _("Suspension d'activité") }}</h4>
-        <p>{{ _("L'ARTCI peut ordonner la suspension ou l'interdiction de tout traitement non conforme, avec un impact direct sur votre activité opérationnelle.") }}</p>
+        <p>{{ _("L'Autorité de protection peut ordonner la suspension ou l'interdiction de tout traitement non conforme, avec un impact direct sur votre activité opérationnelle.") }}</p>
       </div>
       <div class="risk-card">
         <span class="risk-icon"><i class="bi bi-building-x"></i></span>
@@ -481,7 +481,7 @@ main.container { width:100%!important; max-width:100%!important; margin:0; paddi
       <div class="benefit-card">
         <div class="benefit-num">05</div>
         <h4>{{ _("Base pour la mise en conformité") }}</h4>
-        <p>{{ _("Le pré-audit constitue la première étape d'un accompagnement global de mise en conformité ARTCI avec nos experts certifiés.") }}</p>
+        <p>{{ _("Le pré-audit constitue la première étape d'un accompagnement global de mise en conformité avec nos experts certifiés.") }}</p>
       </div>
       <div class="benefit-card">
         <div class="benefit-num">06</div>
@@ -545,7 +545,7 @@ main.container { width:100%!important; max-width:100%!important; margin:0; paddi
       {% set faqs = [
         (
           _("À qui s'adresse ce pré-audit ?"),
-          _("Ce pré-audit s'adresse à toute entreprise ivoirienne ou opérant en Côte d'Ivoire qui collecte, traite ou stocke des données personnelles de clients, employés ou partenaires — quelle que soit sa taille ou son secteur d'activité.")
+          _("Ce pré-audit s'adresse à toute entreprise ivoirienne et sénégalaise opérant en Côte d'Ivoire ou au Sénégal qui collecte, traite ou stocke des données personnelles de clients, employés ou partenaires — quelle que soit sa taille ou son secteur d'activité.")
         ),
         (
           _("Qu'est-ce que l'ARTCI et pourquoi est-ce important ?"),
