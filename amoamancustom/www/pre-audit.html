@@ -263,12 +263,6 @@ body { font-family:'Montserrat',sans-serif; background:var(--bg); }
 }
 .btn-outline:hover { border-color: var(--blue); }
 
-/* ── AUTOSAVE ────────────────────────────────────────────────── */
-.autosave-hint {
-  font-size: 12px; color: #94a3b8; text-align: center; margin-top: 14px;
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-}
-.autosave-dot { width: 6px; height: 6px; border-radius: 50%; background: #16a34a; }
 </style>
 
 <!-- Progress bar -->
@@ -318,7 +312,7 @@ body { font-family:'Montserrat',sans-serif; background:var(--bg); }
         </div>
         <div class="field-group">
           <label for="f_phone">{{ _("Téléphone") }}</label>
-          <input id="f_phone" type="tel" placeholder="{{ _('Ex : +225 07 00 00 00 00') }}">
+          <input id="f_phone" type="tel" placeholder="{{ _('Ex : +225 07 00 00 00 00') }}" inputmode="tel" pattern="[+\d\s\-()]+" oninput="this.value=this.value.replace(/[^0-9+\s\-()]/g,'')">
         </div>
         <div class="field-group">
           <label for="f_sector">{{ _("Secteur d'activité") }}</label>
@@ -417,12 +411,12 @@ body { font-family:'Montserrat',sans-serif; background:var(--bg); }
       <div class="confirm-title">{{ _("Merci pour votre participation !") }}</div>
       <div class="confirm-body">
         {{ _("Votre pré-audit a bien été transmis à notre équipe.") }}<br>
-        {{ _("Après analyse de vos réponses, un rapport personnalisé vous sera envoyé par email dans les 24 heures ouvrables.") }}
+        {{ _("Après analyse de vos réponses, un rapport personnalisé vous sera envoyé par email dans les 24/48 heures ouvrables.") }}
       </div>
       <div class="confirm-details">
         <p>✅ {{ _("Questionnaire de 15 questions complété") }}</p>
         <p>📧 {{ _("Rapport envoyé à votre adresse email") }}</p>
-        <p>⏱ {{ _("Délai de traitement : 24 heures ouvrables") }}</p>
+        <p>⏱ {{ _("Délai de traitement : 24/48 heures ouvrables") }}</p>
       </div>
       <div class="confirm-actions">
         <a href="/" class="btn-home">{{ _("Retour à l'accueil") }}</a>
@@ -432,10 +426,6 @@ body { font-family:'Montserrat',sans-serif; background:var(--bg); }
 
   </div><!-- .quiz-card -->
 
-  <div class="autosave-hint" id="autosaveHint" style="display:none;">
-    <span class="autosave-dot"></span>
-    {{ _("Progression sauvegardée automatiquement") }}
-  </div>
 
 </div><!-- .quiz-page -->
 
@@ -542,7 +532,6 @@ function showStep(step, direction) {
   }
 
   STATE.step = step;
-  saveDraft();
 }
 
 function goNext() {
@@ -623,7 +612,6 @@ function selectAnswer(response) {
   };
   applyAnswerStyle(response);
   btnNextQ.disabled = false;
-  saveDraft();
 }
 
 function applyAnswerStyle(response) {
@@ -742,7 +730,6 @@ function submitAudit() {
     args: { data: payload },
     callback(r) {
       if (r && r.message && r.message.success) {
-        localStorage.removeItem('preAuditDraft');
         showStep(17, 'forward');
       } else {
         btn.disabled = false;
@@ -762,56 +749,6 @@ function submitAudit() {
       });
     }
   });
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  AUTOSAVE (localStorage)
-// ═══════════════════════════════════════════════════════════════
-
-function saveDraft() {
-  try {
-    localStorage.setItem('preAuditDraft', JSON.stringify({
-      step: STATE.step,
-      answers: STATE.answers,
-      clientInfo: STATE.clientInfo,
-      savedAt: Date.now()
-    }));
-    const hint = document.getElementById('autosaveHint');
-    if (hint) hint.style.display = 'flex';
-    clearTimeout(window._saveHintTimer);
-    window._saveHintTimer = setTimeout(() => {
-      if (hint) hint.style.display = 'none';
-    }, 2000);
-  } catch(e) {}
-}
-
-function loadDraft() {
-  try {
-    const raw = localStorage.getItem('preAuditDraft');
-    if (!raw) return false;
-    const d = JSON.parse(raw);
-    // Expire après 2 jours
-    if (Date.now() - (d.savedAt || 0) > 172800000) {
-      localStorage.removeItem('preAuditDraft');
-      return false;
-    }
-    if (d.step && d.step >= 1) {
-      Object.assign(STATE, { answers: d.answers || {}, clientInfo: d.clientInfo || {} });
-
-      // Remplir les champs client si disponibles
-      const ci = STATE.clientInfo;
-      if (ci.company_name)   document.getElementById('f_company').value = ci.company_name;
-      if (ci.contact_person) document.getElementById('f_contact').value = ci.contact_person;
-      if (ci.role)           document.getElementById('f_role').value = ci.role;
-      if (ci.email)          document.getElementById('f_email').value = ci.email;
-      if (ci.phone)          document.getElementById('f_phone').value = ci.phone;
-      if (ci.sector)         document.getElementById('f_sector').value = ci.sector;
-      if (ci.company_size)   document.getElementById('f_size').value = ci.company_size;
-
-      return true;
-    }
-  } catch(e) {}
-  return false;
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -865,23 +802,6 @@ document.addEventListener('keydown', e => {
 // ═══════════════════════════════════════════════════════════════
 
 frappe.ready(function () {
-  const hasDraft = loadDraft();
-
-  if (hasDraft && Object.keys(STATE.clientInfo).length > 0) {
-    const lastStep = STATE.step > 15 ? 15 : Math.max(1, STATE.step);
-    frappe.msgprint({
-      title: __('Progression sauvegardée'),
-      message: __('Vous avez une session en cours. Cliquez OK pour la reprendre ou recommencez depuis le début.'),
-      indicator: 'blue',
-      primary_action: {
-        label: __('Reprendre'),
-        action() {
-          showStep(lastStep, 'forward');
-        }
-      }
-    });
-  }
-
   showStep(0, 'forward');
 });
 </script>
