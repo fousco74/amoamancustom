@@ -190,10 +190,10 @@ scheduler_events = {
  		#"amoamancustom.tasks.all"
  	],
  	"daily": [
- 		"amoamancustom.schedulers.employee.set_seniority"
+ 		"amoamancustom.schedulers.employee.set_seniority",
+ 		"amoamancustom.api.refresh_linkedin_cache"
  	],
  	"hourly": [
- 		"amoamancustom.api.refresh_linkedin_cache"
  	],
  	"weekly": [
  		#"amoamancustom.tasks.weekly"
