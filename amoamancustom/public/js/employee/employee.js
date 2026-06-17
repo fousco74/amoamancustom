@@ -9,7 +9,7 @@ frappe.ui.form.on('Employee', {
     },
     status: function (frm){
      const status_flag = frm.doc.status === "Left" ? 1 : 0;
-    frm.set_value('custom_status', status_flag);
+    frm.set_value('custom_left', status_flag);
   },
 
   // Recalcule les parts dès qu'un champ pertinent change
