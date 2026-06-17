@@ -402,9 +402,114 @@ def linkedin_oauth_init() -> dict:
 
 @frappe.whitelist()
 def refresh_linkedin_cache() -> dict:
-    """Force le rafraichissement du cache LinkedIn (appel manuel ou scheduler)."""
+    """
+    Force le rafraichissement du cache LinkedIn (appel manuel ou scheduler).
+    Pre-genere aussi les vignettes des documents (PDF) pour que le site les
+    serve depuis un cache chaud des le premier affichage.
+    """
     frappe.cache().delete_value(_LINKEDIN_CACHE_KEY)
-    return get_linkedln_post()
+    data = get_linkedln_post()
+    try:
+        _li_warm_doc_cache(data.get("elements", []))
+    except Exception as e:
+        frappe.log_error(str(e), "LinkedIn doc prewarm")
+    return data
+
+
+def _li_cache_dir() -> str:
+    """Dossier de cache disque des medias LinkedIn (cree si absent)."""
+    import os
+    cache_dir = frappe.get_site_path("public", "files", "linkedin_cache")
+    os.makedirs(cache_dir, exist_ok=True)
+    return cache_dir
+
+
+def _li_atomic_write(path: str, content: bytes) -> None:
+    """
+    Ecrit `content` dans `path` de maniere atomique (fichier temporaire + rename).
+    Evite qu'une requete concurrente lise un fichier a moitie ecrit (vignette cassee).
+    """
+    import os, tempfile
+    fd, tmp = tempfile.mkstemp(dir=os.path.dirname(path), suffix=".tmp")
+    try:
+        with os.fdopen(fd, "wb") as f:
+            f.write(content)
+        os.replace(tmp, path)   # rename atomique sur le meme filesystem
+    except Exception:
+        try:
+            os.remove(tmp)
+        except OSError:
+            pass
+        raise
+
+
+def _li_doc_cache_path(urn: str) -> str:
+    """Chemin de cache de la vignette d'un document (PDF)."""
+    import os, hashlib
+    return os.path.join(_li_cache_dir(), f"doc_{hashlib.md5(urn.encode()).hexdigest()}.jpg")
+
+
+def _li_render_doc_thumbnail(urn: str, token: str) -> bytes | None:
+    """
+    Telecharge le PDF d'un document LinkedIn et rend sa 1re page en JPEG.
+    Retourne les octets JPEG, ou None si indisponible. Leve en cas d'erreur reseau.
+    """
+    import os, tempfile, subprocess
+    from urllib.parse import quote
+
+    r = requests.get(
+        f"https://api.linkedin.com/rest/documents/{quote(urn, safe='')}",
+        headers=_li_headers(token), timeout=15,
+    )
+    r.raise_for_status()
+    pdf_url = r.json().get("downloadUrl")
+    if not pdf_url:
+        return None
+
+    pr = requests.get(pdf_url, timeout=20)
+    if pr.status_code in (401, 403):
+        pr = requests.get(pdf_url, headers={"Authorization": f"Bearer {token}"}, timeout=20)
+    pr.raise_for_status()
+
+    with tempfile.TemporaryDirectory() as tmp:
+        pdf_path   = os.path.join(tmp, "in.pdf")
+        out_prefix = os.path.join(tmp, "page")
+        with open(pdf_path, "wb") as f:
+            f.write(pr.content)
+        subprocess.run(
+            ["pdftoppm", "-jpeg", "-singlefile", "-f", "1", "-l", "1",
+             "-scale-to", "1000", pdf_path, out_prefix],
+            check=True, timeout=30,
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        )
+        out_jpg = out_prefix + ".jpg"
+        if not os.path.exists(out_jpg):
+            return None
+        with open(out_jpg, "rb") as f:
+            return f.read()
+
+
+def _li_warm_doc_cache(elements: list) -> None:
+    """
+    Pre-genere les vignettes des posts 'document' (appele par refresh_linkedin_cache).
+    Best-effort : une erreur sur un document n'interrompt pas les autres.
+    """
+    import os
+    docs = [e.get("doc_urn") for e in elements
+            if e.get("media_type") == "document" and e.get("doc_urn")]
+    if not docs:
+        return
+    token = _get_linkedin_settings().get_valid_token()
+    for urn in docs:
+        path = _li_doc_cache_path(urn)
+        if os.path.exists(path):
+            continue
+        try:
+            content = _li_render_doc_thumbnail(urn, token)
+            if content:
+                _li_atomic_write(path, content)
+        except Exception as e:
+            frappe.log_error(str(e), "LinkedIn doc prewarm")
 
 
 @frappe.whitelist(allow_guest=True)
@@ -420,9 +525,7 @@ def linkedin_img_proxy(url: str):
         return
 
     url_hash  = hashlib.md5(url.encode()).hexdigest()
-    cache_dir = frappe.get_site_path("public", "files", "linkedin_cache")
-    os.makedirs(cache_dir, exist_ok=True)
-    cached_file = os.path.join(cache_dir, f"li_{url_hash}.jpg")
+    cached_file = os.path.join(_li_cache_dir(), f"li_{url_hash}.jpg")
 
     # Servir depuis le cache disque si disponible
     if os.path.exists(cached_file):
@@ -443,9 +546,8 @@ def linkedin_img_proxy(url: str):
         resp = requests.get(url, headers=headers, timeout=10)
         resp.raise_for_status()
 
-        # Sauvegarder sur disque pour les prochaines requetes
-        with open(cached_file, "wb") as f:
-            f.write(resp.content)
+        # Sauvegarder sur disque (ecriture atomique) pour les prochaines requetes
+        _li_atomic_write(cached_file, resp.content)
 
         frappe.local.response.update({
             "type":         "binary",
@@ -467,75 +569,35 @@ def linkedin_doc_preview(urn: str):
     sa premiere page en JPEG avec poppler (pdftoppm). Le resultat est mis en
     cache sur disque (linkedin_cache/doc_{hash}.jpg) et servi directement ensuite.
     """
-    import re, os, hashlib, tempfile, subprocess
-    from urllib.parse import quote
+    import re, os
 
     if not re.match(r"^urn:li:document:[A-Za-z0-9_-]+$", urn or ""):
         frappe.local.response.http_status_code = 400
         return
 
-    urn_hash    = hashlib.md5(urn.encode()).hexdigest()
-    cache_dir   = frappe.get_site_path("public", "files", "linkedin_cache")
-    os.makedirs(cache_dir, exist_ok=True)
-    cached_file = os.path.join(cache_dir, f"doc_{urn_hash}.jpg")
+    def _serve(content: bytes):
+        frappe.local.response.update({
+            "type": "binary", "filecontent": content,
+            "content_type": "image/jpeg", "filename": "doc.jpg",
+        })
 
-    # Servir depuis le cache disque si disponible
+    cached_file = _li_doc_cache_path(urn)
+
+    # Servir depuis le cache disque si disponible (cas nominal apres pre-generation)
     if os.path.exists(cached_file):
         with open(cached_file, "rb") as f:
-            content = f.read()
-        frappe.local.response.update({
-            "type": "binary", "filecontent": content,
-            "content_type": "image/jpeg", "filename": "doc.jpg",
-        })
+            _serve(f.read())
         return
 
+    # Sinon : generer a la demande, mettre en cache (ecriture atomique), servir
     try:
-        settings = _get_linkedin_settings()
-        token    = settings.get_valid_token()
-
-        # 1) Resoudre l'URL du PDF
-        r = requests.get(
-            f"https://api.linkedin.com/rest/documents/{quote(urn, safe='')}",
-            headers=_li_headers(token), timeout=15,
-        )
-        r.raise_for_status()
-        pdf_url = r.json().get("downloadUrl")
-        if not pdf_url:
+        token   = _get_linkedin_settings().get_valid_token()
+        content = _li_render_doc_thumbnail(urn, token)
+        if not content:
             frappe.local.response.http_status_code = 404
             return
-
-        # 2) Telecharger le PDF (URL signee publique ; Bearer en repli)
-        pr = requests.get(pdf_url, timeout=20)
-        if pr.status_code in (401, 403):
-            pr = requests.get(pdf_url, headers={"Authorization": f"Bearer {token}"}, timeout=20)
-        pr.raise_for_status()
-
-        # 3) Rendre la 1re page en JPEG via poppler
-        with tempfile.TemporaryDirectory() as tmp:
-            pdf_path   = os.path.join(tmp, "in.pdf")
-            out_prefix = os.path.join(tmp, "page")
-            with open(pdf_path, "wb") as f:
-                f.write(pr.content)
-            subprocess.run(
-                ["pdftoppm", "-jpeg", "-singlefile", "-f", "1", "-l", "1",
-                 "-scale-to", "1000", pdf_path, out_prefix],
-                check=True, timeout=30,
-                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-            )
-            out_jpg = out_prefix + ".jpg"
-            if not os.path.exists(out_jpg):
-                frappe.local.response.http_status_code = 502
-                return
-            with open(out_jpg, "rb") as f:
-                content = f.read()
-
-        # 4) Mettre en cache + servir
-        with open(cached_file, "wb") as f:
-            f.write(content)
-        frappe.local.response.update({
-            "type": "binary", "filecontent": content,
-            "content_type": "image/jpeg", "filename": "doc.jpg",
-        })
+        _li_atomic_write(cached_file, content)
+        _serve(content)
     except Exception as e:
         frappe.log_error(str(e), "LinkedIn doc preview")
         frappe.local.response.http_status_code = 502
