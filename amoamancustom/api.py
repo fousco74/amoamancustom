@@ -149,12 +149,154 @@ def _get_linkedin_settings():
 
 _LINKEDIN_CACHE_KEY = "amoamancustom:linkedin_posts"
 _LINKEDIN_CACHE_TTL = 86400  # 24 heures
+# Posts API versionnee (format AAAAMM). A bumper ~1 fois par an.
+_LINKEDIN_API_VERSION = "202506"
+
+
+def _li_rest_base(base_url: str) -> str:
+    """Derive l'URL de base /rest a partir de la Base URL configuree."""
+    from urllib.parse import urlparse
+    p = urlparse(base_url or "https://api.linkedin.com/v2")
+    return f"{p.scheme}://{p.netloc}/rest"
+
+
+def _li_headers(token: str) -> dict:
+    """Headers requis par la Posts API LinkedIn (versionnee)."""
+    return {
+        "Authorization":             f"Bearer {token}",
+        "LinkedIn-Version":          _LINKEDIN_API_VERSION,
+        "X-Restli-Protocol-Version": "2.0.0",
+    }
+
+
+def _li_clean_text(text: str) -> str:
+    """Normalise le texte d'un post : markup LinkedIn, unicode stylise, echappements."""
+    import re, unicodedata
+    if not text:
+        return ""
+    # Markup hashtag / mention : {hashtag|\#|Tag}, {mention|...}
+    text = re.sub(r"\{hashtag\|\\#\|[^}]*\}", "", text)
+    text = re.sub(r"\{mention\|[^}]*\}", "", text)
+    # Caracteres "mathematiques" stylises (gras / italique) -> ASCII
+    text = unicodedata.normalize("NFKC", text)
+    # Echappements LinkedIn : \@  \(  \)  \#  \- ...
+    text = re.sub(r"\\([\\@()\[\]{}|*~_#\-!.])", r"\1", text)
+    # URLs + espaces superflus
+    text = re.sub(r"https?://\S+", "", text)
+    text = re.sub(r"[ \t]+", " ", text)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    return text.strip()
+
+
+def _li_resolve_image(urn: str, token: str) -> str | None:
+    """urn:li:image:... -> downloadUrl affichable (ou None)."""
+    from urllib.parse import quote
+    try:
+        r = requests.get(
+            f"https://api.linkedin.com/rest/images/{quote(urn, safe='')}",
+            headers=_li_headers(token), timeout=10,
+        )
+        if r.ok:
+            return r.json().get("downloadUrl")
+    except Exception:
+        pass
+    return None
+
+
+def _li_resolve_video_thumb(urn: str, token: str) -> str | None:
+    """urn:li:video:... -> URL de la vignette (ou None)."""
+    from urllib.parse import quote
+    try:
+        r = requests.get(
+            f"https://api.linkedin.com/rest/videos/{quote(urn, safe='')}",
+            headers=_li_headers(token), timeout=10,
+        )
+        if r.ok:
+            thumb = r.json().get("thumbnail")
+            if thumb and str(thumb).startswith("urn:li:image:"):
+                return _li_resolve_image(thumb, token)
+            return thumb
+    except Exception:
+        pass
+    return None
+
+
+def _li_resolve_media(content: dict, token: str, resolve_reference: bool = True) -> dict:
+    """Normalise le bloc `content` d'un post -> {media_type, image, images, title}."""
+    out = {"media_type": "none", "image": None, "images": [], "title": None, "doc_urn": None}
+    if not content:
+        return out
+
+    # Media simple (image / document / video)
+    media = content.get("media")
+    if media and media.get("id"):
+        urn = media["id"]
+        out["title"] = media.get("title")
+        if urn.startswith("urn:li:image:"):
+            out["media_type"] = "image"
+            out["image"]      = _li_resolve_image(urn, token)
+        elif urn.startswith("urn:li:document:"):
+            out["media_type"] = "document"   # PDF / carrousel : vignette generee a la demande
+            out["doc_urn"]    = urn
+        elif urn.startswith("urn:li:video:"):
+            out["media_type"] = "video"
+            out["image"]      = _li_resolve_video_thumb(urn, token)
+        return out
+
+    # Multi-images (on ne resout que la 1re pour la perf)
+    multi = content.get("multiImage")
+    if multi and multi.get("images"):
+        urns  = [im.get("id") for im in multi["images"] if im.get("id")]
+        first = _li_resolve_image(urns[0], token) if urns else None
+        out["media_type"] = "images"
+        out["image"]      = first
+        out["images"]     = [first] if first else []
+        return out
+
+    # Article / lien externe
+    article = content.get("article")
+    if article:
+        out["media_type"] = "article"
+        out["title"]      = article.get("title")
+        thumb = article.get("thumbnail")
+        if thumb:
+            out["image"] = (_li_resolve_image(thumb, token)
+                            if str(thumb).startswith("urn:li:image:") else thumb)
+        return out
+
+    # Repartage : on affiche l'apercu du media du post d'origine
+    ref = content.get("reference")
+    if ref and resolve_reference:
+        from urllib.parse import quote
+        ref_urn = ref.get("id") if isinstance(ref, dict) else (ref if isinstance(ref, str) else None)
+        if ref_urn and ref_urn.startswith("urn:li:"):
+            try:
+                rr = requests.get(
+                    f"https://api.linkedin.com/rest/posts/{quote(ref_urn, safe='')}",
+                    headers=_li_headers(token), timeout=10,
+                )
+                if rr.ok:
+                    inner = _li_resolve_media(rr.json().get("content"), token, resolve_reference=False)
+                    if inner["media_type"] != "none":
+                        return inner
+            except Exception:
+                pass
+        out["media_type"] = "reshare"
+        return out
+
+    # Sondage (pas de media)
+    if content.get("poll"):
+        out["media_type"] = "poll"
+        return out
+
+    return out
 
 
 @frappe.whitelist(allow_guest=True)
 def get_linkedln_post(limit: int = None, org_id: str = None) -> dict:
     """
-    Recupere les posts d'une organisation LinkedIn via /v2/shares.
+    Recupere les posts d'une organisation LinkedIn via la Posts API (/rest/posts).
+    Retourne une liste normalisee (text / created_time / post_url / media_type / image / images / title).
 
     Les parametres par defaut sont lus depuis LinkedIn Settings.
     Les resultats sont mis en cache Redis (1h). En cas d'indisponibilite
@@ -174,40 +316,56 @@ def get_linkedln_post(limit: int = None, org_id: str = None) -> dict:
     """
     try:
         settings = _get_linkedin_settings()
-        token    = settings.get_valid_token()
 
+        # Servir depuis le cache Redis si disponible (evite les appels repetes / 429)
+        cached = frappe.cache().get_value(_LINKEDIN_CACHE_KEY)
+        if cached:
+            return cached
+
+        token = settings.get_valid_token()
         resolved_org_id = org_id or settings.org_id or "70907752"
         resolved_limit  = min(int(limit or settings.default_limit or 6), 50)
 
-        # Servir depuis le cache Redis si disponible (evite le 429)
-        cached = frappe.cache().get_value(_LINKEDIN_CACHE_KEY)
-        if cached:
-            return cached
-
-        headers = _build_headers(token=token)
-
-        url = f"{settings.base_url}/shares"
+        url = f"{_li_rest_base(settings.base_url)}/posts"
         params = {
-            "q":      "owners",
-            "owners": f"urn:li:organization:{resolved_org_id}",
+            "q":      "author",
+            "author": f"urn:li:organization:{resolved_org_id}",
             "count":  resolved_limit,
+            "sortBy": "LAST_MODIFIED",
         }
         try:
-            resp = requests.get(url, params=params, headers=headers, timeout=10)
+            resp = requests.get(url, params=params, headers=_li_headers(token), timeout=15)
             resp.raise_for_status()
-            data = resp.json()
-            if data.get("elements"):
-                frappe.cache().set_value(_LINKEDIN_CACHE_KEY, data, expires_in_sec=_LINKEDIN_CACHE_TTL)
-            return data
+            raw = resp.json()
         except Exception as e:
             frappe.log_error(str(e), "LinkedIn feed")
-            return {"elements": []}
+            cached = frappe.cache().get_value(_LINKEDIN_CACHE_KEY)
+            return cached or {"elements": []}
+
+        elements = []
+        for post in raw.get("elements", []):
+            if post.get("lifecycleState") != "PUBLISHED":
+                continue
+            media = _li_resolve_media(post.get("content"), token)
+            elements.append({
+                "text":         _li_clean_text(post.get("commentary", "")),
+                "created_time": post.get("createdAt") or post.get("publishedAt"),
+                "post_url":     f"https://www.linkedin.com/feed/update/{post.get('id')}",
+                "media_type":   media["media_type"],
+                "image":        media["image"],
+                "images":       media["images"],
+                "title":        media["title"],
+                "doc_urn":      media["doc_urn"],
+            })
+
+        data = {"elements": elements}
+        if elements:
+            frappe.cache().set_value(_LINKEDIN_CACHE_KEY, data, expires_in_sec=_LINKEDIN_CACHE_TTL)
+        return data
     except Exception as e:
         frappe.log_error(str(e), "LinkedIn feed")
         cached = frappe.cache().get_value(_LINKEDIN_CACHE_KEY)
-        if cached:
-            return cached
-        return {"elements": []}
+        return cached or {"elements": []}
 
 
 @frappe.whitelist()
@@ -257,7 +415,7 @@ def linkedin_img_proxy(url: str):
     Si le fichier est deja en cache, il est servi directement sans appel reseau.
     """
     import re, hashlib, os
-    if not re.match(r'^https://media\.licdn\.com/', url):
+    if not re.match(r'^https://[\w.-]*\.licdn\.com/', url):
         frappe.local.response.http_status_code = 403
         return
 
@@ -297,6 +455,89 @@ def linkedin_img_proxy(url: str):
         })
     except Exception as e:
         frappe.log_error(str(e), "LinkedIn img proxy")
+        frappe.local.response.http_status_code = 502
+
+
+@frappe.whitelist(allow_guest=True)
+def linkedin_doc_preview(urn: str):
+    """
+    Genere une vignette (1re page) d'un document LinkedIn (PDF) -> image JPEG.
+
+    Resout l'URL du PDF via /rest/documents/{urn}, telecharge le PDF, et rend
+    sa premiere page en JPEG avec poppler (pdftoppm). Le resultat est mis en
+    cache sur disque (linkedin_cache/doc_{hash}.jpg) et servi directement ensuite.
+    """
+    import re, os, hashlib, tempfile, subprocess
+    from urllib.parse import quote
+
+    if not re.match(r"^urn:li:document:[A-Za-z0-9_-]+$", urn or ""):
+        frappe.local.response.http_status_code = 400
+        return
+
+    urn_hash    = hashlib.md5(urn.encode()).hexdigest()
+    cache_dir   = frappe.get_site_path("public", "files", "linkedin_cache")
+    os.makedirs(cache_dir, exist_ok=True)
+    cached_file = os.path.join(cache_dir, f"doc_{urn_hash}.jpg")
+
+    # Servir depuis le cache disque si disponible
+    if os.path.exists(cached_file):
+        with open(cached_file, "rb") as f:
+            content = f.read()
+        frappe.local.response.update({
+            "type": "binary", "filecontent": content,
+            "content_type": "image/jpeg", "filename": "doc.jpg",
+        })
+        return
+
+    try:
+        settings = _get_linkedin_settings()
+        token    = settings.get_valid_token()
+
+        # 1) Resoudre l'URL du PDF
+        r = requests.get(
+            f"https://api.linkedin.com/rest/documents/{quote(urn, safe='')}",
+            headers=_li_headers(token), timeout=15,
+        )
+        r.raise_for_status()
+        pdf_url = r.json().get("downloadUrl")
+        if not pdf_url:
+            frappe.local.response.http_status_code = 404
+            return
+
+        # 2) Telecharger le PDF (URL signee publique ; Bearer en repli)
+        pr = requests.get(pdf_url, timeout=20)
+        if pr.status_code in (401, 403):
+            pr = requests.get(pdf_url, headers={"Authorization": f"Bearer {token}"}, timeout=20)
+        pr.raise_for_status()
+
+        # 3) Rendre la 1re page en JPEG via poppler
+        with tempfile.TemporaryDirectory() as tmp:
+            pdf_path   = os.path.join(tmp, "in.pdf")
+            out_prefix = os.path.join(tmp, "page")
+            with open(pdf_path, "wb") as f:
+                f.write(pr.content)
+            subprocess.run(
+                ["pdftoppm", "-jpeg", "-singlefile", "-f", "1", "-l", "1",
+                 "-scale-to", "1000", pdf_path, out_prefix],
+                check=True, timeout=30,
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            )
+            out_jpg = out_prefix + ".jpg"
+            if not os.path.exists(out_jpg):
+                frappe.local.response.http_status_code = 502
+                return
+            with open(out_jpg, "rb") as f:
+                content = f.read()
+
+        # 4) Mettre en cache + servir
+        with open(cached_file, "wb") as f:
+            f.write(content)
+        frappe.local.response.update({
+            "type": "binary", "filecontent": content,
+            "content_type": "image/jpeg", "filename": "doc.jpg",
+        })
+    except Exception as e:
+        frappe.log_error(str(e), "LinkedIn doc preview")
         frappe.local.response.http_status_code = 502
 
 

@@ -237,6 +237,23 @@
     background: linear-gradient(135deg,#E8EEFF,#FFE8F0);
 }
 
+/* ══ Carte document / PDF ══════════════════════════════ */
+.actu-doc-card {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 18px;
+    text-align: center;
+    background: linear-gradient(135deg,#EAF1FF,#F5F0FF);
+}
+.actu-doc-icon  { font-size: 52px; line-height: 1; }
+.actu-doc-title { font-size: .9rem; font-weight: 600; color: var(--text); }
+.actu-doc-cta   { font-size: .78rem; font-weight: 600; color: #6366f1; }
+
 /* ══ Pied de card ══════════════════════════════════════ */
 .actu-feed-footer {
     display: flex;
@@ -310,57 +327,13 @@ frappe.ready(async function () {
         return new Date(ms).toLocaleDateString("fr-FR",
             { day: "numeric", month: "short", year: "numeric" });
     }
-    function _clean(text) {
-        return text
-            .replace(/[\u{1D400}-\u{1D7FF}]/gu, c => {
-                const cp = c.codePointAt(0);
-                if (cp >= 0x1D400 && cp <= 0x1D419) return String.fromCharCode(cp - 0x1D400 + 65);
-                if (cp >= 0x1D41A && cp <= 0x1D433) return String.fromCharCode(cp - 0x1D41A + 97);
-                if (cp >= 0x1D7CE && cp <= 0x1D7D7) return String.fromCharCode(cp - 0x1D7CE + 48);
-                return c;
-            })
-            .replace(/#\w+/g, "").replace(/@\w+/g, "")
-            .replace(/https?:\/\/\S+/g, "").replace(/_{3,}/g, "")
-            .replace(/\s+/g, " ").trim();
-    }
     function _excerpt(text, n = 35) {
         const w = text.split(" ").filter(Boolean);
         return w.length <= n ? text : w.slice(0, n).join(" ").replace(/[,;:—–-]+$/, "") + "\u2026";
     }
-    function _isVideo(url) {
-        return /\.(mp4|webm|ogg|mov)([\?#]|$)/i.test(url);
-    }
-
-    /* ── Élément média (image ou vidéo) ────────────────── */
-    function _buildMedia(url) {
+    /* ── Image (via proxy serveur) ─────────────────────── */
+    function _buildImage(url, type) {
         const proxyUrl = "/api/method/amoamancustom.api.linkedin_img_proxy?url=" + encodeURIComponent(url);
-
-        if (_isVideo(url)) {
-            // Vidéo avec bouton play superposé
-            const wrap = document.createElement("div");
-            wrap.className = "actu-video-wrap";
-
-            const video = document.createElement("video");
-            video.src = url;
-            video.preload = "metadata";
-            video.playsInline = true;
-            video.style.cssText = "width:100%;height:auto;display:block;";
-
-            const btn = document.createElement("div");
-            btn.className = "actu-play-btn";
-            btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
-
-            wrap.addEventListener("click", () => {
-                if (video.paused) { video.play(); wrap.classList.add("playing"); }
-                else              { video.pause(); wrap.classList.remove("playing"); }
-            });
-
-            wrap.appendChild(video);
-            wrap.appendChild(btn);
-            return wrap;
-        }
-
-        // Image via proxy
         const img = document.createElement("img");
         img.src = proxyUrl;
         img.alt = "";
@@ -371,18 +344,49 @@ frappe.ready(async function () {
             ph.innerHTML = "<span>💼</span>";
             img.replaceWith(ph);
         });
+        if (type === "video") {
+            // Vidéo : vignette + bouton play, le clic ouvre le post LinkedIn
+            const wrap = document.createElement("div");
+            wrap.className = "actu-video-wrap";
+            wrap.appendChild(img);
+            const btn = document.createElement("div");
+            btn.className = "actu-play-btn";
+            btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
+            wrap.appendChild(btn);
+            return wrap;
+        }
+        return img;
+    }
+
+    /* ── Carte document / PDF (repli si la vignette échoue) ── */
+    function _buildDocCard(title) {
+        const d = document.createElement("div");
+        d.className = "actu-doc-card";
+        d.innerHTML = `
+            <div class="actu-doc-icon">📄</div>
+            <div class="actu-doc-title">${frappe.utils.escape_html(title || "Document")}</div>
+            <div class="actu-doc-cta">Voir le document →</div>`;
+        return d;
+    }
+
+    /* ── Aperçu document : vignette de la 1re page (générée serveur) ── */
+    function _buildDocPreview(urn, title) {
+        const src = "/api/method/amoamancustom.api.linkedin_doc_preview?urn=" + encodeURIComponent(urn);
+        const img = document.createElement("img");
+        img.src = src;
+        img.alt = title || "Document";
+        img.loading = "eager";
+        img.addEventListener("error", () => img.replaceWith(_buildDocCard(title)));
         return img;
     }
 
     /* ── Slide LinkedIn ────────────────────────────────── */
     function _buildSlide(post) {
-        const text     = _clean(post.text?.text || "");
-        const date     = _fmt(post.created?.time);
-        const postUrl  = post.activity
-            ? `https://www.linkedin.com/feed/update/${post.activity}`
-            : "https://www.linkedin.com/company/amoaman-associes";
-        const entities = post.content?.contentEntities || [];
-        const thumb    = entities[0]?.entityLocation || entities[0]?.thumbnails?.[0]?.resolvedUrl;
+        const text    = post.text || "";
+        const date    = _fmt(post.created_time);
+        const postUrl = post.post_url || "https://www.linkedin.com/company/amoaman-associes";
+        const type    = post.media_type || "none";
+        const img     = post.image || null;
 
         const slide = document.createElement("div");
         slide.className = "swiper-slide";
@@ -394,21 +398,30 @@ frappe.ready(async function () {
         if (text) textDiv.innerHTML += `<p class="mb-0">${frappe.utils.escape_html(_excerpt(text))}</p>`;
         slide.appendChild(textDiv);
 
-        // ── Média en bas (dans un conteneur contraint)
-        if (thumb) {
-            const a = document.createElement("a");
-            a.href = postUrl;
-            a.target = "_blank";
-            a.rel = "noopener";
-            a.className = "actu-slide-media-link";
+        // ── Média en bas (conteneur contraint), clic → post LinkedIn
+        const a = document.createElement("a");
+        a.href = postUrl;
+        a.target = "_blank";
+        a.rel = "noopener";
+        a.className = "actu-slide-media-link";
 
-            const wrap = document.createElement("div");
-            wrap.className = "actu-li-media-wrap";
-            wrap.appendChild(_buildMedia(thumb));
-            a.appendChild(wrap);
-            slide.appendChild(a);
+        const wrap = document.createElement("div");
+        wrap.className = "actu-li-media-wrap";
+
+        if (img) {
+            wrap.appendChild(_buildImage(img, type));
+        } else if (type === "document" && post.doc_urn) {
+            wrap.appendChild(_buildDocPreview(post.doc_urn, post.title));
+        } else {
+            const icons = { poll: "📊", reshare: "🔁", none: "💼" };
+            const ph = document.createElement("div");
+            ph.className = "actu-slide-noimg";
+            ph.innerHTML = `<span>${icons[type] || "💼"}</span>`;
+            wrap.appendChild(ph);
         }
 
+        a.appendChild(wrap);
+        slide.appendChild(a);
         return slide;
     }
 
