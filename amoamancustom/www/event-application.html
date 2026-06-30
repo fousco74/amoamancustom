@@ -22,7 +22,7 @@ main.container {
   font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   color: var(--text);
 }
-.am-apply * { box-sizing: border-box; }
+
 
 /* HERO */
 .am-apply .hero {
@@ -32,13 +32,19 @@ main.container {
   border-bottom: 1px solid rgba(8,26,42,.06);
 }
 .am-apply .hero h1 {
-  margin: 0 0 8px;
+  margin: 0 auto 8px;
+  max-width: 100%;
   font-weight: 900;
-  font-size: clamp(1.6rem, 1rem + 2.5vw, 2.4rem);
+  font-size: clamp(1.1rem, 1rem + 2.5vw, 2.4rem);
   background: var(--grad);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: normal;
+  padding: 4px 8px;
+  line-height: 1.4;
 }
 .am-apply .hero p {
   margin: 0 auto;
@@ -46,13 +52,17 @@ main.container {
   color: #475569;
   font-size: 14px;
   line-height: 1.6;
+  text-wrap: wrap !important;
+  overflow-wrap: break-word;
+  word-break: normal;
+  padding: 0 8px;
 }
 
 /* WRAP */
 .am-apply .wrap {
   max-width: 1000px !important;
-  margin: -52px auto 80px;
-  padding: 0 16px;
+  margin: -52px auto 0;
+  padding: 0 16px clamp(64px, 12vh, 140px);
 }
 
 /* CARD */
@@ -64,10 +74,6 @@ main.container {
   padding: 28px;
   width: 100% !important;
 }
-@media (max-width: 575.98px) {
-  .am-apply .card { padding: 20px 16px; }
-}
-
 /* EVENT SUMMARY */
 .ev-summary {
   display: flex;
@@ -94,8 +100,8 @@ main.container {
 }
 .ev-summary .ev-info { min-width: 0; }
 .ev-summary .ev-info strong {
-  display: block; font-size: 15px; font-weight: 900;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  display: block; font-size: clamp(13px, 1.5vw, 15px); font-weight: 900;
+  white-space: normal; overflow-wrap: break-word; word-break: normal;
 }
 .ev-summary .ev-info .ev-meta-line {
   margin-top: 4px; font-size: 12px; color: var(--muted);
@@ -131,10 +137,8 @@ main.container {
   grid-template-columns: 1fr 1fr;
   gap: 30px;
   margin-bottom: 20px;
-  padding: 12px 15px;
+  padding: 12px 15px !important;
 }
-@media (max-width: 575.98px) { .form-grid { grid-template-columns: 1fr; } }
-
 .fg { display: flex; flex-direction: column; gap: 5px; }
 .fg.full { grid-column: 1 / -1; }
 
@@ -233,6 +237,32 @@ main.container {
 }
 .btn-back:hover { color: var(--text); }
 
+/* ── Responsive form footer (phones & small viewports) ── */
+@media (max-width: 480px) {
+  .form-event-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+  .btn-submit {
+    width: 100%;
+    justify-content: center;
+    padding: 13px 22px;
+    font-size: 15px;
+  }
+  .btn-back {
+    justify-content: center;
+    font-size: 14px;
+  }
+}
+
+/* ── Safe-area for notched phones (iPhone 15, etc.) ── */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .am-apply .wrap {
+    padding-bottom: calc(clamp(64px, 12vh, 140px) + env(safe-area-inset-bottom));
+  }
+}
+
 
 
 /* SUCCESS */
@@ -258,11 +288,198 @@ main.container {
   display: none; margin-bottom: 14px;
 }
 .alert-box.error { background: #FEF2F2; border: 1px solid #FECACA; color: #991B1B; }
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE — Mobile-first tweaks (all devices)
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Very small phones (≤ 400px) ── */
+@media (max-width: 400px) {
+  .am-apply .hero {
+    padding: 32px 12px 56px;
+  }
+  .am-apply .hero h1 {
+    font-size: 1.1rem;
+  }
+  .am-apply .hero p {
+    font-size: 12px;
+  }
+  .am-apply .wrap {
+    margin-top: -38px;
+    padding: 0 10px clamp(56px, 10vh, 100px);
+  }
+  .am-apply .card {
+    padding: 16px 12px;
+  }
+  .ev-summary {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px;
+  }
+  .ev-summary .ev-thumb,
+  .ev-summary .ev-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 22px;
+  }
+  .ev-summary .ev-info strong {
+    font-size: 13px;
+  }
+  .ev-summary .ev-info .ev-meta-line {
+    font-size: 11px;
+    gap: 4px;
+  }
+  .form-grid {
+    gap: 16px;
+    padding: 8px 0;
+  }
+  .fg input,
+  .fg select,
+  .fg textarea {
+    font-size: 13px;
+    padding: 9px 10px;
+  }
+  .fg label {
+    font-size: 11px;
+  }
+  .consent-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .consent-row label {
+    font-size: 11px;
+  }
+  .section-label {
+    font-size: 10px;
+    margin-bottom: 10px;
+  }
+  .btn-ghost {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ── Small phones (≤ 480px) ── */
+@media (min-width: 401px) and (max-width: 480px) {
+  .am-apply .hero {
+    padding: 40px 14px 64px;
+  }
+  .am-apply .hero h1 {
+    font-size: 1.2rem;
+  }
+  .am-apply .hero p {
+    font-size: 13px;
+  }
+  .am-apply .wrap {
+    margin-top: -44px;
+    padding: 0 14px clamp(60px, 10vh, 110px);
+  }
+  .am-apply .card {
+    padding: 18px 14px;
+  }
+  .ev-summary {
+    gap: 10px;
+    padding: 12px 14px;
+  }
+  .ev-summary .ev-info strong {
+    font-size: 14px;
+  }
+  .form-grid {
+    gap: 20px;
+    padding: 8px 0;
+  }
+  .btn-ghost {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ── Phablets / small landscape (≤ 575.98px) ── */
+@media (max-width: 575.98px) {
+  .am-apply .card {
+    padding: 20px 16px;
+  }
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .am-apply .hero {
+    padding: 44px 16px 68px;
+  }
+  .am-apply .wrap {
+    padding: 0 16px clamp(60px, 10vh, 110px);
+  }
+}
+
+/* ── Tablets portrait (481px – 768px) ── */
+@media (min-width: 481px) and (max-width: 768px) {
+  .am-apply .wrap {
+    padding: 0 20px clamp(64px, 12vh, 130px);
+  }
+  .form-grid {
+    gap: 24px;
+    padding: 10px 10px;
+  }
+}
+
+/* ── Short viewports (landscape phones, laptops like ThinkPad) ── */
+@media (max-height: 750px) {
+  .am-apply .hero {
+    padding: 24px 16px 44px;
+  }
+  .am-apply .hero h1 {
+    font-size: 1.15rem;
+  }
+  .am-apply .hero p {
+    font-size: 12px;
+  }
+  .am-apply .wrap {
+    margin-top: -32px;
+    padding: 0 16px clamp(40px, 8vh, 80px);
+  }
+  .am-apply .card {
+    padding: 14px;
+  }
+  .ev-summary {
+    padding: 10px 12px;
+    margin-bottom: 14px;
+  }
+  .form-grid {
+    gap: 14px;
+    margin-bottom: 10px;
+  }
+  .fg input,
+  .fg select,
+  .fg textarea {
+    padding: 7px 10px;
+    font-size: 13px;
+  }
+  .fg textarea {
+    min-height: 56px;
+  }
+  .section-label {
+    margin-bottom: 6px;
+  }
+  .consent-row {
+    padding: 8px 10px;
+    margin-bottom: 10px;
+  }
+  .consent-row label {
+    font-size: 11px;
+  }
+  .form-event-footer {
+    padding-top: 10px;
+  }
+  .am-apply {
+    padding-bottom: clamp(16px, 3vh, 40px);
+  }
+}
+
 </style>
 
 <div class="am-apply">
   <section class="hero">
-    <h1>{{ _("Postuler à l'événement") }}</h1>
+    <h1>{{ _("S'inscrire à l'événement") }}</h1>
     <p>{{ event.title }}</p>
   </section>
 
@@ -324,7 +541,7 @@ main.container {
           <input type="hidden" id="f-event" value="{{ event.name | e }}">
 
           {# Identité #}
-          <p class="section-label">{{ _("Vos informations") }}</p>
+          <p class="section-label">{{ _("Vos événements") }}</p>
           <div class="form-grid">
 
             <div class="fg" id="fg-full_name">
@@ -374,7 +591,7 @@ main.container {
           <div class="consent-row">
             <input type="checkbox" id="f-consent" value="1">
             <label for="f-consent">
-              {{ _("J'accepte d'être recontacté(e) par Amoaman concernant cet événement ou d'autres formations similaires.") }}
+              {{ _("J'accepte d'être recontacté(e) par Amoaman concernant cet événement ou d'autres événements similaires.") }}
             </label>
           </div>
 
@@ -383,23 +600,33 @@ main.container {
               <i class="bi bi-arrow-left"></i> {{ _("Retour à l'événement") }}
             </a>
             <button type="submit" class="btn-submit" id="btn-submit">
-              <i class="bi bi-send"></i> {{ _("Envoyer ma candidature") }}
+              <i class="bi bi-send"></i> {{ _("Soumettre") }}
             </button>
           </div>
         </form>
       </div>
 
       {# ── Succès ── #}
-      <div id="form-success" style="display: none;">
-        <div class="success-box">
-          <div class="s-icon">🎉</div>
-          <h2>{{ _("Candidature envoyée !") }}</h2>
-          <p>{{ _("Merci pour votre intérêt. Nous avons bien reçu votre candidature et vous recontacterons prochainement.") }}</p>
-          <a class="btn-ghost" href="/events">
-            <i class="bi bi-calendar-event"></i> {{ _("Voir tous les événements") }}
-          </a>
-        </div>
+    <div id="form-success" style="display: none;">
+      <div class="success-box">
+        <div class="s-icon">🎉</div>
+
+        <h2>
+          {{ _("Merci pour votre visite. Votre inscription a bien été enregistrée.") }}
+        </h2>
+
+        <p>
+          {{ _("Vous recevrez prochainement un e-mail de confirmation contenant les informations") }}
+          {{ _("de la") if event.type == "Formation" else _("du") }}
+          {{ event.type }}.
+        </p>
+
+        <a class="btn-ghost" href="/events">
+          <i class="bi bi-calendar-event"></i>
+          {{ _("Voir tous les événements") }}
+        </a>
       </div>
+    </div>
 
       {% endif %}
 
