@@ -43,7 +43,7 @@
                         <div class="actu-feed-avatar ac-avatar">🎓</div>
                         <div>
                             <div class="actu-feed-name">{{ _("Amoaman Academy") }}</div>
-                            <div class="actu-feed-sub">{{ _("Formations & Événements") }}</div>
+                            <div class="actu-feed-sub">{{ _("Événements") }}</div>
                         </div>
                     </div>
 
@@ -55,7 +55,7 @@
                                     {% set title = ev.title or ev.program_title or ev.name %}
                                     {% set img   = ev.image or ev.cover_image %}
                                     {% set href  = '/' ~ (ev.route or '').lstrip('/') %}
-                                    {% set badge = ev.badge_label or _("Formation") %}
+                                    {% set badge = ev.type or _("événements") %}
 
                                     <div class="swiper-slide">
                                         <div class="actu-slide-text">
@@ -77,12 +77,12 @@
                                 <div class="swiper-slide">
                                     <div class="actu-slide-text">
                                         <span class="actu-slide-badge">{{ _("Bientôt") }}</span>
-                                        <p class="actu-slide-title mt-1 mb-0">{{ _("Aucune formation disponible pour le moment.") }}</p>
+                                        <p class="actu-slide-title mt-1 mb-0">{{ _("Aucun événement disponible pour le moment.") }}</p>
                                     </div>
                                     <a href="/events" class="actu-slide-media-link">
                                         <div class="actu-ac-media-wrap">
                                             <img src="assets/amoamancustom/images/event2.jpg"
-                                                 alt="Bannière formation" loading="lazy">
+                                                 alt="Bannière événement" loading="lazy">
                                         </div>
                                     </a>
                                 </div>
@@ -94,7 +94,7 @@
                     <div class="actu-feed-footer">
                         <div class="swiper-pagination actu-pagination academy-pagination"></div>
                         <a href="/events" class="actu-feed-cta">
-                            {{ _("Voir nos formations") }} →
+                            {{ _("Voir nos événements") }} →
                         </a>
                     </div>
                 </div>
