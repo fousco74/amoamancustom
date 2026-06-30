@@ -1,6 +1,207 @@
 [
  {
   "completed_by": "Administrator",
+  "completed_by_role": "System Manager",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-05-21 17:00:54.023236",
+  "name": "hd8svt8ei2",
+  "permitted_roles": [
+   {
+    "role": "System Manager"
+   }
+  ],
+  "reference_doctype": "Data Compliance Pre Audit",
+  "reference_name": "DCPA-2026-00001",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Nouveau"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "System Manager",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-05-21 17:04:22.561644",
+  "name": "hlssqnb5o6",
+  "permitted_roles": [
+   {
+    "role": "System Manager"
+   }
+  ],
+  "reference_doctype": "Data Compliance Pre Audit",
+  "reference_name": "DCPA-2026-00001",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "En analyse"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "System Manager",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-05-21 17:04:30.599512",
+  "name": "jn1aimfu9r",
+  "permitted_roles": [
+   {
+    "role": "System Manager"
+   }
+  ],
+  "reference_doctype": "Data Compliance Pre Audit",
+  "reference_name": "DCPA-2026-00001",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Rapport rédigé"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "System Manager",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-05-21 17:04:34.860974",
+  "name": "jpibjm2sft",
+  "permitted_roles": [
+   {
+    "role": "System Manager"
+   }
+  ],
+  "reference_doctype": "Data Compliance Pre Audit",
+  "reference_name": "DCPA-2026-00001",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Rapport envoyé"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "System Manager",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-05-22 18:00:41.029698",
+  "name": "uq2rft0bak",
+  "permitted_roles": [
+   {
+    "role": "System Manager"
+   }
+  ],
+  "reference_doctype": "Data Compliance Pre Audit",
+  "reference_name": "DCPA-2026-00002",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Nouveau"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "System Manager",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-05-22 18:00:42.965764",
+  "name": "0eqho97jkq",
+  "permitted_roles": [
+   {
+    "role": "System Manager"
+   }
+  ],
+  "reference_doctype": "Data Compliance Pre Audit",
+  "reference_name": "DCPA-2026-00002",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "En analyse"
+ },
+ {
+  "completed_by": "Administrator",
+  "completed_by_role": "System Manager",
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-05-22 18:00:45.903381",
+  "name": "0fdr3bhmgj",
+  "permitted_roles": [
+   {
+    "role": "System Manager"
+   }
+  ],
+  "reference_doctype": "Data Compliance Pre Audit",
+  "reference_name": "DCPA-2026-00002",
+  "status": "Completed",
+  "user": null,
+  "workflow_state": "Rapport rédigé"
+ },
+ {
+  "completed_by": null,
+  "completed_by_role": null,
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-05-22 18:00:45.918581",
+  "name": "0gbqafdglf",
+  "permitted_roles": [
+   {
+    "role": "System Manager"
+   }
+  ],
+  "reference_doctype": "Data Compliance Pre Audit",
+  "reference_name": "DCPA-2026-00002",
+  "status": "Open",
+  "user": null,
+  "workflow_state": "Rapport envoyé"
+ },
+ {
+  "completed_by": null,
+  "completed_by_role": null,
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-06-03 12:42:52.740532",
+  "name": "j7vr9diuhp",
+  "permitted_roles": [
+   {
+    "role": "System Manager"
+   }
+  ],
+  "reference_doctype": "Data Compliance Pre Audit",
+  "reference_name": "DCPA-2026-00003",
+  "status": "Open",
+  "user": null,
+  "workflow_state": "Nouveau"
+ },
+ {
+  "completed_by": null,
+  "completed_by_role": null,
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-06-15 01:26:29.064489",
+  "name": "jtin0gug7g",
+  "permitted_roles": [
+   {
+    "role": "Chargé de Recrutement"
+   },
+   {
+    "role": "Référent Technique"
+   }
+  ],
+  "reference_doctype": "Onboarding Plan",
+  "reference_name": "ONB-00001",
+  "status": "Open",
+  "user": null,
+  "workflow_state": "Préparation"
+ },
+ {
+  "completed_by": null,
+  "completed_by_role": null,
+  "docstatus": 0,
+  "doctype": "Workflow Action",
+  "modified": "2026-06-15 01:26:29.515678",
+  "name": "jtnuh6bpiu",
+  "permitted_roles": [
+   {
+    "role": "Référent Technique"
+   }
+  ],
+  "reference_doctype": "Incident",
+  "reference_name": "INC-2026-00001",
+  "status": "Open",
+  "user": null,
+  "workflow_state": "Ouvert N1"
+ },
+ {
+  "completed_by": "Administrator",
   "completed_by_role": "All",
   "docstatus": 0,
   "doctype": "Workflow Action",

@@ -2,6 +2,159 @@
  {
   "docstatus": 0,
   "doctype": "Workflow State",
+  "icon": null,
+  "modified": "2026-06-15 01:39:11.934826",
+  "name": "Ouvert N1",
+  "style": "Warning",
+  "workflow_state_name": "Ouvert N1"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": null,
+  "modified": "2026-06-15 01:39:11.953501",
+  "name": "Escaladé N2",
+  "style": "Warning",
+  "workflow_state_name": "Escaladé N2"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": null,
+  "modified": "2026-06-15 01:39:11.967272",
+  "name": "Escaladé N3",
+  "style": "Danger",
+  "workflow_state_name": "Escaladé N3"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": null,
+  "modified": "2026-06-15 01:39:11.982299",
+  "name": "Support Éditeur N4",
+  "style": "Danger",
+  "workflow_state_name": "Support Éditeur N4"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": null,
+  "modified": "2026-06-15 01:39:11.996931",
+  "name": "Résolu",
+  "style": "Success",
+  "workflow_state_name": "Résolu"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": null,
+  "modified": "2026-06-15 01:39:12.009149",
+  "name": "Clôturé",
+  "style": "Primary",
+  "workflow_state_name": "Clôturé"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": null,
+  "modified": "2026-06-15 01:39:12.025853",
+  "name": "Préparation",
+  "style": "Warning",
+  "workflow_state_name": "Préparation"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": null,
+  "modified": "2026-06-15 01:39:12.040272",
+  "name": "J7",
+  "style": "Info",
+  "workflow_state_name": "J7"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": null,
+  "modified": "2026-06-15 01:39:12.054646",
+  "name": "J15",
+  "style": "Info",
+  "workflow_state_name": "J15"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": null,
+  "modified": "2026-06-15 01:39:12.065367",
+  "name": "J30",
+  "style": "Info",
+  "workflow_state_name": "J30"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": null,
+  "modified": "2026-06-15 01:39:12.075010",
+  "name": "Validé",
+  "style": "Success",
+  "workflow_state_name": "Validé"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": null,
+  "modified": "2026-06-15 01:39:12.088059",
+  "name": "Déclaré",
+  "style": "Warning",
+  "workflow_state_name": "Déclaré"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": null,
+  "modified": "2026-06-15 01:39:12.102478",
+  "name": "Backup activé",
+  "style": "Info",
+  "workflow_state_name": "Backup activé"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": null,
+  "modified": "2026-06-15 01:39:12.118529",
+  "name": "Remédiation",
+  "style": "Warning",
+  "workflow_state_name": "Remédiation"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": null,
+  "modified": "2026-06-15 01:39:12.132050",
+  "name": "Remplacement",
+  "style": "Danger",
+  "workflow_state_name": "Remplacement"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": null,
+  "modified": "2026-06-15 01:39:12.157648",
+  "name": "En revue",
+  "style": "Info",
+  "workflow_state_name": "En revue"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": null,
+  "modified": "2026-06-15 01:39:12.171209",
+  "name": "Partagé client",
+  "style": "Primary",
+  "workflow_state_name": "Partagé client"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
   "icon": "question-sign",
   "modified": "2025-08-18 22:38:14.947288",
   "name": "Pending",
@@ -236,6 +389,51 @@
  {
   "docstatus": 0,
   "doctype": "Workflow State",
+  "icon": "ok-circle",
+  "modified": "2026-05-21 00:00:00",
+  "name": "Nouveau",
+  "style": "Info",
+  "workflow_state_name": "Nouveau"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "time",
+  "modified": "2026-05-21 00:00:00",
+  "name": "En analyse",
+  "style": "Warning",
+  "workflow_state_name": "En analyse"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "edit",
+  "modified": "2026-05-21 00:00:00",
+  "name": "Rapport rédigé",
+  "style": "Primary",
+  "workflow_state_name": "Rapport rédigé"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "envelope",
+  "modified": "2026-05-21 00:00:00",
+  "name": "Rapport envoyé",
+  "style": "Success",
+  "workflow_state_name": "Rapport envoyé"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "star",
+  "modified": "2026-05-21 00:00:00",
+  "name": "Converti en client",
+  "style": "Success",
+  "workflow_state_name": "Converti en client"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
   "icon": null,
   "modified": "2026-03-30 18:34:14.241243",
   "name": "Vivrier",
@@ -286,50 +484,5 @@
   "name": "Open",
   "style": "",
   "workflow_state_name": "Open"
- },
- {
-  "docstatus": 0,
-  "doctype": "Workflow State",
-  "icon": "ok-circle",
-  "modified": "2026-05-21 00:00:00.000000",
-  "name": "Nouveau",
-  "style": "Info",
-  "workflow_state_name": "Nouveau"
- },
- {
-  "docstatus": 0,
-  "doctype": "Workflow State",
-  "icon": "time",
-  "modified": "2026-05-21 00:00:00.000000",
-  "name": "En analyse",
-  "style": "Warning",
-  "workflow_state_name": "En analyse"
- },
- {
-  "docstatus": 0,
-  "doctype": "Workflow State",
-  "icon": "edit",
-  "modified": "2026-05-21 00:00:00.000000",
-  "name": "Rapport rédigé",
-  "style": "Primary",
-  "workflow_state_name": "Rapport rédigé"
- },
- {
-  "docstatus": 0,
-  "doctype": "Workflow State",
-  "icon": "envelope",
-  "modified": "2026-05-21 00:00:00.000000",
-  "name": "Rapport envoyé",
-  "style": "Success",
-  "workflow_state_name": "Rapport envoyé"
- },
- {
-  "docstatus": 0,
-  "doctype": "Workflow State",
-  "icon": "star",
-  "modified": "2026-05-21 00:00:00.000000",
-  "name": "Converti en client",
-  "style": "Success",
-  "workflow_state_name": "Converti en client"
  }
 ]

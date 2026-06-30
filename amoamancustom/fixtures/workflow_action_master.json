@@ -2,6 +2,104 @@
  {
   "docstatus": 0,
   "doctype": "Workflow Action Master",
+  "modified": "2026-06-15 01:39:12.213242",
+  "name": "Déclarer",
+  "workflow_action_name": "Déclarer"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow Action Master",
+  "modified": "2026-06-15 01:39:12.229648",
+  "name": "Résoudre",
+  "workflow_action_name": "Résoudre"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow Action Master",
+  "modified": "2026-06-15 01:39:12.245265",
+  "name": "Escalader N2",
+  "workflow_action_name": "Escalader N2"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow Action Master",
+  "modified": "2026-06-15 01:39:12.260986",
+  "name": "Escalader N3",
+  "workflow_action_name": "Escalader N3"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow Action Master",
+  "modified": "2026-06-15 01:39:12.273764",
+  "name": "Saisir éditeur",
+  "workflow_action_name": "Saisir éditeur"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow Action Master",
+  "modified": "2026-06-15 01:39:12.288842",
+  "name": "Clôturer",
+  "workflow_action_name": "Clôturer"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow Action Master",
+  "modified": "2026-06-15 01:39:12.301842",
+  "name": "Démarrer",
+  "workflow_action_name": "Démarrer"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow Action Master",
+  "modified": "2026-06-15 01:39:12.314607",
+  "name": "Avancer",
+  "workflow_action_name": "Avancer"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow Action Master",
+  "modified": "2026-06-15 01:39:12.326802",
+  "name": "Valider mise en contribution",
+  "workflow_action_name": "Valider mise en contribution"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow Action Master",
+  "modified": "2026-06-15 01:39:12.342184",
+  "name": "Activer backup",
+  "workflow_action_name": "Activer backup"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow Action Master",
+  "modified": "2026-06-15 01:39:12.356421",
+  "name": "Ouvrir remédiation",
+  "workflow_action_name": "Ouvrir remédiation"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow Action Master",
+  "modified": "2026-06-15 01:39:12.366532",
+  "name": "Remédiation réussie",
+  "workflow_action_name": "Remédiation réussie"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow Action Master",
+  "modified": "2026-06-15 01:39:12.377391",
+  "name": "Échec → remplacer",
+  "workflow_action_name": "Échec → remplacer"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow Action Master",
+  "modified": "2026-06-15 01:39:12.400183",
+  "name": "Partager",
+  "workflow_action_name": "Partager"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow Action Master",
   "modified": "2025-08-18 22:38:14.971335",
   "name": "Approve",
   "workflow_action_name": "Approve"
