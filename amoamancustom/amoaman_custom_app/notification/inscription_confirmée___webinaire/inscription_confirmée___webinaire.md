@@ -1,0 +1,56 @@
+{% set event = frappe.get_doc("Amoaman Event", doc.program) %}
+
+<div style="font-family:Arial,Helvetica,sans-serif;color:#2d2d2d;max-width:600px;margin:0 auto;">
+
+  <div style="background:#1a73e8;padding:22px 28px;border-radius:8px 8px 0 0;">
+    <h1 style="color:#ffffff;font-size:20px;margin:0;">Inscription confirmée ✅</h1>
+  </div>
+
+  <div style="background:#ffffff;padding:28px;border:1px solid #e6e6e6;border-top:none;border-radius:0 0 8px 8px;">
+
+    <p style="font-size:15px;margin:0 0 16px;">
+      Bonjour{% if doc.full_name %} {{ doc.full_name }}{% endif %},
+    </p>
+
+    <p style="font-size:15px;line-height:1.6;margin:0 0 20px;">
+      Merci pour votre inscription au webinaire
+      <strong>« {{ event.title }} »</strong>. Votre place est réservée.
+      Voici le récapitulatif :
+    </p>
+
+    <table style="width:100%;border-collapse:collapse;background:#f7f9fc;border-radius:8px;margin-bottom:22px;">
+      <tr><td style="padding:16px 18px;font-size:14px;line-height:1.9;">
+        {% if event.start_date %}📅 <strong>Date :</strong> {{ event.get_formatted("start_date") }}<br>{% endif %}
+        {% if event.start_time %}🕒 <strong>Heure :</strong> {{ event.get_formatted("start_time") }}{% if event.end_time %} – {{ event.get_formatted("end_time") }}{% endif %} (GMT, Abidjan)<br>{% endif %}
+        {% if event.delivery_mode %}💻 <strong>Format :</strong> {{ event.delivery_mode }}<br>{% endif %}
+        {% if event.location_name %}📍 <strong>Lieu :</strong> {{ event.location_name }}{% if event.city %}, {{ event.city }}{% endif %}<br>{% endif %}
+        {% if event.is_paid and event.price %}💳 <strong>Tarif :</strong> {{ event.get_formatted("price") }} {{ event.currency }}{% else %}🎁 <strong>Tarif :</strong> Gratuit{% endif %}
+      </td></tr>
+    </table>
+
+    {% if event.meeting_link %}
+    <div style="text-align:center;margin-bottom:24px;">
+      <a href="{{ event.meeting_link }}" style="background:#1a73e8;color:#ffffff;text-decoration:none;padding:13px 30px;border-radius:6px;font-size:15px;display:inline-block;">
+        Rejoindre le webinaire
+      </a>
+      <p style="font-size:12px;color:#888;margin:10px 0 0;word-break:break-all;">{{ event.meeting_link }}</p>
+    </div>
+    {% endif %}
+
+    <h3 style="font-size:13px;color:#555;text-transform:uppercase;letter-spacing:.5px;border-top:1px solid #eee;padding-top:18px;margin:0 0 8px;">Vos informations</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:14px;">
+      {% if doc.full_name %}<tr><td style="padding:4px 0;color:#888;width:130px;">Nom</td><td style="padding:4px 0;">{{ doc.full_name }}</td></tr>{% endif %}
+      {% if doc.email %}<tr><td style="padding:4px 0;color:#888;">Courriel</td><td style="padding:4px 0;">{{ doc.email }}</td></tr>{% endif %}
+      {% if doc.phone %}<tr><td style="padding:4px 0;color:#888;">Téléphone</td><td style="padding:4px 0;">{{ doc.phone }}</td></tr>{% endif %}
+      {% if doc.application_type %}<tr><td style="padding:4px 0;color:#888;">Profil</td><td style="padding:4px 0;">{{ doc.application_type }}</td></tr>{% endif %}
+      {% if doc.company %}<tr><td style="padding:4px 0;color:#888;">Société</td><td style="padding:4px 0;">{{ doc.company }}</td></tr>{% endif %}
+      {% if doc.job_title %}<tr><td style="padding:4px 0;color:#888;">Fonction</td><td style="padding:4px 0;">{{ doc.job_title }}</td></tr>{% endif %}
+    </table>
+
+    <p style="font-size:13px;color:#888;line-height:1.6;margin:24px 0 0;">
+      Un rappel vous sera envoyé avant le début. Pour toute question, répondez simplement à cet e-mail.
+    </p>
+
+    <p style="font-size:14px;margin:18px 0 0;">L'équipe Amoaman</p>
+  </div>
+</div>
