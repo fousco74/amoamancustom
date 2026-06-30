@@ -3145,7 +3145,48 @@
   "javascript": null,
   "json": null,
   "letter_head": null,
-  "modified": "2025-11-05 11:55:50.127020",
+  "modified": "2025-12-30 14:51:02.061226",
+  "module": "Accounts",
+  "name": "Budget Variance Report",
+  "prepared_report": 0,
+  "query": null,
+  "ref_doctype": "Cost Center",
+  "reference_report": null,
+  "report_name": "Budget Variance Report",
+  "report_script": null,
+  "report_type": "Script Report",
+  "roles": [
+   {
+    "role": "Accounts Manager"
+   },
+   {
+    "role": "Auditor"
+   },
+   {
+    "role": "Accounts User"
+   },
+   {
+    "role": "Sales User"
+   },
+   {
+    "role": "Purchase User"
+   }
+  ],
+  "timeout": 0
+ },
+ {
+  "add_total_row": 0,
+  "add_translate_data": 0,
+  "columns": [],
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Report",
+  "filters": [],
+  "is_standard": "Yes",
+  "javascript": null,
+  "json": null,
+  "letter_head": null,
+  "modified": "2026-03-13 17:36:37.619715",
   "module": "Selling",
   "name": "Quotation Trends",
   "prepared_report": 0,
@@ -3183,7 +3224,7 @@
   "javascript": null,
   "json": null,
   "letter_head": null,
-  "modified": "2025-11-05 11:55:50.114173",
+  "modified": "2026-03-13 17:36:31.552712",
   "module": "Stock",
   "name": "Delivery Note Trends",
   "prepared_report": 0,
@@ -3221,7 +3262,7 @@
   "javascript": null,
   "json": null,
   "letter_head": null,
-  "modified": "2025-11-05 11:55:50.096303",
+  "modified": "2026-03-13 17:36:21.440118",
   "module": "Selling",
   "name": "Sales Order Trends",
   "prepared_report": 0,
@@ -3262,7 +3303,7 @@
   "javascript": null,
   "json": null,
   "letter_head": null,
-  "modified": "2025-11-05 11:55:50.070651",
+  "modified": "2026-03-13 17:36:13.725601",
   "module": "Accounts",
   "name": "Sales Invoice Trends",
   "prepared_report": 0,
@@ -3294,7 +3335,7 @@
   "javascript": null,
   "json": null,
   "letter_head": null,
-  "modified": "2025-11-05 11:55:50.058154",
+  "modified": "2026-03-13 17:36:05.561765",
   "module": "Buying",
   "name": "Purchase Order Trends",
   "prepared_report": 0,
@@ -3329,7 +3370,7 @@
   "javascript": null,
   "json": null,
   "letter_head": null,
-  "modified": "2025-11-05 11:55:49.983683",
+  "modified": "2026-03-13 17:35:57.060786",
   "module": "Stock",
   "name": "Purchase Receipt Trends",
   "prepared_report": 0,
@@ -3367,7 +3408,7 @@
   "javascript": null,
   "json": null,
   "letter_head": null,
-  "modified": "2025-11-05 11:55:49.950442",
+  "modified": "2026-03-13 17:35:39.703838",
   "module": "Accounts",
   "name": "Purchase Invoice Trends",
   "prepared_report": 0,
@@ -3389,47 +3430,6 @@
    },
    {
     "role": "Auditor"
-   }
-  ],
-  "timeout": 0
- },
- {
-  "add_total_row": 0,
-  "add_translate_data": 0,
-  "columns": [],
-  "disabled": 0,
-  "docstatus": 0,
-  "doctype": "Report",
-  "filters": [],
-  "is_standard": "Yes",
-  "javascript": null,
-  "json": null,
-  "letter_head": null,
-  "modified": "2025-12-30 14:51:02.061226",
-  "module": "Accounts",
-  "name": "Budget Variance Report",
-  "prepared_report": 0,
-  "query": null,
-  "ref_doctype": "Cost Center",
-  "reference_report": null,
-  "report_name": "Budget Variance Report",
-  "report_script": null,
-  "report_type": "Script Report",
-  "roles": [
-   {
-    "role": "Accounts Manager"
-   },
-   {
-    "role": "Auditor"
-   },
-   {
-    "role": "Accounts User"
-   },
-   {
-    "role": "Sales User"
-   },
-   {
-    "role": "Purchase User"
    }
   ],
   "timeout": 0
