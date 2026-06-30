@@ -208,7 +208,8 @@ scheduled_jobs = {
     "cron": {
         # Exécution QUOTIDIENNE à 08h00
         "0 8 * * *": [
-            "amoamancustom.schedulers.attendance_reminder.send_attendance_reminder_continuous"
+            "amoamancustom.schedulers.attendance_reminder.send_attendance_reminder_continuous",
+            "amoamancustom.schedulers.contract_expiry.send_contract_expiry_notifications"
         ],
     }
 }
