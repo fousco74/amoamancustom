@@ -3817,9 +3817,6 @@ frappe.ready(function () {
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-        waitForCookies(() => {
-            setTimeout(openPopup, DELAY_MS);
-        });
         document.getElementById("irixflow-fab")
             ?.addEventListener("click", openPopup);
         document.querySelector(".irixflow-close")
