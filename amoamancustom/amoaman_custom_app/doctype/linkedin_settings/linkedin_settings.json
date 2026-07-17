@@ -10,6 +10,7 @@
   "column_break_1",
   "base_url",
   "api_version",
+  "rest_api_version",
   "section_oauth",
   "client_id",
   "client_secret",
@@ -59,6 +60,12 @@
    "label": "Version API",
    "default": "v2",
    "read_only": 1
+  },
+  {
+   "fieldname": "rest_api_version",
+   "fieldtype": "Data",
+   "label": "Version REST (override)",
+   "description": "Laisser vide = auto (calculée depuis la date, auto-corrigée sur 426). Renseigner un AAAAMM (ex : 202606) uniquement pour forcer une version précise."
   },
   {
    "fieldname": "section_oauth",

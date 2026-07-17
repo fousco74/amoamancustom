@@ -149,8 +149,45 @@ def _get_linkedin_settings():
 
 _LINKEDIN_CACHE_KEY = "amoamancustom:linkedin_posts"
 _LINKEDIN_CACHE_TTL = 86400  # 24 heures
-# Posts API versionnee (format AAAAMM). A bumper ~1 fois par an.
-_LINKEDIN_API_VERSION = "202506"
+
+# La Posts API versionnee (format AAAAMM) exige un header LinkedIn-Version valable
+# ~12 mois puis "sunset" (au-dela : 426 Upgrade Required). On ne code donc AUCUNE
+# version en dur : elle est calculee depuis la date et auto-corrigee sur 426, puis
+# memorisee en Redis. Un champ Settings `rest_api_version` permet de forcer une valeur.
+_LINKEDIN_VERSION_CACHE_KEY = "amoamancustom:linkedin_api_version"
+_LINKEDIN_VERSION_CACHE_TTL = 30 * 86400  # 30 jours
+
+
+def _li_default_version() -> str:
+    """Version AAAAMM dynamique : mois courant - 1 (marge : la version du mois
+    courant n'est parfois pas encore publiee cote LinkedIn)."""
+    from frappe.utils import now_datetime, add_to_date
+    return add_to_date(now_datetime(), months=-1).strftime("%Y%m")
+
+
+def _li_prev_month(v: str) -> str:
+    """'202606' -> '202605' (recule d'un mois, gere le passage d'annee)."""
+    from datetime import date
+    from frappe.utils import add_to_date
+    d = date(int(v[:4]), int(v[4:6]), 1)
+    return add_to_date(d, months=-1).strftime("%Y%m")
+
+
+def _li_resolve_version() -> str:
+    """Version a utiliser, par priorite :
+    1) version auto-corrigee memorisee en Redis ;
+    2) override manuel du champ Settings `rest_api_version` (si renseigne) ;
+    3) defaut dynamique `_li_default_version()`."""
+    good = frappe.cache().get_value(_LINKEDIN_VERSION_CACHE_KEY)
+    if good:
+        return good
+    # Lecture defensive : si le champ n'existe pas encore (code deploye avant
+    # `bench migrate`), get_single_value leve -> on retombe sur le defaut dynamique.
+    try:
+        override = (frappe.db.get_single_value("LinkedIn Settings", "rest_api_version") or "").strip()
+    except Exception:
+        override = ""
+    return override or _li_default_version()
 
 
 def _li_rest_base(base_url: str) -> str:
@@ -164,9 +201,44 @@ def _li_headers(token: str) -> dict:
     """Headers requis par la Posts API LinkedIn (versionnee)."""
     return {
         "Authorization":             f"Bearer {token}",
-        "LinkedIn-Version":          _LINKEDIN_API_VERSION,
+        "LinkedIn-Version":          _li_resolve_version(),
         "X-Restli-Protocol-Version": "2.0.0",
     }
+
+
+def _li_get_posts(url: str, params: dict, token: str) -> dict:
+    """GET /rest/posts avec auto-correction de version sur 426.
+
+    Essaie d'abord la version resolue (fast-path via cache/override/defaut) ;
+    sur 426 on purge la version memorisee, on repart du defaut dynamique et on
+    recule mois par mois (max 14, ce qui couvre toute la fenetre valide de 12 mois)
+    jusqu'a une reponse non-426. La version gagnante est memorisee en Redis (30 j),
+    ce qui evite tout walk-back aux appels suivants."""
+    def _call(v: str):
+        headers = {
+            "Authorization":             f"Bearer {token}",
+            "LinkedIn-Version":          v,
+            "X-Restli-Protocol-Version": "2.0.0",
+        }
+        return requests.get(url, params=params, headers=headers, timeout=15)
+
+    v = _li_resolve_version()
+    resp = _call(v)
+    if resp.status_code == 426:
+        # La version memorisee/override est perimee : on la purge et on repart
+        # du defaut dynamique, puis on remonte le temps jusqu'a une version valide.
+        frappe.cache().delete_value(_LINKEDIN_VERSION_CACHE_KEY)
+        v = _li_default_version()
+        for _ in range(14):
+            resp = _call(v)
+            if resp.status_code != 426:
+                break
+            v = _li_prev_month(v)
+
+    resp.raise_for_status()
+    frappe.cache().set_value(_LINKEDIN_VERSION_CACHE_KEY, v,
+                             expires_in_sec=_LINKEDIN_VERSION_CACHE_TTL)
+    return resp.json()
 
 
 def _li_clean_text(text: str) -> str:
@@ -299,7 +371,7 @@ def get_linkedln_post(limit: int = None, org_id: str = None) -> dict:
     Retourne une liste normalisee (text / created_time / post_url / media_type / image / images / title).
 
     Les parametres par defaut sont lus depuis LinkedIn Settings.
-    Les resultats sont mis en cache Redis (1h). En cas d'indisponibilite
+    Les resultats sont mis en cache Redis (24h). En cas d'indisponibilite
     reseau, le cache precedent est retourne plutot qu'une liste vide.
 
     Structure retournee par element :
@@ -334,9 +406,7 @@ def get_linkedln_post(limit: int = None, org_id: str = None) -> dict:
             "sortBy": "LAST_MODIFIED",
         }
         try:
-            resp = requests.get(url, params=params, headers=_li_headers(token), timeout=15)
-            resp.raise_for_status()
-            raw = resp.json()
+            raw = _li_get_posts(url, params, token)
         except Exception as e:
             frappe.log_error(str(e), "LinkedIn feed")
             cached = frappe.cache().get_value(_LINKEDIN_CACHE_KEY)
