@@ -365,6 +365,7 @@ fixtures = [
                     "Leave Allocation",
                     "Payroll Entry",
                     "Salary Slip",
+                    "Salary Component",
                     "Shift Assignment",
                     "Department",
                     "Designation",
