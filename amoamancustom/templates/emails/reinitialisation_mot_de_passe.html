@@ -1,0 +1,32 @@
+{#
+  Réinitialisation de mot de passe — System Settings.reset_password_template
+  use_html = 1  (rendu via response_html, champ Code, non nettoyé)
+
+  Contexte fourni par frappe/core/doctype/user/user.py -> password_reset_mail :
+      first_name, user, title, login_url, created_by, link
+  ATTENTION : site_url n'est PAS passé pour ce mail (contrairement à la
+  bienvenue). Utiliser login_url, sinon la ligne rend vide.
+#}
+{% extends "amoamancustom/templates/emails/_base_mail.html" %}
+{% import "amoamancustom/templates/emails/_composants.html" as ui %}
+
+{% set soustitre = "Demande reçue pour votre compte" %}
+
+{% block titre %}Réinitialisation de mot de passe{% endblock %}
+{% block preheader %}Définissez un nouveau mot de passe en toute sécurité.{% endblock %}
+
+{% block contenu %}
+{{ ui.p("Bonjour " ~ (first_name or "") ~ ",") }}
+{{ ui.p("Nous avons reçu une demande de réinitialisation du mot de passe associé à votre compte. Si vous êtes à l'origine de cette demande, définissez votre nouveau mot de passe en cliquant ci-dessous.") }}
+
+{{ ui.details([
+  ("Identifiant de connexion", user),
+  ("Adresse de l'espace", login_url),
+]) }}
+{% endblock %}
+
+{% block cta %}
+{{ ui.bouton(link, "Réinitialiser mon mot de passe") }}
+{{ ui.lien_de_repli(link) }}
+{{ ui.encart("Vous n'êtes pas à l'origine de cette demande ?", "Ignorez simplement ce message : aucun changement ne sera effectué et votre mot de passe actuel reste valable. Si ces demandes se répètent, prévenez votre administrateur.", "alerte") }}
+{% endblock %}

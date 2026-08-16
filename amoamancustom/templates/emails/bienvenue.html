@@ -1,0 +1,34 @@
+{#
+  Email de bienvenue — System Settings.welcome_email_template
+  use_html = 1  (rendu via response_html, champ Code, non nettoyé)
+
+  Contexte fourni par frappe/core/doctype/user/user.py -> send_login_mail :
+      first_name, user, title, login_url, created_by, link, site_url
+  Ne PAS utiliser reset_link / login_id / name : ces variables n'existent pas.
+#}
+{% extends "amoamancustom/templates/emails/_base_mail.html" %}
+{% import "amoamancustom/templates/emails/_composants.html" as ui %}
+
+{% set soustitre = "Votre compte vient d'être créé" %}
+
+{% block titre %}Bienvenue{% endblock %}
+{% block preheader %}Terminez votre inscription et définissez votre mot de passe.{% endblock %}
+
+{% block contenu %}
+{{ ui.p("Bonjour " ~ (first_name or "") ~ ",") }}
+{{ ui.p("Un compte vous a été ouvert sur l'espace de gestion d'Amoaman & Associés. Il vous donne accès à vos congés, notes de frais, bulletins de paie et documents.") }}
+
+{{ ui.details([
+  ("Identifiant de connexion", user),
+  ("Adresse de l'espace", site_url),
+  ("Compte créé par", created_by),
+]) }}
+
+{{ ui.p("Cliquez sur le bouton ci-dessous pour définir votre mot de passe et activer votre accès.") }}
+{% endblock %}
+
+{% block cta %}
+{{ ui.bouton(link, "Définir mon mot de passe") }}
+{{ ui.lien_de_repli(link) }}
+{{ ui.encart("Ce lien est personnel", "Ne le transmettez à personne. Il expire après un certain délai ; passé ce délai, utilisez « Mot de passe oublié » sur la page de connexion.", "attention") }}
+{% endblock %}

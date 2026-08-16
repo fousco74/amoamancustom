@@ -1,0 +1,33 @@
+{
+ "attach_files": "",
+ "attach_print": 0,
+ "channel": "Email",
+ "condition": "doc.status == 'Active'",
+ "condition_type": "Python",
+ "creation": "2026-08-14 09:00:00.000000",
+ "days_in_advance": 0,
+ "docstatus": 0,
+ "doctype": "Notification",
+ "document_type": "Employee",
+ "enabled": 1,
+ "event": "Method",
+ "idx": 0,
+ "is_standard": 1,
+ "message": "{% extends \"amoamancustom/templates/emails/_base_mail.html\" %}\n{% import \"amoamancustom/templates/emails/_composants.html\" as ui %}\n\n{% set soustitre = \"Période du \" ~ frappe.utils.formatdate(debut, \"dd/MM/yyyy\") ~ \" au \" ~ frappe.utils.formatdate(fin, \"dd/MM/yyyy\") %}\n{% set mention_pied = \"Ce rappel suit le calendrier de jours fériés qui vous est rattaché.\" %}\n\n{% block titre %}Jours fériés à venir{% endblock %}\n{% block preheader %}{{ jours_feries | length }} jour(s) férié(s) dans les prochains jours.{% endblock %}\n\n{% block contenu %}\n{{ ui.p(\"Bonjour \" ~ (doc.employee_name or \"\") ~ \",\") }}\n{{ ui.p(\"Voici les jours fériés prévus sur la période à venir, d'après votre calendrier.\") }}\n\n<table role=\"presentation\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"width:100%;margin:0 0 24px 0;border-collapse:collapse;background-color:#F9FAFB;border:1px solid #EAECF0;border-radius:10px;\">\n  {% for jour in jours_feries %}\n  <tr>\n    <td style=\"padding:10px 16px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#111111;font-weight:600;width:45%;{% if not loop.first %}border-top:1px solid #EAECF0;{% endif %}\">{{ frappe.utils.formatdate(jour.holiday_date, \"EEEE dd MMMM yyyy\") }}</td>\n    <td style=\"padding:10px 16px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#667085;{% if not loop.first %}border-top:1px solid #EAECF0;{% endif %}\">{{ jour.description }}</td>\n  </tr>\n  {% endfor %}\n</table>\n\n{{ ui.encart(\"Anticipez\", \"Si vous souhaitez prolonger par des congés, déposez votre demande dès maintenant pour laisser le temps à votre responsable de la traiter.\", \"info\") }}\n{% endblock %}\n\n{% block cta %}\n{{ ui.bouton(frappe.utils.get_url_to_list(\"Leave Application\"), \"Déposer une demande de congé\") }}\n{% endblock %}\n",
+ "message_type": "HTML",
+ "method": "rappel_jours_feries",
+ "minutes_offset": 0,
+ "modified": "2026-08-14 09:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "HR_CUSTOM",
+ "name": "Rappel Jours Feries",
+ "owner": "Administrator",
+ "recipients": [
+  {
+   "receiver_by_document_field": "user_id"
+  }
+ ],
+ "send_system_notification": 0,
+ "send_to_all_assignees": 0,
+ "subject": "Jours feries a venir"
+}

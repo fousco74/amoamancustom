@@ -1,0 +1,28 @@
+{% extends "amoamancustom/templates/emails/_base_mail.html" %}
+{% import "amoamancustom/templates/emails/_composants.html" as ui %}
+
+{% set soustitre = "Période du " ~ frappe.utils.formatdate(debut, "dd/MM/yyyy") ~ " au " ~ frappe.utils.formatdate(fin, "dd/MM/yyyy") %}
+{% set mention_pied = "Ce rappel suit le calendrier de jours fériés qui vous est rattaché." %}
+
+{% block titre %}Jours fériés à venir{% endblock %}
+{% block preheader %}{{ jours_feries | length }} jour(s) férié(s) dans les prochains jours.{% endblock %}
+
+{% block contenu %}
+{{ ui.p("Bonjour " ~ (doc.employee_name or "") ~ ",") }}
+{{ ui.p("Voici les jours fériés prévus sur la période à venir, d'après votre calendrier.") }}
+
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;margin:0 0 24px 0;border-collapse:collapse;background-color:#F9FAFB;border:1px solid #EAECF0;border-radius:10px;">
+  {% for jour in jours_feries %}
+  <tr>
+    <td style="padding:10px 16px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#111111;font-weight:600;width:45%;{% if not loop.first %}border-top:1px solid #EAECF0;{% endif %}">{{ frappe.utils.formatdate(jour.holiday_date, "EEEE dd MMMM yyyy") }}</td>
+    <td style="padding:10px 16px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#667085;{% if not loop.first %}border-top:1px solid #EAECF0;{% endif %}">{{ jour.description }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+{{ ui.encart("Anticipez", "Si vous souhaitez prolonger par des congés, déposez votre demande dès maintenant pour laisser le temps à votre responsable de la traiter.", "info") }}
+{% endblock %}
+
+{% block cta %}
+{{ ui.bouton(frappe.utils.get_url_to_list("Leave Application"), "Déposer une demande de congé") }}
+{% endblock %}

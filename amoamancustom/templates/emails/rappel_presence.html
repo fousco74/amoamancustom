@@ -1,0 +1,44 @@
+{#
+  Rappel de saisie de présence — rendu par
+  amoamancustom/schedulers/attendance_reminder.py
+
+  Contexte : employe (dict), ton ("urgent" | "relance"), jours_restants,
+             jours_retard, lien_saisie
+#}
+{% extends "amoamancustom/templates/emails/_base_mail.html" %}
+{% import "amoamancustom/templates/emails/_composants.html" as ui %}
+
+{% set urgent = (ton == "relance") %}
+{% set soustitre = "Échéance : le 24 du mois" %}
+{% set mention_pied = "Ce rappel cesse dès que votre saisie de présence du mois est enregistrée." %}
+
+{% block titre %}{% if urgent %}Saisie de présence en retard{% else %}Votre saisie de présence est attendue{% endif %}{% endblock %}
+{% block preheader %}{% if urgent %}Échéance dépassée depuis {{ jours_retard }} jour(s).{% else %}Il vous reste {{ jours_restants }} jour(s) pour saisir votre présence.{% endif %}{% endblock %}
+
+{% block contenu %}
+{{ ui.p("Bonjour " ~ (employe.employee_name or "") ~ ",") }}
+
+{% if urgent %}
+{{ ui.p("Votre feuille de présence du mois en cours n'est toujours pas enregistrée, alors que la date limite du 24 est dépassée. Merci de régulariser sans délai.") }}
+{{ ui.details([
+  ("Statut", "Non saisie"),
+  ("Date limite", "le 24 du mois"),
+  ("Retard", (jours_retard | string) ~ " jour(s)"),
+]) }}
+{{ ui.encart("Pourquoi c'est important", "Sans votre saisie, le traitement de la paie du mois ne peut pas être finalisé pour votre dossier.", "alerte") }}
+{% else %}
+{{ ui.p("La période de saisie de présence est ouverte et votre feuille du mois n'est pas encore enregistrée.") }}
+{{ ui.details([
+  ("Statut", "Non saisie"),
+  ("Date limite", "le 24 du mois"),
+  ("Il vous reste", (jours_restants | string) ~ " jour(s)"),
+]) }}
+{{ ui.encart("Bon à savoir", "Une saisie faite dans les délais évite les régularisations de dernière minute sur votre bulletin.", "attention") }}
+{% endif %}
+
+{{ ui.p("Rendez-vous sur votre espace pour créer votre saisie, renseigner les jours travaillés puis valider.") }}
+{% endblock %}
+
+{% block cta %}
+{{ ui.bouton(lien_saisie, "Saisir ma présence") }}
+{% endblock %}

@@ -1,7 +1,7 @@
 # apps/amoamancustom/amoamancustom/schedulers/contract_expiry.py
 
 import frappe
-from frappe.utils import getdate, today, add_months, formatdate
+from frappe.utils import getdate, today, add_months
 
 
 @frappe.whitelist()
@@ -47,7 +47,14 @@ def send_contract_expiry_notifications():
         emp["days_left"] = (getdate(emp["contract_end_date"]) - start).days
 
     subject = f"Fin de contrat — {len(employees)} contrat(s) arrivant à échéance"
-    message = build_recap_html(employees, start)
+    # Le HTML vit dans amoamancustom/templates/emails/fin_de_contrat.html, qui
+    # étend le gabarit commun _base_mail.html : mise en page, lien d'instance et
+    # lien par employé sont partagés avec les autres mails de l'application.
+    message = frappe.render_template(
+        "amoamancustom/templates/emails/fin_de_contrat.html",
+        {"employes": employees, "date_edition": start},
+        is_path=True,
+    )
 
     try:
         frappe.sendmail(
@@ -98,83 +105,3 @@ def get_hr_recipients():
     return list({e for e in emails if e})
 
 
-def build_recap_html(employees, start):
-    """
-    Construit l'email HTML brandé « Amoaman & Associés » avec un tableau
-    récapitulatif (une ligne par employé). Les fins de contrat sous 7 jours
-    sont mises en évidence en rouge.
-    """
-
-    rows = ""
-    for emp in employees:
-        days_left = emp["days_left"]
-        end_date = formatdate(emp["contract_end_date"])
-
-        if days_left <= 0:
-            delay_label = "Aujourd'hui"
-        elif days_left == 1:
-            delay_label = "Demain"
-        else:
-            delay_label = f"Dans {days_left} jour(s)"
-
-        urgent = days_left <= 7
-        date_style = "font-weight: 600; color: #c0392b;" if urgent else "font-weight: 600; color: #333;"
-        delay_style = "font-weight: 600; color: #c0392b;" if urgent else "color: #333;"
-
-        rows += f"""
-            <tr style="border-bottom: 1px solid #e0e0e0;">
-                <td style="padding: 10px 12px; font-size: 14px; color: #333;">{emp.get('employee_name') or emp.get('name')}</td>
-                <td style="padding: 10px 12px; font-size: 14px; color: #555;">{emp.get('department') or '—'}</td>
-                <td style="padding: 10px 12px; font-size: 14px; color: #555;">{emp.get('designation') or '—'}</td>
-                <td style="padding: 10px 12px; font-size: 14px; {date_style}">{end_date}</td>
-                <td style="padding: 10px 12px; font-size: 14px; {delay_style}">{delay_label}</td>
-            </tr>
-        """
-
-    count = len(employees)
-    generated_on = formatdate(start)
-
-    message = f"""
-    <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 680px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 4px; overflow: hidden;">
-
-        <div style="background-color: #1a3c5e; padding: 24px 32px;">
-            <p style="margin: 0; color: #ffffff; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; font-weight: 600;">Amoaman &amp; Associés — Ressources Humaines</p>
-        </div>
-
-        <div style="padding: 32px;">
-            <h2 style="margin: 0 0 8px 0; color: #1a3c5e; font-size: 20px; font-weight: 700;">Contrats arrivant à échéance</h2>
-            <p style="margin: 0 0 24px 0; color: #777; font-size: 13px; border-bottom: 1px solid #e0e0e0; padding-bottom: 16px;">État au {generated_on} — {count} contrat(s) se terminant dans le mois à venir</p>
-
-            <p style="color: #333; font-size: 15px; line-height: 1.6; margin: 0 0 24px 0;">
-                Les contrats des employés ci-dessous arrivent à échéance dans moins d'un mois.
-                Merci d'anticiper leur <strong>renouvellement</strong> ou les démarches de fin de contrat.
-                Ce rappel est envoyé chaque jour tant que la date de fin n'est pas repoussée.
-            </p>
-
-            <table style="width: 100%; border-collapse: collapse; margin: 0 0 24px 0;">
-                <thead>
-                    <tr style="background-color: #f5f7fa; border-bottom: 2px solid #1a3c5e;">
-                        <th style="padding: 10px 12px; text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: #1a3c5e;">Employé</th>
-                        <th style="padding: 10px 12px; text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: #1a3c5e;">Département</th>
-                        <th style="padding: 10px 12px; text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: #1a3c5e;">Poste</th>
-                        <th style="padding: 10px 12px; text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: #1a3c5e;">Date de fin</th>
-                        <th style="padding: 10px 12px; text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: #1a3c5e;">Échéance</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {rows}
-                </tbody>
-            </table>
-
-            <p style="color: #555; font-size: 14px; line-height: 1.6; margin: 0;">
-                Pour toute question, veuillez contacter le département Ressources Humaines.
-            </p>
-        </div>
-
-        <div style="background-color: #f5f7fa; padding: 16px 32px; border-top: 1px solid #e0e0e0;">
-            <p style="margin: 0; color: #999; font-size: 12px;">Ce message est généré automatiquement par le système ERPNext — Amoaman &amp; Associés. Merci de ne pas y répondre directement.</p>
-        </div>
-    </div>
-    """
-
-    return message

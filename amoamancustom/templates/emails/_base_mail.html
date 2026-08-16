@@ -1,0 +1,82 @@
+{#
+  Gabarit commun à TOUS les mails d'Amoaman & Associés.
+
+  Utilisation :
+      extends  "amoamancustom/templates/emails/_base_mail.html"
+      import   "amoamancustom/templates/emails/_composants.html" as ui
+      set      soustitre = "Demande n° " ~ name        (facultatif)
+      block    titre     -> "Votre demande de congé"
+      block    contenu   -> le corps
+      block    cta       -> ui.bouton(lien, "Ouvrir dans ERPNext")
+
+  Attention : ne jamais écrire la séquence de fermeture d'un commentaire Jinja
+  à l'intérieur de ce bloc, elle le refermerait par anticipation.
+
+  Le chemin est préfixé par le nom de l'app : il est résolu par le PrefixLoader
+  de frappe.utils.jinja._get_jloader, donc indépendant de l'ordre d'installation
+  des apps — contrairement à un override par shadowing, que hrms gagnerait ici.
+
+  Contrainte à respecter : le CSS est TOUJOURS en ligne. Les Email Template lus
+  via `.response` (Text Editor) passent par sanitize_html, qui supprime la balise
+  <style> — voir frappe/utils/html_utils.py. Les balises html/head/body/table/
+  tr/td/div/a/img, elles, survivent.
+
+  Blocs     : titre, preheader, contenu, cta
+  Variables : soustitre, mention_pied  (posées par {% set %} dans l'enfant)
+#}
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+<title>{{ self.titre() }}</title>
+</head>
+<body style="margin:0;padding:0;background-color:#F4F6F9;">
+
+<div style="display:none;font-size:1px;color:#F4F6F9;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">{% block preheader %}{% endblock %}</div>
+
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F4F6F9;">
+  <tr>
+    <td align="center" style="padding:28px 12px;">
+
+      <table role="presentation" width="640" cellspacing="0" cellpadding="0" border="0" style="width:640px;max-width:640px;background-color:#ffffff;border-radius:12px;overflow:hidden;">
+
+        <tr>
+          <td style="padding:26px 32px;background-color:#0756C5;">
+            <p style="margin:0 0 6px 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:#BFD5F5;">Amoaman &amp; Associés</p>
+            <h1 style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:23px;line-height:1.3;font-weight:700;color:#ffffff;">{% block titre %}{% endblock %}</h1>
+            {% if soustitre is defined and soustitre %}
+            <p style="margin:8px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.5;color:#DCE8FA;">{{ soustitre }}</p>
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding:32px;">
+            {% block contenu %}{% endblock %}
+            {% block cta %}{% endblock %}
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding:18px 32px;background-color:#F9FAFB;border-top:1px solid #EAECF0;">
+            {% if mention_pied is defined and mention_pied %}
+            <p style="margin:0 0 8px 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.6;color:#667085;">{{ mention_pied }}</p>
+            {% endif %}
+            <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.6;color:#98A2B3;">
+              Message généré automatiquement depuis
+              <a href="{{ frappe.utils.get_url() }}" style="color:#667085;text-decoration:underline;">{{ frappe.utils.get_url() }}</a>
+              — merci de ne pas y répondre directement.
+            </p>
+          </td>
+        </tr>
+
+      </table>
+
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

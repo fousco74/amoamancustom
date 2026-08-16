@@ -1,0 +1,21 @@
+{% extends "amoamancustom/templates/emails/_base_mail.html" %}
+{% import "amoamancustom/templates/emails/_composants.html" as ui %}
+
+{% set soustitre = doc.designation or doc.department %}
+{% set mention_pied = "Vous recevez ce message parce qu'il concerne un collègue de votre société." %}
+
+{% block titre %}Joyeux anniversaire {{ doc.employee_name }}{% endblock %}
+{% block preheader %}Aujourd'hui, {{ doc.employee_name }} fête son anniversaire.{% endblock %}
+
+{% block contenu %}
+{{ ui.p("Bonjour à toutes et à tous,") }}
+{{ ui.p("Aujourd'hui, " ~ doc.employee_name ~ " fête son anniversaire. Prenons un instant pour lui adresser nos meilleurs vœux.") }}
+
+{{ ui.details([
+  ("Collaborateur", doc.employee_name),
+  ("Service", doc.department),
+  ("Poste", doc.designation),
+]) }}
+
+{{ ui.p("Toute l'équipe d'Amoaman & Associés lui souhaite une excellente journée.") }}
+{% endblock %}

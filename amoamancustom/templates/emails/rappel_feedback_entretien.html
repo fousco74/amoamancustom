@@ -1,0 +1,35 @@
+{#
+  Rappel de retour d'entretien — HR Settings.feedback_reminder_notification_template
+  use_html = 0  OBLIGATOIRE : hrms/hr/doctype/interview/interview.py:330 lit
+  `.response` en dur. Le sujet n'est PAS passé à Jinja.
+
+  Contexte : Interview.as_dict().
+#}
+{% extends "amoamancustom/templates/emails/_base_mail.html" %}
+{% import "amoamancustom/templates/emails/_composants.html" as ui %}
+
+{% set candidat = frappe.db.get_value("Job Applicant", job_applicant, "applicant_name") or job_applicant %}
+{% set soustitre = "Entretien " ~ name %}
+{% set mention_pied = "Ce rappel est envoyé chaque jour tant que votre évaluation n'a pas été enregistrée." %}
+
+{% block titre %}Votre évaluation est attendue{% endblock %}
+{% block preheader %}L'entretien avec {{ candidat }} attend votre retour.{% endblock %}
+
+{% block contenu %}
+{{ ui.p("Bonjour,") }}
+{{ ui.p("L'entretien ci-dessous s'est tenu, mais votre évaluation n'a pas encore été enregistrée. Le dossier du candidat ne peut pas avancer tant qu'elle manque.") }}
+
+{{ ui.details([
+  ("Candidat", candidat),
+  ("Poste", designation),
+  ("Type d'entretien", interview_type),
+  ("Tenu le", frappe.utils.formatdate(scheduled_on, "dd/MM/yyyy")),
+  ("Horaire", (from_time or "") ~ " – " ~ (to_time or "")),
+]) }}
+
+{{ ui.encart("Comment procéder", "Ouvrez l'entretien, puis utilisez le bouton « Ajouter un retour » pour noter les compétences évaluées et votre appréciation générale.", "info") }}
+{% endblock %}
+
+{% block cta %}
+{{ ui.bouton(frappe.utils.get_url_to_form("Interview", name), "Saisir mon évaluation") }}
+{% endblock %}

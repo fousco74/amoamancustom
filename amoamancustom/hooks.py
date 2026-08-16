@@ -109,6 +109,18 @@ jinja = {
 # before_install = "amoamancustom.install.before_install"
 # after_install = "amoamancustom.install.after_install"
 
+# Rejoué à chaque `bench migrate`, sur tous les sites où l'app est installée.
+# Les deux appels sont idempotents :
+#   - installer() ne crée un Email Template que s'il est absent, et ne renseigne
+#     un champ de paramétrage que s'il est vide : les retouches faites dans
+#     l'interface survivent donc aux migrations ;
+#   - couper_rappels_hrms() remet stopped=1 sur les jobs de rappel de HRMS, et
+#     journalise si l'un d'eux a disparu (renommage en amont).
+after_migrate = [
+    "amoamancustom.setup.email_templates.installer",
+    "amoamancustom.setup.scheduler.couper_rappels_hrms",
+]
+
 # Uninstallation
 # ------------
 
@@ -185,33 +197,44 @@ doc_events = {
 
 # Scheduled Tasks
 # ---------------
+# `scheduler_events` est le SEUL nom lu par Frappe : sync_jobs() fait
+# frappe.get_hooks("scheduler_events") et matérialise ces entrées en
+# enregistrements Scheduled Job Type à chaque `bench migrate`. Toute autre
+# variable définie ici (l'ancien bloc `scheduled_jobs`, par exemple) est du code
+# mort — sans erreur ni avertissement, elle ne tourne simplement jamais.
+#
+# Attention à l'ordre : insert_single_event fait un frappe.get_attr(methode)
+# avant de créer le job, et se contente d'afficher « ... is not a valid method »
+# s'il échoue. Le module doit donc exister avant la migration.
 scheduler_events = {
- 	"all": [
- 		#"amoamancustom.tasks.all"
- 	],
- 	"daily": [
- 		"amoamancustom.schedulers.employee.set_seniority",
- 		"amoamancustom.api.refresh_linkedin_cache"
- 	],
- 	"hourly": [
- 	],
- 	"weekly": [
- 		#"amoamancustom.tasks.weekly"
- 	],
- 	"monthly": [
- 		#"amoamancustom.schedulers.employee.set_seniority"
- 	],
- }
-
-
-scheduled_jobs = {
+    "all": [],
+    "hourly": [],
+    "daily": [
+        "amoamancustom.schedulers.employee.set_seniority",
+        "amoamancustom.api.refresh_linkedin_cache",
+        # Rappels RH en français. Remplacent ceux de HRMS, dont les jobs sont
+        # coupés par amoamancustom/setup/scheduler.py.
+        "amoamancustom.schedulers.hr_reminders.envoyer_rappels_anniversaire",
+        "amoamancustom.schedulers.hr_reminders.envoyer_rappels_anniversaire_pro",
+    ],
+    # Les deux jobs de jours fériés sont déclarés comme chez HRMS : chacun se
+    # retire de lui-même si HR Settings.frequency ne le désigne pas, ce qui
+    # laisse la cadence pilotable depuis l'écran RH.
+    "weekly": [
+        "amoamancustom.schedulers.hr_reminders.envoyer_rappels_feries_hebdo",
+    ],
+    "monthly": [
+        "amoamancustom.schedulers.hr_reminders.envoyer_rappels_feries_mensuel",
+    ],
     "cron": {
-        # Exécution QUOTIDIENNE à 08h00
+        # Exécution QUOTIDIENNE à 08h00.
+        # Ces deux méthodes vivaient auparavant dans un bloc `scheduled_jobs`,
+        # qui n'est pas un hook Frappe : elles n'ont jamais été exécutées.
         "0 8 * * *": [
             "amoamancustom.schedulers.attendance_reminder.send_attendance_reminder_continuous",
-            "amoamancustom.schedulers.contract_expiry.send_contract_expiry_notifications"
+            "amoamancustom.schedulers.contract_expiry.send_contract_expiry_notifications",
         ],
-    }
+    },
 }
 
 # Testing

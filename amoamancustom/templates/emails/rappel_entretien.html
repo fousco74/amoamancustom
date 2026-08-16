@@ -1,0 +1,38 @@
+{#
+  Rappel d'entretien — HR Settings.interview_reminder_template
+  use_html = 0  OBLIGATOIRE : hrms/hr/doctype/interview/interview.py:279 lit
+  `.response` en dur et ignore response_html — cocher « Ajouter du HTML »
+  viderait le mail. Le sujet n'est PAS passé à Jinja : le laisser en texte brut.
+
+  Contexte : Interview.as_dict(). Champs réels : job_applicant, job_opening,
+  designation, interview_type, scheduled_on, from_time, to_time, status.
+  Il n'existe PAS de champ job_applicant_name — on résout le nom via la base.
+#}
+{% extends "amoamancustom/templates/emails/_base_mail.html" %}
+{% import "amoamancustom/templates/emails/_composants.html" as ui %}
+
+{% set candidat = frappe.db.get_value("Job Applicant", job_applicant, "applicant_name") or job_applicant %}
+{% set soustitre = "Entretien " ~ name %}
+{% set mention_pied = "Vous recevez ce message car vous figurez parmi les intervenants de cet entretien." %}
+
+{% block titre %}Entretien à venir{% endblock %}
+{% block preheader %}Entretien avec {{ candidat }} le {{ frappe.utils.formatdate(scheduled_on, "dd/MM/yyyy") }}.{% endblock %}
+
+{% block contenu %}
+{{ ui.p("Bonjour,") }}
+{{ ui.p("Un entretien auquel vous participez commence bientôt. Voici les éléments à connaître.") }}
+
+{{ ui.details([
+  ("Candidat", candidat),
+  ("Poste", designation),
+  ("Type d'entretien", interview_type),
+  ("Date", frappe.utils.formatdate(scheduled_on, "dd/MM/yyyy")),
+  ("Horaire", (from_time or "") ~ " – " ~ (to_time or "")),
+]) }}
+
+{{ ui.encart("À préparer", "Relisez la candidature et la grille d'évaluation avant l'entretien. Votre retour sera à saisir directement dans ERPNext une fois l'échange terminé.", "info") }}
+{% endblock %}
+
+{% block cta %}
+{{ ui.bouton(frappe.utils.get_url_to_form("Interview", name), "Ouvrir l'entretien dans ERPNext") }}
+{% endblock %}

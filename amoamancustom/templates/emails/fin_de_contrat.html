@@ -1,0 +1,52 @@
+{#
+  Récapitulatif des contrats arrivant à échéance — rendu par
+  amoamancustom/schedulers/contract_expiry.py
+
+  Contexte : employes (liste de dicts : name, employee_name, department,
+             designation, contract_end_date, days_left), date_edition
+  Destinataires : HR User et HR Manager, qui ont accès au bureau — le lien par
+  ligne pointe donc vers la fiche employé.
+#}
+{% extends "amoamancustom/templates/emails/_base_mail.html" %}
+{% import "amoamancustom/templates/emails/_composants.html" as ui %}
+
+{% set soustitre = "État au " ~ frappe.utils.formatdate(date_edition, "dd/MM/yyyy") %}
+{% set mention_pied = "Ce récapitulatif est envoyé tant qu'un contrat reste dans la fenêtre du mois à venir." %}
+
+{% block titre %}{{ employes | length }} contrat(s) arrivant à échéance{% endblock %}
+{% block preheader %}Contrats se terminant dans le mois à venir.{% endblock %}
+
+{% block contenu %}
+{{ ui.p("Bonjour,") }}
+{{ ui.p("Les contrats ci-dessous arrivent à échéance dans moins d'un mois. Merci d'anticiper leur renouvellement ou les démarches de fin de contrat.") }}
+
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;margin:0 0 24px 0;border-collapse:collapse;border:1px solid #EAECF0;border-radius:10px;">
+  <tr>
+    <td style="padding:10px 12px;background-color:#F9FAFB;font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;color:#667085;">Employé</td>
+    <td style="padding:10px 12px;background-color:#F9FAFB;font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;color:#667085;">Poste</td>
+    <td style="padding:10px 12px;background-color:#F9FAFB;font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;color:#667085;">Fin</td>
+    <td style="padding:10px 12px;background-color:#F9FAFB;font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;color:#667085;">Échéance</td>
+  </tr>
+  {% for emp in employes %}
+  {% set urgent = emp.days_left <= 7 %}
+  {% set couleur = "#C0392B" if urgent else "#111111" %}
+  <tr>
+    <td style="padding:10px 12px;border-top:1px solid #EAECF0;font-family:Arial,Helvetica,sans-serif;font-size:14px;">
+      <a href="{{ frappe.utils.get_url_to_form('Employee', emp.name) }}" style="color:#2563EB;text-decoration:underline;">{{ emp.employee_name or emp.name }}</a>
+      {% if emp.department %}<br><span style="font-size:12px;color:#98A2B3;">{{ emp.department }}</span>{% endif %}
+    </td>
+    <td style="padding:10px 12px;border-top:1px solid #EAECF0;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#667085;">{{ emp.designation or "—" }}</td>
+    <td style="padding:10px 12px;border-top:1px solid #EAECF0;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:600;color:{{ couleur }};">{{ frappe.utils.formatdate(emp.contract_end_date, "dd/MM/yyyy") }}</td>
+    <td style="padding:10px 12px;border-top:1px solid #EAECF0;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:{{ couleur }};">
+      {% if emp.days_left <= 0 %}Aujourd'hui{% elif emp.days_left == 1 %}Demain{% else %}Dans {{ emp.days_left }} jours{% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+{{ ui.encart("Contrats en rouge", "Ils arrivent à échéance sous 7 jours : ce sont ceux à traiter en priorité.", "alerte") }}
+{% endblock %}
+
+{% block cta %}
+{{ ui.bouton(frappe.utils.get_url_to_list("Employee"), "Ouvrir la liste des employés") }}
+{% endblock %}

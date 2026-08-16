@@ -1,0 +1,40 @@
+{#
+  Suite donnée à une demande de congé — HR Settings.leave_status_notification_template
+  Destinataire : le collaborateur.  use_html = 1
+
+  Rendu par hrms/hr/doctype/leave_application/leave_application.py:692 via
+  response_ (donc use_html respecté) et le sujet EST passé à Jinja.
+  Contexte : Leave Application.as_dict() — champs aplatis, sans préfixe doc.
+#}
+{% extends "amoamancustom/templates/emails/_base_mail.html" %}
+{% import "amoamancustom/templates/emails/_composants.html" as ui %}
+
+{% set libelles = {"Approved": "approuvée", "Rejected": "refusée", "Cancelled": "annulée", "Open": "en cours d'examen"} %}
+{% set etat = libelles.get(status, status) %}
+{% set soustitre = "Demande " ~ name ~ " — " ~ etat %}
+
+{% block titre %}Votre demande de congé a été {{ etat }}{% endblock %}
+{% block preheader %}Décision sur votre demande du {{ frappe.utils.formatdate(from_date, "dd/MM/yyyy") }}.{% endblock %}
+
+{% block contenu %}
+{{ ui.p("Bonjour " ~ (employee_name or "") ~ ",") }}
+{{ ui.p("Votre demande de congé a été " ~ etat ~ " par " ~ (leave_approver_name or leave_approver or "votre responsable") ~ ".") }}
+
+{{ ui.details([
+  ("Type de congé", leave_type),
+  ("Du", frappe.utils.formatdate(from_date, "dd/MM/yyyy")),
+  ("Au", frappe.utils.formatdate(to_date, "dd/MM/yyyy")),
+  ("Nombre de jours", total_leave_days),
+  ("Décision", etat | capitalize),
+]) }}
+
+{% if status == "Rejected" %}
+{{ ui.encart("Demande refusée", "Rapprochez-vous de votre responsable pour comprendre le motif et, si besoin, déposer une nouvelle demande.", "alerte") }}
+{% elif status == "Approved" %}
+{{ ui.encart("Avant votre départ", "Pensez à organiser la continuité de vos dossiers et à poser votre message d'absence.", "info") }}
+{% endif %}
+{% endblock %}
+
+{% block cta %}
+{{ ui.bouton(frappe.utils.get_url_to_form("Leave Application", name), "Voir ma demande dans ERPNext") }}
+{% endblock %}

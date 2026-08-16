@@ -1,0 +1,69 @@
+{#
+  Notification d'expédition — Delivery Settings.dispatch_template
+  use_html = 0  OBLIGATOIRE : erpnext/stock/doctype/delivery_trip/delivery_trip.py:441
+  lit `.response` en dur. Le sujet n'est PAS passé à Jinja.
+
+  Contexte assemblé dans delivery_trip.py:412-433 :
+      delivery_trip.as_dict()  : driver_name, vehicle, departure_time
+      + cell_number du Driver
+      + items                  : lignes du bon de livraison
+      + stop.as_dict()         : customer, address, customer_address,
+                                 delivery_note, grand_total, estimated_arrival
+      + contact_info           : first_name, last_name, email_id
+
+  Ce template contient du HTML brut (le tableau des articles) et sera donc
+  réellement passé au sanitizer à l'enregistrement — vérifié sans perte.
+  Éviter les séquences de type flèche dans les commentaires : elles ressortent
+  échappées en entités HTML.
+
+  ATTENTION : stop.as_dict() écrase `name` avec l'identifiant de la ligne enfant.
+
+  Pas de bouton « Ouvrir dans ERPNext » ici, volontairement : le destinataire est
+  le CLIENT, qui n'a pas d'accès au bureau. Delivery Note n'expose pas de vue
+  portail (has_web_view absent), il n'existe donc aucune page publique vers
+  laquelle pointer — un lien /desk/... lui renverrait un 403. Seul le lien
+  d'instance du pied de page est conservé.
+#}
+{% extends "amoamancustom/templates/emails/_base_mail.html" %}
+{% import "amoamancustom/templates/emails/_composants.html" as ui %}
+
+{% set soustitre = "Livraison " ~ (delivery_note or "") %}
+{% set mention_pied = "Pour toute question sur cette livraison, répondez à votre interlocuteur habituel." %}
+
+{% block titre %}Votre commande est en route{% endblock %}
+{% block preheader %}Livraison prévue — suivez les détails de votre expédition.{% endblock %}
+
+{% block contenu %}
+{{ ui.p("Bonjour " ~ ((first_name or "") ~ " " ~ (last_name or "")) | trim ~ ",") }}
+{{ ui.p("Votre commande a quitté nos entrepôts et est en cours d'acheminement. Voici le récapitulatif de l'expédition.") }}
+
+{{ ui.details([
+  ("Client", customer),
+  ("Bon de livraison", delivery_note),
+  ("Adresse de livraison", customer_address),
+  ("Départ", frappe.format(departure_time, "Datetime") if departure_time else None),
+  ("Arrivée estimée", frappe.format(estimated_arrival, "Datetime") if estimated_arrival else None),
+  ("Chauffeur", driver_name),
+  ("Téléphone du chauffeur", cell_number),
+  ("Véhicule", vehicle),
+  ("Montant total", grand_total),
+]) }}
+
+{% if items %}
+<p style="margin:0 0 10px 0;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;color:#111111;">Articles expédiés</p>
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width:100%;margin:0 0 24px 0;border-collapse:collapse;border:1px solid #EAECF0;border-radius:10px;">
+  <tr>
+    <td style="padding:10px 16px;background-color:#F9FAFB;font-family:Arial,Helvetica,sans-serif;font-size:13px;font-weight:700;color:#667085;">Article</td>
+    <td align="right" style="padding:10px 16px;background-color:#F9FAFB;font-family:Arial,Helvetica,sans-serif;font-size:13px;font-weight:700;color:#667085;">Quantité</td>
+  </tr>
+  {% for article in items %}
+  <tr>
+    <td style="padding:10px 16px;border-top:1px solid #EAECF0;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#111111;">{{ article.item_name or article.item_code }}</td>
+    <td align="right" style="padding:10px 16px;border-top:1px solid #EAECF0;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#111111;">{{ article.qty }} {{ article.uom or "" }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+
+{{ ui.encart("À la réception", "Merci de vérifier la conformité de la marchandise en présence du chauffeur et de signaler toute anomalie immédiatement.", "info") }}
+{% endblock %}

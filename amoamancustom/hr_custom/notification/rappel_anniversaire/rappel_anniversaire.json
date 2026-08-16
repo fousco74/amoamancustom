@@ -1,0 +1,33 @@
+{
+ "attach_files": "",
+ "attach_print": 0,
+ "channel": "Email",
+ "condition": "doc.status == 'Active'",
+ "condition_type": "Python",
+ "creation": "2026-08-14 09:00:00.000000",
+ "days_in_advance": 0,
+ "docstatus": 0,
+ "doctype": "Notification",
+ "document_type": "Employee",
+ "enabled": 1,
+ "event": "Method",
+ "idx": 0,
+ "is_standard": 1,
+ "message": "{% extends \"amoamancustom/templates/emails/_base_mail.html\" %}\n{% import \"amoamancustom/templates/emails/_composants.html\" as ui %}\n\n{% set soustitre = doc.designation or doc.department %}\n{% set mention_pied = \"Vous recevez ce message parce qu'il concerne un collègue de votre société.\" %}\n\n{% block titre %}Joyeux anniversaire {{ doc.employee_name }}{% endblock %}\n{% block preheader %}Aujourd'hui, {{ doc.employee_name }} fête son anniversaire.{% endblock %}\n\n{% block contenu %}\n{{ ui.p(\"Bonjour à toutes et à tous,\") }}\n{{ ui.p(\"Aujourd'hui, \" ~ doc.employee_name ~ \" fête son anniversaire. Prenons un instant pour lui adresser nos meilleurs vœux.\") }}\n\n{{ ui.details([\n  (\"Collaborateur\", doc.employee_name),\n  (\"Service\", doc.department),\n  (\"Poste\", doc.designation),\n]) }}\n\n{{ ui.p(\"Toute l'équipe d'Amoaman & Associés lui souhaite une excellente journée.\") }}\n{% endblock %}\n",
+ "message_type": "HTML",
+ "method": "rappel_anniversaire",
+ "minutes_offset": 0,
+ "modified": "2026-08-14 09:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "HR_CUSTOM",
+ "name": "Rappel Anniversaire",
+ "owner": "Administrator",
+ "recipients": [
+  {
+   "receiver_by_role": "Employee"
+  }
+ ],
+ "send_system_notification": 1,
+ "send_to_all_assignees": 0,
+ "subject": "Joyeux anniversaire !"
+}

@@ -1,0 +1,36 @@
+{#
+  Demande de congé à valider — HR Settings.leave_approval_notification_template
+  Destinataire : l'approbateur.  use_html = 1
+
+  Rendu par hrms/hr/doctype/leave_application/leave_application.py:716 via
+  response_ (donc use_html respecté) et le sujet EST passé à Jinja.
+  Contexte : Leave Application.as_dict() — champs aplatis, sans préfixe doc.
+#}
+{% extends "amoamancustom/templates/emails/_base_mail.html" %}
+{% import "amoamancustom/templates/emails/_composants.html" as ui %}
+
+{% set soustitre = "Demande " ~ name ~ " — en attente de votre décision" %}
+{% set mention_pied = "Vous recevez ce message car vous êtes désigné approbateur de congés pour ce collaborateur." %}
+
+{% block titre %}Demande de congé à valider{% endblock %}
+{% block preheader %}{{ employee_name }} sollicite votre validation.{% endblock %}
+
+{% block contenu %}
+{{ ui.p("Bonjour " ~ (leave_approver_name or "") ~ ",") }}
+{{ ui.p(employee_name ~ " a déposé une demande de congé qui attend votre décision.") }}
+
+{{ ui.details([
+  ("Collaborateur", employee_name),
+  ("Service", department),
+  ("Type de congé", leave_type),
+  ("Du", frappe.utils.formatdate(from_date, "dd/MM/yyyy")),
+  ("Au", frappe.utils.formatdate(to_date, "dd/MM/yyyy")),
+  ("Nombre de jours", total_leave_days),
+  ("Solde disponible", leave_balance),
+  ("Motif", description),
+]) }}
+{% endblock %}
+
+{% block cta %}
+{{ ui.bouton(frappe.utils.get_url_to_form("Leave Application", name), "Traiter la demande dans ERPNext") }}
+{% endblock %}

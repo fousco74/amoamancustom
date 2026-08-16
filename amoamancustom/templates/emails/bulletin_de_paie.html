@@ -1,0 +1,38 @@
+{#
+  Bulletin de paie — Payroll Settings.email_template
+  use_html = 0  OBLIGATOIRE : hrms/payroll/doctype/salary_slip/salary_slip.py:2183
+  lit `.response` en dur. Le sujet, LUI, EST passé à Jinja (ligne 2182).
+
+  Contexte : Salary Slip.as_dict(). Le PDF du bulletin est joint par le
+  mécanisme standard — ne pas le redécrire ici.
+#}
+{% extends "amoamancustom/templates/emails/_base_mail.html" %}
+{% import "amoamancustom/templates/emails/_composants.html" as ui %}
+
+{% set periode = frappe.utils.formatdate(start_date, "dd/MM/yyyy") ~ " – " ~ frappe.utils.formatdate(end_date, "dd/MM/yyyy") %}
+{% set soustitre = "Période du " ~ periode %}
+{% set mention_pied = "Ce document est confidentiel et vous est adressé personnellement." %}
+
+{% block titre %}Votre bulletin de paie{% endblock %}
+{% block preheader %}Bulletin de la période du {{ periode }}.{% endblock %}
+
+{% block contenu %}
+{{ ui.p("Bonjour " ~ (employee_name or "") ~ ",") }}
+{{ ui.p("Votre bulletin de paie est disponible. Vous le trouverez en pièce jointe de ce message, au format PDF.") }}
+
+{{ ui.details([
+  ("Période", periode),
+  ("Service", department),
+  ("Poste", designation),
+  ("Jours travaillés", payment_days),
+  ("Salaire brut", frappe.utils.fmt_money(gross_pay, currency=currency)),
+  ("Total des retenues", frappe.utils.fmt_money(total_deduction, currency=currency)),
+  ("Net à payer", frappe.utils.fmt_money(net_pay, currency=currency)),
+]) }}
+
+{{ ui.encart("Une question sur votre bulletin ?", "Contactez le service des ressources humaines en précisant la période concernée.", "info") }}
+{% endblock %}
+
+{% block cta %}
+{{ ui.bouton(frappe.utils.get_url_to_form("Salary Slip", name), "Consulter dans ERPNext") }}
+{% endblock %}

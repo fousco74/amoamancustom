@@ -1,0 +1,46 @@
+{#
+  Questionnaire de départ — HR Settings.exit_questionnaire_notification_template
+  use_html = 0  OBLIGATOIRE : hrms/hr/doctype/exit_interview/exit_interview.py:88
+  lit `.response` en dur. Le sujet n'est PAS passé à Jinja.
+
+  Contexte : exit_interview.py fait
+      context = interview.as_dict()
+      context.update(employee.as_dict())
+  Le second update ÉCRASE `name` : {{ name }} vaut l'identifiant de l'EMPLOYÉ,
+  pas celui de l'Exit Interview. On ne peut donc pas lier l'entretien de départ —
+  le bouton pointe vers le formulaire web, ce qui est de toute façon l'objet du mail.
+#}
+{% extends "amoamancustom/templates/emails/_base_mail.html" %}
+{% import "amoamancustom/templates/emails/_composants.html" as ui %}
+
+{% set web_form = frappe.db.get_value("HR Settings", "HR Settings", "exit_questionnaire_web_form") %}
+{% set lien_formulaire = frappe.utils.get_url(uri=frappe.db.get_value("Web Form", web_form, "route")) %}
+{% set soustitre = company %}
+{% set mention_pied = "Vos réponses sont transmises au service des ressources humaines." %}
+
+{% block titre %}Votre avis nous intéresse{% endblock %}
+{% block preheader %}Quelques minutes pour partager votre expérience chez nous.{% endblock %}
+
+{% block contenu %}
+{{ ui.p("Bonjour " ~ (employee_name or "") ~ ",") }}
+{{ ui.p("Merci pour le travail accompli et pour votre contribution durant votre présence au sein de " ~ (company or "notre structure") ~ ".") }}
+{{ ui.p("Avant votre départ, nous aimerions recueillir votre regard sur votre expérience. Vos réponses nous aident concrètement à améliorer nos conditions de travail.") }}
+
+{{ ui.details([
+  ("Collaborateur", employee_name),
+  ("Service", department),
+  ("Poste occupé", designation),
+  ("Date de sortie", frappe.utils.formatdate(relieving_date, "dd/MM/yyyy") if relieving_date else None),
+]) }}
+
+{{ ui.encart("Quelques minutes suffisent", "Le questionnaire est court et peut être rempli en une seule fois. Répondez en toute franchise : c'est ce qui le rend utile.", "info") }}
+{% endblock %}
+
+{% block cta %}
+{% if web_form %}
+{{ ui.bouton(lien_formulaire, "Répondre au questionnaire") }}
+{{ ui.lien_de_repli(lien_formulaire) }}
+{% else %}
+{{ ui.encart("Formulaire non configuré", "Aucun formulaire web n'est renseigné dans les paramètres RH. Merci de contacter le service des ressources humaines.", "alerte") }}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,33 @@
+{
+ "attach_files": "",
+ "attach_print": 0,
+ "channel": "Email",
+ "condition": "doc.status == 'Active'",
+ "condition_type": "Python",
+ "creation": "2026-08-14 09:00:00.000000",
+ "days_in_advance": 0,
+ "docstatus": 0,
+ "doctype": "Notification",
+ "document_type": "Employee",
+ "enabled": 1,
+ "event": "Method",
+ "idx": 0,
+ "is_standard": 1,
+ "message": "{% extends \"amoamancustom/templates/emails/_base_mail.html\" %}\n{% import \"amoamancustom/templates/emails/_composants.html\" as ui %}\n\n{% set soustitre = doc.designation or doc.department %}\n{% set mention_pied = \"Vous recevez ce message parce qu'il concerne un collègue de votre société.\" %}\n\n{% block titre %}{{ annees }} {{ \"an\" if annees == 1 else \"ans\" }} pour {{ doc.employee_name }}{% endblock %}\n{% block preheader %}{{ doc.employee_name }} fête aujourd'hui son anniversaire professionnel.{% endblock %}\n\n{% block contenu %}\n{{ ui.p(\"Bonjour à toutes et à tous,\") }}\n{{ ui.p(doc.employee_name ~ \" célèbre aujourd'hui \" ~ annees ~ (\" an\" if annees == 1 else \" ans\") ~ \" au sein d'Amoaman & Associés. L'occasion de saluer le chemin parcouru ensemble.\") }}\n\n{{ ui.details([\n  (\"Collaborateur\", doc.employee_name),\n  (\"Service\", doc.department),\n  (\"Poste\", doc.designation),\n  (\"Arrivé le\", frappe.utils.formatdate(doc.date_of_joining, \"dd/MM/yyyy\") if doc.date_of_joining else None),\n  (\"Ancienneté\", (annees | string) ~ (\" an\" if annees == 1 else \" ans\")),\n]) }}\n\n{{ ui.p(\"Merci pour votre engagement, et belle continuation parmi nous.\") }}\n{% endblock %}\n",
+ "message_type": "HTML",
+ "method": "rappel_anniversaire_pro",
+ "minutes_offset": 0,
+ "modified": "2026-08-14 09:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "HR_CUSTOM",
+ "name": "Rappel Anniversaire Professionnel",
+ "owner": "Administrator",
+ "recipients": [
+  {
+   "receiver_by_role": "Employee"
+  }
+ ],
+ "send_system_notification": 1,
+ "send_to_all_assignees": 0,
+ "subject": "Anniversaire professionnel"
+}
