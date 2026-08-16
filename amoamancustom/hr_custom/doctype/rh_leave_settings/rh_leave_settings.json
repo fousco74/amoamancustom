@@ -15,7 +15,9 @@
   "column_break_scpu",
   "training_leave_policy_id",
   "gender_men",
-  "gender_women"
+  "gender_women",
+  "section_break_indemnite",
+  "paid_leave_type"
  ],
  "fields": [
   {
@@ -77,6 +79,18 @@
    "fieldtype": "Link",
    "label": "Gender women",
    "options": "Gender"
+  },
+  {
+   "fieldname": "section_break_indemnite",
+   "fieldtype": "Section Break",
+   "label": "Indemnité de congé"
+  },
+  {
+   "description": "Type de congé utilisé pour le solde (Salary Slip.custom_leave_balance) et l'« Indemnité de congé » du solde de tout compte. Si vide, repli sur « Congés Payés ».",
+   "fieldname": "paid_leave_type",
+   "fieldtype": "Link",
+   "label": "Type de congé payé",
+   "options": "Leave Type"
   }
  ],
  "grid_page_length": 50,

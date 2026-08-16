@@ -1,11 +1,10 @@
 import frappe
 from frappe import _
-from frappe.utils import getdate, get_first_day, get_last_day
+from frappe.utils import add_months, getdate, get_first_day, get_last_day, nowdate
 from frappe.utils.data import flt
 import requests
 from requests.exceptions import Timeout, ConnectionError as RequestsConnectionError
 from urllib.parse import urlencode
-from frappe.query_builder.functions import Sum
 
 
 # =============================================================================
@@ -679,19 +678,150 @@ def linkedin_doc_preview(urn: str):
 
 
 
+# Repli si RH Leave Settings.paid_leave_type n'est pas renseigne.
+DEFAULT_PAID_LEAVE_TYPE = "Congés Payés"
+
+# Nombre de mois par sous-periode selon la frequence d'acquisition (earned leave).
+_FREQUENCY_STEP_MONTHS = {"Monthly": 1, "Quarterly": 3, "Half-Yearly": 6, "Yearly": 12}
+
+
+def get_paid_leave_type():
+    """Type de conge paye utilise pour le solde et l'indemnite de conge.
+
+    Configurable via le Single « RH Leave Settings » (champ paid_leave_type),
+    avec repli sur DEFAULT_PAID_LEAVE_TYPE. Source de verite unique : evite de
+    coder le nom du type de conge en dur dans plusieurs fichiers.
+
+    On ne lit le champ que s'il existe reellement (has_field) : le code
+    fonctionne donc aussi tant que la migration exposant le champ n'a pas tourne.
+    """
+    try:
+        meta = frappe.get_meta("RH Leave Settings")
+    except Exception:
+        return DEFAULT_PAID_LEAVE_TYPE
+
+    if meta.has_field("paid_leave_type"):
+        value = frappe.db.get_single_value("RH Leave Settings", "paid_leave_type")
+        if value:
+            return value
+    return DEFAULT_PAID_LEAVE_TYPE
+
+
+def _get_accrued_leave_balance(employee, leave_type, on_date):
+    """Solde de conges *acquis* a `on_date`, recalcule periode par periode.
+
+    Pourquoi ne pas simplement sommer le grand livre : pour un conge « earned
+    leave » (acquisition periodique, ex. 2,4 j/mois), ERPNext peut retro-allouer
+    plusieurs mois d'un seul bloc — typiquement au moment ou la Leave Policy est
+    affectee — en datant ce bloc d'une seule journee. Une somme des Leave Ledger
+    Entry a une date passee compte alors la totalite du bloc, alors que seuls les
+    mois reellement ecoules devraient l'etre (un bulletin de mars affichait 40,8
+    au lieu de 36). L'indemnite de conge du solde de tout compte valant
+    custom_leave_balance * moy_brut_imp / 30, l'ecart se propage directement.
+
+    On reconstruit donc l'acquisition sous-periode par sous-periode a partir du
+    bareme reel : `annual_allocation` de la Leave Policy divise par la frequence,
+    via la fonction HRMS get_monthly_earned_leave (qui applique aussi l'arrondi
+    et le prorata du mois d'embauche). Passer annual_allocation de 28,8 a 26,4
+    donne donc automatiquement 2,2 j/mois au lieu de 2,4.
+
+    Formule par allocation couvrant la date :
+        solde = report (unused_leaves, deja net) + acquis(debut_periode -> on_date)
+              - conges pris(debut_periode -> on_date)
+    ou `acquis` = somme des sous-periodes dont la FIN est atteinte a `on_date`
+    (l'acquisition a lieu en fin de sous-periode), plafonnee a annual_allocation.
+
+    Retourne None si aucune allocation « earned + policy » ne couvre `on_date` :
+    l'appelant retombe alors sur le calcul HRMS standard.
+    """
+    from hrms.hr.doctype.leave_application.leave_application import get_leaves_for_period
+    from hrms.hr.utils import (
+        get_annual_allocation_from_policy,
+        get_monthly_earned_leave,
+        get_sub_period_start_and_end,
+    )
+
+    leave_type_doc = frappe.get_cached_doc("Leave Type", leave_type)
+    if not leave_type_doc.is_earned_leave:
+        return None
+
+    frequency = leave_type_doc.earned_leave_frequency
+    step = _FREQUENCY_STEP_MONTHS.get(frequency)
+    if not step:
+        return None
+
+    allocations = frappe.get_all(
+        "Leave Allocation",
+        filters={
+            "employee": employee,
+            "leave_type": leave_type,
+            "docstatus": 1,
+            "from_date": ("<=", on_date),
+            "to_date": (">=", on_date),
+            "leave_policy": ["is", "set"],
+        },
+        fields=["name", "from_date", "to_date", "unused_leaves", "leave_policy"],
+    )
+    if not allocations:
+        return None
+
+    doj = frappe.db.get_value("Employee", employee, "date_of_joining")
+    total = 0.0
+    for alloc in allocations:
+        annual = flt(get_annual_allocation_from_policy(alloc, leave_type_doc))
+
+        earned = 0.0
+        sp_start, sp_end = get_sub_period_start_and_end(getdate(alloc.from_date), frequency)
+        while sp_end <= on_date and sp_start <= getdate(alloc.to_date):
+            earned += get_monthly_earned_leave(
+                doj, annual, frequency, leave_type_doc.rounding, sp_start, sp_end
+            )
+            nxt = add_months(sp_start, step)
+            sp_start, sp_end = get_sub_period_start_and_end(getdate(nxt), frequency)
+        earned = min(earned, annual)
+
+        opening = flt(alloc.unused_leaves) + earned
+        # get_leaves_for_period renvoie un nombre NEGATIF pour les conges pris
+        # (convention HRMS) -> on l'additionne pour retrancher les jours consommes.
+        taken = get_leaves_for_period(employee, leave_type, alloc.from_date, on_date)
+        total += opening + taken
+
+    return flt(total, 2)
+
+
 @frappe.whitelist()
-def get_leave_balance(employee, leave_type="Congés Payés"):
-    LLE = frappe.qb.DocType("Leave Ledger Entry")
-    result = (
-        frappe.qb.from_(LLE)
-        .select(Sum(LLE.leaves))
-        .where(
-            (LLE.employee == employee)
-            & (LLE.leave_type == leave_type)
-            & (LLE.docstatus == 1)
-        )
-    ).run()
-    return result[0][0] or 0
+def get_leave_balance(employee, leave_type=None, date=None):
+    """Solde de conges d'un employe, pour un type de conge, a une date donnee.
+
+    - leave_type non fourni -> resolu via get_paid_leave_type() (configurable).
+    - date non fournie      -> aujourd'hui.
+    - Pour un conge « earned leave », l'acquisition est recalculee periode par
+      periode (_get_accrued_leave_balance) afin que le solde a une date passee
+      reflete uniquement les mois reellement ecoules.
+    - Repli sur le calcul standard HRMS get_leave_balance_on pour les types non
+      « earned », en l'absence d'allocation liee a une policy, ou en cas d'erreur.
+
+    La signature reste compatible avec l'appel client historique
+    get_leave_balance(employee) / (employee, leave_type).
+    """
+    if not employee:
+        frappe.throw(_("Employé requis pour calculer le solde de congés."))
+
+    if not leave_type:
+        leave_type = get_paid_leave_type()
+
+    on_date = getdate(date) if date else getdate(nowdate())
+
+    try:
+        accrued = _get_accrued_leave_balance(employee, leave_type, on_date)
+        if accrued is not None:
+            return accrued
+    except Exception:
+        frappe.log_error(frappe.get_traceback(), "ACCRUED_LEAVE_BALANCE_ERROR")
+
+    from hrms.hr.doctype.leave_application.leave_application import get_leave_balance_on
+
+    return flt(get_leave_balance_on(employee, leave_type, on_date) or 0)
 
 
 @frappe.whitelist()
