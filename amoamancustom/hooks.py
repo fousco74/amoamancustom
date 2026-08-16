@@ -167,7 +167,8 @@ permission_query_conditions = {
 # Override standard doctype classes
 
 override_doctype_class = {
-    "Expense Claim": "amoamancustom.overrides.expense_claim.CustomExpenseClaim"
+    "Expense Claim": "amoamancustom.overrides.expense_claim.CustomExpenseClaim",
+    "Salary Slip": "amoamancustom.overrides.salary_slip.CustomSalarySlip",
 }
 
 # Document Events
