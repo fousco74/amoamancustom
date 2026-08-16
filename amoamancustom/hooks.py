@@ -434,6 +434,45 @@ fixtures = [
         ]
     },
 
+    # -----------------------------------------------------------------
+    # 1 bis. Paie — solde de tout compte
+    # -----------------------------------------------------------------
+    # Filtres nominatifs volontairement etroits : un {"doctype": "Salary
+    # Component"} nu exporterait aussi les composantes standard d'ERPNext.
+    #
+    # Attention a l'ordre : sync_fixtures importe les fichiers par ordre
+    # ALPHABETIQUE de nom de fichier, pas dans l'ordre de cette liste.
+    # custom_field < income_tax_slab < salary_component < salary_structure :
+    # les champs custom existent donc avant les composantes qui les
+    # renseignent, et les composantes avant la structure qui les reference.
+    {
+        "doctype": "Salary Component",
+        "filters": [
+            ["name", "in", [
+                "Brute Imposable",
+                "Moyenne des salaire brut imposable",
+                "Somme des SBI sur la periode de contrat",
+                "Indemnité de Préavis",
+                "indemnité compensatrice de préavis",
+                "indemnité de licenciement",
+                "indemnité de retraite",
+                "Indemnité de depart",
+            ]]
+        ]
+    },
+    {
+        "doctype": "Income Tax Slab",
+        "filters": [
+            ["name", "in", ["Income Taxe ITS", "Income Tax Slab 2"]]
+        ]
+    },
+    {
+        "doctype": "Salary Structure",
+        "filters": [
+            ["name", "=", "Final Salary Structure"]
+        ]
+    },
+
     # -----------------------------
     # 2. Property Setters
     # -----------------------------

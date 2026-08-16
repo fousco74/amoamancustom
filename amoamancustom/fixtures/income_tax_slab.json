@@ -1,0 +1,108 @@
+[
+ {
+  "allow_tax_exemption": 0,
+  "amended_from": null,
+  "company": null,
+  "currency": "XOF",
+  "disabled": 0,
+  "docstatus": 1,
+  "doctype": "Income Tax Slab",
+  "effective_from": "2024-01-01",
+  "modified": "2026-08-16 00:00:00",
+  "name": "Income Taxe ITS",
+  "other_taxes_and_charges": [],
+  "slabs": [
+   {
+    "condition": null,
+    "from_amount": 0.0,
+    "percent_deduction": 0.0,
+    "to_amount": 75000.0
+   },
+   {
+    "condition": null,
+    "from_amount": 75001.0,
+    "percent_deduction": 16.0,
+    "to_amount": 240000.0
+   },
+   {
+    "condition": null,
+    "from_amount": 240001.0,
+    "percent_deduction": 21.0,
+    "to_amount": 800000.0
+   },
+   {
+    "condition": null,
+    "from_amount": 800001.0,
+    "percent_deduction": 24.0,
+    "to_amount": 2400000.0
+   },
+   {
+    "condition": null,
+    "from_amount": 2400001.0,
+    "percent_deduction": 28.0,
+    "to_amount": 8000000.0
+   },
+   {
+    "condition": null,
+    "from_amount": 8000001.0,
+    "percent_deduction": 32.0,
+    "to_amount": 0.0
+   }
+  ],
+  "standard_tax_exemption_amount": 0.0,
+  "tax_relief_limit": 0.0
+ },
+ {
+  "allow_tax_exemption": 0,
+  "amended_from": null,
+  "company": null,
+  "currency": "XOF",
+  "disabled": 0,
+  "docstatus": 1,
+  "doctype": "Income Tax Slab",
+  "effective_from": "2025-01-01",
+  "modified": "2026-08-16 00:00:00",
+  "name": "Income Tax Slab 2",
+  "other_taxes_and_charges": [],
+  "slabs": [
+   {
+    "condition": null,
+    "from_amount": 0.0,
+    "percent_deduction": 0.0,
+    "to_amount": 75000.0
+   },
+   {
+    "condition": null,
+    "from_amount": 75001.0,
+    "percent_deduction": 16.0,
+    "to_amount": 240000.0
+   },
+   {
+    "condition": null,
+    "from_amount": 240001.0,
+    "percent_deduction": 21.0,
+    "to_amount": 800000.0
+   },
+   {
+    "condition": null,
+    "from_amount": 800001.0,
+    "percent_deduction": 24.0,
+    "to_amount": 2400000.0
+   },
+   {
+    "condition": null,
+    "from_amount": 2400001.0,
+    "percent_deduction": 28.0,
+    "to_amount": 8000000.0
+   },
+   {
+    "condition": null,
+    "from_amount": 8000001.0,
+    "percent_deduction": 32.0,
+    "to_amount": 0.0
+   }
+  ],
+  "standard_tax_exemption_amount": 0.0,
+  "tax_relief_limit": 0.0
+ }
+]
