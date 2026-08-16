@@ -119,6 +119,10 @@ jinja = {
 after_migrate = [
     "amoamancustom.setup.email_templates.installer",
     "amoamancustom.setup.scheduler.couper_rappels_hrms",
+    # Doit tourner APRES l'import des fixtures : les patches post_model_sync
+    # s'executent avant, donc avant que le Custom Field
+    # custom_print_on_salary_slip n'existe.
+    "amoamancustom.setup.payroll.installer",
 ]
 
 # Uninstallation
@@ -458,6 +462,7 @@ fixtures = [
                 "indemnité de licenciement",
                 "indemnité de retraite",
                 "Indemnité de depart",
+                "Retenue ITS Brut (barème)",
             ]]
         ]
     },

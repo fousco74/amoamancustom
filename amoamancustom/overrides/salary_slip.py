@@ -36,6 +36,10 @@ FLAG_AVG_12M = "custom_gross_pay_over__the_last_12_or_less"
 FLAG_CONTRACT_SUM = "custom_sum_gross_pay_on_contract"
 CUSTOM_SOURCE_FLAGS = (FLAG_TAXABLE_SUM, FLAG_AVG_12M, FLAG_CONTRACT_SUM)
 
+# Quatrieme source : le drapeau standard variable_based_on_taxable_salary, dont
+# on remplace le calcul HRMS (annualise) par le bareme ITS mensuel ivoirien.
+FLAG_ITS_SLAB = "variable_based_on_taxable_salary"
+
 
 class CustomSalarySlip(SalarySlip):
     # ------------------------------------------------------------------
@@ -68,35 +72,49 @@ class CustomSalarySlip(SalarySlip):
 
     def _custom_source_rows(self):
         """Lignes de structure (deja filtrees sur leur `condition` par la SSA)
-        portant un drapeau custom, sous la forme [(component_type, row, flag)]."""
+        dont le montant vient de nous, sous la forme [(component_type, row, flag)].
+
+        Le drapeau ITS est lu sur la LIGNE de structure (que HRMS renseigne
+        depuis le master via set_missing_values), les trois autres sur le master.
+        """
         evaluated = getattr(self, "_evaluated_components", None) or {}
         rows = []
         for component_type in ("earnings", "deductions"):
             for struct_row in evaluated.get(component_type) or []:
+                if cint(struct_row.get(FLAG_ITS_SLAB)):
+                    rows.append((component_type, struct_row, FLAG_ITS_SLAB))
+                    continue
                 flag = self._component_flag(struct_row.salary_component)
                 if flag:
                     rows.append((component_type, struct_row, flag))
         return rows
 
     def _amount_for_flag(self, flag):
+        """Montant a poser, ou None quand on n'a rien a dire (l'appelant laisse
+        alors le comportement HRMS standard)."""
         if flag == FLAG_TAXABLE_SUM:
             return self._get_taxable_earnings_sum()
         if flag == FLAG_AVG_12M:
             return self._get_avg_12m_taxable()
         if flag == FLAG_CONTRACT_SUM:
             return self._get_contract_sum_amount()
+        if flag == FLAG_ITS_SLAB:
+            return self._calculate_its_ci(self._get_taxable_earnings_sum())
         return 0.0
 
     def _custom_source_amounts(self):
-        """{abbr: montant} pour les composantes pilotees par un champ custom.
+        """{abbr: montant} pour les composantes dont le montant vient de nous.
 
-        Volontairement non memorise : la somme des gains imposables change entre
-        la passe earnings et la passe deductions. Les deux sources couteuses
-        (moyenne 12 mois, cumul CDD) ont leur propre cache.
+        Volontairement non memorise : la somme des gains imposables — et donc
+        l'ITS qui en decoule — change entre la passe earnings et la passe
+        deductions. Les deux sources couteuses (moyenne 12 mois, cumul CDD) ont
+        leur propre cache.
         """
         amounts = {}
         for _component_type, struct_row, flag in self._custom_source_rows():
-            amounts[struct_row.abbr] = self._amount_for_flag(flag)
+            amount = self._amount_for_flag(flag)
+            if amount is not None:
+                amounts[struct_row.abbr] = amount
         return amounts
 
     # ------------------------------------------------------------------
@@ -279,6 +297,9 @@ class CustomSalarySlip(SalarySlip):
             if row_component_type != component_type or struct_row.statistical_component:
                 continue
             amount = self._amount_for_flag(flag)
+            if amount is None:
+                # Aucun bareme ITS configure -> on laisse le calcul HRMS standard.
+                continue
             row = present.get(struct_row.salary_component)
             if row:
                 row.amount = amount
@@ -367,51 +388,33 @@ class CustomSalarySlip(SalarySlip):
 
         return flt(total_tax, 2)
 
-    def _override_variable_taxable_components(self, component_type):
-        """Remplace le montant des retenues variable_based_on_taxable_salary par
-        le bareme ITS mensuel ivoirien.
+    def get_tax_components(self) -> list:
+        """Neutralise l'injection des composantes fiscales depuis le master.
 
-        Le drapeau est lu au niveau de la LIGNE, pas du master : sur le master,
-        get_tax_components() (salary_slip.py:1635) injecterait la composante dans
-        tous les nouveaux bulletins, y compris ceux des structures qui calculent
-        l'ITS par formule.
+        HRMS, quand une structure salariale ne declare aucune composante
+        variable_based_on_taxable_salary, ajoute d'autorite au bulletin TOUTES
+        celles du master (salary_slip.py:1607). Notre composante « Retenue ITS
+        Brut (barème) » se retrouverait donc sur les bulletins de Base Officiel,
+        qui calcule deja son ITS par formule — double imposition.
 
-        Sans Payroll Period, calculate_variable_based_on_taxable_salary()
-        (salary_slip.py:1812) se contente d'un msgprint et ne cree pas la ligne :
-        on l'insere donc nous-memes depuis les lignes de structure.
+        Ici les composantes fiscales sont pilotees par la structure salariale, et
+        seulement par elle.
         """
-        if component_type != "deductions":
+        return []
+
+    def calculate_variable_based_on_taxable_salary(self, tax_component):
+        """Evite le msgprint HRMS « Start and end dates not in a valid Payroll
+        Period » sur chaque bulletin.
+
+        Le bareme ITS ivoirien s'applique directement au mensuel imposable, sans
+        annualisation : aucun Payroll Period n'est requis, et le montant est pose
+        par _apply_custom_source_components. On ne court-circuite HRMS que si un
+        Income Tax Slab est bien configure ; sinon le comportement standard (et
+        son message) est conserve.
+        """
+        if not self.payroll_period and self._get_income_tax_slab_name():
             return
-
-        its_amount = self._calculate_its_ci(self._get_taxable_earnings_sum())
-        if its_amount is None:
-            # Aucun bareme configure -> on conserve le calcul standard HRMS.
-            return
-
-        try:
-            handled = set()
-            for row in self.deductions or []:
-                if row.salary_component and cint(
-                    getattr(row, "variable_based_on_taxable_salary", 0)
-                ):
-                    row.amount = its_amount
-                    handled.add(row.salary_component)
-
-            evaluated = getattr(self, "_evaluated_components", None) or {}
-            for struct_row in evaluated.get("deductions") or []:
-                if not cint(getattr(struct_row, "variable_based_on_taxable_salary", 0)):
-                    continue
-                if struct_row.salary_component in handled:
-                    continue
-                self.update_component_row(
-                    struct_row,
-                    its_amount,
-                    "deductions",
-                    data=self.data,
-                    remove_if_zero_valued=False,
-                )
-        except Exception:
-            frappe.log_error(frappe.get_traceback(), "ITS_CI_OVERRIDE_ERROR")
+        return super().calculate_variable_based_on_taxable_salary(tax_component)
 
     # ------------------------------------------------------------------
     # Solde de conges payes, alimente cote serveur
@@ -425,6 +428,21 @@ class CustomSalarySlip(SalarySlip):
         ca custom_leave_balance vaut 0 au moment de l'evaluation des formules, et
         l'« Indemnite de conge » (custom_leave_balance * moy_brut_imp / 30) vaut 0
         puis est supprimee par remove_if_zero_valued. Resultat memorise.
+
+        La valeur est aussi recopiee sur l'EMPLOYE. Raison : la Salary Structure
+        Assignment pre-evalue toutes les formules dans un contexte bati par
+        get_component_eval_context (hrms/payroll/utils.py:89) = abbr des
+        composantes + SALARY_SLIP_EVAL_DEFAULTS + champs de la SSA + champs de
+        l'employe. Les champs custom du BULLETIN n'y figurent pas : une formule
+        citant custom_leave_balance y leve « name 'custom_leave_balance' is not
+        defined » avant meme que le bulletin ne calcule quoi que ce soit. Le
+        miroir cote employe donne le nom a resoudre ; a la passe du bulletin,
+        c'est la valeur du bulletin qui gagne (get_data_for_eval superpose
+        self.as_dict() en dernier, salary_slip.py:1285).
+
+        Meme convention que get_paid_leave_days pour
+        custom_validated_paid_leave_days : ecriture directe sans toucher au
+        `modified` de l'employe.
         """
         if not self.meta.has_field("custom_leave_balance"):
             return
@@ -440,6 +458,20 @@ class CustomSalarySlip(SalarySlip):
                 frappe.log_error(frappe.get_traceback(), "LEAVE_BALANCE_CALC_ERROR")
             self._leave_balance_cache = cached
 
+            try:
+                if frappe.get_meta("Employee").has_field("custom_leave_balance"):
+                    frappe.db.set_value(
+                        "Employee",
+                        self.employee,
+                        "custom_leave_balance",
+                        cached,
+                        update_modified=False,
+                    )
+                    # get_component_eval_context lit l'employe via get_cached_doc.
+                    frappe.clear_document_cache("Employee", self.employee)
+            except Exception:
+                frappe.log_error(frappe.get_traceback(), "LEAVE_BALANCE_MIRROR_ERROR")
+
         self.custom_leave_balance = cached
 
     # ------------------------------------------------------------------
@@ -454,4 +486,3 @@ class CustomSalarySlip(SalarySlip):
         super().calculate_component_amounts(component_type)
 
         self._apply_custom_source_components(component_type)
-        self._override_variable_taxable_components(component_type)
