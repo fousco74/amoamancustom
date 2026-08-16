@@ -118,32 +118,90 @@ margin: 0 10px !important;      }
     > 0 and r.count % 3 == 0 -%} {%- set r.out = "\u00a0" + r.out -%} {%- endif
     -%} {%- set r.out = ch + r.out -%} {%- set r.count = r.count + 1 -%} {%-
     endfor -%} {%- if is_neg %}-{% endif %}{{ r.out }} {%- endmacro %} {#
-    ================================================================== #} {#
-    MACRO : Lire le montant d'une composante dans une liste #} {#
-    ================================================================== #} {%
-    macro amt(table, component_name) -%} {%- set row = (table |
-    selectattr("salary_component", "equalto", component_name) | list | first)
-    -%} {{ (row.amount if row else 0) | float | round | int }} {%- endmacro %}
-    {# ================================================================== #} {#
-    VARIABLES GLOBALES #} {#
-    ================================================================== #} {% set
-    logo_url = frappe.db.get_value("Website Settings", None, "app_logo") %} {%
-    set cat = frappe.db.get_value("Employee", doc.employee, "custom_categorie")
-    %} {% set sal_base = frappe.db.get_value("Employee", doc.employee,
-    "custom_salaire_de_base") | float %} {% set sursalaire =
-    frappe.db.get_value("Employee", doc.employee, "custom_sursalaire") | float
-    %} {% set left = frappe.db.get_value("Employee", doc.employee,
-    "custom_left") %} {# Montants des composantes (calculés une seule fois) #}
-    {% set its_amount = amt(doc.deductions, "Retenue ITS") | float %} {% set
-    cnps_amount = amt(doc.deductions, "Retenue CNPS") | float %} {% set
-    cmu_amount = amt(doc.deductions, "Retenue CMU") | float %} {% set
-    grat_amount = amt(doc.earnings, "Gratification") | float %} {% set
-    conge_amount = amt(doc.earnings, "Indemnité de Congés") | float %} {# Total
-    des remboursements de prêts #} {% set ns_loan = namespace(total=0) %} {% for
-    loan in doc.loans %} {% set ns_loan.total = ns_loan.total +
-    (loan.total_payment | float) %} {% endfor %} {# Totaux du bas de bulletin #}
-    {% set gross = doc.gross_pay | float %} {% set imposable = gross - 30000 %}
+    ================================================================== #}
+
+    {# ================================================================== #}
+    {# MACRO : Lire le montant d'une composante par son abréviation.       #}
+    {# On cherche sur `abbr` et non sur le libellé : les abréviations sont  #}
+    {# stables, les libellés français changent au fil des renommages.      #}
+    {# ================================================================== #}
+    {% macro amt_abbr(table, component_abbr) -%}
+    {%- set row = (table | selectattr("abbr", "equalto", component_abbr) | list | first) -%}
+    {{ (row.amount if row else 0) | float | round | int }}
+    {%- endmacro %}
+
+    {# ================================================================== #}
+    {# VARIABLES GLOBALES                                                  #}
+    {# ================================================================== #}
+    {% set MONTHLY_HOURS = 173.33 %}
+    {# Hauteur du tableau : nombre de lignes visé, remplissage compris.
+       Correspond au maximum de l'ancien gabarit (8 rubriques + 9 lignes
+       vides), pour que le bulletin garde la même hauteur qu'il porte 4 ou
+       14 composantes. #}
+    {% set TARGET_ROWS = 17 %}
+
+    {% set logo_url = frappe.db.get_value("Website Settings", None, "app_logo") %}
+    {% set cat = frappe.db.get_value("Employee", doc.employee, "custom_categorie") %}
+    {% set sal_base = frappe.db.get_value("Employee", doc.employee, "custom_salaire_de_base") | float %}
+    {% set sursalaire = frappe.db.get_value("Employee", doc.employee, "custom_sursalaire") | float %}
+    {% set left = frappe.db.get_value("Employee", doc.employee, "custom_left") %}
+
+    {# Montants lus sur les lignes du bulletin, par abréviation. Les charges
+       patronales du tableau bas ne sont plus recalculées à partir d'un
+       forfait : elles reflètent ce qui est réellement retenu. #}
+    {% set its_amount = amt_abbr(doc.deductions, "ITS") | float %}
+    {% set cnps_amount = amt_abbr(doc.deductions, "CNPS") | float %}
+    {% set cmu_amount = amt_abbr(doc.deductions, "CMU") | float %}
+    {% set cnps_pa_amount = amt_abbr(doc.deductions, "CNPS_PA") | float %}
+    {% set ass_mat_amount = amt_abbr(doc.deductions, "Ass_mat") | float %}
+    {% set cnps_a_amount = amt_abbr(doc.deductions, "CNPS_A") | float %}
+    {% set cs_emp_amount = amt_abbr(doc.deductions, "CS_EMP") | float %}
+    {% set fdfp_fpc_amount = amt_abbr(doc.deductions, "FDFP_FPC") | float %}
+    {% set fdfp_ta_amount = amt_abbr(doc.deductions, "FDFP_TA") | float %}
+    {% set cmu_p_amount = amt_abbr(doc.deductions, "CMU_P") | float %}
+    {% set conge_amount = amt_abbr(doc.earnings, "INDEM_CONGÉ") | float %}
+
+    {# Total des remboursements de prêts #}
+    {% set ns_loan = namespace(total=0) %}
+    {% for loan in doc.loans %}
+      {% set ns_loan.total = ns_loan.total + (loan.total_payment | float) %}
+    {% endfor %}
+
+    {# Totaux du bas de bulletin. La brute imposable est désormais une
+       composante du bulletin (« Brute Imposable ») ; repli sur l'ancien
+       forfait gross - 30 000 pour les structures qui ne la portent pas. #}
+    {% set gross = doc.gross_pay | float %}
+    {% set brute_imp = amt_abbr(doc.earnings, "brute_imp") | float %}
+    {% set imposable = brute_imp if brute_imp else (gross - 30000) %}
     {% set total_ret = (doc.total_deduction | float) + ns_loan.total %}
+
+    {# ================================================================== #}
+    {# LIGNES DU TABLEAU PRINCIPAL                                         #}
+    {# Une ligne par composante du bulletin dont la Salary Component porte  #}
+    {# « Print on Salary Slip ». Repli, si aucune composante ne porte le    #}
+    {# drapeau (patch d'amorçage non joué), sur toutes les lignes payables  #}
+    {# non statistiques : on n'imprime jamais un bulletin vide.            #}
+    {# ================================================================== #}
+    {% set flagged = frappe.get_all("Salary Component",
+                                    filters={"custom_print_on_salary_slip": 1},
+                                    pluck="name") %}
+    {% set ns_rows = namespace(items=[]) %}
+    {% for table, is_deduction in [(doc.earnings, false), (doc.deductions, true)] %}
+      {% for d in table %}
+        {% set montant = d.amount | float %}
+        {% set imprimable = (d.salary_component in flagged) if flagged
+                            else (not d.do_not_include_in_total) %}
+        {% if montant != 0 and not d.statistical_component and imprimable %}
+          {% set ns_rows.items = ns_rows.items + [{
+               "code": d.abbr,
+               "libelle": d.salary_component | upper,
+               "montant": montant,
+               "is_deduction": is_deduction,
+             }] %}
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+    {% set filler = [0, TARGET_ROWS - (ns_rows.items | length) - (doc.loans | length)] | max %}
 
     <table class="table w-100 border border-2">
       <thead>
@@ -306,174 +364,37 @@ margin: 0 10px !important;      }
           </td>
         </tr>
 
-        {# ---- 00.1 SALAIRE DE BASE (toujours affiché) ---- #}
+        {# ---- Rubriques du bulletin : une ligne par composante ---- #}
+        {% for r in ns_rows.items %}
         <tr class="border-start border-end">
           <td>
             <div class="w-100 d-flex">
-              <div class="w-40 border-start border-end">00.1</div>
-              <div class="w-60 border-start border-end">SALAIRE DE BASE</div>
+              <div class="w-40 border-start border-end">{{ r.code }}</div>
+              <div class="w-60 border-start border-end">{{ r.libelle }}</div>
             </div>
           </td>
           <td>
             <div class="w-100 d-flex">
               <div class="w-25 border-start border-end">
-                {{ fmt(sal_base / 173.33) }}
+                {% if not r.is_deduction %}{{ fmt(r.montant / MONTHLY_HOURS) }}{% endif %}
               </div>
-              <div class="w-25 border-start border-end">173,33</div>
-              <div class="w-25 border-start border-end"></div>
               <div class="w-25 border-start border-end">
-                {{ fmt(sal_base) }}
+                {% if not r.is_deduction %}173,33{% endif %}
+              </div>
+              <div class="w-25 border-start border-end">
+                {% if r.is_deduction %}{{ fmt(r.montant) }}{% endif %}
+              </div>
+              <div class="w-25 border-start border-end">
+                {% if not r.is_deduction %}{{ fmt(r.montant) }}{% endif %}
               </div>
             </div>
           </td>
         </tr>
+        {% endfor %}
 
-        {# ---- 00.2 SURSALAIRE (masqué si = 0) ---- #} {% if sursalaire > 0 %}
-        <tr class="border-start border-end">
-          <td>
-            <div class="w-100 d-flex">
-              <div class="w-40 border-start border-end">00.2</div>
-              <div class="w-60 border-start border-end">SURSALAIRE</div>
-            </div>
-          </td>
-          <td>
-            <div class="w-100 d-flex">
-              <div class="w-25 border-start border-end">
-                {{ fmt(sursalaire / 173.33) }}
-              </div>
-              <div class="w-25 border-start border-end">173,33</div>
-              <div class="w-25 border-start border-end"></div>
-              <div class="w-25 border-start border-end">
-                {{ fmt(sursalaire) }}
-              </div>
-            </div>
-          </td>
-        </tr>
-        {% endif %} {% for _ in range(5) %}
-
-        <tr class="border-start border-end">
-          <td>
-            <div class="w-100 d-flex">
-              <div class="w-40 border-start border-end">-</div>
-              <div class="w-60 border-start border-end">-</div>
-            </div>
-          </td>
-          <td>
-            <div class="w-100 d-flex">
-              <div class="w-25 border-start border-end">-</div>
-              <div class="w-25 border-start border-end">173,33</div>
-              <div class="w-25 border-start border-end"></div>
-              <div class="w-25 border-start border-end">-</div>
-            </div>
-          </td>
-        </tr>
-
-        {% endfor %} {# ---- 00.5 CONGES PAYES (masqué si non-partant ou = 0)
-        ---- #} {% if left and conge_amount > 0 %}
-        <tr class="border-start border-end">
-          <td>
-            <div class="w-100 d-flex">
-              <div class="w-40 border-start border-end">00.5</div>
-              <div class="w-60 border-start border-end">CONGES PAYES</div>
-            </div>
-          </td>
-          <td>
-            <div class="w-100 d-flex">
-              <div class="w-25 border-start border-end">
-                {{ fmt(conge_amount / 173.33) }}
-              </div>
-              <div class="w-25 border-start border-end">173,33</div>
-              <div class="w-25 border-start border-end"></div>
-              <div class="w-25 border-start border-end">
-                {{ fmt(conge_amount) }}
-              </div>
-            </div>
-          </td>
-        </tr>
-        {% endif %} {# ---- 00.6 GRATIFICATION (masqué si = 0) ---- #} {% if
-        grat_amount > 0 %}
-        <tr class="border-start border-end">
-          <td>
-            <div class="w-100 d-flex">
-              <div class="w-40 border-start border-end">00.6</div>
-              <div class="w-60 border-start border-end">GRATIFICATION</div>
-            </div>
-          </td>
-          <td>
-            <div class="w-100 d-flex">
-              <div class="w-25 border-start border-end">
-                {{ fmt(grat_amount / 173.33) }}
-              </div>
-              <div class="w-25 border-start border-end">173,33</div>
-              <div class="w-25 border-start border-end"></div>
-              <div class="w-25 border-start border-end">
-                {{ fmt(grat_amount) }}
-              </div>
-            </div>
-          </td>
-        </tr>
-        {% endif %} {# ---- 500 ITS (masqué si = 0) ---- #} {% if its_amount > 0
-        %}
-        <tr class="border-start border-end">
-          <td>
-            <div class="w-100 d-flex">
-              <div class="w-40 border-start border-end">500</div>
-              <div class="w-60 border-start border-end">ITS</div>
-            </div>
-          </td>
-          <td>
-            <div class="w-100 d-flex">
-              <div class="w-25 border-start border-end">-</div>
-              <div class="w-25 border-start border-end"></div>
-              <div class="w-25 border-start border-end">
-                {{ fmt(its_amount) }}
-              </div>
-              <div class="w-25 border-start border-end"></div>
-            </div>
-          </td>
-        </tr>
-        {% endif %} {# ---- 530 CNPS (masqué si = 0) ---- #} {% if cnps_amount >
-        0 %}
-        <tr class="border-start border-end">
-          <td>
-            <div class="w-100 d-flex">
-              <div class="w-40 border-start border-end">530</div>
-              <div class="w-60 border-start border-end">CNPS</div>
-            </div>
-          </td>
-          <td>
-            <div class="w-100 d-flex">
-              <div class="w-25 border-start border-end">
-                {{ fmt(cnps_amount / 6.3) }}
-              </div>
-              <div class="w-25 border-start border-end">6,30</div>
-              <div class="w-25 border-start border-end">
-                {{ fmt(cnps_amount) }}
-              </div>
-              <div class="w-25 border-start border-end"></div>
-            </div>
-          </td>
-        </tr>
-        {% endif %} {# ---- 787 PRIME DE TRANSPORT (toujours affichée) ---- #}
-        <tr class="border-start border-end">
-          <td>
-            <div class="w-100 d-flex">
-              <div class="w-40 border-start border-end">787</div>
-              <div class="w-60 border-start border-end">PRIME DE TRANSPORT</div>
-            </div>
-          </td>
-          <td>
-            <div class="w-100 d-flex">
-              <div class="w-25 border-start border-end">173</div>
-              <div class="w-25 border-start border-end">173,33</div>
-              <div class="w-25 border-start border-end"></div>
-              <div class="w-25 border-start border-end">30&#8239;000</div>
-            </div>
-          </td>
-        </tr>
-
-        {# ---- 820 PRETS / AVANCES (masqués si = 0) ---- #} {% for loan in
-        doc.loans %} {% if loan.total_payment | float > 0 %}
+        {# ---- 820 PRETS / AVANCES (masqués si = 0). Les prêts ne sont pas des
+               Salary Components : ils gardent leur bloc dédié. ---- #}
+        {% for loan in doc.loans %}{% if loan.total_payment | float > 0 %}
         <tr class="border-start border-end">
           <td>
             <div class="w-100 d-flex">
@@ -496,30 +417,12 @@ margin: 0 10px !important;      }
             </div>
           </td>
         </tr>
-        {% endif %} {% endfor %} {# ---- 840 CMU (masqué si = 0) ---- #} {% if
-        cmu_amount > 0 %}
-        <tr class="border-start border-end">
-          <td>
-            <div class="w-100 d-flex">
-              <div class="w-40 border-start border-end">840</div>
-              <div class="w-60 border-start border-end">
-                COUVERTURE MALADIE UNIVER
-              </div>
-            </div>
-          </td>
-          <td>
-            <div class="w-100 d-flex">
-              <div class="w-25 border-start border-end">1&#8239;000</div>
-              <div class="w-25 border-start border-end">0,50</div>
-              <div class="w-25 border-start border-end">
-                {{ fmt(cmu_amount) }}
-              </div>
-              <div class="w-25 border-start border-end"></div>
-            </div>
-          </td>
-        </tr>
-        {% endif %} {# ---- Lignes vides de remplissage ---- #} {% for _ in
-        range(4) %}
+        {% endif %}{% endfor %}
+
+        {# ---- Lignes vides de remplissage : complètent jusqu'à TARGET_ROWS
+               pour que la hauteur du bulletin ne dépende pas du nombre de
+               rubriques imprimées. ---- #}
+        {% for _ in range(filler) %}
         <tr class="border-start border-end">
           <td>
             <div class="w-100 d-flex">
@@ -580,7 +483,7 @@ margin: 0 10px !important;      }
           <td class="w-35 border-start border-end">
             <div class="d-flex text-13">
               <span class="w-50">Prestation familiale</span>
-              <span class="w-50 text-center">{{ fmt(75000 * 5.75 / 100) }}</span>
+              <span class="w-50 text-center">{{ fmt(cnps_pa_amount + ass_mat_amount) }}</span>
             </div>
           </td>
           <td class="w-25 border-start border-end">
@@ -601,7 +504,7 @@ margin: 0 10px !important;      }
           <td class="w-35 border-start border-end">
             <div class="d-flex text-13">
               <span class="w-50">Accident de travail</span>
-              <span class="w-50 text-center">{{ fmt(75000 * 3 / 100) }}</span>
+              <span class="w-50 text-center">{{ fmt(cnps_a_amount) }}</span>
             </div>
           </td>
           <td class="w-25 border-start border-end">
@@ -623,7 +526,7 @@ margin: 0 10px !important;      }
             <div class="d-flex text-13">
               <span class="w-50">Caisse de retraite</span>
               <span class="w-50 text-center"
-                >{{ fmt(imposable * 7.7 / 100) }}</span
+                >{{ fmt(cs_emp_amount) }}</span
               >
             </div>
           </td>
@@ -649,7 +552,7 @@ margin: 0 10px !important;      }
             <div class="d-flex text-13">
               <span class="w-50">Formation Continue</span>
               <span class="w-50 text-center"
-                >{{ fmt(imposable * 0.6 / 100) }}</span
+                >{{ fmt(fdfp_fpc_amount) }}</span
               >
             </div>
           </td>
@@ -674,7 +577,7 @@ margin: 0 10px !important;      }
             <div class="d-flex text-13">
               <span class="w-50">Taxe d'apprentissage</span>
               <span class="w-50 text-center"
-                >{{ fmt(imposable * 0.4 / 100) }}</span
+                >{{ fmt(fdfp_ta_amount) }}</span
               >
             </div>
           </td>
@@ -699,7 +602,7 @@ margin: 0 10px !important;      }
           <td class="w-35 border-start border-end">
             <div class="d-flex text-13">
               <span class="w-50">Couverture maladie</span>
-              <span class="w-50 text-center">500,0</span>
+              <span class="w-50 text-center">{{ fmt(cmu_p_amount) }}</span>
             </div>
           </td>
           <td class="w-25 border-start border-end">
