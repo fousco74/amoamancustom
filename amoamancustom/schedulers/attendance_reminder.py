@@ -5,15 +5,22 @@ from datetime import datetime, timedelta
 import frappe
 
 @frappe.whitelist()
-def send_attendance_reminder_continuous():
+def send_attendance_reminder_continuous(jour_force=None):
     """
     Envoie des rappels CONTINUS jusqu'à saisie de présence
     - 20-24 du mois: Rappels quotidiens
     - Après 24: Rappels tous les 2 jours jusqu'à saisie
     - Arrêt automatique une fois saisi
+
+    `jour_force` (facultatif, entier 1-31) sert uniquement aux tests : il
+    substitue le jour du mois, pour déclencher la plage 20-24 (rappel quotidien)
+    ou >= 25 (relance) sans attendre la fin du mois.
+        bench --site <site> execute amoamancustom.schedulers.attendance_reminder.send_attendance_reminder_continuous --kwargs '{"jour_force": 23}'
     """
-    
-    current_day = getdate(today()).day
+    if jour_force is not None:
+        current_day = int(jour_force)
+    else:
+        current_day = getdate(today()).day
     current_month = getdate(today()).month
     current_year = getdate(today()).year
     

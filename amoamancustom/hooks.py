@@ -118,7 +118,10 @@ jinja = {
 #     journalise si l'un d'eux a disparu (renommage en amont).
 after_migrate = [
     "amoamancustom.setup.email_templates.installer",
+    "amoamancustom.setup.notifications.installer",
+    "amoamancustom.setup.translations.installer",
     "amoamancustom.setup.scheduler.couper_rappels_hrms",
+    "amoamancustom.setup.scheduler.reactiver_jobs_custom",
     # Doit tourner APRES l'import des fixtures : les patches post_model_sync
     # s'executent avant, donc avant que le Custom Field
     # custom_print_on_salary_slip n'existe.

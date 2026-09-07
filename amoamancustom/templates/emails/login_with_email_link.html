@@ -1,0 +1,36 @@
+{#
+  Connexion par lien — surcharge du template natif de Frappe
+  (apps/frappe/frappe/templates/emails/login_with_email_link.html).
+
+  Le ChoiceLoader de frappe/utils/jinja.py charge frappe en dernier : ce fichier
+  d'app custom gagne, sans toucher au code standard. Il étend le gabarit commun
+  Amoaman, au lieu de la mise en page Frappe d'origine.
+
+  Contrat d'arguments, fixé par frappe/www/login.py -> send_login_link :
+      link       URL de connexion temporaire (déjà absolue)
+      minutes     durée de validité
+      app_name    nom de l'application (website ou system settings)
+
+  Le corps est rédigé en français directement : la surcharge vise précisément à
+  livrer un mail français, quel que soit l'en-tête Accept-Language du visiteur.
+#}
+{% extends "amoamancustom/templates/emails/_base_mail.html" %}
+{% import "amoamancustom/templates/emails/_composants.html" as ui %}
+
+{% set soustitre = "Lien de connexion temporaire" %}
+{% set mention_pied = "Ce lien a été demandé depuis la page de connexion." %}
+
+{% block titre %}Connexion à {{ app_name or "votre espace" }}{% endblock %}
+{% block preheader %}Utilisez le bouton ci-dessous pour vous connecter sans mot de passe.{% endblock %}
+
+{% block contenu %}
+{{ ui.p("Bonjour,") }}
+{{ ui.p("Cliquez sur le bouton ci-dessous pour vous connecter à votre espace. Aucun mot de passe n'est requis.") }}
+{{ ui.p("Ce lien expire dans " ~ minutes ~ " minute(s). Passé ce délai, demandez-en un nouveau depuis la page de connexion.") }}
+{% endblock %}
+
+{% block cta %}
+{{ ui.bouton(link, "Se connecter") }}
+{{ ui.lien_de_repli(link) }}
+{{ ui.encart("Lien personnel", "Ne transmettez ce lien à personne : il donne accès à votre compte sans mot de passe.", "attention") }}
+{% endblock %}

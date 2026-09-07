@@ -71,6 +71,28 @@ def couper_rappels_hrms():
 			frappe.db.set_value("Scheduled Job Type", nom, "stopped", 1)
 
 
+def reactiver_jobs_custom():
+	"""Réactive les jobs de l'app custom arrêtés par erreur.
+
+	Inverse exact de couper_rappels_hrms : les jobs de HRMS sont neutralisés
+	délibérément, les nôtres doivent tourner. Or six d'entre eux (les deux cron
+	et les quatre rappels RH) portaient stopped=1 avec last_execution=NULL — ils
+	n'ont jamais été exécutés. On remet donc stopped=0 sur tout job dont la
+	méthode commence par « amoamancustom. », rejoué à chaque `bench migrate`.
+	"""
+	if not frappe.db.exists("DocType", "Scheduled Job Type"):
+		return
+
+	jobs = frappe.get_all(
+		"Scheduled Job Type",
+		filters={"method": ["like", "amoamancustom%"]},
+		fields=["name", "method", "stopped"],
+	)
+	for job in jobs:
+		if job.stopped:
+			frappe.db.set_value("Scheduled Job Type", job.name, "stopped", 0)
+
+
 def etat():
 	"""Affiche l'état des jobs de rappel, les nôtres et ceux de HRMS.
 

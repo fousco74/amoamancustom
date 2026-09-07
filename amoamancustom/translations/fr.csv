@@ -137,4 +137,8 @@ View,Voir,
 Workflow State,État du Workflow,
 Write Off Account,Compte de Reprise,
 Write Off Amount,Montant radié,
-ZIP Code,Code postal
+ZIP Code,Code postal,
+Login To {0},Connexion à {0},
+Log In To {0},Se connecter à {0},
+Click on the button to log in to {0},Cliquez sur le bouton pour vous connecter à {0},
+The link will expire in {0} minutes,Ce lien expire dans {0} minutes
