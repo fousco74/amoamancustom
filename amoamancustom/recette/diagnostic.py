@@ -42,6 +42,17 @@ def _resoudre(doctype, name, notif):
     print(f"    -> [{doctype} {name}] {statut}  recipients={recips!r} cc={cc!r} bcc={bcc!r}")
 
 
+def dump_destinataires():
+    """Affiche, pour chaque notification, la config exacte des destinataires."""
+    for n in NOTIFICATIONS:
+        d = frappe.get_doc("Notification", n)
+        recips = [
+            (r.receiver_by_role or "", r.receiver_by_document_field or "", (r.cc or ""))
+            for r in d.recipients
+        ]
+        print(f"{n}\n    {recips}")
+
+
 def diagnostiquer():
     print("===== Configurations des 14 notifications =====")
     for n in NOTIFICATIONS:

@@ -24,6 +24,16 @@ from frappe.email.doctype.notification.notification import evaluate_alert
 
 FICHIER_JOURNAL = "private/backups/journal_recette.json"
 
+# Destinataires de la recette : au lieu d'arroser tous les membres des rôles
+# (HR Manager 4, employés 20, présence 23…), on limite l'envoi à ce petit
+# échantillon de comptes de test, pour que chaque type de mail soit vérifiable
+# dans Mailpit sans bruit. Modifiez librement cette liste (2-3 adresses).
+DESTINATAIRES_TEST = [
+    "skouakou@amoaman.com",
+    "damoakon@amoaman.com",
+    "eanoma@amoaman.com",
+]
+
 
 def _charger_journal():
     with open(frappe.get_site_path(FICHIER_JOURNAL), "r", encoding="utf-8") as f:
@@ -39,6 +49,15 @@ def _emails_en_attente():
             pluck="name",
         )
     )
+
+
+def _limiter_destinataires(nom):
+    """Réécrit la table enfant `recipients` d'un Email Queue vers DESTINATAIRES_TEST."""
+    doc = frappe.get_doc("Email Queue", nom)
+    doc.recipients = []
+    for addr in DESTINATAIRES_TEST:
+        doc.append("recipients", {"recipient": addr, "status": "Not Sent"})
+    doc.save(ignore_permissions=True)
 
 
 def _envoyer_uniquement_les_nouveaux(avant):
@@ -58,8 +77,9 @@ def _envoyer_uniquement_les_nouveaux(avant):
     print(f"  → {len(cibles)} mail(s) à envoyer (sur {len(nouveaux)} en file).")
     for nom in cibles:
         try:
+            _limiter_destinataires(nom)
             frappe.get_doc("Email Queue", nom).send()
-            print(f"    ✓ {nom} envoyé")
+            print(f"    ✓ {nom} envoyé → {', '.join(DESTINATAIRES_TEST)}")
         except Exception as exc:
             print(f"    ✗ {nom} : {type(exc).__name__}: {str(exc).splitlines()[0][:100]}")
 
