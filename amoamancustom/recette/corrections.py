@@ -49,3 +49,26 @@ def corriger():
 
     frappe.db.commit()
     print("=== Correctifs terminés ===")
+
+
+def corriger_nom_app(nom=None):
+    """Le mail « lien de connexion » affichait « Login To Axis » : `app_name` vaut
+    « Axis » (valeur de démo ERPNext) côté Website Settings, et « Frappe » côté
+    System Settings. On remet le nom de l'entreprise pour que le sujet devienne
+    « Connexion à <société> » (la traduction « Login To {0} » → « Connexion à {0} »
+    est déjà installée via `setup.translations`). Donnée, pas code standard."""
+    nom = nom or frappe.db.get_default("company") or "AMOAMAN & ASSOCIES"
+
+    ws = frappe.get_single("Website Settings")
+    ancien_ws = ws.app_name
+    ws.app_name = nom
+    ws.save(ignore_permissions=True)
+
+    ss = frappe.get_single("System Settings")
+    ancien_ss = ss.app_name
+    ss.app_name = nom
+    ss.save(ignore_permissions=True)
+
+    frappe.db.commit()
+    print(f"  ↺ Website Settings.app_name : « {ancien_ws} » → « {nom} »")
+    print(f"  ↺ System Settings.app_name  : « {ancien_ss} » → « {nom} »")
