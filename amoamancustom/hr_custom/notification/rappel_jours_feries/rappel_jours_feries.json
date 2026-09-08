@@ -20,7 +20,7 @@
  "modified": "2026-08-14 09:00:00.000000",
  "modified_by": "Administrator",
  "module": "HR_CUSTOM",
- "name": "Rappel Jours Feries",
+ "name": "Rappel Jours Fériés",
  "owner": "Administrator",
  "recipients": [
   {
@@ -29,5 +29,5 @@
  ],
  "send_system_notification": 0,
  "send_to_all_assignees": 0,
- "subject": "Jours feries a venir"
+ "subject": "Jours fériés à venir"
 }

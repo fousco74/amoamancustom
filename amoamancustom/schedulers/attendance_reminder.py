@@ -159,10 +159,14 @@ def send_reminder_email(employee, reminder_type, current_day):
     jours_restants = max(24 - current_day, 0)
     jours_retard = max(current_day - 24, 0)
 
+    def _jour(n):
+        """« 1 jour » / « N jours » — accord français correct."""
+        return "jour" if n <= 1 else "jours"
+
     if relance:
-        subject = f"Relance : saisie de présence en retard de {jours_retard} jour(s)"
+        subject = f"Relance : saisie de présence en retard de {jours_retard} {_jour(jours_retard)}"
     else:
-        subject = f"Rappel : saisie de présence requise — échéance dans {jours_restants} jour(s)"
+        subject = f"Rappel : saisie de présence requise — échéance dans {jours_restants} {_jour(jours_restants)}"
 
     message = frappe.render_template(
         "amoamancustom/templates/emails/rappel_presence.html",

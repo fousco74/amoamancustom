@@ -52,8 +52,15 @@ def _emails_en_attente():
 
 
 def _limiter_destinataires(nom):
-    """Réécrit la table enfant `recipients` d'un Email Queue vers DESTINATAIRES_TEST."""
+    """Réécrit la table enfant `recipients` d'un Email Queue vers DESTINATAIRES_TEST.
+
+    On ne limite que les mails « collectifs » (rôle / liste > 3 destinataires) :
+    un mail déjà individuel (rappel de présence ou de jour férié adressé à un
+    employé précis) part tel quel, sans être gonflé en 3 copies.
+    """
     doc = frappe.get_doc("Email Queue", nom)
+    if len(doc.recipients) <= len(DESTINATAIRES_TEST):
+        return
     doc.recipients = []
     for addr in DESTINATAIRES_TEST:
         doc.append("recipients", {"recipient": addr, "status": "Not Sent"})
@@ -144,3 +151,54 @@ def declencher():
     print(f"  {ok}/{len(resultats)} déclenchements sans erreur.")
     print("  Consultez Mailpit : http://localhost:8025  (onglet par destinataire)")
     return resultats
+
+
+def retester_problemes():
+    """Re-test ciblé des 3 types qui n'émettaient pas de mail en recette.
+
+    1. « Récap fin de contrat (RH) » — code corrigé : il lit désormais le doctype
+       `Contract` (même source que la notification « Contrat proche expiration »)
+       au lieu de `Employee.contract_end_date` (toujours vide). Rien à préparer.
+    2. « Rappel jours fériés (hebdo) » — code correct mais aucune donnée dans la
+       fenêtre : on injecte un jour férié témoin (non hebdomadaire) à J+3.
+    3. « Rappel présence » — correct mais dédupliqué : on purge le journal du jour.
+    """
+    avant = _emails_en_attente()
+
+    # 2. Jour férié témoin (idempotent) dans la fenêtre des 7 jours.
+    date_test = frappe.utils.add_days(frappe.utils.today(), 3)
+    if not frappe.db.exists(
+        "Holiday", {"parent": "Liste des jours fériés", "holiday_date": date_test}
+    ):
+        hl = frappe.get_doc("Holiday List", "Liste des jours fériés")
+        hl.append(
+            "holidays",
+            {"description": "Jour férié de recette (à supprimer)", "holiday_date": date_test, "weekly_off": 0},
+        )
+        hl.save(ignore_permissions=True)
+        frappe.db.commit()
+        print(f"  + jour férié témoin : {date_test}")
+
+    # 3. Purge du journal de déduplication du jour (présence).
+    frappe.db.sql(
+        "DELETE FROM `tabAttendance Reminder Log` WHERE status=%s AND sent_date=%s",
+        ("Sent", frappe.utils.today()),
+    )
+    frappe.db.commit()
+    print("  ↺ journal présence (jour) purgé")
+
+    print("\n=== Relance des 3 schedulers ===")
+    schedulers = [
+        ("Récap fin de contrat (RH)", "amoamancustom.schedulers.contract_expiry.send_contract_expiry_notifications", None),
+        ("Rappel jours fériés (hebdo)", "amoamancustom.schedulers.hr_reminders.envoyer_rappels_feries_hebdo", None),
+        ("Rappel présence (jour forcé 23)", "amoamancustom.schedulers.attendance_reminder.send_attendance_reminder_continuous", {"jour_force": 23}),
+    ]
+    for libelle, chemin, kwargs in schedulers:
+        try:
+            frappe.get_attr(chemin)(**(kwargs or {}))
+            print(f"  [OK     ] {libelle}")
+        except Exception as exc:
+            print(f"  [ERREUR ] {libelle:<40} {type(exc).__name__}: {str(exc).splitlines()[0][:100]}")
+
+    print("\n=== Envoi des nouveaux mails (→ Mailpit) ===")
+    _envoyer_uniquement_les_nouveaux(avant)

@@ -334,3 +334,53 @@ def restaurer():
 
     frappe.db.commit()
     print("Annulation terminée (le backup --with-files reste la référence).")
+
+
+def restaurer_complet():
+    """Suppression finale de toutes les données de recette, avant commit + backup.
+
+    Regroupe ce que la recette a pu laisser derrière elle :
+      1. les documents de test + dates anniversaire/ancienneté mutées (restaurer()),
+      2. le jour férié témoin injecté par `declencher.retester_problemes`,
+      3. le journal de déduplication « présence » du jour,
+      4. les mails de test encore en file (Not Sent / Partially Sent).
+
+    Sont conservés volontairement : l'historique des mails déjà envoyés (journal,
+    inerte), et les correctifs métier (Notification, `app_name`, traductions) qui
+    font partie de la livraison, pas de la recette.
+
+        bench --site <site> execute amoamancustom.recette.donnees.restaurer_complet
+    """
+    print("=== Nettoyage final des données de recette ===")
+
+    print("\n1/4 Documents de test + dates restaurées")
+    restaurer()
+
+    print("\n2/4 Jour férié témoin")
+    supprimes = frappe.db.sql(
+        "DELETE FROM `tabHoliday` WHERE description=%s AND parent=%s",
+        ("Jour férié de recette (à supprimer)", "Liste des jours fériés"),
+    )
+    frappe.db.commit()
+    print(f"  ✕ {supprimes} jour(s) férié(s) témoin supprimé(s)")
+
+    print("\n3/4 Journal de déduplication « présence » du jour")
+    frappe.db.sql(
+        "DELETE FROM `tabAttendance Reminder Log` WHERE status=%s AND sent_date=%s",
+        ("Sent", frappe.utils.today()),
+    )
+    frappe.db.commit()
+    print("  ✕ journal du jour purgé")
+
+    print("\n4/4 Mails de test encore en file")
+    en_file = frappe.get_all(
+        "Email Queue",
+        filters={"status": ["in", ["Not Sent", "Partially Sent"]]},
+        pluck="name",
+    )
+    for nom in en_file:
+        frappe.delete_doc("Email Queue", nom, ignore_permissions=True, force=True)
+    frappe.db.commit()
+    print(f"  ✕ {len(en_file)} mail(s) de test supprimé(s) de la file")
+
+    print("\n=== Nettoyage terminé ===")

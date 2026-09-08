@@ -72,3 +72,18 @@ def corriger_nom_app(nom=None):
     frappe.db.commit()
     print(f"  ↺ Website Settings.app_name : « {ancien_ws} » → « {nom} »")
     print(f"  ↺ System Settings.app_name  : « {ancien_ss} » → « {nom} »")
+
+
+def corriger_accents():
+    """Répare les accents manquants de la notification « Rappel Jours Feries »
+    (fixture importée sans accents) : renomme l'enregistrement et corrige l'objet
+    pour que le mail parte avec « Jours fériés à venir ». Idempotent."""
+    if frappe.db.exists("Notification", "Rappel Jours Feries"):
+        try:
+            frappe.rename_doc("Notification", "Rappel Jours Feries", "Rappel Jours Fériés", force=True)
+        except Exception as exc:
+            print(f"  ! rename ignoré : {type(exc).__name__}: {str(exc)[:120]}")
+    if frappe.db.exists("Notification", "Rappel Jours Fériés"):
+        frappe.db.set_value("Notification", "Rappel Jours Fériés", "subject", "Jours fériés à venir")
+        print("  ↺ « Rappel Jours Fériés » : sujet → « Jours fériés à venir »")
+    frappe.db.commit()
