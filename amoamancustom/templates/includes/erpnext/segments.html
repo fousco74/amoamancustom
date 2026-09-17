@@ -1,0 +1,24 @@
+{#
+  Section « Découvrez tout le potentiel d'ERPNext » : trois cartes segment
+  (TPE / PME / Grandes Entreprises), photo plein cadre + panneau verre.
+  Parametre : segments = liste de {title, text, photo}.
+#}
+{%- from "amoamancustom/templates/includes/erpnext/ui/section.html" import erpx_section_head -%}
+
+<section class="erpx-section" id="segments">
+  <div class="erpx-container">
+    {{ erpx_section_head(
+        title_html=_("Découvrez tout le potentiel") ~ ' <span class="erpx-grad-text">' ~ _("d'ERPNext") ~ '</span>',
+        subtitle=_("Unifiez vos processus, optimisez vos ressources et pilotez votre activité avec plus d'efficacité.")) }}
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:26px;margin-top:52px">
+      {%- for item in segments %}
+      <article class="erpx-segment erpx-reveal">
+        {%- if item.photo %}<img class="erpx-segment__photo" src="{{ item.photo }}" alt="" loading="lazy">{% endif %}
+        <h3 class="erpx-segment__title">{{ item.title }}</h3>
+        <p class="erpx-segment__panel">{{ item.text }}</p>
+      </article>
+      {%- endfor %}
+    </div>
+  </div>
+</section>

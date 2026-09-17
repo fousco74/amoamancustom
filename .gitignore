@@ -5,3 +5,5 @@
 tags
 node_modules
 __pycache__
+# Artefacts de captures Playwright (verification visuelle)
+.playwright-mcp/

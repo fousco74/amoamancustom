@@ -1,0 +1,53 @@
+{#
+  Gabarit du mini-site « Amoaman intégrateur ERPNext » (/erpnext/*).
+
+  Il etend templates/web.html (frappe) et NON amoamancustom/templates/layout.html.
+  Raisons, toutes verifiees dans le code :
+
+    1. layout.html redefinit {% block script %} sans {{ super() }}. Une page
+       fille qui a besoin de son propre script y perd Bootstrap JS, main.js, la
+       banniere cookies et Matomo — c'est deja le cas de /contact.
+    2. public/js/main.js:44 appelle
+       document.querySelector('.timeline').addEventListener(...) sans garde.
+       `.timeline` n'existe que dans conformite.html : sur toute autre page le
+       TypeError interrompt le script.
+    3. layout.html:3409 charge main.js via un chemin RELATIF
+       (src="assets/..."), qui casse des qu'une route a plusieurs segments —
+       donc sur /erpnext/modules/stocks.
+    4. Son <style> inline de 3360 lignes redefinit globalement .card, .chip,
+       .panel, .title et fige .card-soft a 625x482px !important.
+
+  Le mini-site est donc strictement additif : aucun fichier du site corporate
+  n'est modifie, et /(accueil) comme /contact restent intouches.
+
+  Les pages filles doivent appeler amoamancustom.erpnext_site.base_context(),
+  qui pose body_class="erpx" (le scope de tous les tokens CSS) et full_width=1
+  (lu par web.html pour retirer .container de <main>).
+#}
+{% extends "templates/web.html" %}
+
+{% block head_include %}
+{{ super() }}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="/assets/amoamancustom/css/erpnext_site.css?v={{ erpx_assets_v }}">
+{% endblock %}
+
+{% block navbar %}
+{% include "amoamancustom/templates/includes/erpnext/navbar.html" %}
+{% endblock %}
+
+{# web.html rend les fils d'Ariane dans .page-breadcrumbs ; le mini-site n'en a
+   pas. Le bloc est vide plutot que masque en CSS, pour ne pas payer la requete
+   que fait breadcrumbs.html. #}
+{% block breadcrumbs %}{% endblock %}
+
+{% block footer %}
+{% include "amoamancustom/templates/includes/erpnext/footer.html" %}
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+<script src="/assets/amoamancustom/js/erpnext_site.js?v={{ erpx_assets_v }}"></script>
+{% endblock %}

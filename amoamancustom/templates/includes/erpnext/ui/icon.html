@@ -1,0 +1,15 @@
+{#
+  Icone du mini-site ERPNext.
+
+  Les SVG vivent dans templates/includes/erpnext/icons/ et non dans public/ :
+  ils sont servis par Iconify avec fill="currentColor" et width/height="1em",
+  donc ils doivent etre INLINES pour heriter de la couleur et de la taille du
+  parent. Un <img src="/assets/..."> les rendrait noirs et figes.
+
+  C'est le meme parti que templates/includes/svg/ pour le site historique.
+
+  `name` = nom de fichier sans extension (ex. "module-stocks", "ui-chevron").
+#}
+{% macro erpx_icon(name) -%}
+{% include "amoamancustom/templates/includes/erpnext/icons/" ~ name ~ ".svg" ignore missing %}
+{%- endmacro %}

@@ -1,0 +1,14 @@
+{#
+  En-tete de section : titre + sous-titre optionnel, centre par defaut.
+  `id` pose l'ancre visee par la navbar et le footer (/erpnext#modules, etc.).
+
+  `title_html` permet d'injecter du balisage (ex. <span class="erpx-grad-text">)
+  quand le titre est bicolore ; il est rendu tel quel, donc ne JAMAIS y passer
+  de saisie utilisateur.
+#}
+{% macro erpx_section_head(title="", subtitle="", id="", align="center", title_html="") -%}
+<div class="erpx-title-block{{ ' erpx-title-block--center' if align == 'center' else '' }}"{% if id %} id="{{ id }}"{% endif %}>
+  <h2 class="erpx-h2">{% if title_html %}{{ title_html }}{% else %}{{ title }}{% endif %}</h2>
+  {%- if subtitle %}<p class="erpx-lead" style="margin-top:16px">{{ subtitle }}</p>{% endif -%}
+</div>
+{%- endmacro %}

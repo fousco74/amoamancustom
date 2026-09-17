@@ -1,0 +1,28 @@
+{#
+  Accordeon FAQ.
+
+  `items` = liste de dicts {question, answer}. Le contenu reste en dur dans la
+  page appelante (choix produit : la FAQ n'est pas un DocType).
+
+  Le premier element est ouvert par defaut, comme sur la maquette. L'ouverture
+  reelle est pilotee par erpnext_site.js ; sans JS, les panneaux restent fermes
+  mais le balisage demeure lisible (details/summary n'est pas utilise pour
+  garder la maitrise de l'animation de hauteur).
+#}
+{%- from "amoamancustom/templates/includes/erpnext/ui/icon.html" import erpx_icon -%}
+
+{% macro erpx_faq(items) -%}
+<div class="erpx-faq" data-erpx-faq>
+  {%- for item in items %}
+  <div class="erpx-faq__item{{ ' is-open' if loop.first else '' }}">
+    <button type="button" class="erpx-faq__btn" aria-expanded="{{ 'true' if loop.first else 'false' }}">
+      <span>{{ item.question }}</span>
+      <span class="erpx-faq__chevron" aria-hidden="true">{{ erpx_icon("ui-chevron") }}</span>
+    </button>
+    <div class="erpx-faq__panel">
+      <div><p class="erpx-faq__answer">{{ item.answer }}</p></div>
+    </div>
+  </div>
+  {%- endfor %}
+</div>
+{%- endmacro %}

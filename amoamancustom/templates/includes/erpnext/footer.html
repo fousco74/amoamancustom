@@ -1,0 +1,95 @@
+{#
+  Footer du mini-site ERPNext (« Group 367 », 1486x558, identique sur les 4 layers).
+
+  Les colonnes « Modules » et « Secteurs » de la maquette listent des intitules
+  dont une seule page existe aujourd'hui (Stocks). Les autres pointent vers
+  l'ancre #modules de l'accueil ; les secteurs, qui n'ont aucun contenu
+  correspondant nulle part, sont rendus en TEXTE et non en liens.
+#}
+{%- from "amoamancustom/templates/includes/erpnext/ui/icon.html" import erpx_icon -%}
+
+{%- set footer_modules = [
+  {"label": _("Comptabilité"),  "href": "/erpnext#modules"},
+  {"label": _("Achats"),        "href": "/erpnext#modules"},
+  {"label": _("Ventes"),        "href": "/erpnext#modules"},
+  {"label": _("Stocks"),        "href": "/erpnext/modules/stocks"},
+  {"label": _("CRM"),           "href": "/erpnext#modules"},
+  {"label": _("Production"),    "href": "/erpnext#modules"},
+  {"label": _("Projets"),       "href": "/erpnext#modules"},
+  {"label": _("Immos"),         "href": "/erpnext#modules"},
+  {"label": _("Point de vente"),"href": "/erpnext#modules"},
+  {"label": _("Qualité"),       "href": "/erpnext#modules"},
+  {"label": _("RH & Paie"),     "href": "/erpnext#modules"},
+  {"label": _("Helpdesk"),      "href": "/erpnext#modules"}
+] -%}
+
+{%- set footer_secteurs = [
+  _("Production"), _("Commerce et distribution"), _("Vente au détail"),
+  _("Commerce électronique"), _("Éducation"), _("Soins de santé"),
+  _("Services professionnels")
+] -%}
+
+{%- set footer_navigation = [
+  {"label": _("Tarification"),   "href": "/erpnext/tarification"},
+  {"label": _("Avantages"),      "href": "/erpnext#avantages"},
+  {"label": _("Pourquoi nous ?"),"href": "/erpnext#pourquoi"},
+  {"label": _("FAQ"),            "href": "/erpnext#faq"}
+] -%}
+
+<footer class="erpx-footer">
+  <div class="erpx-footer__inner">
+    <div class="erpx-footer__grid">
+
+      <div>
+        <h2 class="erpx-footer__title">{{ _("Modules") }}</h2>
+        <ul class="erpx-footer__list">
+          {%- for item in footer_modules %}
+          <li><a class="erpx-footer__link" href="{{ item.href }}">{{ item.label }}</a></li>
+          {%- endfor %}
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="erpx-footer__title">{{ _("Secteurs") }}</h2>
+        <ul class="erpx-footer__list">
+          {%- for label in footer_secteurs %}
+          <li><span class="erpx-footer__link">{{ label }}</span></li>
+          {%- endfor %}
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="erpx-footer__title">{{ _("Navigation") }}</h2>
+        <ul class="erpx-footer__list">
+          {%- for item in footer_navigation %}
+          <li><a class="erpx-footer__link" href="{{ item.href }}">{{ item.label }}</a></li>
+          {%- endfor %}
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="erpx-footer__title">{{ _("Contacts") }}</h2>
+        <address class="erpx-footer__block" style="font-style:normal">
+          <strong>{{ _("Siège – Abidjan") }}</strong>
+          Cocody Riviera 3 Sideci – Villa 676<br>
+          <a class="erpx-footer__link" href="tel:+2252724311561">(+225) 27 24 31 15 61</a>
+        </address>
+        <address class="erpx-footer__block" style="font-style:normal">
+          <strong>{{ _("Agence – Dakar") }}</strong>
+          12 Bld El Hadj Djily Mbaye – Immeuble Azur<br>
+          <a class="erpx-footer__link" href="tel:+221788396509">(+221) 78 839 65 09</a>
+        </address>
+        <a class="erpx-footer__mail" href="mailto:erpnext@amoaman.com">
+          {{ erpx_icon("ui-mail") }}<span>erpnext@amoaman.com</span>
+        </a>
+      </div>
+
+      <div class="erpx-footer__brand">
+        <img src="/assets/amoamancustom/images/erpnext/logo-erpnext-amoaman-blanc.png"
+             alt="ERPNext — Amoaman &amp; Associés" width="184" height="60" loading="lazy">
+        <span class="erpx-footer__credit">{{ _("Made by Amoaman & Associés") }}</span>
+      </div>
+
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,32 @@
+{#
+  Heros du mini-site. Parametre par la page appelante :
+    hero_badge, hero_badge_icon, hero_title_html (|safe), hero_lead,
+    hero_cta_label, hero_cta_href, hero_media (chemin image), hero_media_alt.
+#}
+{%- from "amoamancustom/templates/includes/erpnext/ui/button.html" import erpx_button -%}
+{%- from "amoamancustom/templates/includes/erpnext/ui/badge.html" import erpx_badge -%}
+
+<section class="erpx-hero">
+  <span class="erpx-glow erpx-glow--violet" style="width:520px;height:520px;top:-120px;right:-80px"></span>
+  <span class="erpx-glow erpx-glow--pink" style="width:420px;height:420px;bottom:-140px;left:-120px"></span>
+
+  <div class="erpx-container">
+    <div class="erpx-hero__grid">
+
+      <div class="erpx-hero__content">
+        {%- if hero_badge %}{{ erpx_badge(hero_badge, hero_badge_icon or "ui-spark") }}{% endif %}
+
+        <h1 class="erpx-h1 erpx-hero__title">{{ hero_title_html }}</h1>
+
+        {%- if hero_lead %}<p class="erpx-lead erpx-hero__lead">{{ hero_lead }}</p>{% endif %}
+
+        {{ erpx_button(hero_cta_label or _("Demander une démo"), hero_cta_href or "/erpnext/contact", size="lg") }}
+      </div>
+
+      <div class="erpx-hero__media">
+        <img src="{{ hero_media }}" alt="{{ hero_media_alt or '' }}" width="867" height="1000" fetchpriority="high">
+      </div>
+
+    </div>
+  </div>
+</section>

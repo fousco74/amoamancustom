@@ -1,0 +1,16 @@
+{#
+  Carte generique du mini-site.
+
+  Remplace .card-soft du site historique, qui est fige a
+  width:625px; height:482px !important (layout.html) et donc inutilisable
+  dans une grille responsive.
+#}
+{% macro erpx_card(title="", text="", image="", image_alt="", reveal=True) -%}
+<article class="erpx-card{{ ' erpx-reveal' if reveal else '' }}">
+  {%- if image %}<img class="erpx-card__media" src="{{ image }}" alt="{{ image_alt }}" loading="lazy">{% endif -%}
+  <div class="erpx-card__body">
+    {%- if title %}<h3 class="erpx-card__title">{{ title }}</h3>{% endif -%}
+    {%- if text %}<p class="erpx-card__text">{{ text }}</p>{% endif -%}
+  </div>
+</article>
+{%- endmacro %}

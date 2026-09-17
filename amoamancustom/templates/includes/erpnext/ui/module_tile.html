@@ -1,0 +1,14 @@
+{#
+  Tuile 120x120 de la grille « Nos Modules ».
+  Partagee entre l'accueil (grille 4x3) et le carrousel « Découvrir d'autres
+  modules » de la page module.
+#}
+{%- from "amoamancustom/templates/includes/erpnext/ui/icon.html" import erpx_icon -%}
+
+{% macro erpx_module_tile(label, icon, href="") -%}
+{%- set tag = "a" if href else "div" -%}
+<{{ tag }} class="erpx-tile erpx-reveal"{% if href %} href="{{ href }}"{% endif %}>
+  <span class="erpx-tile__icon">{{ erpx_icon(icon) }}</span>
+  <span class="erpx-tile__label">{{ label }}</span>
+</{{ tag }}>
+{%- endmacro %}

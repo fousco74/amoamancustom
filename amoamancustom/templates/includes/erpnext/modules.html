@@ -1,0 +1,27 @@
+{#
+  Grille « Nos Modules » : 12 tuiles, 4 colonnes sur desktop.
+  Parametre : modules = liste de {label, icon, href}.
+  La liste canonique vit dans amoamancustom/erpnext_site.py (MODULES) pour etre
+  partagee entre l'accueil et le carrousel des pages module.
+#}
+{%- from "amoamancustom/templates/includes/erpnext/ui/section.html" import erpx_section_head -%}
+{%- from "amoamancustom/templates/includes/erpnext/ui/module_tile.html" import erpx_module_tile -%}
+{%- from "amoamancustom/templates/includes/erpnext/ui/button.html" import erpx_button -%}
+
+<section class="erpx-section" id="modules">
+  <span class="erpx-glow erpx-glow--pink" style="width:460px;height:460px;bottom:-40px;left:-180px"></span>
+
+  <div class="erpx-container">
+    {{ erpx_section_head(title=_("Nos Modules")) }}
+
+    <div class="erpx-modules" style="margin-top:56px">
+      {%- for item in modules %}
+      {{ erpx_module_tile(item.label, item.icon, item.get("href", "")) }}
+      {%- endfor %}
+    </div>
+
+    <div style="text-align:center;margin-top:52px">
+      {{ erpx_button(_("Demander une démo"), "/erpnext/contact", size="lg") }}
+    </div>
+  </div>
+</section>

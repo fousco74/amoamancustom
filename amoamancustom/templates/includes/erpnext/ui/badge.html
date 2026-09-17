@@ -1,0 +1,14 @@
+{#
+  Pilule d'accroche : « Une solution Open Source implémentée par Amoaman »
+  sur l'accueil, « Stocks » sur la page module.
+
+  variant : soft (fond blanc translucide) | solid (dégradé de marque)
+#}
+{%- from "amoamancustom/templates/includes/erpnext/ui/icon.html" import erpx_icon -%}
+
+{% macro erpx_badge(text, icon="", variant="soft") -%}
+<span class="erpx-badge{{ ' erpx-badge--solid' if variant == 'solid' else '' }}">
+  {%- if icon %}<span class="erpx-badge__icon">{{ erpx_icon(icon) }}</span>{% endif -%}
+  <span>{{ text }}</span>
+</span>
+{%- endmacro %}

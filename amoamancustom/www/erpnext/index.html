@@ -1,0 +1,199 @@
+{% extends "amoamancustom/templates/layout_erpnext.html" %}
+
+{% block title %}{{ _("ERPNext par Amoaman & Associés") }}{% endblock %}
+
+{% block page_content %}
+<div class="erpx-shell">
+
+  {#- ------------------------------------------------------------------
+      1. Héros
+      ------------------------------------------------------------------ -#}
+  {%- set hero_badge = _("Une solution Open Source implémentée par Amoaman") %}
+  {%- set hero_badge_icon = "ui-spark" %}
+  {%- set hero_title_html %}
+    <span class="erpx-grad-text">{{ _("Piloter son entreprise") }}</span><br>
+    {{ _("avec") }} <span class="erpx-grad-text">ERPNext</span>
+  {%- endset %}
+  {%- set hero_lead = _("Une plateforme unique pour centraliser toute votre activité, automatiser vos processus et suivre vos performances.") %}
+  {%- set hero_cta_label = _("Demander une démo") %}
+  {%- set hero_cta_href = "/erpnext/contact" %}
+  {%- set hero_media = "/assets/amoamancustom/images/erpnext/hero-dashboard.webp" %}
+  {%- set hero_media_alt = _("Tableau de bord ERPNext : suivi des commandes fournisseurs") %}
+  {% include "amoamancustom/templates/includes/erpnext/hero.html" %}
+
+  {#- ------------------------------------------------------------------
+      2. Vision 360°
+      Le titre de la maquette porte « sur sur » (4105:2567) — corrigé ici.
+      ------------------------------------------------------------------ -#}
+  <section class="erpx-section">
+    <div class="erpx-container">
+      <div class="erpx-title-block erpx-title-block--center">
+        <h2 class="erpx-h2">{{ _("Une vision à 360° sur l'ensemble des départements de votre entreprise") }}</h2>
+        <p class="erpx-lead" style="margin-top:22px">
+          {{ _("ERPNext est le système nerveux central de votre entreprise. Ce logiciel de gestion tout-en-un centralise vos données pour optimiser chaque pilier de votre activité. Il connecte et centralise chaque information pour vous offrir une maîtrise totale de votre organisation.") }}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {#- ------------------------------------------------------------------
+      3. Les avantages
+      ------------------------------------------------------------------ -#}
+  {%- set avantages = [
+    {
+      "title": _("Une visibilité totale pour une prise de décision éclairée"),
+      "text": _("Centralisez vos opérations (RH, stocks, ventes, comptabilité) dans ERPNext pour une vision unifiée et une gestion décisionnelle basée sur des données réelles."),
+      "icon": "ui-performance"
+    },
+    {
+      "title": _("Une automatisation intelligente pour booster votre productivité"),
+      "text": _("Gagnez en efficacité en automatisant vos processus métiers. Libérez vos collaborateurs des tâches répétitives pour qu'ils se consacrent aux missions à haute valeur ajoutée."),
+      "icon": "ui-spark"
+    },
+    {
+      "title": _("La puissance de l'intégration locale et métier"),
+      "text": _("Conforme aux réglementations locales (FNE) et sur-mesure pour votre secteur, ERPNext est une solution robuste qui évolue avec vous grâce à la flexibilité du Framework Frappe."),
+      "icon": "ui-steps"
+    }
+  ] %}
+  {% include "amoamancustom/templates/includes/erpnext/avantages.html" %}
+
+  {#- ------------------------------------------------------------------
+      4. Une entreprise prête à grandir
+      ------------------------------------------------------------------ -#}
+  {%- set cta_title = _("Une entreprise prête à grandir") %}
+  {%- set cta_text = _("Accompagnez votre croissance avec une solution qui évolue au rythme de votre entreprise.") %}
+  {%- set cta_label = _("Demander une démo") %}
+  {%- set cta_href = "/erpnext/contact" %}
+  {%- set cta_media = "/assets/amoamancustom/images/erpnext/sphere-erpnext.webp" %}
+  {% include "amoamancustom/templates/includes/erpnext/cta.html" %}
+
+  {#- ------------------------------------------------------------------
+      5. Segments TPE / PME / Grandes Entreprises
+
+      TPE et PME pointent volontairement sur le meme visuel : dans la maquette,
+      les deux cartes partagent exactement la meme image (les deux exports
+      Figma sont identiques au bit pres). Le jour ou une photo distincte est
+      fournie pour l'une des deux, il suffit de changer son `photo` ici.
+      ------------------------------------------------------------------ -#}
+  {%- set segments = [
+    {
+      "title": _("TPE"),
+      "text": _("Une solution simple et accessible pour centraliser votre gestion, automatiser vos tâches et gagner du temps au quotidien."),
+      "photo": "/assets/amoamancustom/images/erpnext/segment-equipe.webp"
+    },
+    {
+      "title": _("PME"),
+      "text": _("Optimisez vos opérations et accompagnez la croissance de votre entreprise grâce à une gestion centralisée, fluide et performante."),
+      "photo": "/assets/amoamancustom/images/erpnext/segment-equipe.webp"
+    },
+    {
+      "title": _("Grandes Entreprises"),
+      "text": _("Une solution évolutive pour piloter efficacement vos activités, connecter vos équipes et gérer vos opérations à grande échelle."),
+      "photo": "/assets/amoamancustom/images/erpnext/segment-grandes-entreprises.webp"
+    }
+  ] %}
+  {% include "amoamancustom/templates/includes/erpnext/segments.html" %}
+
+  {#- ------------------------------------------------------------------
+      6. Nos Modules
+      ------------------------------------------------------------------ -#}
+  {% include "amoamancustom/templates/includes/erpnext/modules.html" %}
+
+  {#- ------------------------------------------------------------------
+      7. Démo vidéo — MASQUÉE VOLONTAIREMENT
+
+      La maquette porte une consigne explicite du designer (calque 4105:2986) :
+      « Cette section apparaitra sera masquée sur le site le temps de concevoir
+      la vidéo. » La section n'est donc pas rendue tant que la vidéo n'existe
+      pas. Pour l'activer : passer erpx_show_video à True et renseigner
+      erpx_video_url dans www/erpnext/index.py.
+      ------------------------------------------------------------------ -#}
+  {%- if erpx_show_video %}
+  <section class="erpx-section">
+    <div class="erpx-container">
+      <div class="erpx-panel">
+        <h2 class="erpx-h2" style="text-align:center;margin-bottom:32px">{{ _("Votre entreprise avec ERPNext") }}</h2>
+        <div class="erpx-video">
+          <iframe src="{{ erpx_video_url }}" title="{{ _('Votre entreprise avec ERPNext') }}"
+                  style="width:100%;aspect-ratio:16/9;border:0" allowfullscreen loading="lazy"></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+  {%- endif %}
+
+  {#- ------------------------------------------------------------------
+      8. Pourquoi nous choisir
+      ------------------------------------------------------------------ -#}
+  {%- set raisons = [
+    {
+      "title": _("Une Solution Métier, pas seulement un Logiciel"),
+      "text": _("Nous ne nous contentons pas d'implémenter ERPNext. Nous concevons une solution sur mesure qui répond à vos enjeux métiers, vos contraintes réelles et vos objectifs de croissance.")
+    },
+    {
+      "title": _("Une Expertise de Proximité"),
+      "text": _("En choisissant AMOAMAN, vous bénéficiez d'une équipe de ressources locales, à l'écoute, qui parle votre langage. Nous maîtrisons aussi bien les processus métiers que la technologie.")
+    },
+    {
+      "title": _("Un Accompagnement de A à Z"),
+      "text": _("Notre rôle dépasse la technique : nous vous accompagnons de la réflexion stratégique jusqu'à l'adoption effective de l'outil par vos équipes, garantissant ainsi le succès de votre transformation digitale.")
+    },
+    {
+      "title": _("Un Levier de Performance Durable"),
+      "text": _("Notre objectif est clair : transformer ERPNext en un véritable moteur de performance pour votre organisation sur le long terme.")
+    }
+  ] %}
+  {% include "amoamancustom/templates/includes/erpnext/pourquoi.html" %}
+
+  {#- ------------------------------------------------------------------
+      9. FAQ
+
+      Seule la réponse à la première question figure dans la maquette : les
+      six autres y sont repliées, donc absentes du fichier Figma. Elles sont
+      rédigées ici et RESTENT À VALIDER par l'équipe métier.
+      ------------------------------------------------------------------ -#}
+  {%- set faq_items = [
+    {
+      "question": _("Qu'est-ce qu'ERPNext ?"),
+      "answer": _("ERPNext est un ERP open source tout-en-un qui permet de gérer l'ensemble des processus d'une entreprise : ventes, achats, stocks, comptabilité, RH, projets, production, CRM, etc., à partir d'une seule plateforme intégrée.")
+    },
+    {
+      "question": _("À quels types d'entreprises s'adresse ERPNext ?"),
+      "answer": _("De la TPE au groupe multi-sociétés. Le périmètre se compose module par module : une petite structure démarre avec la comptabilité et les ventes, une entreprise mature active la production, la qualité et les immobilisations sur la même base.")
+    },
+    {
+      "question": _("ERPNext est-il adapté au contexte africain ?"),
+      "answer": _("Oui. Nous livrons ERPNext avec l'intégration directe de la FNE, le plan comptable SYSCOHADA, la gestion de la CNPS et de l'ITS, le multidevise et le franc CFA. Nos équipes sont à Abidjan et à Dakar.")
+    },
+    {
+      "question": _("Combien de temps dure une implémentation ERPNext ?"),
+      "answer": _("De six à huit semaines pour un périmètre standard, davantage lorsque la reprise de données est importante ou que des développements spécifiques sont nécessaires. Le calendrier est arrêté avec vous à l'issue du cadrage.")
+    },
+    {
+      "question": _("Puis-je personnaliser ERPNext selon mes processus métiers ?"),
+      "answer": _("Oui. Le Framework Frappe permet d'ajouter des champs, des formulaires, des workflows de validation, des états et des applications entières sans quitter la plateforme ni compromettre les montées de version.")
+    },
+    {
+      "question": _("Assurez-vous l'accompagnement après le déploiement ?"),
+      "answer": _("Oui. Formation des utilisateurs, documentation de paramétrage et support font partie de nos offres. Les formules Business et Entreprise incluent un accompagnement renforcé, avec SLA et haute disponibilité.")
+    },
+    {
+      "question": _("ERPNext est-il sécurisé pour mes données ?"),
+      "answer": _("Les droits sont gérés par rôle et par document, les accès sont tracés et les sauvegardes automatisées. L'hébergement peut être mutualisé, dédié ou installé sur vos propres serveurs, selon vos exigences de souveraineté.")
+    }
+  ] %}
+  {% include "amoamancustom/templates/includes/erpnext/faq.html" %}
+
+  {#- ------------------------------------------------------------------
+      10. Appel à l'action final
+      ------------------------------------------------------------------ -#}
+  {%- set cta_title = _("Construisons ensemble votre gestion de demain.") %}
+  {%- set cta_text = "" %}
+  {%- set cta_label = _("Contactez-nous") %}
+  {%- set cta_href = "/erpnext/contact" %}
+  {%- set cta_media = "/assets/amoamancustom/images/erpnext/hero-equipe.webp" %}
+  {% include "amoamancustom/templates/includes/erpnext/cta.html" %}
+
+</div>
+{% endblock %}

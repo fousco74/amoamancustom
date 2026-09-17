@@ -1,0 +1,32 @@
+{#
+  Section « Pourquoi nous choisir avec ERPNext » : quatre arguments sur fond
+  sombre, en vis-a-vis d'un visuel.
+  Parametre : raisons = liste de {title, text}.
+#}
+{%- from "amoamancustom/templates/includes/erpnext/ui/button.html" import erpx_button -%}
+
+<section class="erpx-section" id="pourquoi">
+  <div class="erpx-container erpx-container--wide">
+    <div class="erpx-panel">
+      <div class="erpx-title-block erpx-title-block--center" style="margin-bottom:44px">
+        <h2 class="erpx-h2">{{ _("Pourquoi nous choisir avec") }} <span style="color:#fff">ERPNext</span></h2>
+        <p class="erpx-lead" style="margin-top:16px">
+          {{ _("Une plateforme unique pour centraliser toute votre activité, automatiser vos processus et suivre vos performances.") }}
+        </p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px">
+        {%- for item in raisons %}
+        <article class="erpx-reveal" style="background:rgba(255,255,255,.07);border-radius:var(--erpx-radius-lg);padding:26px 28px">
+          <h3 class="erpx-h3" style="color:#fff;margin-bottom:10px">{{ item.title }}</h3>
+          <p style="margin:0;font-size:.95rem;line-height:1.6;color:rgba(255,255,255,.78)">{{ item.text }}</p>
+        </article>
+        {%- endfor %}
+      </div>
+
+      <div style="text-align:center;margin-top:42px">
+        {{ erpx_button(_("Contactez-nous"), "/erpnext/contact", variant="outline", size="lg") }}
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,56 @@
+{#
+  Navbar du mini-site ERPNext — la pilule flottante de la maquette
+  (frame « Header », 1172x71, identique sur les 4 layers).
+
+  Elle est PROPRE au mini-site : templates/includes/navbar.html (site
+  corporate) est codee en dur et ne pointe que vers les ancres de « / »
+  (/#services, /#erp, /#bigdata). La reprendre aurait force a la modifier,
+  donc a toucher au site existant.
+
+  Les entrees sans page dediee sont rabattues sur les ancres de l'accueil.
+  « Secteurs » est la seule a n'avoir aucun equivalent : elle est masquee
+  (`hidden: True`) plutot que de livrer un lien mort. Pour l'activer quand la
+  page existera, passer `hidden` a False et renseigner `href`.
+
+  `erpx_active` est pose par le get_context de chaque page.
+#}
+{%- from "amoamancustom/templates/includes/erpnext/ui/button.html" import erpx_button -%}
+
+{%- set nav_links = [
+  {"key": "modules",     "label": _("Modules"),        "href": "/erpnext#modules"},
+  {"key": "tarification","label": _("Tarification"),   "href": "/erpnext/tarification"},
+  {"key": "secteurs",    "label": _("Secteurs"),       "href": "",                    "hidden": True},
+  {"key": "pourquoi",    "label": _("Pourquoi nous ?"),"href": "/erpnext#pourquoi"},
+  {"key": "aide",        "label": _("Aide"),           "href": "/erpnext#faq"}
+] -%}
+
+<nav class="erpx-nav" data-erpx-nav aria-label="{{ _('Navigation ERPNext') }}">
+  <div class="erpx-nav__inner">
+
+    <div class="erpx-nav__bar">
+      <a class="erpx-nav__logo" href="/erpnext" aria-label="{{ _('Accueil ERPNext par Amoaman & Associés') }}">
+        <img src="/assets/amoamancustom/images/erpnext/logo-erpnext-amoaman.png"
+             alt="ERPNext — Amoaman &amp; Associés" width="100" height="32">
+      </a>
+
+      <div class="erpx-nav__links">
+        {%- for link in nav_links %}{% if not link.get("hidden") %}
+        <a class="erpx-nav__link" href="{{ link.href }}"
+           {% if erpx_active == link.key %}aria-current="page"{% endif %}>{{ link.label }}</a>
+        {%- endif %}{% endfor %}
+      </div>
+
+      <div class="erpx-nav__cta">
+        {{ erpx_button(_("Demander une démo"), "/erpnext/contact", variant="gradient", size="sm") }}
+      </div>
+    </div>
+
+    <div class="erpx-nav__aside">
+      {{ erpx_button(_("Contactez-nous"), "/erpnext/contact", variant="outline", size="sm") }}
+    </div>
+
+    <button type="button" class="erpx-nav__burger" data-erpx-burger
+            aria-expanded="false" aria-label="{{ _('Ouvrir le menu') }}"><span></span></button>
+
+  </div>
+</nav>

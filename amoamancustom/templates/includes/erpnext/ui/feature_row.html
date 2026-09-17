@@ -1,0 +1,12 @@
+{#
+  Ligne de fonctionnalite : icone a gauche, intitule en gras + description.
+  Maquette « Module Stocks » : bloc 587x115, deux colonnes, trois rangees.
+#}
+{%- from "amoamancustom/templates/includes/erpnext/ui/icon.html" import erpx_icon -%}
+
+{% macro erpx_feature_row(title, text, icon="ui-set-up") -%}
+<div class="erpx-feature erpx-reveal">
+  <span class="erpx-feature__icon">{{ erpx_icon(icon) }}</span>
+  <p class="erpx-feature__text"><strong>{{ title }} :</strong> {{ text }}</p>
+</div>
+{%- endmacro %}

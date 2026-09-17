@@ -1,0 +1,906 @@
+/* apps/amoamancustom/amoamancustom/public/css/erpnext_site.css
+ *
+ * Feuille de style du mini-site « Amoaman intégrateur ERPNext » (/erpnext/*).
+ *
+ * Pourquoi un fichier séparé plutôt que le <style> de templates/layout.html :
+ * celui-ci fait 3360 lignes, redéfinit globalement .card, .chip, .panel, .icon,
+ * .title, et fige .card-soft à 625x482px !important. Y greffer un second design
+ * reviendrait à empiler les !important. Ici, tout est isolé.
+ *
+ * Deux règles tenues dans tout le fichier :
+ *   1. Les tokens vivent sur .erpx, PAS sur :root — rien ne fuit vers le site
+ *      corporate, qui a ses propres --blue-*, --pink-*, --text.
+ *   2. Toutes les classes sont prefixees « erpx- » — le site charge aussi
+ *      Bootstrap 4 (bundle frappe) et Bootstrap 5 (CDN du layout historique) ;
+ *      un .card ou un .btn nu entrerait en collision avec l'un des deux.
+ *
+ * Les couleurs sont relevees au pixel sur les exports Figma des layers
+ * 4105:2454 (accueil), 3749:10 (contact), 3586:1447 (tarification),
+ * 3660:32 (module stocks) — la maquette n'expose aucune variable Figma.
+ */
+
+/* ============================================================
+   1. TOKENS
+   ============================================================ */
+
+.erpx {
+  /* Bleus */
+  --erpx-blue-900: #00112E;
+  --erpx-blue-800: #011942;
+  --erpx-blue-700: #00235C;
+  --erpx-blue-600: #054092;
+  --erpx-blue-500: #0756C5;
+  --erpx-blue-400: #266BCC;
+  --erpx-blue-300: #4A6ECD;
+  --erpx-blue-200: #83ACE5;
+  --erpx-blue-100: #DFECFF;
+
+  /* Roses */
+  --erpx-pink-600: #D13270;
+  --erpx-pink-500: #F32A57;
+  --erpx-pink-400: #F3355F;
+  --erpx-pink-300: #F65D7F;
+
+  /* Neutres */
+  --erpx-ink: #081A2A;
+  --erpx-ink-soft: rgba(8, 26, 42, .66);
+  --erpx-ink-faint: rgba(8, 26, 42, .45);
+  --erpx-line: rgba(8, 26, 42, .12);
+  --erpx-surface: #FFFFFF;
+  --erpx-surface-alt: #F6F8FC;
+
+  /* Degrades de marque */
+  --erpx-grad-brand: linear-gradient(135deg, #3663C6 0%, #D13270 100%);
+  --erpx-grad-title: linear-gradient(90deg, #00235C 0%, #00235C 42%, #F3355F 100%);
+  --erpx-grad-hero: linear-gradient(135deg, #FFFFFF 0%, #F3F1FA 38%, #D9C8E2 72%, #AFA3D1 100%);
+  --erpx-grad-footer: linear-gradient(160deg, #002053 0%, #00112E 100%);
+  --erpx-grad-glass: linear-gradient(178deg, rgba(223, 236, 255, .75) 18%, rgba(131, 172, 229, .75) 82%, rgba(38, 107, 204, .75) 146%);
+  --erpx-grad-glass-deep: linear-gradient(178deg, rgba(38, 107, 204, .82) 0%, rgba(11, 57, 122, .88) 100%);
+  --erpx-grad-card-veil: linear-gradient(181deg, rgba(2, 10, 22, .25) 32%, rgba(8, 44, 94, 0) 45%, rgba(11, 57, 122, 0) 82%, rgba(13, 70, 149, .5) 100%);
+
+  /* Rayons — releves sur la maquette */
+  --erpx-radius-xl: 32px;
+  --erpx-radius-lg: 25px;
+  --erpx-radius-md: 16px;
+  --erpx-radius-sm: 10px;
+  --erpx-radius-pill: 999px;
+
+  /* Ombres */
+  --erpx-shadow-card: 0 18px 55px rgba(8, 26, 42, .10);
+  --erpx-shadow-soft: 0 10px 30px rgba(8, 26, 42, .07);
+  --erpx-shadow-nav: 0 10px 40px rgba(8, 26, 42, .12);
+  --erpx-ring: 0 0 0 4px rgba(38, 107, 204, .18);
+
+  /* Trames */
+  --erpx-container: 1180px;
+  --erpx-container-wide: 1486px;
+  --erpx-gutter: 24px;
+  --erpx-section-y: clamp(56px, 7vw, 112px);
+
+  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--erpx-ink);
+  background: var(--erpx-surface);
+}
+
+/* ============================================================
+   2. RESET LOCAL + NEUTRALISATION DES ENVELOPPES FRAPPE
+   ============================================================ */
+
+.erpx *,
+.erpx *::before,
+.erpx *::after { box-sizing: border-box; }
+
+.erpx img { max-width: 100%; }
+.erpx :where(a) { color: inherit; text-decoration: none; }
+.erpx :where(a:hover) { text-decoration: none; }
+.erpx ul { list-style: none; margin: 0; padding: 0; }
+.erpx p { margin: 0 0 1em; }
+.erpx h1, .erpx h2, .erpx h3, .erpx h4, .erpx h5, .erpx h6 {
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: -.02em;
+  color: inherit;
+}
+
+/* templates/web.html enveloppe le contenu dans .page-content-wrapper > main.
+ * Les pages passent full_width = 1 (contexte lu par web.html) pour que <main>
+ * n'ait pas la classe .container ; il reste le padding du bundle frappe. */
+.erpx .page-content-wrapper,
+.erpx main,
+.erpx .page_content { padding: 0; margin: 0; max-width: none; width: 100%; }
+
+.erpx .page-breadcrumbs,
+.erpx .page-header-wrapper,
+.erpx .page-footer { display: none; }
+
+/* ============================================================
+   3. TRAME
+   ============================================================ */
+
+.erpx-shell { overflow-x: clip; }
+
+.erpx-container {
+  width: 100%;
+  max-width: var(--erpx-container);
+  margin-inline: auto;
+  padding-inline: var(--erpx-gutter);
+}
+
+.erpx-container--wide { max-width: var(--erpx-container-wide); }
+
+.erpx-section { position: relative; padding-block: var(--erpx-section-y); }
+.erpx-section--tight { padding-block: clamp(36px, 4.5vw, 64px); }
+.erpx-section--alt { background: var(--erpx-surface-alt); }
+
+/* Halos decoratifs : la maquette en pose une dizaine (« Ellipse 40/51/53/54 »).
+ * Reproduits en radial-gradient plutot qu'en SVG — 0 requete, et ils suivent
+ * la largeur du viewport au lieu d'etre figes a 1540px. */
+.erpx-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: .5;
+  pointer-events: none;
+  z-index: 0;
+}
+.erpx-glow--blue { background: radial-gradient(circle, rgba(38, 107, 204, .55) 0%, rgba(38, 107, 204, 0) 70%); }
+.erpx-glow--pink { background: radial-gradient(circle, rgba(243, 42, 87, .40) 0%, rgba(243, 42, 87, 0) 70%); }
+.erpx-glow--violet { background: radial-gradient(circle, rgba(148, 120, 205, .45) 0%, rgba(148, 120, 205, 0) 70%); }
+
+.erpx-section > .erpx-container { position: relative; z-index: 1; }
+
+/* ============================================================
+   4. TYPOGRAPHIE
+   ============================================================ */
+
+.erpx-h1 {
+  font-size: clamp(2.2rem, 1.2rem + 3.6vw, 4.25rem);
+  line-height: 1.06;
+  letter-spacing: -.045em;
+  font-weight: 700;
+}
+
+.erpx-h2 {
+  font-size: clamp(1.7rem, 1rem + 2.4vw, 3rem);
+  line-height: 1.12;
+  letter-spacing: -.035em;
+  font-weight: 700;
+}
+
+.erpx-h3 {
+  font-size: clamp(1.15rem, .95rem + .8vw, 1.6rem);
+  line-height: 1.25;
+  letter-spacing: -.02em;
+  font-weight: 600;
+}
+
+.erpx-lead {
+  font-size: clamp(1rem, .95rem + .35vw, 1.2rem);
+  line-height: 1.6;
+  color: var(--erpx-ink-soft);
+  font-weight: 500;
+}
+
+.erpx-body { font-size: 1rem; line-height: 1.65; color: var(--erpx-ink-soft); }
+
+/* Titre bicolore du hero : « Piloter son entreprise avec ERPNext ». */
+.erpx-grad-text {
+  background: var(--erpx-grad-title);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.erpx-title-block { max-width: 880px; }
+.erpx-title-block .erpx-lead { max-width: 720px; }
+.erpx-title-block--center .erpx-lead { margin-inline: auto; }
+.erpx-title-block--center { margin-inline: auto; text-align: center; }
+
+/* ============================================================
+   5. BOUTONS
+   ============================================================ */
+
+.erpx-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 30px;
+  border: 0;
+  border-radius: var(--erpx-radius-pill);
+  font-size: .98rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease, color .18s ease;
+  white-space: nowrap;
+}
+
+.erpx-btn:focus-visible { outline: 0; box-shadow: var(--erpx-ring); }
+.erpx-btn:hover { transform: translateY(-2px); }
+
+.erpx-btn--gradient {
+  background: var(--erpx-grad-brand);
+  color: #fff;
+  box-shadow: 0 10px 26px rgba(209, 50, 112, .28);
+}
+.erpx-btn--gradient:hover { color: #fff; box-shadow: 0 16px 34px rgba(209, 50, 112, .34); }
+
+.erpx-btn--outline {
+  background: #fff;
+  color: var(--erpx-blue-700);
+  box-shadow: inset 0 0 0 1.5px var(--erpx-blue-400);
+}
+.erpx-btn--outline:hover { color: var(--erpx-blue-500); box-shadow: inset 0 0 0 1.5px var(--erpx-blue-500), var(--erpx-shadow-soft); }
+
+.erpx-btn--ghost { background: transparent; color: var(--erpx-blue-700); padding-inline: 12px; }
+.erpx-btn--ghost:hover { color: var(--erpx-pink-500); }
+
+.erpx-btn--sm { padding: 10px 20px; font-size: .88rem; }
+.erpx-btn--lg { padding: 17px 38px; font-size: 1.05rem; }
+.erpx-btn--block { width: 100%; }
+
+.erpx-btn__icon { width: 1.15em; height: 1.15em; flex: 0 0 auto; }
+
+/* ============================================================
+   6. BADGE / PILULE
+   ============================================================ */
+
+.erpx-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 22px 9px 9px;
+  border-radius: var(--erpx-radius-pill);
+  background: rgba(255, 255, 255, .72);
+  box-shadow: var(--erpx-shadow-soft);
+  backdrop-filter: blur(8px);
+  font-size: .92rem;
+  font-weight: 500;
+  color: var(--erpx-ink);
+}
+
+.erpx-badge__icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--erpx-grad-brand);
+  color: #fff;
+  flex: 0 0 auto;
+}
+.erpx-badge__icon img, .erpx-badge__icon svg { width: 20px; height: 20px; }
+
+.erpx-badge--solid { background: var(--erpx-grad-brand); color: #fff; padding: 10px 26px; }
+.erpx-badge--solid .erpx-badge__icon { background: rgba(255, 255, 255, .2); }
+
+/* ============================================================
+   7. NAVBAR
+   ============================================================ */
+
+.erpx-nav {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  padding: 18px var(--erpx-gutter);
+  background: transparent;
+}
+
+.erpx-nav__inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: var(--erpx-container);
+  margin-inline: auto;
+}
+
+/* La pilule blanche de la maquette (Group 108, 1000x71). */
+.erpx-nav__bar {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 2vw, 34px);
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 10px 12px 10px 24px;
+  border-radius: var(--erpx-radius-pill);
+  background: #fff;
+  box-shadow: var(--erpx-shadow-nav);
+}
+
+.erpx-nav__logo { flex: 0 0 auto; display: flex; align-items: center; }
+.erpx-nav__logo img { height: 34px; width: auto; display: block; }
+
+.erpx-nav__links {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 1.6vw, 26px);
+  margin-inline: auto;
+}
+
+.erpx-nav__link {
+  font-size: .96rem;
+  font-weight: 500;
+  color: var(--erpx-ink);
+  padding: 6px 2px;
+  position: relative;
+  transition: color .18s ease;
+}
+.erpx-nav__link:hover,
+.erpx-nav__link[aria-current="page"] { color: var(--erpx-blue-500); }
+.erpx-nav__link[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -2px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--erpx-grad-brand);
+}
+
+.erpx-nav__cta { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; }
+
+/* Le second CTA vit dans sa propre pilule blanche (Group 367, 286x71). */
+.erpx-nav__aside {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: var(--erpx-radius-pill);
+  background: #fff;
+  box-shadow: var(--erpx-shadow-nav);
+}
+
+.erpx-nav__burger {
+  display: none;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: var(--erpx-shadow-nav);
+  cursor: pointer;
+  padding: 0;
+  place-items: center;
+}
+.erpx-nav__burger span,
+.erpx-nav__burger span::before,
+.erpx-nav__burger span::after {
+  display: block;
+  width: 18px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--erpx-blue-700);
+  transition: transform .2s ease, opacity .2s ease;
+}
+.erpx-nav__burger span { position: relative; }
+.erpx-nav__burger span::before { content: ""; position: absolute; top: -6px; }
+.erpx-nav__burger span::after { content: ""; position: absolute; top: 6px; }
+.erpx-nav.is-open .erpx-nav__burger span { background: transparent; }
+.erpx-nav.is-open .erpx-nav__burger span::before { transform: translateY(6px) rotate(45deg); }
+.erpx-nav.is-open .erpx-nav__burger span::after { transform: translateY(-6px) rotate(-45deg); }
+
+/* ============================================================
+   8. HERO
+   ============================================================ */
+
+.erpx-hero {
+  position: relative;
+  background: var(--erpx-grad-hero);
+  padding-block: clamp(32px, 4vw, 56px) clamp(56px, 7vw, 104px);
+  margin-top: -78px;
+  padding-top: 110px;
+  overflow: clip;
+}
+
+.erpx-hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  align-items: center;
+  gap: clamp(24px, 4vw, 56px);
+}
+
+.erpx-hero__content { position: relative; z-index: 2; }
+.erpx-hero__title { margin: 22px 0 18px; }
+.erpx-hero__lead { max-width: 46ch; margin-bottom: 30px; }
+.erpx-hero__media { position: relative; z-index: 1; }
+.erpx-hero__media img { display: block; width: 100%; height: auto; }
+
+/* ============================================================
+   9. CARTES
+   ============================================================ */
+
+.erpx-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: var(--erpx-radius-xl);
+  box-shadow: var(--erpx-shadow-card);
+  overflow: hidden;
+  height: 100%;
+}
+
+.erpx-card__media { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+.erpx-card__body { padding: 26px 28px 30px; display: flex; flex-direction: column; gap: 10px; flex: 1 1 auto; }
+.erpx-card__title { font-size: 1.15rem; font-weight: 600; letter-spacing: -.02em; }
+.erpx-card__text { font-size: .98rem; line-height: 1.6; color: var(--erpx-ink-soft); margin: 0; }
+
+/* Carte « segment » (TPE / PME / Grandes Entreprises) : photo plein cadre,
+ * voile degrade, titre en haut, panneau verre en bas. Maquette : 383x630. */
+.erpx-segment {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 560px;
+  padding: 34px 30px;
+  border-radius: var(--erpx-radius-xl);
+  overflow: hidden;
+  isolation: isolate;
+  color: #fff;
+}
+.erpx-segment__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+}
+.erpx-segment::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--erpx-grad-card-veil);
+  z-index: -1;
+}
+.erpx-segment__title {
+  font-size: clamp(1.9rem, 1.3rem + 1.6vw, 3rem);
+  line-height: 1.02;
+  letter-spacing: -.06em;
+  font-weight: 600;
+  text-shadow: 0 0 15px rgba(0, 0, 0, .25);
+}
+.erpx-segment__panel {
+  border-radius: var(--erpx-radius-lg);
+  background: var(--erpx-grad-glass-deep);
+  backdrop-filter: blur(6px);
+  padding: 26px 24px;
+  font-size: 1rem;
+  line-height: 1.4;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* ============================================================
+   10. TUILES MODULE
+   ============================================================ */
+
+.erpx-modules {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(20px, 3vw, 46px) clamp(12px, 2vw, 28px);
+}
+
+.erpx-tile { display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
+
+.erpx-tile__icon {
+  display: grid;
+  place-items: center;
+  width: 108px;
+  height: 108px;
+  border-radius: 30px;
+  background: var(--erpx-grad-glass);
+  box-shadow: var(--erpx-shadow-soft);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.erpx-tile__icon img, .erpx-tile__icon svg { width: 46px; height: 46px; }
+.erpx-tile:hover .erpx-tile__icon { transform: translateY(-4px); box-shadow: var(--erpx-shadow-card); }
+
+.erpx-tile__label { font-size: .98rem; font-weight: 600; line-height: 1.3; max-width: 14ch; }
+
+/* ============================================================
+   11. LIGNES DE FONCTIONNALITE
+   ============================================================ */
+
+.erpx-features { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+
+.erpx-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 22px 24px;
+  border-radius: var(--erpx-radius-md);
+  background: #fff;
+  box-shadow: var(--erpx-shadow-soft);
+}
+.erpx-feature__icon { flex: 0 0 auto; width: 34px; height: 34px; color: var(--erpx-blue-400); }
+.erpx-feature__icon img, .erpx-feature__icon svg { width: 100%; height: 100%; }
+.erpx-feature__text { font-size: .95rem; line-height: 1.55; color: var(--erpx-ink-soft); margin: 0; }
+.erpx-feature__text strong { color: var(--erpx-ink); font-weight: 600; }
+
+/* ============================================================
+   12. FAQ
+   ============================================================ */
+
+.erpx-faq { display: flex; flex-direction: column; gap: 14px; }
+
+.erpx-faq__item {
+  border-radius: var(--erpx-radius-md);
+  background: #fff;
+  box-shadow: var(--erpx-shadow-soft);
+  overflow: hidden;
+}
+.erpx-faq__item.is-open { box-shadow: var(--erpx-shadow-card); }
+
+.erpx-faq__btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  width: 100%;
+  padding: 24px 26px;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-weight: 600;
+  font-size: 1.02rem;
+  line-height: 1.35;
+  color: var(--erpx-ink);
+  text-align: left;
+  cursor: pointer;
+}
+.erpx-faq__btn:focus-visible { outline: 0; box-shadow: var(--erpx-ring); }
+
+.erpx-faq__chevron {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--erpx-blue-100);
+  color: var(--erpx-blue-500);
+  transform: rotate(180deg);
+  transition: transform .22s ease, background-color .22s ease;
+}
+.erpx-faq__item.is-open .erpx-faq__chevron { transform: rotate(0deg); background: var(--erpx-grad-brand); color: #fff; }
+
+/* grid-template-rows anime la hauteur sans connaitre le contenu a l'avance. */
+.erpx-faq__panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .26s ease; }
+.erpx-faq__item.is-open .erpx-faq__panel { grid-template-rows: 1fr; }
+.erpx-faq__panel > div { overflow: hidden; }
+.erpx-faq__answer { padding: 0 26px 26px; margin: 0; font-size: .98rem; line-height: 1.65; color: var(--erpx-ink-soft); }
+
+/* ============================================================
+   13. FORMULAIRE
+   ============================================================ */
+
+.erpx-form { display: flex; flex-direction: column; gap: 18px; }
+.erpx-form__row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+
+.erpx-field { display: flex; flex-direction: column; gap: 8px; }
+.erpx-field__label { font-size: .92rem; font-weight: 600; color: var(--erpx-ink); display: inline-flex; align-items: baseline; gap: 4px; }
+.erpx-field__req { color: var(--erpx-pink-500); font-size: 1rem; line-height: 1; }
+
+.erpx-input,
+.erpx-select,
+.erpx-textarea {
+  width: 100%;
+  padding: 14px 18px;
+  border: 1px solid var(--erpx-line);
+  border-radius: var(--erpx-radius-sm);
+  background: #fff;
+  font: inherit;
+  font-size: .96rem;
+  color: var(--erpx-ink);
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+.erpx-input::placeholder, .erpx-textarea::placeholder { color: var(--erpx-ink-faint); }
+.erpx-input:focus, .erpx-select:focus, .erpx-textarea:focus {
+  outline: 0;
+  border-color: var(--erpx-blue-400);
+  box-shadow: var(--erpx-ring);
+}
+.erpx-textarea { min-height: 160px; resize: vertical; }
+
+.erpx-select {
+  appearance: none;
+  padding-right: 44px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23081A2A' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 16px;
+  cursor: pointer;
+}
+
+/* Champ telephone : indicatif pays fige a gauche, saisie a droite. */
+.erpx-phone { display: flex; align-items: stretch; gap: 0; }
+.erpx-phone__prefix {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  border: 1px solid var(--erpx-line);
+  border-right: 0;
+  border-radius: var(--erpx-radius-sm) 0 0 var(--erpx-radius-sm);
+  background: var(--erpx-surface-alt);
+  font-size: .92rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.erpx-phone__prefix img { width: 18px; height: 14px; object-fit: cover; border-radius: 2px; }
+.erpx-phone .erpx-input { border-radius: 0 var(--erpx-radius-sm) var(--erpx-radius-sm) 0; }
+
+/* Multi-select « Modules » : cases a cocher rendues en pastilles. */
+.erpx-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.erpx-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: var(--erpx-radius-pill);
+  border: 1px solid var(--erpx-line);
+  background: #fff;
+  font-size: .88rem;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color .16s ease, background-color .16s ease, color .16s ease;
+}
+.erpx-chip input { position: absolute; opacity: 0; width: 0; height: 0; }
+.erpx-chip:hover { border-color: var(--erpx-blue-300); }
+.erpx-chip:has(input:checked) { background: var(--erpx-grad-brand); border-color: transparent; color: #fff; }
+.erpx-chip:has(input:focus-visible) { box-shadow: var(--erpx-ring); }
+
+.erpx-consent { display: flex; align-items: flex-start; gap: 12px; font-size: .88rem; line-height: 1.5; color: var(--erpx-ink-soft); }
+.erpx-consent input { margin-top: 3px; width: 18px; height: 18px; flex: 0 0 auto; accent-color: var(--erpx-blue-500); }
+
+/* Piege a robots : jamais visible, jamais lu par un lecteur d'ecran. */
+.erpx-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+.erpx-form__status { font-size: .92rem; font-weight: 500; border-radius: var(--erpx-radius-sm); padding: 12px 16px; display: none; }
+.erpx-form__status.is-ok { display: block; background: rgba(25, 135, 84, .1); color: #146c43; }
+.erpx-form__status.is-ko { display: block; background: rgba(243, 42, 87, .1); color: #b02a4a; }
+
+/* ============================================================
+   14. TARIFICATION
+   ============================================================ */
+
+.erpx-plans {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 26px;
+  align-items: center;
+}
+
+.erpx-plan {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--erpx-radius-xl);
+  background: #fff;
+  box-shadow: var(--erpx-shadow-card);
+  overflow: hidden;
+  height: 100%;
+}
+
+/* La carte mise en avant est plus haute sur la maquette (1082 vs 881). */
+.erpx-plan--featured { box-shadow: 0 26px 70px rgba(38, 107, 204, .22); }
+
+.erpx-plan__head { padding: 30px 30px 28px; background: var(--erpx-grad-glass); color: var(--erpx-blue-900); position: relative; }
+.erpx-plan__name { font-size: 1.85rem; font-weight: 700; letter-spacing: -.03em; }
+.erpx-plan__tagline { font-size: .95rem; line-height: 1.45; color: rgba(0, 17, 46, .74); margin: 8px 0 22px; }
+.erpx-plan__price { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.erpx-plan__amount { font-size: 2.3rem; font-weight: 700; letter-spacing: -.04em; }
+.erpx-plan__period { font-size: 1rem; font-weight: 500; color: rgba(0, 17, 46, .7); }
+.erpx-plan__mark { position: absolute; top: 26px; right: 28px; width: 38px; height: 38px; }
+
+.erpx-plan__body { padding: 24px 30px 32px; display: flex; flex-direction: column; gap: 16px; flex: 1 1 auto; }
+.erpx-plan__meta { display: flex; align-items: center; gap: 10px; font-size: .95rem; color: var(--erpx-ink-soft); }
+.erpx-plan__meta svg, .erpx-plan__meta img { width: 22px; height: 22px; flex: 0 0 auto; }
+
+.erpx-plan__list { display: flex; flex-direction: column; gap: 12px; margin-top: 4px; }
+.erpx-plan__feature { display: flex; align-items: flex-start; gap: 10px; font-size: .94rem; line-height: 1.45; }
+.erpx-plan__feature svg, .erpx-plan__feature img { width: 22px; height: 22px; flex: 0 0 auto; color: var(--erpx-blue-500); margin-top: 1px; }
+.erpx-plan__feature--off { color: var(--erpx-ink-faint); }
+
+.erpx-plan__cta { margin-top: auto; padding-top: 22px; }
+
+/* Selecteur segmente de la carte Business. */
+.erpx-segmented { display: inline-flex; padding: 4px; border-radius: var(--erpx-radius-pill); background: var(--erpx-blue-100); gap: 2px; }
+.erpx-segmented__opt {
+  padding: 9px 14px;
+  border: 0;
+  border-radius: var(--erpx-radius-pill);
+  background: transparent;
+  font: inherit;
+  font-size: .76rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--erpx-blue-700);
+  cursor: pointer;
+  transition: background-color .18s ease, color .18s ease;
+}
+.erpx-segmented__opt.is-active { background: var(--erpx-grad-brand); color: #fff; }
+
+.erpx-quote {
+  border-radius: var(--erpx-radius-xl);
+  background: var(--erpx-grad-glass);
+  padding: clamp(32px, 4vw, 56px);
+  text-align: center;
+}
+
+/* ============================================================
+   15. BANDEAU SOMBRE / DEMO
+   ============================================================ */
+
+.erpx-panel {
+  position: relative;
+  border-radius: var(--erpx-radius-xl);
+  background: var(--erpx-grad-footer);
+  color: #fff;
+  padding: clamp(36px, 5vw, 72px);
+  overflow: hidden;
+}
+.erpx-panel .erpx-lead, .erpx-panel .erpx-body { color: rgba(255, 255, 255, .78); }
+
+.erpx-video { position: relative; border-radius: var(--erpx-radius-lg); overflow: hidden; }
+.erpx-video img { display: block; width: 100%; height: auto; }
+.erpx-video__play {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 84px;
+  height: 84px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .92);
+  color: var(--erpx-pink-500);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: transform .2s ease;
+}
+.erpx-video__play:hover { transform: scale(1.06); }
+.erpx-video__play svg, .erpx-video__play img { width: 42px; height: 42px; }
+
+/* ============================================================
+   16. CARROUSEL « AUTRES MODULES »
+   ============================================================ */
+
+.erpx-carousel { position: relative; }
+.erpx-carousel__track {
+  display: flex;
+  gap: clamp(16px, 3vw, 46px);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding-block: 8px;
+  scrollbar-width: none;
+}
+.erpx-carousel__track::-webkit-scrollbar { display: none; }
+.erpx-carousel__track > * { scroll-snap-align: start; flex: 0 0 auto; width: 160px; }
+
+.erpx-carousel__nav {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: var(--erpx-shadow-soft);
+  color: var(--erpx-blue-700);
+  cursor: pointer;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.erpx-carousel__nav:hover { transform: translateY(-2px); box-shadow: var(--erpx-shadow-card); }
+.erpx-carousel__nav[disabled] { opacity: .35; cursor: default; transform: none; }
+.erpx-carousel__nav svg { width: 22px; height: 22px; }
+.erpx-carousel__nav--next svg { transform: rotate(180deg); }
+
+/* ============================================================
+   17. FOOTER
+   ============================================================ */
+
+.erpx-footer { padding: 0 var(--erpx-gutter) 28px; margin-top: clamp(40px, 6vw, 88px); }
+
+.erpx-footer__inner {
+  max-width: var(--erpx-container-wide);
+  margin-inline: auto;
+  border-radius: var(--erpx-radius-xl);
+  background: var(--erpx-grad-footer);
+  color: #fff;
+  padding: clamp(34px, 4vw, 56px) clamp(24px, 4vw, 92px);
+}
+
+.erpx-footer__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+  gap: clamp(22px, 3vw, 48px);
+}
+
+.erpx-footer__title { font-size: 1.02rem; font-weight: 700; margin-bottom: 18px; }
+.erpx-footer__list { display: flex; flex-direction: column; gap: 10px; }
+.erpx-footer__link { font-size: .94rem; color: rgba(255, 255, 255, .8); transition: color .16s ease; }
+.erpx-footer__link:hover { color: #fff; }
+
+.erpx-footer__block { font-size: .92rem; line-height: 1.55; color: rgba(255, 255, 255, .8); margin-bottom: 20px; }
+.erpx-footer__block strong { display: block; color: #fff; font-weight: 700; margin-bottom: 4px; }
+
+.erpx-footer__mail { display: inline-flex; align-items: center; gap: 8px; font-size: .94rem; color: rgba(255, 255, 255, .88); }
+.erpx-footer__mail svg { width: 18px; height: 18px; flex: 0 0 auto; }
+
+.erpx-footer__brand { display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; gap: 28px; }
+.erpx-footer__brand img { width: 184px; height: auto; }
+.erpx-footer__credit { font-size: .84rem; color: rgba(255, 255, 255, .7); white-space: nowrap; }
+
+/* ============================================================
+   18. REVEAL
+   ============================================================ */
+
+/* L'etat masque n'est pose QUE si les scripts tournent : sans cette garde, un
+ * JS bloque (CDN coupe, erreur amont, extension) laisserait des sections
+ * entierement vides. `scripting: enabled` est ignore par les navigateurs qui
+ * ne le connaissent pas, qui affichent alors le contenu — c'est le bon defaut. */
+@media (scripting: enabled) {
+  .erpx-reveal { opacity: 0; transform: translateY(18px); transition: opacity .55s ease, transform .55s ease; }
+}
+.erpx-reveal.is-visible { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .erpx *, .erpx *::before, .erpx *::after {
+    animation-duration: .001ms !important;
+    transition-duration: .001ms !important;
+  }
+  .erpx-reveal { opacity: 1; transform: none; }
+}
+
+/* ============================================================
+   19. RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1199.98px) {
+  .erpx-modules { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .erpx-footer__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .erpx-footer__brand { grid-column: 1 / -1; flex-direction: row; align-items: center; justify-content: space-between; }
+}
+
+@media (max-width: 991.98px) {
+  .erpx-nav__links,
+  .erpx-nav__aside { display: none; }
+  .erpx-nav__burger { display: grid; }
+
+  /* Menu deroulant mobile : la pilule s'ouvre en colonne. */
+  .erpx-nav.is-open .erpx-nav__bar { flex-wrap: wrap; border-radius: var(--erpx-radius-lg); }
+  .erpx-nav.is-open .erpx-nav__links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    width: 100%;
+    margin: 14px 0 6px;
+    padding-top: 14px;
+    border-top: 1px solid var(--erpx-line);
+  }
+  .erpx-nav.is-open .erpx-nav__link { width: 100%; padding: 10px 2px; }
+
+  .erpx-hero__grid { grid-template-columns: minmax(0, 1fr); }
+  .erpx-hero__media { order: -1; }
+  .erpx-plans { grid-template-columns: minmax(0, 1fr); max-width: 460px; margin-inline: auto; }
+  .erpx-features { grid-template-columns: minmax(0, 1fr); }
+  .erpx-form__row { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 767.98px) {
+  .erpx { --erpx-gutter: 16px; }
+  .erpx-modules { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .erpx-tile__icon { width: 88px; height: 88px; border-radius: 24px; }
+  .erpx-tile__icon img, .erpx-tile__icon svg { width: 38px; height: 38px; }
+  .erpx-footer__grid { grid-template-columns: minmax(0, 1fr); }
+  .erpx-footer__brand { flex-direction: column; align-items: flex-start; }
+  .erpx-segment { min-height: 440px; padding: 26px 22px; }
+  .erpx-btn { width: 100%; }
+  .erpx-nav__cta .erpx-btn { width: auto; }
+}

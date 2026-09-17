@@ -1,0 +1,24 @@
+{#
+  Bandeau d'appel a l'action de fin de page.
+  Parametres : cta_title, cta_text (facultatif), cta_label, cta_href, cta_media.
+#}
+{%- from "amoamancustom/templates/includes/erpnext/ui/button.html" import erpx_button -%}
+
+<section class="erpx-section">
+  <span class="erpx-glow erpx-glow--blue" style="width:480px;height:480px;top:10%;left:-160px"></span>
+
+  <div class="erpx-container">
+    <div style="display:grid;grid-template-columns:{{ 'minmax(0,1fr) minmax(0,.8fr)' if cta_media else 'minmax(0,1fr)' }};gap:40px;align-items:center">
+      <div class="erpx-title-block{{ '' if cta_media else ' erpx-title-block--center' }}">
+        <h2 class="erpx-h2">{{ cta_title }}</h2>
+        {%- if cta_text %}<p class="erpx-lead" style="margin-top:18px">{{ cta_text }}</p>{% endif %}
+        <div style="margin-top:30px">
+          {{ erpx_button(cta_label or _("Contactez-nous"), cta_href or "/erpnext/contact", size="lg") }}
+        </div>
+      </div>
+      {%- if cta_media %}
+      <img src="{{ cta_media }}" alt="" loading="lazy" style="width:100%;height:auto">
+      {%- endif %}
+    </div>
+  </div>
+</section>
