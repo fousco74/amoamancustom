@@ -22,6 +22,7 @@ def get_context(context):
 			"et formation."
 		),
 		active="tarification",
+		page="tarification",
 	)
 
 	# `get_all` ne ramène pas les tables enfants : on charge chaque document

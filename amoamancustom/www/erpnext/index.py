@@ -21,6 +21,7 @@ def get_context(context):
 			"Une plateforme unique pour piloter toute votre activité."
 		),
 		active="",
+		page="accueil",
 	)
 
 	context.modules = modules()

@@ -20,6 +20,7 @@ def get_context(context):
 			"le module Stocks d'ERPNext implémenté par Amoaman & Associés."
 		),
 		active="modules",
+		page="module",
 	)
 
 	# Le carrousel de bas de page propose les onze autres modules.

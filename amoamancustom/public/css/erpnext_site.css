@@ -113,6 +113,63 @@
 .erpx .page-header-wrapper,
 .erpx .page-footer { display: none; }
 
+
+/* ============================================================
+   2 bis. FONDS DE PAGE
+   ============================================================ */
+
+/* Valeurs relevees dans Figma (« Copy as CSS ») sur le cadre de chaque page.
+ *
+ * Le degrade n'est PAS pose sur le <body> : quand le fond du body est propage
+ * au canvas, les pourcentages de `background-size` se resolvent sur la hauteur
+ * du VIEWPORT et non sur celle du document. Sur la page Tarification (3034px de
+ * haut pour un ecran de 900px), la bande bleue attendue a 60% tombait a 18% et
+ * tout le bas repassait en blanc.
+ *
+ * On passe donc par une couche ::before en position absolue, calee sur le bloc
+ * du body — dont la hauteur, elle, est bien celle du document. Les arrets en
+ * pourcentage suivent alors la page entiere, quel que soit l'ecart avec la
+ * hauteur de la maquette (9781px, 2111px, 2776px, 4656px).
+ */
+
+/* `height: auto` est indispensable : le bundle de Frappe pose html, body
+ * { height: 100% }, donc le <body> mesurait 900px (la hauteur d'ecran) pour un
+ * document de 3000px, et la couche de fond se trouvait coupee aux deux tiers. */
+.erpx[class*="erpx-page-"] {
+  position: relative;
+  height: auto;
+  min-height: 100vh;
+  background-color: #FFFFFF;
+}
+
+.erpx[class*="erpx-page-"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Le contenu repasse au-dessus de la couche de fond. */
+.erpx-nav,
+.erpx-shell,
+.erpx-footer,
+.erpx .page-content-wrapper { position: relative; z-index: 1; }
+
+.erpx-page-accueil::before { background: #FFFFFF; }
+
+.erpx-page-contact::before {
+  background: linear-gradient(179.39deg, #FFFFFF 17.81%, #DFECFF 35.58%, #7CA7E4 53.38%, #FFFFFF 81.4%);
+}
+
+.erpx-page-tarification::before {
+  background: linear-gradient(182.98deg, #FFFFFF 18.62%, #DFECFF 39.6%, #A4C3ED 60.61%, #FFFFFF 93.7%);
+}
+
+.erpx-page-module::before {
+  background: linear-gradient(182.98deg, #FFFFFF 18.62%, #DFECFF 55.94%, #FFFFFF 93.7%), #EFEFEF;
+}
+
 /* ============================================================
    3. TRAME
    ============================================================ */
@@ -130,11 +187,15 @@
 
 .erpx-section { position: relative; padding-block: var(--erpx-section-y); }
 .erpx-section--tight { padding-block: clamp(36px, 4.5vw, 64px); }
+/* Non utilise : masquait le degrade de page. Conserve pour un usage futur. */
 .erpx-section--alt { background: var(--erpx-surface-alt); }
 
-/* Halos decoratifs : la maquette en pose une dizaine (« Ellipse 40/51/53/54 »).
- * Reproduits en radial-gradient plutot qu'en SVG — 0 requete, et ils suivent
- * la largeur du viewport au lieu d'etre figes a 1540px. */
+/* Halos decoratifs. La maquette pose bien des calques flous
+ * (« Ellipse 40/51/53/54 »), mais a des positions et des rayons precis que je
+ * n'ai pas encore releves. Les repartir au jugement revenait a repeindre
+ * par-dessus le degrade de page, qui lui est exact : AUCUNE page ne les
+ * utilise pour l'instant. Les regles restent la pour le jour ou les cotes
+ * seront connues. */
 .erpx-glow {
   position: absolute;
   border-radius: 50%;

@@ -67,12 +67,14 @@ def assets_version():
 	return str(dernier)
 
 
-def base_context(context, title, description="", active=""):
+def base_context(context, title, description="", active="", page="accueil"):
 	"""Applique le contexte commun du mini-site et retourne `context`.
 
 	Appelée par le `get_context` de chaque page de www/erpnext/.
 	"""
-	context.body_class = "erpx"
+	# La seconde classe porte le fond de page : chaque cadre Figma a le sien
+	# (uni sur l'accueil, degrade plein cadre sur les trois autres).
+	context.body_class = f"erpx erpx-page-{page}"
 	context.full_width = 1
 	context.no_cache = 1
 	context.no_breadcrumbs = 1

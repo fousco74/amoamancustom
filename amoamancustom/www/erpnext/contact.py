@@ -22,6 +22,7 @@ def get_context(context):
 			"l'analyse au déploiement, à Abidjan et à Dakar."
 		),
 		active="contact",
+		page="contact",
 	)
 
 	context.tailles = TAILLES
