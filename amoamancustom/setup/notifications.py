@@ -302,6 +302,7 @@ def installer():
 		creer_si_absent(notification)
 
 	corriger_francaises()
+	completer_contact_champs_erpnext()
 	supprimer_alerte_fin_contrat()
 
 	frappe.client_cache.delete_keys("notifications::")
@@ -444,6 +445,30 @@ def convertir_cloches_en_email():
 		if frappe.db.get_value("Notification", nom, "channel") != "Email":
 			frappe.db.set_value("Notification", nom, "channel", "Email")
 			frappe.db.set_value("Notification", nom, "send_system_notification", 1)
+
+
+def completer_contact_champs_erpnext():
+	"""Ajoute Taille et Secteur au récapitulatif du mail « Contact Notification ».
+
+	Ces deux champs sont nés avec le formulaire /erpnext/contact
+	(amoamancustom/contact_api.py). Sur un site déjà migré, le message contient
+	déjà le gabarit, donc `convertir_cloches_en_email()` ne le réécrit plus :
+	sans cette passe, les deux informations seraient saisies par le visiteur
+	puis absentes du mail reçu par l'équipe.
+
+	Idempotent : on ne réécrit que si `doc.secteur_activite` est absent du
+	message, donc une seule fois — et jamais après une retouche qui l'aurait
+	déjà introduit autrement.
+	"""
+	nom = "Contact Notification"
+
+	if not frappe.db.exists("Notification", nom):
+		return
+
+	en_base = frappe.db.get_value("Notification", nom, "message") or ""
+
+	if GABARIT in en_base and "doc.secteur_activite" not in en_base:
+		frappe.db.set_value("Notification", nom, "message", _message_contact())
 
 
 def corriger_inscription():
@@ -594,9 +619,11 @@ def _message_contact():
 {{ ui.details([
   ("Nom", (doc.first_name or "") ~ " " ~ (doc.last_name or "")),
   ("Société", doc.entreprise),
+  ("Taille", doc.taille_entreprise),
+  ("Secteur", doc.secteur_activite),
   ("Courriel", doc.email),
   ("Téléphone", doc.number),
-  ("Service", doc.services),
+  ("Modules", doc.services),
 ]) }}
 {% endblock %}
 

@@ -1,0 +1,97 @@
+{% extends "amoamancustom/templates/layout_erpnext.html" %}
+
+{% block title %}{{ _("Gestion des stocks avec ERPNext") }}{% endblock %}
+
+{% block page_content %}
+<div class="erpx-shell">
+
+  {#- ------------------------------------------------------------------
+      1. Héros
+
+      NOTE : la maquette utilise un visuel dédié (calque « image 199 »,
+      1136x600) qui n'a pas encore pu être exporté — le quota d'appels Figma
+      du plan Starter a été atteint pendant l'intégration. En attendant, on
+      réutilise la capture de tableau de bord de l'accueil. Remplacer
+      `hero_media` ci-dessous une fois l'export disponible.
+      ------------------------------------------------------------------ -#}
+  {%- set hero_badge = _("Stocks") %}
+  {%- set hero_badge_icon = "module-stocks" %}
+  {%- set hero_title_html %}
+    <span class="erpx-grad-text">{{ _("Une gestion des stocks optimale") }}</span><br>
+    {{ _("pour une maîtrise totale de vos opérations") }}
+  {%- endset %}
+  {%- set hero_lead = _("Gardez une visibilité en temps réel sur l'ensemble de vos stocks, réduisez vos coûts de stockage et optimisez votre chaîne d'approvisionnement grâce à une solution complète et intégrée.") %}
+  {%- set hero_cta_label = _("Demander une démo") %}
+  {%- set hero_cta_href = "/erpnext/contact" %}
+  {%- set hero_media = "/assets/amoamancustom/images/erpnext/hero-dashboard.webp" %}
+  {%- set hero_media_alt = _("Suivi des stocks dans ERPNext") %}
+  {% include "amoamancustom/templates/includes/erpnext/hero.html" %}
+
+  {#- ------------------------------------------------------------------
+      2. Deux blocs texte / visuel alternés
+
+      Les deux illustrations de la maquette restent à exporter (même raison
+      que le héros) : les blocs réservent leur emplacement en attendant.
+      ------------------------------------------------------------------ -#}
+  {%- set blocs = [
+    {
+      "title": _("Visibilité en temps réel et contrôle multi-entrepôts"),
+      "text": _("Surveillez vos niveaux de stock à tout moment et suivez l'intégralité des mouvements de produits au sein de vos différents entrepôts. Assurez-vous de maintenir des niveaux de stock idéaux pour éviter les ruptures comme le surstockage."),
+      "image": ""
+    },
+    {
+      "title": _("Gestion simplifiée des articles et valorisation exacte"),
+      "text": _("Définissez vos produits, gérez facilement leurs variantes, leurs catégories et ajustez vos prix de manière dynamique. Bénéficiez d'une traçabilité exacte des entrées, sorties et transferts pour une comptabilité matière toujours précise."),
+      "image": ""
+    }
+  ] %}
+  {% include "amoamancustom/templates/includes/erpnext/module_intro.html" %}
+
+  {#- ------------------------------------------------------------------
+      3. Les fonctionnalités adaptées à vos besoins
+      ------------------------------------------------------------------ -#}
+  {%- set fonctionnalites = [
+    {
+      "title": _("Suivi des stocks en temps réel"),
+      "text": _("Surveillez vos niveaux de stock, suivez les mouvements et gérez efficacement l'ensemble de vos entrepôts.")
+    },
+    {
+      "title": _("Gestion fine des articles"),
+      "text": _("Définissez et catégorisez vos produits, gérez les variantes d'articles ainsi que leurs grilles tarifaires.")
+    },
+    {
+      "title": _("Opérations sur stocks fluides"),
+      "text": _("Enregistrez et traitez toutes vos transactions, y compris les réceptions, livraisons et transferts inter-entrepôts.")
+    },
+    {
+      "title": _("Rapprochement d'inventaire"),
+      "text": _("Effectuez des audits et comptages périodiques pour aligner vos enregistrements numériques avec votre stock physique.")
+    },
+    {
+      "title": _("Rapports et analyses avancés"),
+      "text": _("Générez des rapports précis sur vos niveaux de stock, la valorisation de vos actifs et les tendances de consommation.")
+    },
+    {
+      "title": _("Optimisation des coûts"),
+      "text": _("Réduisez vos frais de stockage et améliorez l'efficacité opérationnelle globale de votre chaîne logistique.")
+    }
+  ] %}
+  {% include "amoamancustom/templates/includes/erpnext/module_features.html" %}
+
+  {#- ------------------------------------------------------------------
+      4. Appel à l'action
+      ------------------------------------------------------------------ -#}
+  {%- set cta_title = _("Prêt à optimiser la gestion de vos stocks ?") %}
+  {%- set cta_text = _("Que vous gériez un entrepôt unique ou un réseau logistique complexe, ERPNext s'adapte à la taille de votre entreprise.") %}
+  {%- set cta_label = _("Demander une démo") %}
+  {%- set cta_href = "/erpnext/contact" %}
+  {%- set cta_media = "" %}
+  {% include "amoamancustom/templates/includes/erpnext/cta.html" %}
+
+  {#- ------------------------------------------------------------------
+      5. Découvrir d'autres modules
+      ------------------------------------------------------------------ -#}
+  {% include "amoamancustom/templates/includes/erpnext/module_carousel.html" %}
+
+</div>
+{% endblock %}

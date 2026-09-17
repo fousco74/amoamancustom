@@ -1,0 +1,20 @@
+{#
+  Panneau « Les fonctionnalités adaptées à vos besoins » : six lignes en deux
+  colonnes. Parametre : fonctionnalites = liste de {title, text}.
+#}
+{%- from "amoamancustom/templates/includes/erpnext/ui/feature_row.html" import erpx_feature_row -%}
+
+<section class="erpx-section">
+  <div class="erpx-container">
+    <div style="background:var(--erpx-surface-alt);border-radius:var(--erpx-radius-xl);padding:clamp(28px,4vw,56px)">
+      <div class="erpx-title-block erpx-title-block--center" style="margin-bottom:40px">
+        <h2 class="erpx-h2">{{ _("Les fonctionnalités adaptées à vos besoins") }}</h2>
+      </div>
+      <div class="erpx-features">
+        {%- for item in fonctionnalites %}
+        {{ erpx_feature_row(item.title, item.text) }}
+        {%- endfor %}
+      </div>
+    </div>
+  </div>
+</section>

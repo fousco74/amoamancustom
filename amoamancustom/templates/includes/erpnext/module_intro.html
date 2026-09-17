@@ -1,0 +1,24 @@
+{#
+  Bloc texte/visuel alterne des pages module.
+  Parametres : blocs = liste de {title, text, image}. L'ordre alterne
+  automatiquement (texte a gauche, puis a droite).
+#}
+<section class="erpx-section">
+  <span class="erpx-glow erpx-glow--blue" style="width:440px;height:440px;top:8%;right:-170px"></span>
+
+  <div class="erpx-container">
+    {%- for bloc in blocs %}
+    <div class="erpx-split{{ ' erpx-split--reverse' if loop.index0 % 2 else '' }} erpx-reveal">
+      <div>
+        <h2 class="erpx-h2">{{ bloc.title }}</h2>
+        <p class="erpx-lead" style="margin-top:20px">{{ bloc.text }}</p>
+      </div>
+      {%- if bloc.image %}
+      <img src="{{ bloc.image }}" alt="" loading="lazy" style="width:100%;height:auto;border-radius:var(--erpx-radius-lg)">
+      {%- else %}
+      <div class="erpx-split__placeholder" aria-hidden="true"></div>
+      {%- endif %}
+    </div>
+    {%- endfor %}
+  </div>
+</section>

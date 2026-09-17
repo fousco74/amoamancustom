@@ -1,0 +1,152 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:plan_name",
+ "creation": "2026-09-17 16:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "plan_name",
+  "tagline",
+  "audience",
+  "users_label",
+  "column_break_offre",
+  "price_label",
+  "price_suffix",
+  "is_featured",
+  "published",
+  "section_break_cta",
+  "cta_label",
+  "cta_href",
+  "section_break_features",
+  "features"
+ ],
+ "fields": [
+  {
+   "fieldname": "plan_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Nom de l'offre",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "description": "Ligne sous le titre, ex. « ERPNext Basique + FNE intégrée ».",
+   "fieldname": "tagline",
+   "fieldtype": "Small Text",
+   "label": "Accroche"
+  },
+  {
+   "description": "Ex. « Parfait pour les TPE ».",
+   "fieldname": "audience",
+   "fieldtype": "Data",
+   "label": "Public visé"
+  },
+  {
+   "default": "Nombre illimité d'utilisateurs",
+   "fieldname": "users_label",
+   "fieldtype": "Data",
+   "label": "Mention utilisateurs"
+  },
+  {
+   "fieldname": "column_break_offre",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Texte affiché tel quel : « 100.000 » ou « Sur Devis ».",
+   "fieldname": "price_label",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Montant affiché"
+  },
+  {
+   "description": "Ex. « FCFA / Mois » ou « uniquement ».",
+   "fieldname": "price_suffix",
+   "fieldtype": "Data",
+   "label": "Mention sous le montant"
+  },
+  {
+   "default": "0",
+   "description": "L'offre mise en avant est plus haute et porte une ombre colorée.",
+   "fieldname": "is_featured",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Mettre en avant"
+  },
+  {
+   "default": "1",
+   "description": "Décoché : l'offre disparaît de /erpnext/tarification.",
+   "fieldname": "published",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Publiée"
+  },
+  {
+   "fieldname": "section_break_cta",
+   "fieldtype": "Section Break",
+   "label": "Appel à l'action"
+  },
+  {
+   "default": "Commencer",
+   "fieldname": "cta_label",
+   "fieldtype": "Data",
+   "label": "Libellé du bouton"
+  },
+  {
+   "default": "/erpnext/contact",
+   "fieldname": "cta_href",
+   "fieldtype": "Data",
+   "label": "Lien du bouton"
+  },
+  {
+   "fieldname": "section_break_features",
+   "fieldtype": "Section Break",
+   "label": "Fonctionnalités"
+  },
+  {
+   "fieldname": "features",
+   "fieldtype": "Table",
+   "label": "Fonctionnalités",
+   "options": "ERPNext Pricing Feature"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-09-17 16:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "site web",
+ "name": "ERPNext Pricing Plan",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Website Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "idx",
+ "sort_order": "ASC",
+ "states": [],
+ "track_changes": 1
+}

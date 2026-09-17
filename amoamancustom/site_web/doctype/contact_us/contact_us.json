@@ -8,6 +8,8 @@
   "first_name",
   "last_name",
   "entreprise",
+  "taille_entreprise",
+  "secteur_activite",
   "email",
   "number",
   "services",
@@ -60,12 +62,22 @@
    "fieldname": "accept",
    "fieldtype": "Check",
    "label": "Accept"
+  },
+  {
+   "fieldname": "taille_entreprise",
+   "fieldtype": "Data",
+   "label": "Taille de l'entreprise"
+  },
+  {
+   "fieldname": "secteur_activite",
+   "fieldtype": "Data",
+   "label": "Secteur d'activité"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-11-09 02:34:32.374669",
+ "modified": "2026-09-17 17:00:00.000000",
  "modified_by": "Administrator",
  "module": "site web",
  "name": "Contact Us",

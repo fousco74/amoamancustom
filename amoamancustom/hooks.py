@@ -126,6 +126,9 @@ after_migrate = [
     # s'executent avant, donc avant que le Custom Field
     # custom_print_on_salary_slip n'existe.
     "amoamancustom.setup.payroll.installer",
+    # Amorce les 3 offres de /erpnext/tarification si elles sont absentes.
+    # Idempotent : une offre retouchee dans le Desk n'est jamais reecrite.
+    "amoamancustom.setup.erpnext_pricing.installer",
 ]
 
 # Uninstallation

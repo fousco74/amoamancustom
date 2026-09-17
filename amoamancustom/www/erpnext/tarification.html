@@ -1,0 +1,63 @@
+{% extends "amoamancustom/templates/layout_erpnext.html" %}
+
+{% block title %}{{ _("Tarification ERPNext") }}{% endblock %}
+
+{% block page_content %}
+<div class="erpx-shell">
+
+  {#- ------------------------------------------------------------------
+      1. Titre
+      ------------------------------------------------------------------ -#}
+  <section class="erpx-section erpx-section--tight" style="padding-top:clamp(32px,4vw,64px)">
+    <div class="erpx-container">
+      <div class="erpx-title-block erpx-title-block--center">
+        <h1 class="erpx-h1">
+          {{ _("Choisissez le plan parfait") }}<br>
+          <span class="erpx-grad-text">{{ _("pour votre entreprise") }}</span>
+        </h1>
+        <p class="erpx-lead" style="margin-top:22px">
+          {{ _("Trouvez la solution ERPNext parfaitement alignée avec vos besoins et votre budget, conçue pour s'adapter au rythme de croissance de votre entreprise.") }}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {#- ------------------------------------------------------------------
+      2. Les offres (documents ERPNext Pricing Plan)
+      ------------------------------------------------------------------ -#}
+  {%- if plans %}
+  {% include "amoamancustom/templates/includes/erpnext/plans.html" %}
+  {%- else %}
+  {#- Aucune offre publiée : on le dit plutôt que d'afficher une page vide. -#}
+  <section class="erpx-section">
+    <div class="erpx-container">
+      <div class="erpx-quote">
+        <h2 class="erpx-h3">{{ _("Nos offres sont en cours de mise à jour") }}</h2>
+        <p class="erpx-body" style="margin:16px 0 26px">
+          {{ _("Contactez-nous pour obtenir une proposition adaptée à votre activité.") }}
+        </p>
+        {%- from "amoamancustom/templates/includes/erpnext/ui/button.html" import erpx_button -%}
+        {{ erpx_button(_("Contactez-nous"), "/erpnext/contact", size="lg") }}
+      </div>
+    </div>
+  </section>
+  {%- endif %}
+
+  {#- ------------------------------------------------------------------
+      3. Bandeau sur-mesure
+      ------------------------------------------------------------------ -#}
+  <section class="erpx-section">
+    <div class="erpx-container">
+      <div class="erpx-quote erpx-reveal">
+        <h2 class="erpx-h2">{{ _("Un besoin spécifique ou une configuration sur-mesure ?") }}</h2>
+        <p class="erpx-lead" style="margin:20px auto 30px;max-width:760px">
+          {{ _("Besoin de modules supplémentaires en dehors de nos forfaits ? Choisissez uniquement les fonctionnalités dont vous avez besoin et ajustons votre tarif.") }}
+        </p>
+        {%- from "amoamancustom/templates/includes/erpnext/ui/button.html" import erpx_button -%}
+        {{ erpx_button(_("Contactez-nous"), "/erpnext/contact", size="lg") }}
+      </div>
+    </div>
+  </section>
+
+</div>
+{% endblock %}

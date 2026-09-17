@@ -32,7 +32,7 @@ _PUBLIC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "public")
 
 
 def assets_version():
-	"""Empreinte de la CSS et du JS du mini-site, a coller en query string.
+	"""Empreinte des fichiers statiques du mini-site, a coller en query string.
 
 	Frappe sert /assets/** avec `Cache-Control: max-age=43200` : sans empreinte, un
 	visiteur garde l'ancienne feuille de style pendant douze heures apres une mise
@@ -54,6 +54,15 @@ def assets_version():
 			dernier = max(dernier, int(os.path.getmtime(chemin)))
 		except OSError:
 			continue
+
+	# Les images comptent aussi : un logo reexporte sous le meme nom resterait
+	# douze heures dans le cache des visiteurs sans cette prise en compte.
+	# On lit la date du DOSSIER, pas de chaque fichier : elle change des qu'un
+	# fichier y est ajoute, remplace ou supprime, pour le prix d'un seul stat().
+	try:
+		dernier = max(dernier, int(os.path.getmtime(os.path.join(_PUBLIC, "images", "erpnext"))))
+	except OSError:
+		pass
 
 	return str(dernier)
 

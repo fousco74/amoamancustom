@@ -1,0 +1,184 @@
+{% extends "amoamancustom/templates/layout_erpnext.html" %}
+
+{% block title %}{{ _("Contactez-nous") }}{% endblock %}
+
+{% block page_content %}
+{%- from "amoamancustom/templates/includes/erpnext/ui/button.html" import erpx_button -%}
+{%- from "amoamancustom/templates/includes/erpnext/ui/field.html"
+     import erpx_input, erpx_phone, erpx_select, erpx_chips, erpx_textarea -%}
+
+<div class="erpx-shell">
+
+  <section class="erpx-section erpx-section--tight" style="padding-top:clamp(28px,3.5vw,56px)">
+    <span class="erpx-glow erpx-glow--violet" style="width:520px;height:520px;top:-140px;right:-120px"></span>
+    <span class="erpx-glow erpx-glow--pink" style="width:420px;height:420px;bottom:-60px;left:-160px"></span>
+
+    <div class="erpx-container">
+
+      <div class="erpx-title-block erpx-title-block--center">
+        <h1 class="erpx-h1">{{ _("Contactez-nous") }}</h1>
+        <p class="erpx-lead" style="margin-top:18px">
+          {{ _("Que vous débutiez ou que vous soyez en pleine expansion, nous avons une solution adaptée à vos besoins.") }}
+        </p>
+      </div>
+
+      <div class="erpx-contact">
+
+        {#- Colonne gauche : accroche + visuel.
+            Le visuel de la maquette (calque « image 186 », 731x954) reste à
+            exporter — quota d'appels Figma atteint pendant l'intégration. -#}
+        <div class="erpx-contact__aside">
+          <h2 class="erpx-h2">{{ _("Discutons ensemble des besoins de votre entreprise") }}</h2>
+          <p class="erpx-lead" style="margin-top:20px">{{ _("Nous sommes ici pour vous aider.") }}</p>
+
+          <div class="erpx-contact__infos">
+            <p class="erpx-body" style="margin:0">
+              <strong>{{ _("Siège – Abidjan") }}</strong><br>
+              Cocody Riviera 3 Sideci – Villa 676<br>
+              <a href="tel:+2252724311561">(+225) 27 24 31 15 61</a>
+            </p>
+            <p class="erpx-body" style="margin:0">
+              <strong>{{ _("Agence – Dakar") }}</strong><br>
+              12 Bld El Hadj Djily Mbaye – Immeuble Azur<br>
+              <a href="tel:+221788396509">(+221) 78 839 65 09</a>
+            </p>
+            <p class="erpx-body" style="margin:0">
+              <a href="mailto:erpnext@amoaman.com">erpnext@amoaman.com</a>
+            </p>
+          </div>
+        </div>
+
+        {#- Colonne droite : le formulaire. -#}
+        <div class="erpx-contact__form">
+          <form class="erpx-form" id="erpx-contact-form" novalidate
+                data-msg-modules="{{ _('Merci de sélectionner au moins un module.') }}"
+                data-msg-consent="{{ _('Merci d’accepter l’utilisation de vos données pour être recontacté(e).') }}"
+                data-msg-error="{{ _('L’envoi a échoué. Merci de réessayer ou de nous écrire à erpnext@amoaman.com.') }}">
+
+            {{ erpx_input("first_name", _("Nom & Prénoms"), placeholder=_("Nom & Prénoms"), required=True, autocomplete="name") }}
+
+            <div class="erpx-form__row">
+              {{ erpx_input("email", _("E-mail"), type="email", placeholder="nom@entreprise.com", required=True, autocomplete="email") }}
+              {{ erpx_phone("number", _("Numéro de téléphone"), required=True) }}
+            </div>
+
+            {{ erpx_input("entreprise", _("Nom de l'Entreprise"), placeholder=_("Nom de l'Entreprise"), required=True, autocomplete="organization") }}
+
+            {{ erpx_select("taille_entreprise", _("Taille de l'Entreprise (nbre employés)"), tailles,
+                           placeholder=_("Sélectionnez la taille de l'entreprise"), required=True) }}
+
+            {{ erpx_select("secteur_activite", _("Secteur d'activité"), secteurs,
+                           placeholder=_("Sélectionnez votre secteur d'activité"), required=True) }}
+
+            {{ erpx_chips("services", _("Modules"), modules_liste, required=True) }}
+
+            {{ erpx_textarea("message", _("Message"), placeholder=_("Écrire ici..."), required=True) }}
+
+            {#- Piège à robots : hors écran, exclu du clavier et des lecteurs
+                d'écran. Rempli => la soumission est ignorée côté serveur. -#}
+            <div class="erpx-hp" aria-hidden="true">
+              <label for="site_web">{{ _("Ne pas remplir") }}</label>
+              <input type="text" id="site_web" name="site_web" tabindex="-1" autocomplete="off">
+            </div>
+
+            <label class="erpx-consent">
+              <input type="checkbox" id="accept" name="accept" value="1">
+              <span>{{ _("J'accepte que mes données soient utilisées pour me recontacter dans le cadre de ma demande.") }}</span>
+            </label>
+
+            <p class="erpx-form__status" id="erpx-contact-status" role="status" aria-live="polite"></p>
+
+            <button type="submit" class="erpx-btn erpx-btn--gradient erpx-btn--lg erpx-btn--block" id="erpx-contact-submit">
+              <span>{{ _("Envoyer ma demande") }}</span>
+            </button>
+
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</div>
+{% endblock %}
+
+{#- {{ super() }} est OBLIGATOIRE : sans lui, la page perdrait erpnext_site.js
+    et tous les scripts de base de Frappe. C'est exactement l'oubli qui prive
+    /contact de Bootstrap JS et de la bannière cookies (layout.html:3389). -#}
+{% block script %}
+{{ super() }}
+<script>
+frappe.ready(function () {
+  var form = document.getElementById("erpx-contact-form");
+  var statut = document.getElementById("erpx-contact-status");
+  var bouton = document.getElementById("erpx-contact-submit");
+  if (!form || !statut || !bouton) return;
+
+  function afficher(message, ok) {
+    statut.textContent = message;
+    statut.classList.toggle("is-ok", !!ok);
+    statut.classList.toggle("is-ko", !ok);
+  }
+
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    // Validation native d'abord : elle signale le premier champ fautif.
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    var modules = [].slice.call(form.querySelectorAll('input[name="services"]:checked'))
+      .map(function (c) { return c.value; });
+
+    if (!modules.length) {
+      afficher(form.dataset.msgModules, false);
+      return;
+    }
+
+    if (!form.querySelector("#accept").checked) {
+      afficher(form.dataset.msgConsent, false);
+      return;
+    }
+
+    var tel = form.querySelector("#number");
+    var prefixe = tel.getAttribute("data-prefix") || "";
+
+    bouton.disabled = true;
+
+    frappe.call({
+      method: "amoamancustom.contact_api.submit_contact",
+      type: "POST",
+      args: {
+        data: {
+          first_name: form.querySelector("#first_name").value,
+          email: form.querySelector("#email").value,
+          // L'indicatif est affiché mais non saisissable : on le recolle ici
+          // pour que `number` parte toujours au format international.
+          number: prefixe + " " + tel.value,
+          entreprise: form.querySelector("#entreprise").value,
+          taille_entreprise: form.querySelector("#taille_entreprise").value,
+          secteur_activite: form.querySelector("#secteur_activite").value,
+          services: modules,
+          message: form.querySelector("#message").value,
+          accept: form.querySelector("#accept").checked ? 1 : 0,
+          site_web: form.querySelector("#site_web").value
+        }
+      },
+      callback: function (r) {
+        bouton.disabled = false;
+        if (r && r.message) {
+          afficher(r.message.message, true);
+          form.reset();
+        }
+      },
+      error: function () {
+        bouton.disabled = false;
+        afficher(form.dataset.msgError, false);
+      }
+    });
+  });
+});
+</script>
+{% endblock %}
