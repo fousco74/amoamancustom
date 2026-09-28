@@ -7,11 +7,12 @@
  "engine": "InnoDB",
  "field_order": [
   "label",
-  "included"
+  "included",
+  "secteur"
  ],
  "fields": [
   {
-   "columns": 8,
+   "columns": 6,
    "fieldname": "label",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -26,13 +27,22 @@
    "fieldtype": "Check",
    "in_list_view": 1,
    "label": "Incluse"
+  },
+  {
+   "columns": 2,
+   "default": "0",
+   "description": "Coché : la ligne s'affiche après le sélecteur de secteur de la carte mise en avant, dans le corps large de la maquette.",
+   "fieldname": "secteur",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Propre au secteur"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-09-17 16:00:00.000000",
+ "modified": "2026-09-28 18:00:00.000000",
  "modified_by": "Administrator",
  "module": "site web",
  "name": "ERPNext Pricing Feature",

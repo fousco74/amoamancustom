@@ -1,69 +1,78 @@
 {#
-  Grille des offres tarifaires.
+  Grille des offres tarifaires (calque 3586:1447, cartes a y=534 / 608).
   Parametre : plans = liste de documents `ERPNext Pricing Plan` publies,
   ordonnes par idx, avec leur table enfant `features`.
 
   Le contenu vient de la base (et non du template) parce que c'est le bloc le
   plus volatil du site : prix, perimetres et intitules bougent sans refonte.
   Voir amoamancustom/setup/erpnext_pricing.py pour l'amorcage.
+
+  Anatomie de la maquette, reprise telle quelle :
+    - un encart d'en-tete (nom + logo FNE, accroche, prix, bouton) dans une
+      carte blanche a rayon 35 ;
+    - deux lignes de public (pictogrammes fluent:person-circle-2 et
+      f7:person-3), puis la liste des fonctionnalites (material-symbols:
+      check-box).
+  La carte mise en avant (`is_featured`) porte en plus le selecteur de secteur
+  (Group 339) : les lignes cochees `secteur` passent APRES lui, en corps 20,
+  les autres avant, en corps 15. Le selecteur est fidele au design mais NON
+  filtrant — la maquette ne montre qu'un seul jeu de fonctionnalites.
 #}
 {%- from "amoamancustom/templates/includes/erpnext/ui/button.html" import erpx_button -%}
 {%- from "amoamancustom/templates/includes/erpnext/ui/icon.html" import erpx_icon -%}
 
-<section class="erpx-section erpx-section--tight">
+{%- macro liste(features, classe="") -%}
+<ul class="erpx-plan__list {{ classe }}">
+  {%- for feature in features %}
+  <li class="erpx-plan__feature{{ '' if feature.included else ' erpx-plan__feature--off' }}">
+    {{ erpx_icon("ui-check-box") }}<span>{{ feature.label }}</span>
+  </li>
+  {%- endfor %}
+</ul>
+{%- endmacro -%}
 
-  <div class="erpx-container">
-    <div class="erpx-plans">
-      {%- for plan in plans %}
-      <article class="erpx-plan{{ ' erpx-plan--featured' if plan.is_featured else '' }} erpx-reveal">
+<section class="erpx-plans-section">
+  <div class="erpx-plans">
+    {%- for plan in plans %}
+    <article class="erpx-plan erpx-plan--{{ loop.index }}{{ ' erpx-plan--featured' if plan.is_featured else '' }} erpx-reveal">
 
-        <header class="erpx-plan__head">
+      <header class="erpx-plan__head">
+        <div class="erpx-plan__nom">
           <h2 class="erpx-plan__name">{{ plan.plan_name }}</h2>
-          {%- if plan.tagline %}<p class="erpx-plan__tagline">{{ plan.tagline }}</p>{% endif %}
-          <p class="erpx-plan__price">
-            <span class="erpx-plan__amount">{{ plan.price_label }}</span>
-            {%- if plan.price_suffix %}<span class="erpx-plan__period">{{ plan.price_suffix }}</span>{% endif %}
-          </p>
-        </header>
-
-        <div class="erpx-plan__body">
-          {%- if plan.audience %}
-          <p class="erpx-plan__meta">{{ erpx_icon("ui-person") }}<span>{{ plan.audience }}</span></p>
-          {%- endif %}
-          {%- if plan.users_label %}
-          <p class="erpx-plan__meta">{{ erpx_icon("ui-users") }}<span>{{ plan.users_label }}</span></p>
-          {%- endif %}
-
-          {#- Selecteur de secteur : present sur la carte mise en avant de la
-              maquette (Group 339). Il est fidele au design mais NON filtrant —
-              la maquette ne montre qu'un seul jeu de fonctionnalites. Pour le
-              rendre operant, ajouter un champ `sector` sur
-              `ERPNext Pricing Feature` et filtrer la boucle ci-dessous. -#}
-          {%- if plan.is_featured %}
-          <div class="erpx-segmented" data-erpx-segmented role="tablist" aria-label="{{ _('Secteur d\'activité') }}">
-            {%- for secteur in [_("Commerce / Négoce / Grande distribution"), _("Services"), _("Industrie légère")] %}
-            <button type="button" class="erpx-segmented__opt{{ ' is-active' if loop.first else '' }}"
-                    role="tab" aria-selected="{{ 'true' if loop.first else 'false' }}">{{ secteur }}</button>
-            {%- endfor %}
-          </div>
-          {%- endif %}
-
-          <ul class="erpx-plan__list">
-            {%- for feature in plan.features %}
-            <li class="erpx-plan__feature{{ '' if feature.included else ' erpx-plan__feature--off' }}">
-              {{ erpx_icon("ui-check") }}<span>{{ feature.label }}</span>
-            </li>
-            {%- endfor %}
-          </ul>
-
-          <div class="erpx-plan__cta">
-            {{ erpx_button(plan.cta_label or _("Commencer"), plan.cta_href or "/erpnext/contact",
-                           variant="gradient" if plan.is_featured else "outline", block=True) }}
-          </div>
+          <img class="erpx-plan__fne" src="/assets/amoamancustom/images/erpnext/logo-fne.webp?v={{ erpx_assets_v }}"
+               alt="{{ _('FNE intégrée') }}" width="38" height="37" loading="lazy">
         </div>
+        {%- if plan.tagline %}<p class="erpx-plan__tagline">{{ plan.tagline }}</p>{% endif %}
+        <p class="erpx-plan__price">
+          <span class="erpx-plan__amount">{{ plan.price_label }}</span>
+          {%- if plan.price_suffix %}<span class="erpx-plan__period">{{ plan.price_suffix }}</span>{% endif %}
+        </p>
+        {{ erpx_button(plan.cta_label or _("En savoir plus"), plan.cta_href or "/erpnext/contact") }}
+      </header>
 
-      </article>
-      {%- endfor %}
-    </div>
+      <div class="erpx-plan__body">
+        {%- if plan.audience %}
+        <p class="erpx-plan__meta erpx-plan__meta--public">{{ erpx_icon("ui-person-circle") }}<span>{{ plan.audience }}</span></p>
+        {%- endif %}
+        {%- if plan.users_label %}
+        <p class="erpx-plan__meta">{{ erpx_icon("ui-person-3") }}<span>{{ plan.users_label }}</span></p>
+        {%- endif %}
+
+        {%- if plan.is_featured %}
+        {{ liste(plan.features | rejectattr("secteur") | list, "erpx-plan__list--petite") }}
+        <div class="erpx-segmented" data-erpx-segmented role="tablist" aria-label="{{ _('Secteur d\'activité') }}">
+          {%- for secteur in [_("Commerce/Négoce<br>/Grande distribution"), _("Services"), _("Industrie légère")] %}
+          <button type="button" class="erpx-segmented__opt{{ ' is-active' if loop.first else '' }}"
+                  role="tab" aria-selected="{{ 'true' if loop.first else 'false' }}">{{ secteur }}</button>
+          {%- endfor %}
+        </div>
+        {{ liste(plan.features | selectattr("secteur") | list) }}
+        {%- else %}
+        {{ liste(plan.features) }}
+        {%- endif %}
+      </div>
+
+    </article>
+    {%- endfor %}
   </div>
 </section>

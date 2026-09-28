@@ -24,6 +24,16 @@ import frappe
 
 DOCTYPE = "ERPNext Pricing Plan"
 
+# Valeurs de la première amorce corrigées par `corriger()` — uniquement si elles
+# n'ont pas été retouchées depuis. Les retours à la ligne sont ceux de la
+# maquette (textes 3586:2456 et 3586:2511), rendus par `white-space: pre-line`.
+_CORRECTIONS_TEXTE = {
+	"ERPNext Modules avancés + FNE intégrée": "ERPNext Modules avancés\n+ FNE intégrée",
+	"Support avec SLA + Haute Disponibilité + formation utilisateurs": (
+		"Support avec SLA\n+ Haute Disponibilité + formation utilisateurs"
+	),
+}
+
 OFFRES = [
 	{
 		"plan_name": "Essentiel",
@@ -33,7 +43,7 @@ OFFRES = [
 		"price_label": "100.000",
 		"price_suffix": "FCFA / Mois",
 		"is_featured": 0,
-		"cta_label": "Commencer",
+		"cta_label": "En savoir plus",
 		"features": [
 			"Comptabilité",
 			"Achats",
@@ -48,13 +58,13 @@ OFFRES = [
 	},
 	{
 		"plan_name": "Business",
-		"tagline": "ERPNext Modules avancés + FNE intégrée",
+		"tagline": "ERPNext Modules avancés\n+ FNE intégrée",
 		"audience": "Parfait pour les PME",
 		"users_label": "Nombre illimité d'utilisateurs",
 		"price_label": "300.000",
 		"price_suffix": "FCFA / Mois",
 		"is_featured": 1,
-		"cta_label": "Commencer",
+		"cta_label": "En savoir plus",
 		"features": [
 			"Toute l'offre Essentiel",
 			"Analyse & Cadrage personnalisés",
@@ -63,6 +73,10 @@ OFFRES = [
 			"Tableaux de bord personnalisés avec Insight",
 			"Doctype formulaire",
 			"Documentation Guide utilisateur - paramétrage",
+		],
+		# Affichées APRÈS le sélecteur de secteur (Group 339 de la maquette), en
+		# corps 20 : ce sont les modules qui varient selon le secteur choisi.
+		"features_secteur": [
 			"POS +2",
 			"Site web",
 			"CRM",
@@ -81,7 +95,7 @@ OFFRES = [
 		"price_label": "Sur Devis",
 		"price_suffix": "uniquement",
 		"is_featured": 0,
-		"cta_label": "Commencer",
+		"cta_label": "En savoir plus",
 		"features": [
 			"Toute l'offre BUSINESS",
 			"Développement de module personnalisé",
@@ -90,7 +104,7 @@ OFFRES = [
 			"Intégration API",
 			"BI & Reporting avancé",
 			"Hébergement",
-			"Support avec SLA + Haute Disponibilité + formation utilisateurs",
+			"Support avec SLA\n+ Haute Disponibilité + formation utilisateurs",
 		],
 	},
 ]
@@ -114,6 +128,8 @@ def installer():
 		frappe.db.commit()
 		print(f"Offres tarifaires créées : {', '.join(crees)}")
 
+	corriger()
+
 
 def _creer(offre, index):
 	doc = frappe.new_doc(DOCTYPE)
@@ -132,7 +148,77 @@ def _creer(offre, index):
 	for label in offre["features"]:
 		doc.append("features", {"label": label, "included": 1})
 
+	for label in offre.get("features_secteur", []):
+		doc.append("features", {"label": label, "included": 1, "secteur": 1})
+
 	doc.insert(ignore_permissions=True)
+
+
+def corriger():
+	"""Aligne les offres DÉJÀ créées sur la maquette, sans écraser une retouche.
+
+	Trois écarts avec la première amorce, corrigés seulement s'ils valent encore
+	la valeur d'origine :
+	  - le bouton portait « Commencer » ; la maquette (instances Button Contacts
+	    2256 / 2258 / 2260) affiche « En savoir plus » ;
+	  - aucune fonctionnalité n'était marquée `secteur` : sur la carte Business,
+	    les huit modules sectoriels passent après le sélecteur de secteur ;
+	  - deux textes n'avaient pas les retours à la ligne de la maquette
+	    (`_CORRECTIONS_TEXTE`).
+	Un intitulé de bouton changé dans le Desk, ou une offre dont une ligne est
+	déjà marquée `secteur`, n'est pas touché.
+	"""
+	if not frappe.db.exists("DocType", DOCTYPE):
+		return
+
+	# Le champ vient d'une migration : absent tant qu'elle n'a pas tourné.
+	secteur_dispo = frappe.db.has_column("ERPNext Pricing Feature", "secteur")
+	modifie = False
+
+	for offre in OFFRES:
+		nom = offre["plan_name"]
+		if not frappe.db.exists(DOCTYPE, nom):
+			continue
+
+		if frappe.db.get_value(DOCTYPE, nom, "cta_label") == "Commencer":
+			frappe.db.set_value(DOCTYPE, nom, "cta_label", offre["cta_label"], update_modified=False)
+			modifie = True
+
+		accroche = frappe.db.get_value(DOCTYPE, nom, "tagline")
+		if accroche in _CORRECTIONS_TEXTE:
+			frappe.db.set_value(DOCTYPE, nom, "tagline", _CORRECTIONS_TEXTE[accroche], update_modified=False)
+			modifie = True
+
+		for ligne in frappe.get_all(
+			"ERPNext Pricing Feature",
+			filters={"parent": nom, "parenttype": DOCTYPE, "label": ("in", list(_CORRECTIONS_TEXTE))},
+			fields=["name", "label"],
+		):
+			frappe.db.set_value(
+				"ERPNext Pricing Feature", ligne.name, "label", _CORRECTIONS_TEXTE[ligne.label], update_modified=False
+			)
+			modifie = True
+
+		labels = offre.get("features_secteur")
+		if not (labels and secteur_dispo):
+			continue
+
+		lignes = frappe.get_all(
+			"ERPNext Pricing Feature",
+			filters={"parent": nom, "parenttype": DOCTYPE},
+			fields=["name", "label", "secteur"],
+		)
+		if any(ligne.secteur for ligne in lignes):
+			continue
+
+		for ligne in lignes:
+			if ligne.label in labels:
+				frappe.db.set_value("ERPNext Pricing Feature", ligne.name, "secteur", 1, update_modified=False)
+				modifie = True
+
+	if modifie:
+		frappe.db.commit()
+		print("Offres tarifaires alignées sur la maquette (bouton, fonctionnalités de secteur).")
 
 
 def reinitialiser():
