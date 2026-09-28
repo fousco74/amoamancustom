@@ -1,0 +1,18 @@
+{#
+  Appel a l'action final de l'accueil (calque 4105:2454, y=8594 a 9175) :
+  le duo « pouce leve » (image 152) sort du bas de l'encart FAQ et encadre a
+  gauche un titre centre sur deux lignes et le bouton degrade.
+
+  Distinct de cta.html (bandeau texte + visuel en deux colonnes), que la page
+  module Stocks utilise toujours : les deux maquettes different.
+#}
+{%- from "amoamancustom/templates/includes/erpnext/ui/button.html" import erpx_button -%}
+
+<section class="erpx-ctaf">
+  <img class="erpx-ctaf__duo" src="/assets/amoamancustom/images/erpnext/perso-duo-pouce.webp?v={{ erpx_assets_v }}"
+       alt="" loading="lazy" aria-hidden="true">
+  <div class="erpx-ctaf__texte">
+    <h2 class="erpx-ctaf__titre">{{ _("Construisons ensemble") }}<br>{{ _("votre gestion de demain.") }}</h2>
+    {{ erpx_button(_("Demander une démo"), "/erpnext/contact", size="lg") }}
+  </div>
+</section>

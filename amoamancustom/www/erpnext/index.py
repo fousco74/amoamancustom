@@ -6,9 +6,20 @@ qu'au rythme des refontes. Seule la tarification est éditable depuis le Desk
 (cf. www/erpnext/tarification.py).
 """
 
+import os
+
 from frappe import _
 
 from amoamancustom.erpnext_site import base_context, modules
+
+# Photo de fond de la section « Pourquoi nous choisir » (calque Figma 4105:2900,
+# « image 153 »). Elle n'a pas pu etre exportee avec le reste : tant que le
+# fichier manque, la section s'affiche sur son degrade de repli et la page ne
+# le reference pas — sans quoi chaque visite produirait un 404.
+_FOND_POURQUOI = os.path.join(
+	os.path.dirname(os.path.abspath(__file__)),
+	"..", "..", "public", "images", "erpnext", "photo-bureau-fond.webp",
+)
 
 
 def get_context(context):
@@ -25,4 +36,5 @@ def get_context(context):
 	)
 
 	context.modules = modules()
+	context.erpx_pq_fond = os.path.exists(_FOND_POURQUOI)
 	return context

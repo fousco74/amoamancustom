@@ -1,0 +1,63 @@
+{#
+  Heros de l'accueil (calque 4105:2454, panneau 1490x757 a 25px des bords du
+  cadre, rayon 24).
+
+  Pourquoi un gabarit distinct de hero.html : sur l'accueil le heros n'est pas
+  une colonne de texte a cote d'une image, c'est un PANNEAU en degrade qui
+  remonte SOUS la navbar et porte une composition — personnages detoures,
+  capture d'ecran, deux spheres. hero.html reste le heros sobre des pages
+  module, dont la maquette est differente.
+
+  La navbar n'est pas rendue ici : layout_erpnext.html la pose dans
+  {% block navbar %}, donc avant <main>. Le panneau la rejoint en remontant
+  d'une hauteur de navbar (cf. .erpx-page-accueil .erpx-herox dans le CSS)
+  plutot qu'en dupliquant la navbar a l'interieur du heros.
+
+  Le mot « ERPNext » du titre est une IMAGE et non du texte : la maquette y
+  utilise le logotype de la marque, dont le E a une barre mediane allongee
+  qu'aucune fonte du site ne donne. Il est donc porte par un <img> avec son
+  texte alternatif, pour rester lisible aux lecteurs d'ecran.
+#}
+{%- from "amoamancustom/templates/includes/erpnext/ui/button.html" import erpx_button -%}
+{%- from "amoamancustom/templates/includes/erpnext/ui/badge.html" import erpx_badge -%}
+
+<section class="erpx-herox">
+  <div class="erpx-herox__panel">
+
+    <div class="erpx-herox__texte">
+      {{ erpx_badge(_("Une solution Open Source implémentée par Amoaman"), "ui-spark") }}
+
+      <h1 class="erpx-h1 erpx-herox__titre">
+        <span class="erpx-grad-text">{{ _("Piloter son entreprise") }}</span><br>
+        {{ _("avec") }}
+        <img class="erpx-herox__mot" src="/assets/amoamancustom/images/erpnext/logo-erpnext-mot-blanc.png?v={{ erpx_assets_v }}"
+             alt="ERPNext" width="800" height="490">
+      </h1>
+
+      <p class="erpx-lead erpx-herox__lead">
+        {{ _("Une plateforme unique pour centraliser toute votre activité, automatiser vos processus et suivre vos performances.") }}
+      </p>
+
+      {{ erpx_button(_("Demander une démo"), "/erpnext/contact", size="lg") }}
+    </div>
+
+    {#- Composition de droite. L'ordre du DOM suit l'ordre de profondeur de la
+        maquette : la capture est au fond, les personnages devant, les spheres
+        par-dessus. Tout est decoratif — l'information est dans le texte. -#}
+    <div class="erpx-herox__scene" aria-hidden="true">
+      <img class="erpx-herox__capture"
+           src="/assets/amoamancustom/images/erpnext/capture-liste-hero.webp?v={{ erpx_assets_v }}"
+           alt="" width="867" height="1000" fetchpriority="high">
+      <img class="erpx-herox__perso"
+           src="/assets/amoamancustom/images/erpnext/perso-duo-hero.webp?v={{ erpx_assets_v }}"
+           alt="" width="1195" height="1316" fetchpriority="high">
+      <img class="erpx-herox__sphere erpx-herox__sphere--grande"
+           src="/assets/amoamancustom/images/erpnext/modules/sphere-grande.png?v={{ erpx_assets_v }}"
+           alt="" width="406" height="400">
+      <img class="erpx-herox__sphere erpx-herox__sphere--petite"
+           src="/assets/amoamancustom/images/erpnext/sphere-petite.png?v={{ erpx_assets_v }}"
+           alt="" width="314" height="314">
+    </div>
+
+  </div>
+</section>

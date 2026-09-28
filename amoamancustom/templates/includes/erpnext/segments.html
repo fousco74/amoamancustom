@@ -1,24 +1,57 @@
 {#
-  Section « Découvrez tout le potentiel d'ERPNext » : trois cartes segment
-  (TPE / PME / Grandes Entreprises), photo plein cadre + panneau verre.
-  Parametre : segments = liste de {title, text, photo}.
+  Section « Découvrez tout le potentiel d'ERPNext » (calque 4105:2454, y=3058
+  a 4362) : titre sur deux lignes dont la seconde porte le logotype, trois
+  cartes segment (TPE / PME / Grandes Entreprises), deux spheres et deux
+  personnages qui debordent des cartes.
+
+  Parametre : segments = liste de {title, text, photo, tx, px}
+  - `tx` : retrait du titre dans la carte (52px sur TPE, 35 ailleurs) ;
+  - `px` : retrait du panneau verre (71px sur TPE, 54 ailleurs).
+  Ces ecarts sont ceux de la maquette : les trois cartes n'y sont pas
+  construites a l'identique.
+
+  Le personnage feminin vient de perso-duo-presente.webp, dont il occupe la
+  moitie droite : il est recadre par son conteneur (overflow hidden), pas par
+  un second fichier.
+
+  Tout le decor (spheres, personnages) est cale sur l'axe du cadre de 1540px
+  et retire sous 1400px, faute de marge laterale.
 #}
-{%- from "amoamancustom/templates/includes/erpnext/ui/section.html" import erpx_section_head -%}
+<section class="erpx-seg" id="segments">
 
-<section class="erpx-section" id="segments">
-  <div class="erpx-container">
-    {{ erpx_section_head(
-        title_html=_("Découvrez tout le potentiel") ~ ' <span class="erpx-grad-text">' ~ _("d'ERPNext") ~ '</span>',
-        subtitle=_("Unifiez vos processus, optimisez vos ressources et pilotez votre activité avec plus d'efficacité.")) }}
-
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:26px;margin-top:52px">
-      {%- for item in segments %}
-      <article class="erpx-segment erpx-reveal">
-        {%- if item.photo %}<img class="erpx-segment__photo" src="{{ item.photo }}" alt="" loading="lazy">{% endif %}
-        <h3 class="erpx-segment__title">{{ item.title }}</h3>
-        <p class="erpx-segment__panel">{{ item.text }}</p>
-      </article>
-      {%- endfor %}
+  <div class="erpx-seg__deco" aria-hidden="true">
+    <img class="erpx-seg__sphere erpx-seg__sphere--petite"
+         src="/assets/amoamancustom/images/erpnext/sphere-petite.png?v={{ erpx_assets_v }}" alt="" loading="lazy">
+    <img class="erpx-seg__sphere erpx-seg__sphere--grande"
+         src="/assets/amoamancustom/images/erpnext/modules/sphere-grande.png?v={{ erpx_assets_v }}" alt="" loading="lazy">
+    <img class="erpx-seg__homme"
+         src="/assets/amoamancustom/images/erpnext/perso-homme.webp?v={{ erpx_assets_v }}" alt="" loading="lazy">
+    <div class="erpx-seg__femme">
+      <img src="/assets/amoamancustom/images/erpnext/perso-duo-presente.webp?v={{ erpx_assets_v }}" alt="" loading="lazy">
     </div>
   </div>
+
+  <div class="erpx-container erpx-seg__tete">
+    <h2 class="erpx-seg__titre">
+      {{ _("Découvrez tout le potentiel") }}<br>
+      <span class="erpx-seg__titre-l2">{{ _("d’") }}<img
+        src="/assets/amoamancustom/images/erpnext/logo-erpnext-mot-black.png?v={{ erpx_assets_v }}"
+        alt="ERPNext" width="293" height="75"></span>
+    </h2>
+    <p class="erpx-seg__sous-titre">
+      <strong>{{ _("Unifiez") }}</strong> {{ _("vos processus,") }} <strong>{{ _("optimisez") }}</strong> {{ _("vos ressources") }}<br class="erpx-br-lg">
+      {{ _("et") }} <strong>{{ _("pilotez") }}</strong> {{ _("votre activité avec") }} <strong>{{ _("plus d'efficacité.") }}</strong>
+    </p>
+  </div>
+
+  <div class="erpx-seg__cartes">
+    {%- for item in segments %}
+    <article class="erpx-segment erpx-reveal">
+      {%- if item.photo %}<img class="erpx-segment__photo" src="{{ item.photo }}" alt="" loading="lazy">{% endif %}
+      <h3 class="erpx-segment__title" style="padding-left:{{ item.tx }}px">{{ item.title }}</h3>
+      <p class="erpx-segment__panel" style="margin-left:{{ item.px }}px">{{ item.text }}</p>
+    </article>
+    {%- endfor %}
+  </div>
+
 </section>

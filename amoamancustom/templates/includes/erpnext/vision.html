@@ -1,0 +1,81 @@
+{#
+  Section « Une vision à 360° » de l'accueil (calque 4105:2454, y=865 a 1856).
+
+  Le titre de la maquette porte « sur sur » (4105:2567) : coquille corrigee ici.
+
+  La composition des trois tablettes reprend le groupe 4255:1024 (« vue-erpnext »,
+  1204x525) calque par calque, et non une capture aplatie : chaque tablette est
+  un cadre translucide (SVG, blanc a 25%) sous une capture deja deformee en
+  perspective, avec la rotation exacte du calque Figma. Les captures de gauche
+  et de droite sont stockees pivotees — celle de droite est meme en miroir
+  (liste « Purchase Order » a l'envers) — et c'est la transformation du calque
+  qui les remet d'aplomb ; la retirer donnerait une image illisible.
+
+  Les cotes sont exprimees en `cqw` (1cqw = 1/100 de la largeur de la scene) :
+  la scene garde ainsi ses proportions a toutes les largeurs sans recalcul.
+  Valeurs en px de la maquette / 12.04 = cqw.
+
+  Les quatre halos bleus flous (Group 109 a 112) sont le meme SVG floute, pose
+  a quatre tailles ; ils debordent sous la section « Les avantages », comme
+  dans la maquette.
+#}
+<section class="erpx-vision" id="vision">
+
+  <div class="erpx-vision__halos" aria-hidden="true">
+    {%- for h in ["a", "b", "c", "d"] %}
+    <img class="erpx-vision__halo erpx-vision__halo--{{ h }}"
+         src="/assets/amoamancustom/images/erpnext/vision/halo-bleu.svg?v={{ erpx_assets_v }}" alt="" loading="lazy">
+    {%- endfor %}
+  </div>
+
+  <div class="erpx-container erpx-vision__tete">
+    <img class="erpx-vision__logo"
+         src="/assets/amoamancustom/images/erpnext/logo-erpnext-mot-black.png?v={{ erpx_assets_v }}"
+         alt="ERPNext" width="293" height="75">
+    <h2 class="erpx-vision__titre">{{ _("Une vision à 360° sur l'ensemble") }}<br>{{ _("des départements de votre entreprise") }}</h2>
+    <div class="erpx-vision__encart">
+      <p><strong>{{ _("ERPNext est le système nerveux central de votre entreprise.") }}</strong><br>
+      {#- Coupures de la maquette, a l'identique. -#}
+      {{ _("Ce logiciel de gestion tout-en-un centralise vos données pour optimiser") }}<br class="erpx-br-lg">
+      {{ _("chaque pilier de votre activité. Il connecte et centralise chaque") }}<br class="erpx-br-lg">
+      {{ _("information pour vous offrir une maîtrise totale de votre organisation.") }}</p>
+    </div>
+  </div>
+
+  <div class="erpx-vision__scene" aria-hidden="true">
+    <div class="erpx-vision__stage">
+      {#- Tablette de gauche : tableau de bord (4105:2685). -#}
+      <div class="erpx-vision__boite erpx-vision__boite--g-cadre">
+        <div class="erpx-vision__pivot erpx-vision__pivot--g" style="width:28.019cqw;height:29.074cqw">
+          <img style="top:.63%;height:98.55%" src="/assets/amoamancustom/images/erpnext/vision/cadre-gauche.svg?v={{ erpx_assets_v }}" alt="">
+        </div>
+      </div>
+      <div class="erpx-vision__boite erpx-vision__boite--g-ecran">
+        <div class="erpx-vision__pivot erpx-vision__pivot--g" style="width:26.446cqw;height:27.329cqw">
+          <img style="top:.67%;height:98.47%" src="/assets/amoamancustom/images/erpnext/vision/tablette-tableau-bord.webp?v={{ erpx_assets_v }}" alt="" loading="lazy">
+        </div>
+      </div>
+
+      {#- Tablette de droite : liste des commandes (4105:2688). -#}
+      <div class="erpx-vision__boite erpx-vision__boite--d-ecran">
+        <div class="erpx-vision__pivot erpx-vision__pivot--d" style="width:31.811cqw;height:36.462cqw">
+          <img style="top:.56%;height:98.72%" src="/assets/amoamancustom/images/erpnext/vision/tablette-liste.webp?v={{ erpx_assets_v }}" alt="" loading="lazy">
+        </div>
+      </div>
+      <div class="erpx-vision__boite erpx-vision__boite--d-cadre">
+        <div class="erpx-vision__pivot erpx-vision__pivot--d" style="width:34.407cqw;height:39.037cqw">
+          <img style="top:.52%;height:98.81%" src="/assets/amoamancustom/images/erpnext/vision/cadre-droite.svg?v={{ erpx_assets_v }}" alt="">
+        </div>
+      </div>
+
+      {#- Tablette centrale : bureau des modules (4105:2989), au premier plan. -#}
+      <img class="erpx-vision__plat erpx-vision__plat--cadre"
+           src="/assets/amoamancustom/images/erpnext/vision/cadre-centre.svg?v={{ erpx_assets_v }}" alt="">
+      <img class="erpx-vision__plat erpx-vision__plat--ecran"
+           src="/assets/amoamancustom/images/erpnext/vision/tablette-modules.webp?v={{ erpx_assets_v }}" alt="" loading="lazy">
+      <img class="erpx-vision__plat erpx-vision__plat--pastille"
+           src="/assets/amoamancustom/images/erpnext/vision/pastille.svg?v={{ erpx_assets_v }}" alt="">
+    </div>
+  </div>
+
+</section>

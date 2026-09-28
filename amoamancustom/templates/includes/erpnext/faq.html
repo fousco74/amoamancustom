@@ -1,28 +1,32 @@
 {#
-  Section FAQ : accordeon a gauche, encart « Vous avez d'autres questions ? »
-  a droite. `faq_items` est une liste de {question, answer} posee en dur par la
-  page (choix produit : la FAQ n'est pas un DocType).
+  Section FAQ de l'accueil (calque 4105:2454, y=7757 a 8624) : titre et encart
+  « Vous avez d'autres questions ? » a gauche, accordeon a droite (692px).
+  `faq_items` est une liste de {question, answer} posee en dur par la page
+  (choix produit : la FAQ n'est pas un DocType).
+
+  La sphere (image 186) chevauche le coin haut droit de l'encart.
 #}
 {%- from "amoamancustom/templates/includes/erpnext/ui/faq.html" import erpx_faq -%}
 {%- from "amoamancustom/templates/includes/erpnext/ui/button.html" import erpx_button -%}
 
-<section class="erpx-section" id="faq">
-  <div class="erpx-container">
-    <div style="display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(28px,4vw,64px);align-items:start">
+<section class="erpx-faqsec" id="faq">
+  <div class="erpx-faqsec__grille">
 
-      <div>
-        <h2 class="erpx-h2">{{ _("Les questions fréquemment posées") }}</h2>
-        <div style="margin-top:28px;background:#fff;border-radius:var(--erpx-radius-lg);padding:28px;box-shadow:var(--erpx-shadow-soft)">
-          <h3 class="erpx-h3" style="margin-bottom:10px">{{ _("Vous avez d'autres questions ?") }}</h3>
-          <p class="erpx-body" style="margin-bottom:22px">
-            {{ _("Pour obtenir plus d'informations, n'hésitez pas à nous contacter ! Notre équipe vous répondra dans les meilleurs délais !") }}
-          </p>
-          {{ erpx_button(_("Contactez-nous"), "/erpnext/contact", variant="outline") }}
-        </div>
+    <div class="erpx-faqsec__gauche">
+      <h2 class="erpx-faqsec__titre">{{ _("Les questions") }}<br>{{ _("fréquemment") }}<br>{{ _("posées") }}</h2>
+
+      <div class="erpx-faqsec__encart">
+        <img class="erpx-faqsec__sphere" src="/assets/amoamancustom/images/erpnext/modules/sphere-grande.png?v={{ erpx_assets_v }}"
+             alt="" loading="lazy" aria-hidden="true">
+        <h3 class="erpx-faqsec__encart-titre">{{ _("Vous avez d’autres questions ?") }}</h3>
+        <p class="erpx-faqsec__encart-texte">
+          {{ _("Pour obtenir plus d'informations, n'hésitez pas à nous contacter ! Notre équipe vous répondra dans les meilleurs délais !") }}
+        </p>
+        {{ erpx_button(_("Contactez-nous"), "/erpnext/contact") }}
       </div>
-
-      <div>{{ erpx_faq(faq_items) }}</div>
-
     </div>
+
+    <div class="erpx-faqsec__liste">{{ erpx_faq(faq_items) }}</div>
+
   </div>
 </section>

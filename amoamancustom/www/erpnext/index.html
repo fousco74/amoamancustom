@@ -6,67 +6,61 @@
 <div class="erpx-shell">
 
   {#- ------------------------------------------------------------------
-      1. Héros
+      1. Héros — panneau en dégradé, composition et navbar par-dessus
       ------------------------------------------------------------------ -#}
-  {%- set hero_badge = _("Une solution Open Source implémentée par Amoaman") %}
-  {%- set hero_badge_icon = "ui-spark" %}
-  {%- set hero_title_html %}
-    <span class="erpx-grad-text">{{ _("Piloter son entreprise") }}</span><br>
-    {{ _("avec") }} <span class="erpx-grad-text">ERPNext</span>
-  {%- endset %}
-  {%- set hero_lead = _("Une plateforme unique pour centraliser toute votre activité, automatiser vos processus et suivre vos performances.") %}
-  {%- set hero_cta_label = _("Demander une démo") %}
-  {%- set hero_cta_href = "/erpnext/contact" %}
-  {%- set hero_media = "/assets/amoamancustom/images/erpnext/hero-dashboard.webp" %}
-  {%- set hero_media_alt = _("Tableau de bord ERPNext : suivi des commandes fournisseurs") %}
-  {% include "amoamancustom/templates/includes/erpnext/hero.html" %}
+  {% include "amoamancustom/templates/includes/erpnext/hero_accueil.html" %}
 
   {#- ------------------------------------------------------------------
-      2. Vision 360°
-      Le titre de la maquette porte « sur sur » (4105:2567) — corrigé ici.
+      2. Vision 360° — logotype, titre, encart et scene des trois tablettes
       ------------------------------------------------------------------ -#}
-  <section class="erpx-section">
-    <div class="erpx-container">
-      <div class="erpx-title-block erpx-title-block--center">
-        <h2 class="erpx-h2">{{ _("Une vision à 360° sur l'ensemble des départements de votre entreprise") }}</h2>
-        <p class="erpx-lead" style="margin-top:22px">
-          {{ _("ERPNext est le système nerveux central de votre entreprise. Ce logiciel de gestion tout-en-un centralise vos données pour optimiser chaque pilier de votre activité. Il connecte et centralise chaque information pour vous offrir une maîtrise totale de votre organisation.") }}
-        </p>
-      </div>
-    </div>
-  </section>
+  {% include "amoamancustom/templates/includes/erpnext/vision.html" %}
 
   {#- ------------------------------------------------------------------
-      3. Les avantages
+      3. Les avantages — damier de quatre cartes (cf. avantages.html)
+      « Une entreprise prête à grandir » n'est pas un bandeau a part : c'est
+      la carte basse de gauche dans la maquette.
       ------------------------------------------------------------------ -#}
-  {%- set avantages = [
+  {%- set avantages_gauche = [
     {
-      "title": _("Une visibilité totale pour une prise de décision éclairée"),
-      "text": _("Centralisez vos opérations (RH, stocks, ventes, comptabilité) dans ERPNext pour une vision unifiée et une gestion décisionnelle basée sur des données réelles."),
-      "icon": "ui-performance"
+      "titre": _("La puissance de l'intégration locale et métier"),
+      "html": "<strong>" ~ _("Conforme aux réglementations locales (FNE) et sur-mesure pour votre secteur,") ~ "</strong> " ~ _("ERPNext est une solution robuste qui évolue avec vous grâce à la flexibilité du Framework Frappe."),
+      "ton": "bleu", "h": 565, "pt": 50, "gap": 28, "larg_titre": 374, "larg_texte": 365,
+      "images": [
+        {"src": "illu-documents.webp", "x": 105, "y": 214, "w": 338},
+        {"src": "illu-carte-ci.webp", "x": 67, "y": 354, "w": 241},
+        {"src": "logo-fne.webp", "x": 158, "y": 423, "w": 70}
+      ]
     },
     {
-      "title": _("Une automatisation intelligente pour booster votre productivité"),
-      "text": _("Gagnez en efficacité en automatisant vos processus métiers. Libérez vos collaborateurs des tâches répétitives pour qu'ils se consacrent aux missions à haute valeur ajoutée."),
-      "icon": "ui-spark"
+      "titre": _("Une entreprise prête à grandir"),
+      "html": "<strong>" ~ _("Accompagnez votre croissance avec une solution qui évolue") ~ "</strong> " ~ _("au rythme de votre entreprise."),
+      "ton": "rose-clair", "h": 322, "pt": 40, "gap": 14, "larg_titre": 400, "larg_texte": 350,
+      "images": [
+        {"src": "illu-cible.webp", "x": 162, "y": 131, "w": 105},
+        {"src": "illu-croissance.webp", "x": 254, "y": 123, "w": 227}
+      ]
+    }
+  ] %}
+  {%- set avantages_droite = [
+    {
+      "titre": _("Une visibilité totale pour une prise de décision éclairée"),
+      "html": "<strong>" ~ _("Centralisez vos opérations (RH, stocks, ventes, comptabilité) dans ERPNext") ~ "</strong> " ~ _("pour une vision unifiée et une gestion décisionnelle basée sur des données réelles."),
+      "ton": "rose", "h": 324, "pt": 42, "gap": 36, "larg_titre": 393, "larg_texte": 249,
+      "images": [
+        {"src": "illu-visibilite.webp", "x": 236, "y": 111, "w": 245}
+      ]
     },
     {
-      "title": _("La puissance de l'intégration locale et métier"),
-      "text": _("Conforme aux réglementations locales (FNE) et sur-mesure pour votre secteur, ERPNext est une solution robuste qui évolue avec vous grâce à la flexibilité du Framework Frappe."),
-      "icon": "ui-steps"
+      "titre": _("Une automatisation intelligente pour booster votre productivité"),
+      "html": "<strong>" ~ _("Gagnez en efficacité") ~ "</strong> " ~ _("en automatisant vos processus métiers.") ~ " <strong>" ~ _("Libérez vos collaborateurs") ~ "</strong> " ~ _("des tâches répétitives pour qu'ils se consacrent aux missions à haute valeur ajoutée."),
+      "ton": "lavande", "h": 565, "pt": 45, "gap": 30, "larg_titre": 349, "larg_texte": 293,
+      "images": [
+        {"src": "illu-flux.webp", "x": 318, "y": 111, "w": 163},
+        {"src": "illu-horloge-cle.webp", "x": 103, "y": 301, "w": 317}
+      ]
     }
   ] %}
   {% include "amoamancustom/templates/includes/erpnext/avantages.html" %}
-
-  {#- ------------------------------------------------------------------
-      4. Une entreprise prête à grandir
-      ------------------------------------------------------------------ -#}
-  {%- set cta_title = _("Une entreprise prête à grandir") %}
-  {%- set cta_text = _("Accompagnez votre croissance avec une solution qui évolue au rythme de votre entreprise.") %}
-  {%- set cta_label = _("Demander une démo") %}
-  {%- set cta_href = "/erpnext/contact" %}
-  {%- set cta_media = "/assets/amoamancustom/images/erpnext/sphere-erpnext.webp" %}
-  {% include "amoamancustom/templates/includes/erpnext/cta.html" %}
 
   {#- ------------------------------------------------------------------
       5. Segments TPE / PME / Grandes Entreprises
@@ -80,17 +74,17 @@
     {
       "title": _("TPE"),
       "text": _("Une solution simple et accessible pour centraliser votre gestion, automatiser vos tâches et gagner du temps au quotidien."),
-      "photo": "/assets/amoamancustom/images/erpnext/segment-equipe.webp"
+      "photo": "/assets/amoamancustom/images/erpnext/segment-equipe.webp", "tx": 52, "px": 71
     },
     {
       "title": _("PME"),
       "text": _("Optimisez vos opérations et accompagnez la croissance de votre entreprise grâce à une gestion centralisée, fluide et performante."),
-      "photo": "/assets/amoamancustom/images/erpnext/segment-equipe.webp"
+      "photo": "/assets/amoamancustom/images/erpnext/segment-equipe.webp", "tx": 35, "px": 54
     },
     {
       "title": _("Grandes Entreprises"),
       "text": _("Une solution évolutive pour piloter efficacement vos activités, connecter vos équipes et gérer vos opérations à grande échelle."),
-      "photo": "/assets/amoamancustom/images/erpnext/segment-grandes-entreprises.webp"
+      "photo": "/assets/amoamancustom/images/erpnext/segment-grandes-entreprises.webp", "tx": 35, "px": 54
     }
   ] %}
   {% include "amoamancustom/templates/includes/erpnext/segments.html" %}
@@ -126,22 +120,29 @@
   {#- ------------------------------------------------------------------
       8. Pourquoi nous choisir
       ------------------------------------------------------------------ -#}
+  {#- x / y : coin de la carte dans le panneau photo (maquette, origine au
+      coin du panneau) ; h : hauteur de la carte. `title` peut porter un <br>
+      pour reprendre la coupure de la maquette. -#}
   {%- set raisons = [
     {
-      "title": _("Une Solution Métier, pas seulement un Logiciel"),
-      "text": _("Nous ne nous contentons pas d'implémenter ERPNext. Nous concevons une solution sur mesure qui répond à vos enjeux métiers, vos contraintes réelles et vos objectifs de croissance.")
+      "title": _("Une Solution Métier,") ~ "<br>" ~ _("pas seulement un Logiciel"),
+      "text": _("Nous ne nous contentons pas d'implémenter ERPNext. Nous concevons une solution sur mesure qui répond à vos enjeux métiers, vos contraintes réelles et vos objectifs de croissance."),
+      "icon": "ui-job", "x": 141, "y": 545, "h": 214
     },
     {
       "title": _("Une Expertise de Proximité"),
-      "text": _("En choisissant AMOAMAN, vous bénéficiez d'une équipe de ressources locales, à l'écoute, qui parle votre langage. Nous maîtrisons aussi bien les processus métiers que la technologie.")
+      "text": _("En choisissant AMOAMAN, vous bénéficiez d'une équipe de ressources locales, à l'écoute, qui parle votre langage. Nous maîtrisons aussi bien les processus métiers que la technologie."),
+      "icon": "ui-users", "x": 845, "y": 545, "h": 214
     },
     {
       "title": _("Un Accompagnement de A à Z"),
-      "text": _("Notre rôle dépasse la technique : nous vous accompagnons de la réflexion stratégique jusqu'à l'adoption effective de l'outil par vos équipes, garantissant ainsi le succès de votre transformation digitale.")
+      "text": _("Notre rôle dépasse la technique : nous vous accompagnons de la réflexion stratégique jusqu'à l'adoption effective de l'outil par vos équipes, garantissant ainsi le succès de votre transformation digitale."),
+      "icon": "ui-steps", "x": 54, "y": 798, "h": 239
     },
     {
-      "title": _("Un Levier de Performance Durable"),
-      "text": _("Notre objectif est clair : transformer ERPNext en un véritable moteur de performance pour votre organisation sur le long terme.")
+      "title": _("Un Levier de Performance") ~ "<br>" ~ _("Durable"),
+      "text": _("Notre objectif est clair : transformer ERPNext en un véritable moteur de performance pour votre organisation sur le long terme."),
+      "icon": "ui-performance", "x": 888, "y": 798, "h": 214
     }
   ] %}
   {% include "amoamancustom/templates/includes/erpnext/pourquoi.html" %}
@@ -188,12 +189,7 @@
   {#- ------------------------------------------------------------------
       10. Appel à l'action final
       ------------------------------------------------------------------ -#}
-  {%- set cta_title = _("Construisons ensemble votre gestion de demain.") %}
-  {%- set cta_text = "" %}
-  {%- set cta_label = _("Contactez-nous") %}
-  {%- set cta_href = "/erpnext/contact" %}
-  {%- set cta_media = "/assets/amoamancustom/images/erpnext/hero-equipe.webp" %}
-  {% include "amoamancustom/templates/includes/erpnext/cta.html" %}
+  {% include "amoamancustom/templates/includes/erpnext/cta_final.html" %}
 
 </div>
 {% endblock %}

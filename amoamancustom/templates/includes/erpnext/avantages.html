@@ -1,25 +1,62 @@
 {#
-  Section « Les avantages » : trois arguments en cartes.
-  Parametre : avantages = liste de {title, text, icon}.
+  Section « Les avantages » de l'accueil (calque 4105:2454, y=1923 a 3086).
+
+  La maquette n'est PAS une grille reguliere : deux colonnes de 470px espacees
+  de 20px, chacune portant une carte haute (565px) et une carte basse (~322px),
+  en quinconce — haute a gauche, basse a droite, puis l'inverse. D'ou deux
+  listes distinctes plutot qu'une boucle sur quatre elements : aucun ordre
+  unique ne produit ce damier sur une grille CSS a deux colonnes.
+
+  Parametres : avantages_gauche et avantages_droite, listes de
+      {titre, html, ton, h, pt, gap, larg_titre, larg_texte, images}
+  - `h` : hauteur de la carte dans la maquette (px, largeur 470) ; elle fixe
+    le ratio, le contenu peut toujours pousser la carte.
+  - `html` porte les passages en gras de la maquette et est rendu tel quel —
+    ne JAMAIS y passer de saisie utilisateur.
+  - `images` : {src, x, y, w} en px maquette = boite du FICHIER, calculee pour
+    que son contenu opaque (canal alpha > 20%) tombe sur l'emprise visible de
+    l'illustration dans la maquette. Les fichiers gardent des marges quasi
+    transparentes (ombres portees), et les calques Figma (image 187 a 196) ont
+    d'autres cadrages : ni l'un ni l'autre ne donne la bonne boite directement.
+    Converties en cqw (1cqw = 4.7px de carte) pour suivre la largeur de la
+    carte.
 #}
-{%- from "amoamancustom/templates/includes/erpnext/ui/section.html" import erpx_section_head -%}
-{%- from "amoamancustom/templates/includes/erpnext/ui/icon.html" import erpx_icon -%}
+{%- from "amoamancustom/templates/includes/erpnext/ui/button.html" import erpx_button -%}
 
-<section class="erpx-section" id="avantages">
+{%- macro carte(a) -%}
+{#- iy / ih : haut et hauteur de la zone illustree (en px de carte), utilises
+    sous 768px pour la reposer SOUS le texte au lieu de derriere. -#}
+{%- set iy = a.images | map(attribute="y") | min -%}
+<article class="erpx-avg__carte erpx-avg__carte--{{ a.ton }} erpx-reveal"
+         style="aspect-ratio:470/{{ a.h }};padding-top:{{ a.pt }}px;--iy:{{ (iy / 4.7) | round(3) }}cqw;--ih:{{ ((a.h - iy) / 4.7) | round(3) }}cqw">
+  <div class="erpx-avg__illu" aria-hidden="true">
+    {%- for img in a.images %}
+    <img src="/assets/amoamancustom/images/erpnext/{{ img.src }}?v={{ erpx_assets_v }}" alt="" loading="lazy"
+         style="left:{{ (img.x / 4.7) | round(3) }}cqw;top:{{ (img.y / 4.7) | round(3) }}cqw;width:{{ (img.w / 4.7) | round(3) }}cqw">
+    {%- endfor %}
+  </div>
+  <h3 class="erpx-avg__titre" style="max-width:{{ a.larg_titre }}px">{{ a.titre }}</h3>
+  <p class="erpx-avg__texte" style="max-width:{{ a.larg_texte }}px;margin-top:{{ a.gap }}px">{{ a.html }}</p>
+</article>
+{%- endmacro -%}
 
+<section class="erpx-avg-section" id="avantages">
   <div class="erpx-container">
-    {{ erpx_section_head(title=_("Les avantages")) }}
 
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:26px;margin-top:52px">
-      {%- for item in avantages %}
-      <article class="erpx-card erpx-reveal">
-        <div class="erpx-card__body">
-          <span class="erpx-badge__icon" style="margin-bottom:6px">{{ erpx_icon(item.icon) }}</span>
-          <h3 class="erpx-card__title">{{ item.title }}</h3>
-          <p class="erpx-card__text">{{ item.text }}</p>
-        </div>
-      </article>
-      {%- endfor %}
+    <h2 class="erpx-avg-section__titre">{{ _("Les avantages") }}</h2>
+
+    <div class="erpx-avg">
+      <div class="erpx-avg__col">
+        {%- for a in avantages_gauche %}{{ carte(a) }}{% endfor %}
+      </div>
+      <div class="erpx-avg__col">
+        {%- for a in avantages_droite %}{{ carte(a) }}{% endfor %}
+      </div>
     </div>
+
+    <div class="erpx-avg-section__cta">
+      {{ erpx_button(_("Demander une démo"), "/erpnext/contact", size="lg") }}
+    </div>
+
   </div>
 </section>

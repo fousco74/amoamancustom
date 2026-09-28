@@ -1,32 +1,65 @@
 {#
-  Section « Pourquoi nous choisir avec ERPNext » : quatre arguments sur fond
-  sombre, en vis-a-vis d'un visuel.
-  Parametre : raisons = liste de {title, text}.
+  Section « Pourquoi nous choisir avec ERPNext » (calque 4105:2454, panneau
+  photo 1486x1156 a y=6471).
+
+  La maquette superpose deux calques de meme cadre : image 153, la photo du
+  bureau, et image 154, les deux personnages detoures avec le bureau et la
+  plante (photo-bureau-pourquoi.webp). Seul le second est dans le depot : la
+  photo de fond n'a pas pu etre exportee. Elle est donc posee en fond CSS
+  (photo-bureau-fond.webp) par-dessus un degrade qui reprend ses tons ; tant
+  que le fichier manque, www/erpnext/index.py pose erpx_pq_fond a False et la
+  page ne le reference pas. Deposer l'export de 4105:2900 sous ce nom suffit a
+  completer la section.
+
+  Les quatre cartes verre sont en quinconce (x=168 / 872 puis 81 / 915) : sur
+  grand ecran elles sont placees depuis l'axe du panneau, en dessous elles
+  repassent en grille.
+
+  Parametre : raisons = liste de {title, text, icon, x, y, h}
+  (x, y : coin de la carte dans le panneau ; h : hauteur, 214 ou 239).
 #}
 {%- from "amoamancustom/templates/includes/erpnext/ui/button.html" import erpx_button -%}
+{%- from "amoamancustom/templates/includes/erpnext/ui/icon.html" import erpx_icon -%}
 
-<section class="erpx-section" id="pourquoi">
-  <div class="erpx-container erpx-container--wide">
-    <div class="erpx-panel">
-      <div class="erpx-title-block erpx-title-block--center" style="margin-bottom:44px">
-        <h2 class="erpx-h2">{{ _("Pourquoi nous choisir avec") }} <span style="color:#fff">ERPNext</span></h2>
-        <p class="erpx-lead" style="margin-top:16px">
-          {{ _("Une plateforme unique pour centraliser toute votre activité, automatiser vos processus et suivre vos performances.") }}
-        </p>
-      </div>
+<section class="erpx-pq" id="pourquoi">
+  <div class="erpx-pq__panneau"
+       {%- if erpx_pq_fond %} style="--erpx-pq-fond:url('/assets/amoamancustom/images/erpnext/photo-bureau-fond.webp?v={{ erpx_assets_v }}')"{% endif %}>
 
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px">
-        {%- for item in raisons %}
-        <article class="erpx-reveal" style="background:rgba(255,255,255,.07);border-radius:var(--erpx-radius-lg);padding:26px 28px">
-          <h3 class="erpx-h3" style="color:#fff;margin-bottom:10px">{{ item.title }}</h3>
-          <p style="margin:0;font-size:.95rem;line-height:1.6;color:rgba(255,255,255,.78)">{{ item.text }}</p>
-        </article>
-        {%- endfor %}
-      </div>
+    {#- La photo de fond fournie (image 153) contient deja les personnages :
+        le calque detoure ne sert que de repli quand elle est absente. -#}
+    {%- if not erpx_pq_fond %}
+    <img class="erpx-pq__persos" src="/assets/amoamancustom/images/erpnext/photo-bureau-pourquoi.webp?v={{ erpx_assets_v }}"
+         alt="" loading="lazy" aria-hidden="true">
+    {%- endif %}
+    <img class="erpx-pq__sphere" src="/assets/amoamancustom/images/erpnext/modules/sphere-grande.png?v={{ erpx_assets_v }}"
+         alt="" loading="lazy" aria-hidden="true">
 
-      <div style="text-align:center;margin-top:42px">
-        {{ erpx_button(_("Contactez-nous"), "/erpnext/contact", variant="outline", size="lg") }}
-      </div>
+    <div class="erpx-pq__tete">
+      <h2 class="erpx-pq__titre">{{ _("Pourquoi nous choisir avec") }}
+        <img src="/assets/amoamancustom/images/erpnext/logo-erpnext-mot-blanc.png?v={{ erpx_assets_v }}"
+             alt="ERPNext" width="251" height="49"></h2>
+      <p class="erpx-pq__sous-titre">
+        {{ _("Une plateforme unique pour centraliser toute votre activité,") }}<br class="erpx-br-lg">
+        {{ _("automatiser vos processus et suivre vos performances.") }}
+      </p>
     </div>
+
+    <div class="erpx-pq__cartes">
+      {%- for item in raisons %}
+      <article class="erpx-pq__carte erpx-reveal"
+               style="--x:{{ item.x }}px;--y:{{ item.y }}px;--h:{{ item.h }}px">
+        <div class="erpx-pq__entete">
+          <span class="erpx-pq__icone" aria-hidden="true">{{ erpx_icon(item.icon) }}</span>
+          <h3 class="erpx-pq__carte-titre">{{ item.title }}</h3>
+        </div>
+        <p class="erpx-pq__carte-texte">{{ item.text }}</p>
+      </article>
+      {%- endfor %}
+    </div>
+
+    <div class="erpx-pq__cta">
+      {{ erpx_button(_("Demander une démo"), "/erpnext/contact", size="lg") }}
+    </div>
+
   </div>
 </section>
