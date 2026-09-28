@@ -1,17 +1,20 @@
 {#
-  Champs du formulaire de contact.
+  Champs du formulaire de contact (cadre Figma 3749:10).
 
-  L'asterisque rouge reprend `material-symbols:asterisk-rounded` de la maquette.
-  Tous les champs portent un `name` qui correspond a la liste blanche de
-  amoamancustom/contact_api.py : un champ ajoute ici sans etre declare la-bas
-  est simplement ignore par le serveur (et inversement).
+  L'asterisque reprend `material-symbols:asterisk-rounded` de la maquette,
+  bleu nuit et non rouge. Tous les champs portent un `name` qui correspond a
+  la liste blanche de amoamancustom/contact_api.py : un champ ajoute ici sans
+  etre declare la-bas est simplement ignore par le serveur (et inversement).
+
+  `precision` : complement en petit corps accole au libelle — « (nbre
+  employés) » apres « Taille de l'Entreprise » dans la maquette.
 #}
 {%- from "amoamancustom/templates/includes/erpnext/ui/icon.html" import erpx_icon -%}
 
-{% macro _label(name, label, required) -%}
+{% macro _label(name, label, required, precision="") -%}
 <label class="erpx-field__label" for="{{ name }}">
-  <span>{{ label }}</span>
-  {%- if required %}<span class="erpx-field__req" aria-hidden="true">*</span><span class="sr-only">({{ _("requis") }})</span>{% endif -%}
+  <span>{{ label }}{% if precision %} <small class="erpx-field__precision">{{ precision }}</small>{% endif %}</span>
+  {%- if required %}<span class="erpx-field__req" aria-hidden="true">{{ erpx_icon("ui-asterisk") }}</span><span class="sr-only">({{ _("requis") }})</span>{% endif -%}
 </label>
 {%- endmacro %}
 
@@ -25,50 +28,64 @@
 {%- endmacro %}
 
 {#
-  Telephone : l'indicatif est affiche mais non saisissable. Il est reconcatene
-  cote client avant envoi, pour que le champ `number` de Contact Us parte
-  toujours au format international.
+  Telephone : drapeau, indicatif et chevron de la maquette. L'indicatif est
+  affiche mais non saisissable ; il est reconcatene cote client avant envoi,
+  pour que le champ `number` de Contact Us parte toujours au format
+  international.
 #}
 {% macro erpx_phone(name, label, prefix="+225", required=False) -%}
 <div class="erpx-field">
   {{ _label(name, label, required) }}
   <div class="erpx-phone">
-    <span class="erpx-phone__prefix" aria-hidden="true">🇨🇮 {{ prefix }}</span>
+    <span class="erpx-phone__prefix" aria-hidden="true">{{ erpx_icon("ui-drapeau-ci") }}<span>{{ prefix }}</span>{{ erpx_icon("ui-chevron-bas") }}</span>
     <input class="erpx-input" type="tel" id="{{ name }}" name="{{ name }}"
-           data-prefix="{{ prefix }}" inputmode="tel"
-           placeholder="07 00 00 00 00"{% if required %} required{% endif %} autocomplete="tel">
+           data-prefix="{{ prefix }}" inputmode="tel"{% if required %} required{% endif %} autocomplete="tel">
   </div>
 </div>
 {%- endmacro %}
 
-{% macro erpx_select(name, label, options, placeholder="", required=False) -%}
+{% macro erpx_select(name, label, options, placeholder="", required=False, precision="") -%}
 <div class="erpx-field">
-  {{ _label(name, label, required) }}
-  <select class="erpx-select" id="{{ name }}" name="{{ name }}"{% if required %} required{% endif %}>
-    <option value="" disabled selected>{{ placeholder }}</option>
-    {%- for option in options %}
-    <option value="{{ option }}">{{ option }}</option>
-    {%- endfor %}
-  </select>
+  {{ _label(name, label, required, precision) }}
+  <div class="erpx-select-wrap">
+    <select class="erpx-select" id="{{ name }}" name="{{ name }}"{% if required %} required{% endif %}>
+      <option value="" disabled selected>{{ placeholder }}</option>
+      {%- for option in options %}
+      <option value="{{ option }}">{{ option }}</option>
+      {%- endfor %}
+    </select>
+    <span class="erpx-select-wrap__chevron" aria-hidden="true">{{ erpx_icon("ui-chevron-bas") }}</span>
+  </div>
 </div>
 {%- endmacro %}
 
 {#
-  Multi-select « Modules » rendu en pastilles cochables.
-  Des cases a cocher natives (masquees) plutot qu'un <select multiple> : le
-  clavier et les lecteurs d'ecran fonctionnent sans une ligne de JS.
+  Multi-selection « Modules » : la maquette la dessine comme une liste
+  deroulante (« Sélectionnez une ou plusieurs modules » + chevron). Rendue par
+  <details> et des cases a cocher natives : ouverture au clavier, lecteurs
+  d'ecran et envoi fonctionnent sans JS ; erpnext_site.js ne fait que recopier
+  la selection dans le resume.
 #}
-{% macro erpx_chips(name, label, options, required=False) -%}
+{% macro erpx_multiselect(name, label, options, placeholder="", required=False) -%}
 <div class="erpx-field">
-  {{ _label(name, label, required) }}
-  <div class="erpx-chips" role="group" aria-label="{{ label }}">
-    {%- for option in options %}
-    <label class="erpx-chip">
-      <input type="checkbox" name="{{ name }}" value="{{ option }}">
-      <span>{{ option }}</span>
-    </label>
-    {%- endfor %}
-  </div>
+  <span class="erpx-field__label" id="{{ name }}-label">
+    <span>{{ label }}</span>
+    {%- if required %}<span class="erpx-field__req" aria-hidden="true">{{ erpx_icon("ui-asterisk") }}</span><span class="sr-only">({{ _("requis") }})</span>{% endif -%}
+  </span>
+  <details class="erpx-multi" data-erpx-multi>
+    <summary class="erpx-multi__resume" aria-labelledby="{{ name }}-label">
+      <span data-erpx-multi-texte data-vide="{{ placeholder }}">{{ placeholder }}</span>
+      <span class="erpx-select-wrap__chevron" aria-hidden="true">{{ erpx_icon("ui-chevron-bas") }}</span>
+    </summary>
+    <div class="erpx-multi__liste" role="group" aria-labelledby="{{ name }}-label">
+      {%- for option in options %}
+      <label class="erpx-multi__option">
+        <input type="checkbox" name="{{ name }}" value="{{ option }}">
+        <span>{{ option }}</span>
+      </label>
+      {%- endfor %}
+    </div>
+  </details>
 </div>
 {%- endmacro %}
 
