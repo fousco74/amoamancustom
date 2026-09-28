@@ -3,11 +3,13 @@
 
   variant : gradient (« Demander une démo ») | outline (« Contactez-nous ») | ghost
   size    : sm | md | lg
-  icon    : nom d'icone inline, optionnel (cf. ui/icon.html)
+  icon    : nom d'icone inline place AVANT le libelle, optionnel
+  icon_after : idem, mais APRES le libelle — la fleche de « Découvrir les
+               modules » sur l'accueil
 #}
 {%- from "amoamancustom/templates/includes/erpnext/ui/icon.html" import erpx_icon -%}
 
-{% macro erpx_button(label, href="#", variant="gradient", size="md", block=False, icon="", attrs="") -%}
+{% macro erpx_button(label, href="#", variant="gradient", size="md", block=False, icon="", attrs="", icon_after="") -%}
 {%- set variants = {"gradient": "erpx-btn--gradient", "outline": "erpx-btn--outline", "ghost": "erpx-btn--ghost"} -%}
 {%- set sizes = {"sm": "erpx-btn--sm", "md": "", "lg": "erpx-btn--lg"} -%}
 <a href="{{ href }}"
@@ -15,5 +17,6 @@
    {{ attrs }}>
   {%- if icon %}<span class="erpx-btn__icon">{{ erpx_icon(icon) }}</span>{% endif -%}
   <span>{{ label }}</span>
+  {%- if icon_after %}<span class="erpx-btn__icon erpx-btn__icon--apres">{{ erpx_icon(icon_after) }}</span>{% endif -%}
 </a>
 {%- endmacro %}

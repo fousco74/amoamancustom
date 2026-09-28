@@ -8,18 +8,21 @@
   donc a toucher au site existant.
 
   Les entrees sans page dediee sont rabattues sur les ancres de l'accueil.
-  « Secteurs » est la seule a n'avoir aucun equivalent : elle est masquee
-  (`hidden: True`) plutot que de livrer un lien mort. Pour l'activer quand la
-  page existera, passer `hidden` a False et renseigner `href`.
+  « Modules » fait exception depuis la mise en ligne de /erpnext/modules : elle
+  pointe la page du catalogue, et non plus l'ancre #modules de l'accueil.
+  « Secteurs » n'a pas de page dediee : faute de mieux, elle pointe la section
+  TPE / PME / Grandes Entreprises de l'accueil (#segments), la seule qui parle
+  de cibles. La maquette l'affiche, la masquer decalait les autres liens.
+  Le drapeau `hidden: True` reste disponible pour retirer une entree.
 
   `erpx_active` est pose par le get_context de chaque page.
 #}
 {%- from "amoamancustom/templates/includes/erpnext/ui/button.html" import erpx_button -%}
 
 {%- set nav_links = [
-  {"key": "modules",     "label": _("Modules"),        "href": "/erpnext#modules"},
+  {"key": "modules",     "label": _("Modules"),        "href": "/erpnext/modules"},
   {"key": "tarification","label": _("Tarification"),   "href": "/erpnext/tarification"},
-  {"key": "secteurs",    "label": _("Secteurs"),       "href": "",                    "hidden": True},
+  {"key": "secteurs",    "label": _("Secteurs"),       "href": "/erpnext#segments"},
   {"key": "pourquoi",    "label": _("Pourquoi nous ?"),"href": "/erpnext#pourquoi"},
   {"key": "aide",        "label": _("Aide"),           "href": "/erpnext#faq"}
 ] -%}

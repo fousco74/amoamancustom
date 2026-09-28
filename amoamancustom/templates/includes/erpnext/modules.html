@@ -4,23 +4,26 @@
   La liste canonique vit dans amoamancustom/erpnext_site.py (MODULES) pour etre
   partagee entre l'accueil et le carrousel des pages module.
 #}
-{%- from "amoamancustom/templates/includes/erpnext/ui/section.html" import erpx_section_head -%}
 {%- from "amoamancustom/templates/includes/erpnext/ui/module_tile.html" import erpx_module_tile -%}
 {%- from "amoamancustom/templates/includes/erpnext/ui/button.html" import erpx_button -%}
 
-<section class="erpx-section" id="modules">
+<section class="erpx-modsec" id="modules">
 
   <div class="erpx-container">
-    {{ erpx_section_head(title=_("Nos Modules")) }}
+    <h2 class="erpx-modsec__titre">{{ _("Nos Modules") }}</h2>
 
-    <div class="erpx-modules" style="margin-top:56px">
+    <div class="erpx-modules">
       {%- for item in modules %}
-      {{ erpx_module_tile(item.label, item.icon, item.get("href", "")) }}
+      {{ erpx_module_tile(item) }}
       {%- endfor %}
     </div>
 
-    <div style="text-align:center;margin-top:52px">
-      {{ erpx_button(_("Demander une démo"), "/erpnext/contact", size="lg") }}
+    {#- La maquette ne met PAS « Demander une démo » ici mais « Découvrir les
+        modules », fleche a droite, en bouton contour (4105:2896, 328x60) : la
+        section renvoie au catalogue /erpnext/modules, pas au formulaire. -#}
+    <div class="erpx-modsec__cta">
+      {{ erpx_button(_("Découvrir les modules"), "/erpnext/modules",
+                     variant="outline", size="lg", icon_after="ui-arrow-left") }}
     </div>
   </div>
 </section>

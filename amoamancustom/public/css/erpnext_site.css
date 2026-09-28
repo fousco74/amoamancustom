@@ -34,6 +34,7 @@
   --erpx-blue-300: #4A6ECD;
   --erpx-blue-200: #83ACE5;
   --erpx-blue-100: #DFECFF;
+  --erpx-balck:  #022443;
 
   /* Roses */
   --erpx-pink-600: #D13270;
@@ -48,9 +49,20 @@
   --erpx-line: rgba(8, 26, 42, .12);
   --erpx-surface: #FFFFFF;
   --erpx-surface-alt: #F6F8FC;
+  --blue-gradient: linear-gradient(90deg, #01235C 0%, #004CC8 100%);
+  --light-gradient: linear-gradient(
+  90deg,
+  #FFFFFF 0%,
+  #FBFBFB 52%,
+  #FFFFFF 99%
+);
 
   /* Degrades de marque */
   --erpx-grad-brand: linear-gradient(135deg, #3663C6 0%, #D13270 100%);
+  /* Fond des tuiles « Nos Modules » — echantillonne sur la maquette. */
+  --erpx-grad-tile:
+    radial-gradient(72% 64% at 74% 72%, rgba(230, 118, 170, .80) 0%, rgba(230, 118, 170, 0) 78%),
+    linear-gradient(170deg, #7FB0E4 0%, #86A8DA 45%, #9BA0CE 100%);
   --erpx-grad-title: linear-gradient(90deg, #00235C 0%, #00235C 42%, #F3355F 100%);
   --erpx-grad-hero: linear-gradient(135deg, #FFFFFF 0%, #F3F1FA 38%, #D9C8E2 72%, #AFA3D1 100%);
   --erpx-grad-footer: linear-gradient(160deg, #002053 0%, #00112E 100%);
@@ -170,6 +182,13 @@
   background: linear-gradient(182.98deg, #FFFFFF 18.62%, #DFECFF 55.94%, #FFFFFF 93.7%), #EFEFEF;
 }
 
+/* Attention au singulier : `erpx-page-module` est la page d'UN module
+ * (/erpnext/modules/stocks), `erpx-page-modules` le catalogue des douze
+ * (/erpnext/modules). Les deux degrades viennent de deux cadres distincts. */
+.erpx-page-modules::before {
+  background: linear-gradient(173.07deg, #FFFFFF 21.4%, #B0CBF2 56.04%, #FFFFFF 84.49%);
+}
+
 /* ============================================================
    3. TRAME
    ============================================================ */
@@ -221,6 +240,29 @@
   font-weight: 700;
 }
 
+.erpx-text-grad{
+	background: var(--blue-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.erpx-card-gradiant{
+/* Rectangle 442 */
+
+box-sizing: border-box;
+color: var(--erpx-balck) !important;
+font-weight: 500 !important;
+background: linear-gradient(136.13deg, #FFFFFF 5.42%, #FBFBFB 53.11%, #FFFFFF 95.12%);
+box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.11), inset -20px -20px 35px rgba(142, 166, 187, 0.2), inset 15px 15px 35px rgba(220, 228, 236, 0.25);
+backdrop-filter: blur(50px);
+/* Note: backdrop-filter has minimal browser support */
+border-radius: 30px;
+max-width: auto !important;
+padding: 2rem  1.8rem !important;
+}
+
+
 .erpx-h2 {
   font-size: clamp(1.7rem, 1rem + 2.4vw, 3rem);
   line-height: 1.12;
@@ -253,7 +295,7 @@
 }
 
 .erpx-title-block { max-width: 880px; }
-.erpx-title-block .erpx-lead { max-width: 720px; }
+.erpx-title-block .erpx-lead { max-width: 780px; }
 .erpx-title-block--center .erpx-lead { margin-inline: auto; }
 .erpx-title-block--center { margin-inline: auto; text-align: center; }
 
@@ -280,12 +322,26 @@
 .erpx-btn:focus-visible { outline: 0; box-shadow: var(--erpx-ring); }
 .erpx-btn:hover { transform: translateY(-2px); }
 
+/* Composant « Button Contacts » de la maquette (releve via l'API Figma sur
+ * 3586:2256) : degrade #266BCC 8% -> #F32A57, deux halos lateraux bleu et rose,
+ * deux ombres internes (reflet clair en haut, rose en bas). */
 .erpx-btn--gradient {
-  background: var(--erpx-grad-brand);
+  background: linear-gradient(90deg, #266BCC 8%, #F32A57 100%);
   color: #fff;
-  box-shadow: 0 10px 26px rgba(209, 50, 112, .28);
+  box-shadow:
+    -6px 0 15px rgba(11, 140, 250, .10),
+    6px 0 15px rgba(236, 56, 96, .10),
+    inset 0 3px 3px rgba(255, 232, 237, .35),
+    inset 2px -15px 25px rgba(230, 30, 150, .35);
 }
-.erpx-btn--gradient:hover { color: #fff; box-shadow: 0 16px 34px rgba(209, 50, 112, .34); }
+.erpx-btn--gradient:hover {
+  color: #fff;
+  box-shadow:
+    -6px 4px 20px rgba(11, 140, 250, .18),
+    6px 4px 20px rgba(236, 56, 96, .18),
+    inset 0 3px 3px rgba(255, 232, 237, .35),
+    inset 2px -15px 25px rgba(230, 30, 150, .35);
+}
 
 .erpx-btn--outline {
   background: #fff;
@@ -302,6 +358,9 @@
 .erpx-btn--block { width: 100%; }
 
 .erpx-btn__icon { width: 1.15em; height: 1.15em; flex: 0 0 auto; }
+/* ui-arrow-left est le seul chevron du jeu : on le retourne plutot que
+ * d'ajouter un second fichier pour la meme forme. */
+.erpx-btn__icon--apres { transform: rotate(180deg); }
 
 /* ============================================================
    6. BADGE / PILULE
@@ -348,11 +407,15 @@
   background: transparent;
 }
 
+/* Frame « Header » : pilule de 1000 a x=184 et seconde pilule jusqu'a x=1373,
+ * soit 1189px, 8px a droite de l'axe du cadre. */
 .erpx-nav__inner {
+  position: relative;
+  left: 8px;
   display: flex;
   align-items: center;
   gap: 16px;
-  max-width: var(--erpx-container);
+  max-width: 1189px;
   margin-inline: auto;
 }
 
@@ -363,14 +426,18 @@
   gap: clamp(12px, 2vw, 34px);
   flex: 1 1 auto;
   min-width: 0;
-  padding: 10px 12px 10px 24px;
+  position: relative;
+  z-index: 2;
+  min-height: 71px;
+  padding: 0 11px 0 33px;
   border-radius: var(--erpx-radius-pill);
   background: #fff;
   box-shadow: var(--erpx-shadow-nav);
 }
 
+/* Logo : Image1 1, 100x32 a 33px du bord de la pilule. */
 .erpx-nav__logo { flex: 0 0 auto; display: flex; align-items: center; }
-.erpx-nav__logo img { height: 34px; width: auto; display: block; }
+.erpx-nav__logo img { height: 32px; width: auto; display: block; }
 
 .erpx-nav__links {
   display: flex;
@@ -380,35 +447,42 @@
 }
 
 .erpx-nav__link {
-  font-size: .96rem;
+  font-size: .87rem;
   font-weight: 500;
-  color: var(--erpx-ink);
+  color: var(--erpx-balck);
   padding: 6px 2px;
   position: relative;
   transition: color .18s ease;
 }
-.erpx-nav__link:hover,
-.erpx-nav__link[aria-current="page"] { color: var(--erpx-blue-500); }
-.erpx-nav__link[aria-current="page"]::after {
-  content: "";
-  position: absolute;
-  left: 0; right: 0; bottom: -2px;
-  height: 2px;
-  border-radius: 2px;
-  background: var(--erpx-grad-brand);
-}
+.erpx-nav__link:hover { color: var(--erpx-blue-500); }
+/* L'entree courante garde aria-current mais aucun marquage visuel : le
+ * Header de la maquette est identique sur les quatre cadres, sans etat actif. */
+.erpx-nav__link[aria-current="page"]::after { display: none; }
 
 .erpx-nav__cta { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; }
 
-/* Le second CTA vit dans sa propre pilule blanche (Group 367, 286x71). */
+/* Boutons de la navbar : « Demander une démo » 190x50, « Contactez-nous »
+ * 168x48 (instances Button Contacts du Header). */
+.erpx-nav .erpx-btn { height: 50px; min-width: 190px; padding: 0 16px; font-size: .85rem; }
+.erpx-nav__aside .erpx-btn { height: 48px; min-width: 168px; color: #043F93; box-shadow: inset 0 0 0 2px #043F93; }
+
+/* Le second CTA vit dans sa propre pilule (Group 367, 286x71), qui ne
+ * s'aboute PAS a la premiere : elle commence 97px sous son extremite droite
+ * (x=903 pour une pilule de 1000), d'ou le double contour de la maquette.
+ * La pilule principale passe devant (z-index 2 sur .erpx-nav__bar). */
+.erpx-nav__inner > .erpx-nav__aside { margin-left: -113px; }
 .erpx-nav__aside {
+  position: relative;
+  z-index: 1;
   flex: 0 0 auto;
   display: flex;
   align-items: center;
-  padding: 10px 12px;
+  min-height: 71px;
+  padding: 0 11px 0 107px;
   border-radius: var(--erpx-radius-pill);
-  background: #fff;
-  box-shadow: var(--erpx-shadow-nav);
+  background: rgba(255, 255, 255, .45);
+  box-shadow: var(--erpx-shadow-nav), inset 0 0 0 1px rgba(255, 255, 255, .8);
+  backdrop-filter: blur(12px);
 }
 
 .erpx-nav__burger {
@@ -467,6 +541,416 @@
 .erpx-hero__media { position: relative; z-index: 1; }
 .erpx-hero__media img { display: block; width: 100%; height: auto; }
 
+/* ------------------------------------------------------------
+   8 bis. HEROS DE L'ACCUEIL (panneau en degrade)
+   ------------------------------------------------------------ */
+
+/* Le panneau remonte SOUS la navbar : la maquette le fait demarrer a 48px du
+ * haut du cadre alors que la pilule de navigation flotte a 62px, donc au-dessus
+ * de lui. layout_erpnext.html rend la navbar avant <main> ; une marge negative
+ * de sa hauteur (18px de rembourrage + 54px de pilule + 18px) remet le panneau
+ * au sommet de la page. */
+/* Sur l'accueil, la maquette pose le panneau a 41px du haut du cadre et la
+ * pilule a 26px sous le bord du panneau, donc a 67px. La navbar prend ce
+ * rembourrage (67 + 71 + 18 = 156px de haut) et le heros remonte de
+ * 156 - 41 = 115px. `top: -49px` garde la pilule a 18px du haut une fois
+ * collee au defilement, comme sur les autres pages. */
+.erpx-page-accueil .erpx-nav { padding-top: 67px; top: -49px; }
+.erpx-page-accueil .erpx-herox { margin-top: -115px; }
+
+.erpx-herox { position: relative; padding-inline: 27px; }
+
+/* Cotes relevees sur le cadre (1540 de large) : Frame 28, 1486x753 a 27px
+ * des bords, rayon 24. La hauteur est un MINIMUM — le texte francais est plus long
+ * que celui de la maquette et doit pouvoir pousser. */
+.erpx-herox__panel {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: 753px;
+  max-width: 1486px;
+  margin-inline: auto;
+  padding: 130px 4% clamp(40px, 7.8vw, 117px);
+  border-radius: 24px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Le fond de la maquette est un degrade en MAILLE, qu'aucun degrade CSS unique
+ * ne reproduit. Il est reconstitue par une base diagonale et trois halos,
+ * d'apres un releve le long des quatre bords du panneau :
+ *
+ *   bord gauche   blanc en haut -> #E8C8DF (rose) vers 73% -> #CFBCDB en bas
+ *   bande basse   #D4BDDB a gauche -> #588FD9 vers 28% -> #2062BD a droite
+ *   bord droit    #C4C6EA en haut -> #2E6BC9 vers 71% -> #2162BC en bas
+ *   bande haute   blanc a gauche -> #C4C7E9 a droite
+ *
+ * D'ou : un halo rose sur le flanc gauche aux deux tiers, un halo bleu clair
+ * en bas a gauche, et un bleu profond qui mange tout le flanc droit. */
+.erpx-herox__panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(40% 36% at 0% 78%, rgba(233, 166, 208, .95) 0%, rgba(233, 166, 208, 0) 100%),
+    radial-gradient(52% 50% at 18% 104%, rgba(64, 134, 222, .95) 0%, rgba(64, 134, 222, 0) 100%),
+    radial-gradient(74% 98% at 110% 82%, rgba(22, 92, 197, 1) 0%, rgba(22, 92, 197, 0) 100%),
+    linear-gradient(132deg, #FFFFFF 0%, #F7FAFF 22%, #E4E6F6 40%, #C4C7E9 55%, #8B86C6 75%, #3F6CC0 100%);
+}
+
+/* 48% : dans la maquette « Piloter son entreprise » court de 4% a 47% du
+ * panneau. En dessous, le titre casse en trois lignes, le bloc de texte
+ * grandit, et le panneau depasse les 757px — ce qui fait sortir les
+ * personnages par le bas. */
+.erpx-herox__texte { position: relative; z-index: 2; width: min(48%, 700px); }
+
+/* Pilule d'accroche (Rectangle 440, 457x40) : pastille en degrade de 49x40
+ * collee a gauche, libelle a 11px. Plus plate et plus longue que le badge
+ * commun, d'ou la surcharge locale. */
+.erpx-herox .erpx-badge {
+  height: 40px;
+  gap: 11px;
+  padding: 0 21px 0 0;
+  background: rgba(255, 255, 255, .78);
+  box-shadow: 0 4px 14px rgba(8, 26, 42, .08);
+  font-size: .82rem;
+  color: var(--erpx-balck);
+}
+.erpx-herox .erpx-badge__icon {
+  width: 49px;
+  height: 40px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #2F7BE0 0%, #8A74C0 55%, #C8559A 100%);
+}
+
+/* La maquette ecrit ce titre plus petit que le .erpx-h1 commun (qui plafonne a
+ * 68px) : a 68px, « Piloter son entreprise » ne tient plus sur une ligne dans
+ * la colonne de gauche et passe a trois lignes au lieu de deux. */
+/* `.erpx` en tete : sans lui, `.erpx h1 { margin: 0 }` (0,1,1) l'emporte. */
+.erpx .erpx-herox__titre {
+  margin: 27px 0 7px;
+  font-size: clamp(2rem, .9rem + 3.1vw, 3.6rem);
+  font-weight: 600;
+  line-height: 1.07;
+  letter-spacing: -.025em;
+  color: #01235C;
+}
+
+/* Le fichier est recadre au trace (710x134) : une hauteur en `em` se cale donc
+ * directement sur la hauteur de capitale de la ligne. */
+.erpx-herox__mot {
+  display: inline-block;
+  width: auto;
+  height: .817em;
+  vertical-align: baseline;
+  transform: translateY(.04em);
+}
+
+/* Texte 4105:2663 : 506px sur deux lignes, bleu nuit et non gris. */
+.erpx .erpx-herox__lead {
+  max-width: 506px;
+  margin-bottom: 27px;
+  font-size: 1rem;
+  line-height: 1.53;
+  color: var(--erpx-balck);
+}
+
+/* Button Contacts 4105:2648 : 263x50. */
+.erpx-herox .erpx-btn--lg { height: 50px; min-width: 263px; padding: 0 32px; font-size: 1rem; }
+
+/* La composition est calee sur le PANNEAU et non sur une colonne de grille :
+ * dans la maquette les personnages chevauchent la colonne de texte, ce qu'une
+ * grille en deux colonnes interdit. Les pourcentages sont lus sur une grille
+ * posee au dixieme sur le cadre. Tout y est decoratif. */
+.erpx-herox__scene { position: absolute; inset: 0; z-index: 1; }
+.erpx-herox__scene > img { position: absolute; display: block; }
+
+/* La capture est plus large que haute une fois recadree comme la maquette :
+ * `cover` montre toute la largeur du tableau et rogne le bas, exactement
+ * comme le calque. */
+.erpx-herox__capture {
+  left: 59%; top: 14%; width: 37.35%; height: auto;
+  /* La maquette pose la capture dans un cadre clair legerement plus grand,
+   * avec une ombre portee douce. Un anneau en box-shadow evite d'ajouter un
+   * element de plus pour le seul decor. */
+}
+/* Hauteur plutot que largeur : les personnages sont lus de la tete (21%) aux
+ * pieds (92%), mesure bien plus sure que leur empattement lateral. */
+.erpx-herox__perso { left: 47.6%; top: 25.9%; height: 66.4%; width: auto; }
+/* Le fichier porte un large halo transparent : la sphere visible n'occupe
+ * que 80% de sa largeur, decalee de 7% a gauche et 16% en haut dans la boite.
+ * La maquette montre la sphere de 35% a 44% en x et a partir de 76% en y : la
+ * boite est donc calee 1% plus a gauche et 5% plus haut. */
+/* Grande sphere : sans trainee dans la maquette, E incline d'environ -20deg,
+ * corps visible de 143px a (517, 570) du panneau. Le fichier porte un halo
+ * d'environ 8% de chaque cote, d'ou la boite un peu plus grande. */
+.erpx-herox__sphere--grande { left: 33.4%; top: 72.4%; width: 12.5%; height: auto; transform: rotate(-20deg); }
+.erpx-herox__sphere--petite { left: 91.5%; top: 18.4%; width: 8.4%; height: auto; }
+
+@media (max-width: 1199.98px) {
+  .erpx-herox__panel { min-height: 620px; }
+}
+
+@media (max-width: 991.98px) {
+  .erpx-page-accueil .erpx-nav { padding-top: 18px; top: 0; }
+  .erpx-page-accueil .erpx-herox { margin-top: -84px; }
+  .erpx-herox { padding-inline: 14px; }
+  /* Sous 992px la composition ne tient plus derriere le texte : le panneau
+   * repasse en colonne, la scene devient un bandeau et les spheres sont
+   * retirees faute de place. */
+  .erpx-herox__panel {
+    display: block;
+    min-height: 0;
+    padding: 124px 26px 0;
+  }
+  .erpx-herox__texte { width: auto; }
+  .erpx-herox__scene { position: relative; inset: auto; height: 340px; margin-top: 28px; }
+  .erpx-herox__capture { left: auto; right: 0; top: 0; width: 66%; height: 100%; }
+  .erpx-herox__perso { left: 0; top: auto; bottom: 0; height: 96%; }
+  .erpx-herox__sphere { display: none; }
+}
+
+@media (max-width: 767.98px) {
+  .erpx-herox__scene { height: 240px; }
+  .erpx-herox__panel { padding: 108px 18px 0; border-radius: 18px; }
+}
+
+
+/* ============================================================
+   8 bis. ACCUEIL — VISION 360°
+   ============================================================ */
+
+/* Cotes relevees sur le cadre 4105:2454 : le panneau du heros finit a y=794,
+ * le logotype commence a 865 (71px), la scene des tablettes finit a 1856. */
+.erpx-vision { position: relative; padding-top: 71px; }
+.erpx-vision__tete { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; text-align: center; }
+
+/* Le logotype (x=645) et l'encart (x=438) sont centres sur x=791 dans la
+ * maquette, soit 21px a droite du titre et du cadre : decalage repris. */
+.erpx-vision__logo { position: relative; left: 21px; display: block; width: 293px; height: auto; }
+
+/* 4105:2567 : Montserrat SemiBold 60/55, interlettrage -3.6px, degrade
+ * horizontal #01235C -> #004CC8 sur la largeur du bloc (1051px). */
+.erpx .erpx-vision__titre {
+  max-width: 1051px;
+  margin: 19px 0 16px;
+  font-size: clamp(2rem, 1rem + 3.2vw, 3.75rem);
+  font-weight: 600;
+  line-height: .917;
+  letter-spacing: -.06em;
+  background: linear-gradient(90deg, #01235C 0%, #004CC8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  padding-bottom: .12em; /* le jambage du « p » deborde de l'interligne de 55px */
+}
+
+/* Rectangle 442 : 708x174, rayon 30, liseré blanc de 4px, le tout a 50%
+ * d'opacite — d'ou la couche ::before, pour ne pas rendre le texte translucide. */
+.erpx-vision__encart {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  left: 21px;
+  width: min(708px, 100%);
+  min-height: 174px;
+  padding: 20px 46px;
+}
+.erpx-vision__encart::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border: 4px solid #fff;
+  border-radius: 30px;
+  background: linear-gradient(166.7deg, #FFFFFF 5.42%, #FBFBFB 53.11%, #FFFFFF 95.12%);
+  box-shadow: 0 0 10px rgba(0, 0, 0, .11), inset -20px -20px 35px rgba(142, 166, 187, .2), inset 15px 15px 35px rgba(220, 228, 236, .25);
+  backdrop-filter: blur(50px);
+  opacity: .5;
+}
+.erpx .erpx-vision__encart p {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 25px;
+  font-weight: 500;
+  color: var(--erpx-balck);
+}
+.erpx-vision__encart strong { font-weight: 700; }
+
+/* Retour a la ligne impose par la maquette, abandonne sous 768px. */
+@media (max-width: 767.98px) { .erpx-br-lg { display: none; } }
+
+/* Scene 4255:1024 : 1204x525, a 65px sous l'encart, decalee de 9px a droite
+ * du centre du cadre. */
+.erpx-vision__scene { position: relative; z-index: 1; margin-top: 65px; padding-inline: var(--erpx-gutter); }
+.erpx-vision__stage {
+  position: relative;
+  left: 9px;
+  width: min(1204px, 100%);
+  aspect-ratio: 1204 / 525;
+  margin-inline: auto;
+  container-type: inline-size;
+}
+.erpx-vision__stage img { position: absolute; display: block; max-width: none; }
+
+/* Boite englobante de chaque calque tourne ; le calque est centre dedans. */
+.erpx-vision__boite { position: absolute; display: flex; align-items: center; justify-content: center; }
+.erpx-vision__boite--g-cadre { left: 0;       top: 3.571cqw; width: 36.462cqw; height: 36.658cqw; }
+.erpx-vision__boite--g-ecran { left: 1.084cqw; top: 4.732cqw; width: 34.376cqw; height: 34.495cqw; }
+.erpx-vision__boite--d-ecran { left: 62.292cqw; top: 1.993cqw; width: 36.174cqw; height: 40.198cqw; }
+.erpx-vision__boite--d-cadre { left: 60.963cqw; top: .498cqw; width: 39.075cqw; height: 43.081cqw; }
+
+.erpx-vision__pivot { position: relative; flex: none; }
+/* Chaque image occupe son calque moins un liseré haut/bas (top/height en
+ * ligne dans le gabarit), repris des `inset` de la maquette. */
+.erpx-vision__pivot > img { left: 0; width: 100%; }
+.erpx-vision__pivot--g { transform: rotate(-19.56deg) skewX(.68deg); }
+.erpx-vision__pivot--d { transform: rotate(-172.72deg) scaleY(-1); }
+
+.erpx-vision__plat--cadre    { left: 28.488cqw; top: 0;        width: 43.439cqw; height: 31.645cqw; }
+.erpx-vision__plat--ecran    { left: 29.199cqw; top: .581cqw;  width: 42.017cqw; height: 30.266cqw; }
+.erpx-vision__plat--pastille { left: 29.199cqw; top: 2.685cqw; width: 1.896cqw;  height: 1.089cqw; }
+
+/* Halos : Group 111, 110, 109 et 112. Le SVG deborde de son groupe de
+ * 63.77% a gauche, 81.51% en haut (flou gaussien) — les boites ci-dessous
+ * sont celles du SVG, reportees depuis le centre du cadre et le haut de la
+ * section. */
+.erpx-vision__halos { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+/* Voiles lavande (flanc gauche, a hauteur de l'encart) et rose (flanc droit,
+ * a hauteur des tablettes), releves a #EDE3EE et #FAF1F5 sur la maquette. */
+.erpx-vision__halos::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(280px 240px at 130px 460px, rgba(196, 150, 200, .32) 0%, rgba(196, 150, 200, 0) 100%),
+    radial-gradient(300px 340px at calc(100% - 70px) 720px, rgba(240, 170, 200, .26) 0%, rgba(240, 170, 200, 0) 100%);
+}
+.erpx-vision__halo { position: absolute; display: block; max-width: none; height: auto; opacity: .4; }
+.erpx-vision__halo--a { left: calc(50% - 503px); top: 545px; width: 851px; }
+.erpx-vision__halo--b { left: calc(50% - 383px); top: 480px; width: 1117px; }
+.erpx-vision__halo--c { left: calc(50% + 352px); top: 692px; width: 851px; }
+.erpx-vision__halo--d { left: calc(50% + 201px); top: 750px; width: 1117px; }
+
+@media (max-width: 767.98px) {
+  .erpx-vision { padding-top: 48px; }
+  .erpx-vision__logo { width: 200px; }
+  .erpx .erpx-vision__titre { line-height: 1.05; }
+  .erpx-vision__logo, .erpx-vision__encart { left: 0; }
+  .erpx-vision__encart { padding: 22px 20px; }
+  .erpx-vision__scene { margin-top: 36px; }
+}
+
+/* ============================================================
+   8 ter. ACCUEIL — LES AVANTAGES
+   ============================================================ */
+
+/* Titre a y=1923 (67px sous la scene des tablettes), cartes a 2026, bouton
+ * a 3015 (80px sous les cartes). */
+.erpx-avg-section { position: relative; z-index: 1; padding-top: 67px; }
+
+/* 4105:2568 : meme corps que les autres titres de section de l'accueil. */
+.erpx .erpx-avg-section__titre {
+  text-align: center;
+  font-size: clamp(2rem, 1rem + 3.2vw, 3.75rem);
+  font-weight: 600;
+  line-height: 76px;
+  letter-spacing: -.06em;
+  color: #01235C;
+}
+
+/* Deux colonnes de 470 espacees de 20, calees sur x=300 : le bloc est centre
+ * 10px a droite de l'axe du cadre, comme dans la maquette. */
+.erpx-avg {
+  position: relative;
+  left: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 470px));
+  justify-content: center;
+  gap: 20px;
+  margin-top: 27px;
+}
+.erpx-avg__col { display: flex; flex-direction: column; gap: 20px; }
+
+.erpx-avg__carte {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  padding: 0 40px 32px 45px;
+  border-radius: 20px;
+}
+
+/* Illustrations en absolu, cotes en cqw posees en ligne par le gabarit. Le
+ * conteneur de requete est ce calque et non la carte : les unites cqw se
+ * rapportent a la boite de CONTENU, que le rembourrage de la carte reduirait
+ * a 385px au lieu de 470. */
+.erpx-avg__illu { position: absolute; inset: 0; z-index: -1; container-type: size; }
+.erpx-avg__illu img { position: absolute; display: block; max-width: none; height: auto; }
+
+.erpx .erpx-avg__titre {
+  font-size: 25px;
+  font-weight: 600;
+  line-height: 30px;
+  letter-spacing: -.01em;
+  color: var(--erpx-balck);
+}
+.erpx .erpx-avg__texte {
+  margin-bottom: 0;
+  font-size: 14.5px;
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--erpx-balck);
+}
+.erpx-avg__texte strong { font-weight: 700; }
+
+/* Fonds releves au pixel sur les quatre cartes (Rectangle 9 / 10) ; les
+ * halos flous de la maquette (Group 110 a 112 dans chaque carte) sont rendus
+ * par des degrades radiaux. */
+.erpx-avg__carte--bleu {
+  background:
+    radial-gradient(34% 26% at 50% 73%, rgba(224, 112, 160, .85) 0%, rgba(224, 112, 160, 0) 100%),
+    radial-gradient(38% 30% at 92% 55%, rgba(72, 128, 214, .55) 0%, rgba(72, 128, 214, 0) 100%),
+    linear-gradient(180deg, #E0ECFF 0%, #DCE9FE 30%, #B9CEF0 62%, #86ADE5 100%);
+}
+.erpx-avg__carte--rose {
+  background:
+    radial-gradient(60% 80% at 100% 100%, rgba(255, 120, 150, .9) 0%, rgba(255, 120, 150, 0) 100%),
+    linear-gradient(100deg, #FFE7EE 0%, #FFD9E2 38%, #FFB2C4 72%, #FF94AC 100%);
+}
+.erpx-avg__carte--lavande {
+  background:
+    radial-gradient(32% 20% at 28% 52%, rgba(255, 255, 255, .95) 0%, rgba(255, 255, 255, 0) 100%),
+    radial-gradient(44% 26% at 58% 80%, rgba(226, 150, 190, .75) 0%, rgba(226, 150, 190, 0) 100%),
+    linear-gradient(180deg, #E1EDFF 0%, #E4E8F8 30%, #D6CEE6 55%, #BDB9E0 80%, #8BA9DF 100%);
+}
+.erpx-avg__carte--rose-clair {
+  background: linear-gradient(125deg, #FFFFFF 0%, #FFEEF3 40%, #FFC3D0 75%, #FF8AA4 100%);
+}
+
+/* Button Contacts 4105:2679 : 342x71, libelle de 19px. */
+.erpx-avg-section__cta { position: relative; left: 22px; margin-top: 80px; text-align: center; }
+.erpx-avg-section__cta .erpx-btn { height: 71px; min-width: 342px; padding: 0 40px; font-size: 1.2rem; }
+
+@media (max-width: 991.98px) {
+  .erpx-avg { left: 0; grid-template-columns: minmax(0, 470px); }
+  .erpx-avg-section__cta { left: 0; }
+}
+@media (max-width: 767.98px) {
+  .erpx-avg-section { padding-top: 48px; }
+  .erpx .erpx-avg-section__titre { line-height: 1.2; }
+  /* Le texte ne retrecit pas avec la carte : les illustrations, posees en cqw
+   * sur toute la carte, passeraient dessous. La zone illustree repasse donc en
+   * flux, SOUS le texte, remontee de son decalage d'origine (--iy). */
+  .erpx-avg__carte { display: flex; flex-direction: column; padding-inline: 24px; padding-bottom: 0; aspect-ratio: auto !important; }
+  .erpx-avg__col { container-type: inline-size; } /* resout --ih (cqw) sur la largeur de carte */
+  .erpx-avg__illu { position: relative; inset: auto; order: 3; height: var(--ih); margin: 16px -24px 0 -24px; }
+  .erpx-avg__illu img { translate: 0 calc(-1 * var(--iy)); }
+  .erpx .erpx-pq__carte-titre { font-size: 18px; line-height: 22px; }
+  .erpx-avg-section__cta .erpx-btn { min-width: 0; height: 56px; font-size: 1rem; }
+}
+
 /* ============================================================
    9. CARTES
    ============================================================ */
@@ -491,12 +975,9 @@
  * voile degrade, titre en haut, panneau verre en bas. Maquette : 383x630. */
 .erpx-segment {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 560px;
-  padding: 34px 30px;
-  border-radius: var(--erpx-radius-xl);
+  min-height: 630px;
+  padding-top: 40px;
+  border-radius: 22px;
   overflow: hidden;
   isolation: isolate;
   color: #fff;
@@ -516,116 +997,670 @@
   background: var(--erpx-grad-card-veil);
   z-index: -1;
 }
-.erpx-segment__title {
-  font-size: clamp(1.9rem, 1.3rem + 1.6vw, 3rem);
-  line-height: 1.02;
-  letter-spacing: -.06em;
+/* 4105:2570 / 4146:1065 / 4146:1084 : 44px, blanc, deux lignes pour
+ * « Grandes Entreprises ». */
+.erpx .erpx-segment__title {
+  padding-right: 20px;
+  font-size: 44px;
+  line-height: 1;
+  letter-spacing: -.01em;
   font-weight: 600;
   text-shadow: 0 0 15px rgba(0, 0, 0, .25);
 }
-.erpx-segment__panel {
-  border-radius: var(--erpx-radius-lg);
-  background: var(--erpx-grad-glass-deep);
-  backdrop-filter: blur(6px);
-  padding: 26px 24px;
-  font-size: 1rem;
-  line-height: 1.4;
+/* Frame 33 / 54 / 55 : panneau verre de 283x226, a 27px du bas. */
+.erpx .erpx-segment__panel {
+  position: absolute;
+  bottom: 27px;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 283px;
+  min-height: 226px;
+  margin: 0;
+  padding: 20px 22px;
+  border-radius: 20px;
+  /* Verre bleute + halo #0073D1 au centre (Group 112 du panneau) : releve a
+   * #0F71CD au coeur, #9EB1C9 en haut a gauche, #528BC8 en bas a droite. */
+  background:
+    radial-gradient(58% 52% at 50% 56%, rgba(0, 115, 209, .72) 0%, rgba(0, 115, 209, 0) 100%),
+    linear-gradient(165deg, rgba(190, 210, 238, .5) 0%, rgba(90, 150, 222, .62) 55%, rgba(45, 120, 205, .78) 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .22);
+  backdrop-filter: blur(8px);
+  font-size: 16.5px;
+  line-height: 25px;
   text-align: center;
+  font-weight: 400;
+}
+
+/* ============================================================
+   9 bis. ACCUEIL — DÉCOUVREZ TOUT LE POTENTIEL
+   ============================================================ */
+
+/* Le bouton des avantages finit a y=3086, le titre commence a 3221. */
+.erpx-seg { position: relative; padding-top: 135px; }
+.erpx-seg__tete { position: relative; z-index: 1; text-align: center; }
+
+/* Group 360 : 66px, ligne de 61 ; la seconde ligne est « d’ » + le logotype
+ * (293x75, pose sur la ligne de base). Centre 25px a droite de l'axe. */
+.erpx .erpx-seg__titre {
+  position: relative;
+  left: 25px;
+  font-size: clamp(2rem, 1rem + 3.4vw, 4.125rem);
+  font-weight: 600;
+  line-height: 61px;
+  letter-spacing: 0;
+  color: #01235C;
+}
+.erpx-seg__titre-l2 { display: inline-flex; align-items: flex-end; height: 75px; }
+.erpx-seg__titre-l2 img { display: block; width: 293px; height: auto; margin-left: -18px; }
+
+.erpx .erpx-seg__sous-titre {
+  position: relative;
+  left: 44px;
+  margin: 14px 0 0;
+  font-size: 20.8px;
+  line-height: 30px;
+  font-weight: 400;
+  color: #01235C;
+}
+.erpx-seg__sous-titre strong { font-weight: 700; }
+
+/* Cartes : 383 / 385 / 383, a y=3661 ; le bloc est centre 4px a droite. */
+.erpx-seg__cartes {
+  position: relative;
+  z-index: 1;
+  left: 4px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 384px));
+  justify-content: center;
+  gap: 37px;
+  margin-top: 230px;
+  padding-inline: var(--erpx-gutter);
+}
+
+/* Decor : cotes relevees sur le cadre, reportees depuis son axe (770px) et
+ * le haut de la section (y=3086). */
+.erpx-seg__deco { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.erpx-seg__deco > * { position: absolute; display: block; max-width: none; }
+.erpx-seg__sphere--petite { left: calc(50% + 541px); top: -28px; width: 101px; height: auto; }
+.erpx-seg__sphere--grande { left: calc(50% - 562px); top: 251px; width: 143px; height: auto; transform: rotate(-20deg); }
+.erpx-seg__homme { left: calc(48% - 710px); top: 606px; width: 270px; height: auto; }
+.erpx-seg__femme { left: calc(50% + 470px); top: 606px; width: 270px; height: 650px; overflow: hidden; }
+.erpx-seg__femme img { position: absolute; left: -363px; top: 0; width: 620px; max-width: none; height: auto; }
+
+@media (max-width: 1399.98px) {
+  .erpx-seg__homme, .erpx-seg__femme, .erpx-seg__sphere { display: none; }
+}
+@media (max-width: 1199.98px) {
+  .erpx-seg__cartes { left: 0; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+  .erpx .erpx-segment__panel { left: 16px; right: 16px; width: auto; margin-left: 0 !important; }
+}
+@media (max-width: 991.98px) {
+  .erpx-seg { padding-top: 72px; }
+  .erpx .erpx-seg__titre, .erpx .erpx-seg__sous-titre { left: 0; line-height: 1.1; }
+  .erpx-seg__titre-l2 { height: auto; }
+  .erpx-seg__titre-l2 img { width: 190px; margin-left: -10px; }
+  .erpx-seg__cartes { grid-template-columns: minmax(0, 420px); margin-top: 48px; }
+}
+
+/* ============================================================
+   9 ter. ACCUEIL — POURQUOI NOUS CHOISIR
+   ============================================================ */
+
+/* Panneau photo : image 153/154, 1486x1156 a 27px des bords, rayon 24. */
+.erpx-pq { position: relative; padding: 75px 27px 0; }
+.erpx-pq__panneau {
+  --erpx-pq-fond: none; /* remplace en ligne quand la photo existe */
+  position: relative;
+  max-width: 1486px;
+  min-height: 1156px;
+  margin-inline: auto;
+  border-radius: 24px;
+  overflow: hidden;
+  isolation: isolate;
+  color: #fff;
+  /* Photo du bureau par-dessus un degrade de ses tons (releves : gris froid en
+   * haut, bois fonce en bas) — le degrade reste seul visible tant que la photo
+   * n'est pas deposee. Le voile sombre du haut (Rectangle 445, 805px) garde le
+   * titre lisible. */
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, .28) 0%, rgba(0, 0, 0, 0) 70%) top / 100% 805px no-repeat,
+    var(--erpx-pq-fond) center / cover no-repeat,
+    radial-gradient(40% 30% at 55% 45%, rgba(120, 124, 126, .55) 0%, rgba(120, 124, 126, 0) 100%),
+    linear-gradient(180deg, #555A5C 0%, #3B403D 38%, #4A4540 68%, #5B4232 100%);
+}
+.erpx-pq__persos { position: absolute; left: 0; top: 0; z-index: 0; width: 100%; height: 100%; object-fit: cover; object-position: left top; }
+/* image 183 : corps de sphere de 242px a (644, 277) du panneau ; le fichier
+ * porte un halo, d'ou une boite plus grande que le calque (249x244). */
+.erpx-pq__sphere { position: absolute; left: calc(50% - 147px); top: 228px; z-index: 1; width: 342px; height: auto; transform: rotate(-15deg); }
+
+.erpx-pq__tete { position: relative; z-index: 2; padding-top: 84px; text-align: center; }
+.erpx .erpx-pq__titre {
+  font-size: clamp(2rem, 1rem + 2.4vw, 3rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -.01em;
+  color: #fff;
+}
+.erpx-pq__titre img { display: inline-block; width: auto; height: .875em; vertical-align: baseline; transform: translateY(.06em); }
+.erpx .erpx-pq__sous-titre {
+  margin: 18px 0 0;
+  font-size: 21.5px;
+  line-height: 34px;
   font-weight: 500;
+  color: #fff;
+}
+
+/* Rectangle 82 : verre blanc, 516px de large. */
+.erpx-pq__carte {
+  position: absolute;
+  left: calc(50% - 743px + var(--x));
+  top: var(--y);
+  z-index: 2;
+  width: 516px;
+  min-height: var(--h);
+  padding: 33px 17px 24px 37px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, .5);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .35), 0 10px 30px rgba(0, 0, 0, .12);
+  backdrop-filter: blur(14px);
+  color: var(--erpx-balck);
+}
+.erpx-pq__entete { display: flex; align-items: center; gap: 16px; margin-left: 5px; }
+/* Frame 49 a 52 : pastille 70x70 au degrade des tuiles modules, glyphe 40px. */
+.erpx-pq__icone {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 70px;
+  height: 70px;
+  border-radius: 16px;
+  background: var(--erpx-grad-tile);
+  color: #01235C;
+}
+.erpx-pq__icone svg { width: 40px; height: 40px; }
+.erpx .erpx-pq__carte-titre { font-size: 22px; font-weight: 600; line-height: 24px; letter-spacing: -.01em; color: #01235C; }
+.erpx .erpx-pq__carte-texte { margin: 10px 0 0; font-size: 14.5px; line-height: 25px; font-weight: 400; color: var(--erpx-balck); }
+
+/* Button Contacts 4105:2973 : 342x71 a y=1051 du panneau. */
+.erpx-pq__cta { position: absolute; left: 0; right: 0; top: 1051px; z-index: 2; text-align: center; }
+.erpx-pq__cta .erpx-btn { height: 71px; min-width: 342px; padding: 0 40px; font-size: 1.2rem; }
+
+@media (max-width: 1299.98px) {
+  .erpx-pq__panneau { min-height: 0; padding: 0 24px 48px; }
+  .erpx-pq__persos { opacity: .35; }
+  .erpx-pq__sphere { position: relative; left: auto; top: auto; display: block; width: 160px; margin: 24px auto 0; }
+  .erpx-pq__cartes { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-top: 28px; }
+  .erpx-pq__carte { position: relative; left: auto; top: auto; width: auto; min-height: 0; }
+  .erpx-pq__cta { position: relative; top: auto; margin-top: 32px; }
+}
+@media (max-width: 767.98px) {
+  .erpx-pq { padding-inline: 14px; }
+  .erpx-pq__cartes { grid-template-columns: minmax(0, 1fr); }
+  .erpx-pq__cta .erpx-btn { min-width: 0; height: 56px; font-size: 1rem; }
+  .erpx .erpx-pq__sous-titre { font-size: 1rem; line-height: 1.5; }
 }
 
 /* ============================================================
    10. TUILES MODULE
    ============================================================ */
 
+/* La maquette aligne 4 tuiles de 120px au pas de 208px. On donne donc aux
+ * colonnes la largeur du PAS (4 x 208 = 832px) et on y centre la tuile, plutot
+ * que de caler les colonnes sur la tuile : l'intitule le plus long
+ * — « ( + Intégration directe FNE ) » — deborde les 120px de la tuile et se
+ * couperait en deux lignes, ce que la maquette ne fait pas. */
+/* Section « Nos Modules » de l'accueil : les cartes segment finissent a
+ * y=4296, le titre (ligne de 76) commence a 4494, les tuiles a 4660, le
+ * bouton a 5331. */
+.erpx-modsec { position: relative; padding-top: 203px; }
+.erpx .erpx-modsec__titre {
+  text-align: center;
+  font-size: clamp(2rem, 1rem + 3.2vw, 3.75rem);
+  font-weight: 600;
+  line-height: 76px;
+  letter-spacing: -.06em;
+  color: #01235C;
+}
+.erpx-modsec .erpx-modules { position: relative; left: 8px; margin-top: 90px; grid-auto-rows: 205px; row-gap: 0; }
+.erpx-modsec__cta { margin-top: 55px; text-align: center; }
+.erpx-modsec__cta .erpx-btn {
+  height: 60px;
+  min-width: 328px;
+  padding: 0 32px;
+  font-size: .95rem;
+  color: #01235C;
+  box-shadow: inset 0 0 0 1.5px #01235C;
+}
+
 .erpx-modules {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(20px, 3vw, 46px) clamp(12px, 2vw, 28px);
+  gap: clamp(28px, 4vw, 44px) 0;
+  max-width: 832px;
+  margin-inline: auto;
 }
 
-.erpx-tile { display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
+.erpx-tile { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
 
+/* Releve au pixel sur la rangee de tuiles de l'accueil (y=4719) : carre de
+ * 120px, pas horizontal de 208px, degrade diagonal du bleu vers le rose et
+ * glyphe BLANC — et non le fond verre translucide a glyphe colore qui etait ici.
+ * Les teintes sont echantillonnees aux deux extremites de la diagonale. */
 .erpx-tile__icon {
   display: grid;
   place-items: center;
-  width: 108px;
-  height: 108px;
-  border-radius: 30px;
-  background: var(--erpx-grad-glass);
+  width: 120px;
+  height: 120px;
+  border-radius: 22px;
+  background: var(--erpx-grad-tile);
+  color: #fff;
   box-shadow: var(--erpx-shadow-soft);
   transition: transform .2s ease, box-shadow .2s ease;
 }
-.erpx-tile__icon img, .erpx-tile__icon svg { width: 46px; height: 46px; }
+.erpx-tile__icon img, .erpx-tile__icon svg { width: 48px; height: 48px; }
+/* Meme miroir que sur les cartes du catalogue : les icones inline sont
+ * derivees des exports Figma, qui sont des noeuds NON transformes. */
+.erpx-tile__icon--miroir svg { transform: scaleX(-1); }
 .erpx-tile:hover .erpx-tile__icon { transform: translateY(-4px); box-shadow: var(--erpx-shadow-card); }
 
-.erpx-tile__label { font-size: .98rem; font-weight: 600; line-height: 1.3; max-width: 14ch; }
-
-/* ============================================================
-   11. LIGNES DE FONCTIONNALITE
-   ============================================================ */
-
-.erpx-features { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
-
-.erpx-feature {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  padding: 22px 24px;
-  border-radius: var(--erpx-radius-md);
-  background: #fff;
-  box-shadow: var(--erpx-shadow-soft);
+.erpx-tile__label {
+  font-size: 1.05rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: #01235C;
 }
-.erpx-feature__icon { flex: 0 0 auto; width: 34px; height: 34px; color: var(--erpx-blue-400); }
-.erpx-feature__icon img, .erpx-feature__icon svg { width: 100%; height: 100%; }
-.erpx-feature__text { font-size: .95rem; line-height: 1.55; color: var(--erpx-ink-soft); margin: 0; }
-.erpx-feature__text strong { color: var(--erpx-ink); font-weight: 600; }
+
+/* « ( + Intégration directe FNE ) » sous « Comptabilité » : seule entree de la
+ * liste a porter une precision, que la maquette met sur une seconde ligne. */
+.erpx-tile__precision { display: block; font-size: .84rem; font-weight: 400; }
 
 
 /* ============================================================
-   11 bis. BLOC TEXTE / VISUEL ALTERNE (pages module)
+   10 bis. CARTES MODULE + EN-TETE — page /erpnext/modules
    ============================================================ */
 
-.erpx-split {
+/* La maquette pose 3 colonnes de cartes 380x220 espacees de 40px.
+ *
+ * La hauteur y est fixe ; ici elle est un MINIMUM. Les cartes du mini-site sont
+ * fluides, et la description la plus longue (Qualite, 124 signes) passe a quatre
+ * lignes des que la colonne perd quelques pixels : un `height` ferme la
+ * deborderait. */
+/* Cadre 4167:265 : pilule a y=44, titre a 214 (bloc de 165 centre sur deux
+ * lignes de 60), cartes a y=540, footer a 1723 (183px sous les cartes). */
+.erpx-page-modules .erpx-nav { padding-top: 44px; top: -26px; }
+.erpx-page-modules .erpx-footer { margin-top: 183px; }
+.erpx-page-modules .erpx-shell { position: relative; }
+.erpx-modules-head, .erpx-modgrid-section { position: relative; z-index: 1; }
+.erpx-modules-head { padding: 81px var(--erpx-gutter) 0; }
+.erpx-modgrid-section { padding: 150px var(--erpx-gutter) 0; }
+.erpx-modgrid-section .erpx-container { max-width: 1220px; padding-inline: 0; }
+
+/* Halos etalonnes au pixel : bleu-violet #5057BE au centre des cartes
+ * (Ellipse 43), rose #FE6898 sur le flanc droit (Group 106), magenta #CB62A5
+ * a gauche (Group 107), voile rouge (Group 103). */
+.erpx-modules-halos {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -133px;
+  height: 1700px;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(380px 460px at calc(50% - 200px) 880px, rgba(55, 65, 190, .85) 0%, rgba(55, 65, 190, 0) 100%),
+    radial-gradient(520px 440px at calc(50% + 420px) 700px, rgba(250, 60, 130, .72) 0%, rgba(250, 60, 130, 0) 100%),
+    radial-gradient(320px 380px at calc(50% - 620px) 660px, rgba(200, 70, 160, .7) 0%, rgba(200, 70, 160, 0) 100%),
+    radial-gradient(420px 320px at calc(50% - 280px) 740px, rgba(230, 7, 44, .22) 0%, rgba(230, 7, 44, 0) 100%),
+    radial-gradient(360px 260px at calc(50% + 150px) 820px, rgba(160, 80, 170, .45) 0%, rgba(160, 80, 170, 0) 100%);
+}
+
+/* 3 colonnes de 380, espacees de 40 (x=146 / 566 / 986), centrees 14px a
+ * gauche de l'axe. */
+.erpx-modgrid {
+  position: relative;
+  left: -14px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 380px));
+  justify-content: center;
+  gap: 40px;
+}
+
+/* Rectangle 16 : 380x220, rayon 25, blanc, ombre 0 0 4 #000/25. Glyphe a
+ * (38, 27), titre a y=94, texte a y=126. */
+.erpx-modcard {
+  display: flex;
+  flex-direction: column;
+  min-height: 220px;
+  padding: 27px 60px 24px 38px;
+  border-radius: 25px;
+  background: var(--erpx-surface);
+  box-shadow: 0 0 4px rgba(0, 0, 0, .25);
+  color: #022443;
+}
+
+/* La maquette ne pose AUCUNE ombre : ce sont des aplats blancs sur le degrade de
+ * page. Seule la carte qui mene quelque part signale qu'elle est cliquable —
+ * a ce jour Stocks, seul module a avoir une page dediee. */
+a.erpx-modcard { transition: transform .2s ease, box-shadow .2s ease; }
+a.erpx-modcard:hover { transform: translateY(-4px); box-shadow: var(--erpx-shadow-card); }
+a.erpx-modcard:focus-visible { outline: 0; box-shadow: var(--erpx-ring); }
+
+/* Bande de hauteur fixe : la maquette fait varier le cote du glyphe de 50 a
+ * 65px d'une carte a l'autre (equilibrage optique) tout en gardant les titres
+ * alignes d'une colonne a l'autre. Centrer chaque glyphe dans une bande commune
+ * donne exactement cela, sans figer les cartes a une hauteur close. */
+.erpx-modcard__icon {
+  display: flex;
   align-items: center;
-  gap: clamp(28px, 5vw, 72px);
+  height: 65px;
+  margin-bottom: 2px;
 }
-.erpx-split + .erpx-split { margin-top: clamp(48px, 6vw, 96px); }
+.erpx-modcard__icon img { display: block; }
 
-/* L'ordre visuel alterne sans toucher a l'ordre du DOM : le texte reste
- * toujours avant l'image dans le flux, donc dans l'ordre de lecture et de
- * tabulation. */
-.erpx-split--reverse > :first-child { order: 2; }
+/* Miroir horizontal que la maquette applique a 11 glyphes sur 12 — cf.
+ * `icon_miroir` dans erpnext_site.py. Figma le porte sur le calque PARENT et ne
+ * le cuit pas dans l'export : il faut le rejouer ici. */
+.erpx-modcard__icon--miroir img { transform: scaleX(-1); }
 
-/* Reserve la place du visuel tant qu'il n'est pas fourni : sans cela, la
- * colonne s'effondre et la grille perd son equilibre. */
-.erpx-split__placeholder {
-  aspect-ratio: 4 / 3;
-  border-radius: var(--erpx-radius-lg);
-  background: var(--erpx-grad-glass);
-  opacity: .5;
+/* font-weight explicite : le reset local met tous les h1-h6 a 700, la maquette
+ * ecrit les titres de carte en Medium. */
+.erpx .erpx-modcard__title {
+  font-size: clamp(1.3rem, 1.1rem + .6vw, 1.5rem);
+  font-weight: 500;
+  line-height: 30px;
+  letter-spacing: -.05em;
+  color: #022443;
 }
 
-@media (max-width: 991.98px) {
-  .erpx-split { grid-template-columns: minmax(0, 1fr); }
-  .erpx-split--reverse > :first-child { order: 0; }
+/* « ( + Intégration directe FNE ) » : seconde ligne en 15px sous un titre en
+ * 24px (calque 4168:426). Seule entree de la liste a en porter une. */
+.erpx-modcard__precision {
+  display: block;
+  margin-top: 2px;
+  font-size: .9375rem;
+  line-height: 1.33;
+  letter-spacing: -.03em;
+}
+
+/* Carte Comptabilité (4168:426) : titre et precision serres sur un interligne
+ * de 20, le bloc commence 7px plus haut que les autres titres. */
+.erpx .erpx-modcard__title:has(.erpx-modcard__precision) { margin-top: -7px; line-height: 22px; }
+
+.erpx .erpx-modcard__text {
+  margin: 2px 0 0;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: -.06em;
+  color: #022443;
+}
+
+/* L'en-tete sort des valeurs communes du mini-site sur quatre points, tous
+ * releves sur les calques 4168:569 (titre) et 4168:570 (chapeau) :
+ *
+ *   - le titre est en Montserrat SemiBold 64px sur 60px d'interlignage, la ou
+ *     .erpx-h1 monte a 68px sur 1.06 et herite du 700 du reset ;
+ *   - il est ecrit en BLEU (#01235C, soit --erpx-blue-700) et non dans l'encre
+ *     commune, qui rend presque noir ;
+ *   - le chapeau est en 24px dans ce meme bleu, et non en 19px d'encre
+ *     attenuee comme .erpx-lead partout ailleurs ;
+ *   - les deux blocs sont plus larges que le .erpx-title-block commun (1021 et
+ *     750px contre 880 et 720). Sans cette largeur, le titre casse en TROIS
+ *     lignes au lieu des deux de la maquette. */
+.erpx-modules-head__inner { position: relative; max-width: 1021px; }
+
+.erpx .erpx-modules-head .erpx-h1 {
+  font-size: clamp(2.2rem, 1.1rem + 3.4vw, 4rem);
+  font-weight: 600;
+  line-height: 60px;
+  letter-spacing: -.06em;
+  color: var(--erpx-blue-700);
+}
+
+.erpx .erpx-modules-head .erpx-lead {
+  max-width: 750px;
+  margin-top: 21px;
+  margin-bottom: 0;
+  line-height: 35px;
+  font-size: clamp(1.05rem, .9rem + .65vw, 1.5rem);
+  line-height: 1.46;
+  letter-spacing: -.05em;
+  color: var(--erpx-blue-700);
+}
+
+/* Les deux spheres ERPNext sont calees sur le centre de la page — `50%` du bloc
+ * de titre, qui est centre — et verticalement sur le HAUT du <h1> plutot que
+ * sur la section, dont le rembourrage varie avec la largeur. Ecarts releves sur
+ * le cadre, large de 1540px (centre a 770), titre a y=192 :
+ *     grande : x 94   ->  94 - 770 = -676  | y 255 ->  +63px
+ *     petite : x 1269 -> 1269 - 770 = +499 | y 186 ->   -6px
+ * z-index negatif : elles passent derriere le titre, comme dans la maquette ou
+ * elles l'effleurent sans jamais le couvrir. */
+.erpx-modules-head__deco {
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  user-select: none;
+}
+.erpx-modules-head__deco--lg { left: calc(50% - 676px); top: 41px; }
+.erpx-modules-head__deco--sm { left: calc(50% + 499px); top: -27px; transform: rotate(26.29deg); }
+
+/* ============================================================
+   11. PAGES MODULE (cadre 3660:32 « Module Stocks », 1540x4656)
+   ============================================================ */
+
+/* Pilule a y=54 sur ce cadre (navbar : 54 + 71 + 18 = 143px) ; footer a
+ * 87px sous les libelles du carrousel (y=4063). */
+.erpx-page-module .erpx-nav { padding-top: 54px; top: -36px; }
+.erpx-page-module .erpx-footer { margin-top: 79px; }
+
+.erpx-mod { position: relative; }
+.erpx-mod > section { position: relative; z-index: 1; }
+
+/* Halos etalonnes au pixel : rose #FF83A8 sur le flanc droit du heros, bleu
+ * #91ABE4 derriere le titre, bleu-violet #868CD6 au-dessus du panneau des
+ * fonctionnalites (Ellipse 59), rose #F698BC a sa gauche (Group 368). */
+.erpx-mod__halos {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -143px;
+  height: 3500px;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(420px 640px at calc(50% + 720px) 760px, rgba(255, 90, 140, .6) 0%, rgba(255, 90, 140, 0) 100%),
+    radial-gradient(360px 240px at calc(50% + 380px) 420px, rgba(255, 110, 150, .55) 0%, rgba(255, 110, 150, 0) 100%),
+    radial-gradient(420px 220px at calc(50% - 250px) 400px, rgba(90, 130, 215, .55) 0%, rgba(90, 130, 215, 0) 100%),
+    radial-gradient(520px 320px at calc(50% + 150px) 2300px, rgba(80, 100, 210, .6) 0%, rgba(80, 100, 210, 0) 100%),
+    radial-gradient(420px 460px at calc(50% - 760px) 2830px, rgba(240, 80, 140, .7) 0%, rgba(240, 80, 140, 0) 100%),
+    radial-gradient(360px 300px at calc(50% - 420px) 2780px, rgba(255, 150, 185, .45) 0%, rgba(255, 150, 185, 0) 100%);
+}
+
+/* --- Heros : titre 64/70 (3660:74), accroche 24/35 (3660:87), photo
+ *     1136x600 rayon 25 (image 199) voilee a 25% (image 200). --- */
+.erpx-mh { padding: 61px var(--erpx-gutter) 0; text-align: center; }
+.erpx .erpx-mh__titre {
+  max-width: 1156px;
+  margin-inline: auto;
+  font-size: clamp(2.2rem, 1rem + 3.4vw, 4rem);
+  font-weight: 600;
+  line-height: 70px;
+  letter-spacing: -.06em;
+  color: #01235C;
+}
+.erpx .erpx-mh__lead {
+  max-width: 1052px;
+  margin: 7px auto 0;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 35px;
+  letter-spacing: -.05em;
+  color: #01235C;
+}
+.erpx-mh__media { position: relative; max-width: 1136px; margin: 46px auto 0; border-radius: 25px; overflow: hidden; }
+.erpx-mh__media img { display: block; width: 100%; height: auto; }
+.erpx-mh__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, .125) 0%, rgba(102, 102, 102, 0) 100%);
+  pointer-events: none;
+}
+/* Pastille du module (Group 375) : 185x54 a (46, 52), blanc a 60%, liseré
+ * degrade blanc -> #F1F1FF, pictogramme solar:box-bold de 42px. */
+.erpx-mh__badge {
+  position: absolute;
+  left: 46px;
+  top: 52px;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 54px;
+  min-width: 185px;
+  padding: 0 24px 0 32px;
+  border: 1px solid #F1F1FF;
+  border-radius: 32px;
+  background: rgba(255, 255, 255, .6);
+  backdrop-filter: blur(6px);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -.05em;
+  color: #01235C;
+}
+.erpx-mh__badge-icone { display: inline-flex; color: #043F93; }
+.erpx-mh__badge-icone svg { width: 42px; height: 42px; }
+/* Bouton 4159:184 : 37px sous la photo, centre 25px a droite de l'axe. */
+.erpx-mh__cta { position: relative; left: 25px; margin-top: 37px; }
+.erpx-mh__cta .erpx-btn, .erpx-mcta .erpx-btn { height: 50px; min-width: 263px; font-size: 16px; }
+
+/* --- Blocs texte / visuel. Cotes reportees depuis l'axe du cadre :
+ *   bloc 1 : x=209 a 1362, visuel 523x369 a droite, titre 58px plus bas ;
+ *   bloc 2 : x=142 a 1346, visuels 470x519 et 366x404 (le second en
+ *            chevauchement a +277/+132), texte aligne a droite 40px plus bas. */
+.erpx-mi { padding: 106px var(--erpx-gutter) 0; }
+.erpx-mi__bloc { position: relative; }
+.erpx-mi__bloc--1 { left: 15px; max-width: 1153px; min-height: 369px; margin-inline: auto; }
+.erpx-mi__bloc--2 { left: -26px; max-width: 1204px; min-height: 536px; margin: 103px auto 0; }
+.erpx-mi__texte { position: relative; z-index: 1; }
+.erpx-mi__bloc--1 .erpx-mi__texte { max-width: 602px; padding-top: 58px; }
+.erpx-mi__bloc--2 .erpx-mi__texte { max-width: 664px; margin-left: auto; padding-top: 40px; text-align: right; }
+.erpx .erpx-mi__titre { font-size: clamp(2rem, 1rem + 2.6vw, 3.125rem); font-weight: 600; line-height: 50px; letter-spacing: -.06em; color: #01235C; }
+.erpx .erpx-mi__para { margin: 24px 0 0; font-size: 20px; font-weight: 500; line-height: 30px; letter-spacing: -.05em; color: #01235C; }
+.erpx-mi__bloc--1 .erpx-mi__para { max-width: 510px; }
+.erpx-mi__bloc--2 .erpx-mi__para { max-width: 550px; margin-left: auto; margin-top: 20px; }
+.erpx-mi__media { position: absolute; top: 0; }
+.erpx-mi__bloc--1 .erpx-mi__media { right: 0; width: 523px; }
+.erpx-mi__bloc--2 .erpx-mi__media { left: 0; width: 643px; height: 536px; }
+.erpx-mi__img { display: block; width: 100%; height: auto; }
+.erpx-mi__bloc--2 .erpx-mi__img { position: absolute; left: 0; top: 0; width: 470px; }
+.erpx-mi__bloc--2 .erpx-mi__img--2 { left: 277px; top: 132px; width: 366px; }
+
+/* --- Panneau des fonctionnalites (Rectangle 82) : 1340x850, rayon 32, verre
+ *     blanc a 50% + flou d'arriere-plan 15 ; cartes #FAFAFE 587px rayon 25. */
+.erpx-mf-section { padding: 67px var(--erpx-gutter) 0; }
+.erpx-mf {
+  max-width: 1340px;
+  min-height: 850px;
+  margin-inline: auto;
+  padding: 46px 40px 60px 55px;
+  border-radius: 32px;
+  background: rgba(255, 255, 255, .5);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .6);
+  backdrop-filter: blur(15px);
+}
+.erpx .erpx-mf__titre { text-align: center; font-size: clamp(2rem, 1rem + 2.6vw, 3.125rem); font-weight: 600; line-height: 50px; letter-spacing: -.06em; color: #01235C; }
+.erpx-mf__grille { display: grid; grid-template-columns: repeat(2, minmax(0, 587px)); column-gap: 43px; margin-top: 111px; }
+.erpx-mf__col { display: flex; flex-direction: column; gap: 19px; }
+.erpx-mf__carte {
+  display: flex;
+  align-items: center;
+  gap: 19px;
+  min-height: 115px;
+  padding: 16px 40px 16px 25px;
+  border-radius: 25px;
+  background: #FAFAFE;
+}
+.erpx-mf__icone { display: inline-flex; flex: 0 0 auto; color: #01235C; }
+.erpx-mf__icone svg { width: 38px; height: 38px; }
+.erpx .erpx-mf__texte { margin: 0; font-size: 18px; font-weight: 500; line-height: 22px; letter-spacing: -.06em; color: #01235C; }
+.erpx-mf__texte strong { font-weight: 600; }
+
+/* --- Appel a l'action : titre 50/50 a 109px du panneau, texte 20/30 de
+ *     580px, bouton 28px plus bas, centre 12px a gauche de l'axe. */
+.erpx-mcta { padding: 109px var(--erpx-gutter) 0; text-align: center; }
+.erpx .erpx-mcta__titre { font-size: clamp(2rem, 1rem + 2.6vw, 3.125rem); font-weight: 600; line-height: 50px; letter-spacing: -.06em; color: #01235C; }
+.erpx .erpx-mcta__texte { max-width: 580px; margin: 23px auto 0; font-size: 20px; font-weight: 500; line-height: 30px; letter-spacing: -.05em; color: #01235C; }
+.erpx-mcta .erpx-btn { position: relative; left: -12px; margin-top: 28px; }
+
+/* --- Carrousel : titre 26px a x=145, fleches rondes a x=261 et 1253,
+ *     quatre tuiles de 120 au pas de 206 (x=410 a 1149). */
+.erpx-mc { position: relative; max-width: 1250px; margin-inline: auto; padding: 213px 0 0; }
+.erpx .erpx-mc__titre { font-size: 26px; font-weight: 600; line-height: 20px; letter-spacing: -.06em; color: #01235C; }
+.erpx-mc__rang {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 739px) 40px;
+  justify-content: center;
+  align-items: start;
+  column-gap: 107px;
+  margin-top: 79px;
+  padding-left: 17px;
+}
+.erpx-mc__rang .erpx-carousel__nav { margin-top: 46px; }
+.erpx-mc .erpx-carousel__track { gap: 86px; padding-block: 0 8px; }
+.erpx-mc .erpx-carousel__track > * { width: 120px; }
+.erpx-mc .erpx-tile { gap: 4px; }
+.erpx-mc .erpx-tile__label { font-size: 20px; line-height: 35px; letter-spacing: -.05em; white-space: nowrap; }
+.erpx-mc .erpx-tile__precision { display: none; }
+
+@media (max-width: 1199.98px) {
+  .erpx-mi__bloc, .erpx-mi__bloc--1, .erpx-mi__bloc--2 { left: 0; min-height: 0; max-width: 760px; }
+  .erpx-mi__bloc--1 .erpx-mi__texte, .erpx-mi__bloc--2 .erpx-mi__texte { max-width: none; margin: 0; padding-top: 0; text-align: left; }
+  .erpx-mi__bloc--1 .erpx-mi__para, .erpx-mi__bloc--2 .erpx-mi__para { max-width: none; margin-left: 0; }
+  .erpx-mi__media, .erpx-mi__bloc--1 .erpx-mi__media { position: relative; right: auto; width: min(523px, 100%); margin: 32px auto 0; }
+  .erpx-mi__bloc--2 .erpx-mi__media { width: min(643px, 100%); height: auto; aspect-ratio: 643 / 536; }
+  .erpx-mi__bloc--2 .erpx-mi__img { width: 73%; }
+  .erpx-mi__bloc--2 .erpx-mi__img--2 { left: 43%; top: 24.6%; width: 57%; }
+  .erpx-mi__bloc--2 { margin-top: 72px; }
+  .erpx-mf__grille { grid-template-columns: minmax(0, 1fr); row-gap: 19px; margin-top: 48px; }
+  .erpx-mf { min-height: 0; padding: 40px 24px; }
+  .erpx-mc__rang { grid-template-columns: 40px minmax(0, 1fr) 40px; column-gap: 16px; padding-left: 0; }
+  .erpx-mc .erpx-carousel__track { gap: 32px; }
+}
+@media (max-width: 767.98px) {
+  .erpx-mh { padding-top: 32px; }
+  .erpx .erpx-mh__titre, .erpx .erpx-mi__titre, .erpx .erpx-mf__titre, .erpx .erpx-mcta__titre { line-height: 1.1; }
+  .erpx .erpx-mh__lead { font-size: 18px; line-height: 1.5; }
+  .erpx-mh__media { border-radius: 18px; }
+  .erpx-mh__badge { left: 14px; top: 14px; height: 44px; min-width: 0; padding: 0 16px 0 10px; font-size: 16px; }
+  .erpx-mh__badge-icone svg { width: 30px; height: 30px; }
+  .erpx-mh__cta { left: 0; }
+  .erpx-mi { padding-top: 56px; }
+  .erpx .erpx-mi__para, .erpx .erpx-mcta__texte { font-size: 17px; line-height: 1.5; }
+  .erpx-mf__carte { padding: 16px 18px; }
+  .erpx-mcta { padding-top: 64px; }
+  .erpx-mcta .erpx-btn { left: 0; }
+  .erpx-mc { padding: 72px var(--erpx-gutter) 0; }
+  .erpx-mc__rang { margin-top: 32px; }
+  .erpx-mc .erpx-tile__label { font-size: 16px; }
 }
 
 /* ============================================================
    12. FAQ
    ============================================================ */
 
-.erpx-faq { display: flex; flex-direction: column; gap: 14px; }
+.erpx-faq { display: flex; flex-direction: column; gap: 20px; }
 
+/* Rectangle 53 a 59 : 692px, 89 de haut replie, fond #FAFBFC, liseré #F0F0F0. */
 .erpx-faq__item {
-  border-radius: var(--erpx-radius-md);
-  background: #fff;
-  box-shadow: var(--erpx-shadow-soft);
+  border-radius: 20px;
+  background: #FAFBFC;
+  box-shadow: inset 0 0 0 2px #F0F0F0, 0 4px 14px rgba(8, 26, 42, .04);
   overflow: hidden;
 }
-.erpx-faq__item.is-open { box-shadow: var(--erpx-shadow-card); }
+.erpx-faq__item.is-open { box-shadow: inset 0 0 0 2px #F0F0F0, 0 8px 24px rgba(8, 26, 42, .06); }
 
 .erpx-faq__btn {
   display: flex;
@@ -633,14 +1668,15 @@
   justify-content: space-between;
   gap: 18px;
   width: 100%;
-  padding: 24px 26px;
+  min-height: 89px;
+  padding: 16px 34px 16px 42px;
   border: 0;
   background: transparent;
   font: inherit;
   font-weight: 600;
-  font-size: 1.02rem;
+  font-size: 17.5px;
   line-height: 1.35;
-  color: var(--erpx-ink);
+  color: #01235C;
   text-align: left;
   cursor: pointer;
 }
@@ -650,200 +1686,648 @@
   flex: 0 0 auto;
   display: grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  background: var(--erpx-blue-100);
-  color: var(--erpx-blue-500);
+  /* Rectangle 60 a 66 : violet #6A54A4 -> rose #CA6C98, ouvert ou non. */
+  background: linear-gradient(135deg, #4F5DB8 0%, #974689 55%, #D0689A 100%);
+  color: #fff;
   transform: rotate(180deg);
-  transition: transform .22s ease, background-color .22s ease;
+  transition: transform .22s ease;
 }
-.erpx-faq__item.is-open .erpx-faq__chevron { transform: rotate(0deg); background: var(--erpx-grad-brand); color: #fff; }
+.erpx-faq__item.is-open .erpx-faq__chevron { transform: rotate(0deg); }
 
 /* grid-template-rows anime la hauteur sans connaitre le contenu a l'avance. */
 .erpx-faq__panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .26s ease; }
 .erpx-faq__item.is-open .erpx-faq__panel { grid-template-rows: 1fr; }
 .erpx-faq__panel > div { overflow: hidden; }
-.erpx-faq__answer { padding: 0 26px 26px; margin: 0; font-size: .98rem; line-height: 1.65; color: var(--erpx-ink-soft); }
+.erpx .erpx-faq__answer { padding: 0 72px 36px 42px; margin: 0; font-size: 16px; line-height: 25px; color: var(--erpx-balck); }
+.erpx-faq__item.is-open .erpx-faq__btn { padding-bottom: 8px; }
+
+/* ============================================================
+   14 bis. ACCUEIL — FAQ ET APPEL FINAL
+   ============================================================ */
+
+/* Le panneau « Pourquoi » finit a y=7627, la FAQ commence a 7757. Colonnes
+ * de 599 (x=98) et 692 (x=753) : le bloc est centre sur l'axe. */
+.erpx-faqsec { position: relative; padding: 130px var(--erpx-gutter) 0; }
+.erpx-faqsec__grille {
+  display: grid;
+  grid-template-columns: minmax(0, 599px) minmax(0, 692px);
+  justify-content: center;
+  column-gap: 56px;
+  align-items: start;
+}
+.erpx .erpx-faqsec__titre {
+  margin-left: 7px;
+  font-size: clamp(2rem, 1rem + 3.2vw, 3.75rem);
+  font-weight: 600;
+  line-height: 70px;
+  letter-spacing: -.06em;
+  color: #01235C;
+}
+
+/* Frame 50 : 599x416 a y=8208, rayon 20 ; degrade releve (bleu clair en haut
+ * a gauche, halo rose en haut a droite, bleu plus soutenu en bas). */
+.erpx-faqsec__encart {
+  position: relative;
+  margin-top: 240px;
+  min-height: 416px;
+  padding: 53px 57px 62px;
+  border-radius: 20px;
+  background:
+    radial-gradient(36% 34% at 78% 12%, rgba(230, 170, 205, .85) 0%, rgba(230, 170, 205, 0) 100%),
+    radial-gradient(44% 40% at 0% 100%, rgba(140, 178, 230, .8) 0%, rgba(140, 178, 230, 0) 100%),
+    linear-gradient(180deg, #E8F0FF 0%, #D9DDF0 50%, #B9CEEE 100%);
+}
+/* image 186 : 143x140 a (428, -114) de l'encart. */
+.erpx-faqsec__sphere { position: absolute; left: 428px; top: -114px; width: 143px; height: auto; transform: rotate(-15deg); }
+.erpx .erpx-faqsec__encart-titre { max-width: 380px; font-size: 36px; font-weight: 600; line-height: 46px; letter-spacing: -.02em; color: #01235C; }
+.erpx .erpx-faqsec__encart-texte { max-width: 460px; margin: 17px 0 0; font-size: 16px; line-height: 25px; color: var(--erpx-balck); }
+.erpx-faqsec__encart .erpx-btn { height: 58px; min-width: 299px; margin: 59px 0 0 77px; font-size: 1rem; }
+
+/* Duo « pouce leve » (image 152) a x=130, y=8594 ; titre centre 42px a droite
+ * de l'axe, bouton 342x71. */
+.erpx-ctaf { position: relative; padding: 198px var(--erpx-gutter) 50px; }
+.erpx-ctaf__duo { position: absolute; left: calc(50% - 625px); top: -30px; width: 310px; height: auto; pointer-events: none; }
+.erpx-ctaf__texte { position: relative; left: 42px; text-align: center; }
+.erpx .erpx-ctaf__titre {
+  font-size: clamp(2rem, 1rem + 3.2vw, 3.75rem);
+  font-weight: 600;
+  line-height: 56px;
+  letter-spacing: -.06em;
+  color: #01235C;
+}
+.erpx-ctaf__texte .erpx-btn { height: 71px; min-width: 342px; margin-top: 30px; padding: 0 40px; font-size: 1.2rem; }
+
+@media (max-width: 1399.98px) {
+  .erpx-ctaf__duo { display: none; }
+  .erpx-ctaf { padding-top: 96px; }
+  .erpx-ctaf__texte { left: 0; }
+}
+@media (max-width: 1199.98px) {
+  .erpx-faqsec { padding-top: 80px; }
+  .erpx-faqsec__grille { grid-template-columns: minmax(0, 692px); row-gap: 40px; }
+  .erpx-faqsec__encart { margin-top: 32px; }
+  .erpx-faqsec__sphere { left: auto; right: 24px; }
+  .erpx-faqsec__liste { grid-row: 2; }
+}
+@media (max-width: 767.98px) {
+  .erpx .erpx-faqsec__titre, .erpx .erpx-ctaf__titre { line-height: 1.15; }
+  .erpx-faqsec__encart { padding: 40px 24px; }
+  .erpx-faqsec__encart .erpx-btn { min-width: 0; margin-left: 0; }
+  .erpx-faqsec__sphere { width: 96px; top: -60px; }
+  .erpx-faq__btn { padding-left: 22px; padding-right: 18px; font-size: 1rem; }
+  .erpx .erpx-faq__answer { padding: 0 22px 26px; }
+  .erpx-ctaf__texte .erpx-btn { min-width: 0; height: 56px; font-size: 1rem; }
+}
 
 /* ============================================================
    13. FORMULAIRE
    ============================================================ */
 
-.erpx-form { display: flex; flex-direction: column; gap: 18px; }
-.erpx-form__row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.erpx-form { display: flex; flex-direction: column; gap: 14px; }
+/* E-mail et telephone : deux colonnes de 240, espacees de 8 (x=835 / 1083). */
+.erpx-form__row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 
-.erpx-field { display: flex; flex-direction: column; gap: 8px; }
-.erpx-field__label { font-size: .92rem; font-weight: 600; color: var(--erpx-ink); display: inline-flex; align-items: baseline; gap: 4px; }
-.erpx-field__req { color: var(--erpx-pink-500); font-size: 1rem; line-height: 1; }
+/* Libelles 15px Medium, -5%, #01235C, en retrait de 15px sur le champ. */
+.erpx-field { display: flex; flex-direction: column; gap: 0; }
+.erpx-field__label {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 2px;
+  margin: 0; /* Bootstrap pose label { margin-bottom: .5rem } */
+  padding-left: 15px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: -.05em;
+  color: #01235C;
+}
+.erpx-field__precision { font-size: 12px; font-weight: 400; letter-spacing: -.05em; }
+/* material-symbols:asterisk-rounded, 10px, bleu nuit, en exposant. */
+.erpx-field__req { display: inline-flex; margin-top: 1px; color: #01235C; }
+.erpx-field__req svg { width: 10px; height: 10px; }
 
+/* Rectangle 85 a 91 : 50px de haut, rayon 12, #F2F4F7, sans bordure ; les
+ * listes et le telephone ont en plus une ombre interne (1,1,2 #000/25). */
 .erpx-input,
 .erpx-select,
-.erpx-textarea {
+.erpx-textarea,
+.erpx-multi__resume {
   width: 100%;
-  padding: 14px 18px;
-  border: 1px solid var(--erpx-line);
-  border-radius: var(--erpx-radius-sm);
-  background: #fff;
+  height: 50px;
+  padding: 0 28px;
+  border: 0;
+  border-radius: 12px;
+  background: #F2F4F7;
   font: inherit;
-  font-size: .96rem;
-  color: var(--erpx-ink);
-  transition: border-color .18s ease, box-shadow .18s ease;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -.05em;
+  color: #01235C;
+  transition: box-shadow .18s ease;
 }
-.erpx-input::placeholder, .erpx-textarea::placeholder { color: var(--erpx-ink-faint); }
-.erpx-input:focus, .erpx-select:focus, .erpx-textarea:focus {
+.erpx-input::placeholder, .erpx-textarea::placeholder { color: #B7BFCC; opacity: 1; }
+.erpx-input:focus, .erpx-select:focus, .erpx-textarea:focus, .erpx-multi__resume:focus-visible {
   outline: 0;
-  border-color: var(--erpx-blue-400);
   box-shadow: var(--erpx-ring);
 }
-.erpx-textarea { min-height: 160px; resize: vertical; }
+/* Rectangle 88 : 163px, rayon 15. */
+.erpx-textarea { height: 163px; min-height: 163px; padding: 14px 28px; border-radius: 15px; line-height: 20px; resize: vertical; }
 
-.erpx-select {
-  appearance: none;
-  padding-right: 44px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23081A2A' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 16px center;
-  background-size: 16px;
-  cursor: pointer;
+.erpx-select-wrap { position: relative; }
+.erpx-select { appearance: none; padding-right: 60px; cursor: pointer; box-shadow: inset 1px 1px 2px rgba(0, 0, 0, .25); }
+/* weui:arrow-outlined, 25x12, a 27px du bord droit. */
+.erpx-select-wrap__chevron {
+  position: absolute;
+  right: 27px;
+  top: 50%;
+  display: inline-flex;
+  color: #01235C;
+  transform: translateY(-50%);
+  pointer-events: none;
 }
+.erpx-select-wrap__chevron svg { width: 25px; height: 12px; }
 
-/* Champ telephone : indicatif pays fige a gauche, saisie a droite. */
-.erpx-phone { display: flex; align-items: stretch; gap: 0; }
+/* Telephone : drapeau (14px, a 17px du bord), indicatif, chevron 10px, puis
+ * la saisie, le tout dans un seul champ grise a ombre interne. */
+.erpx-phone {
+  display: flex;
+  align-items: center;
+  height: 50px;
+  border-radius: 12px;
+  background: #F2F4F7;
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, .25);
+}
 .erpx-phone__prefix {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 0 12px;
-  border: 1px solid var(--erpx-line);
-  border-right: 0;
-  border-radius: var(--erpx-radius-sm) 0 0 var(--erpx-radius-sm);
-  background: var(--erpx-surface-alt);
-  font-size: .92rem;
-  font-weight: 600;
+  flex: 0 0 auto;
+  padding-left: 17px;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -.05em;
+  color: #01235C;
   white-space: nowrap;
 }
-.erpx-phone__prefix img { width: 18px; height: 14px; object-fit: cover; border-radius: 2px; }
-.erpx-phone .erpx-input { border-radius: 0 var(--erpx-radius-sm) var(--erpx-radius-sm) 0; }
+.erpx-phone__prefix > svg:first-child { width: 14px; height: 14px; margin-right: 3px; }
+/* Chevron de l'indicatif (ep:arrow-down-bold, 10px dans la maquette) : les
+ * proportions du chevron commun (25x12) sont gardees pour qu'il ne soit pas
+ * ecrase. */
+.erpx-phone__prefix > svg:last-child { width: 12px; height: 6px; margin-left: 3px; }
+.erpx-phone .erpx-input { height: 50px; padding: 0 12px 0 8px; background: transparent; box-shadow: none; }
 
-/* Multi-select « Modules » : cases a cocher rendues en pastilles. */
-.erpx-chips { display: flex; flex-wrap: wrap; gap: 10px; }
-.erpx-chip {
-  display: inline-flex;
+/* « Modules » : liste deroulante a choix multiples (details / summary). */
+.erpx-multi { position: relative; }
+.erpx-multi__resume {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-right: 60px;
+  list-style: none;
+  cursor: pointer;
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, .25);
+}
+.erpx-multi__resume::-webkit-details-marker { display: none; }
+.erpx-multi__resume > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.erpx-multi[open] .erpx-select-wrap__chevron { transform: translateY(-50%) rotate(180deg); }
+.erpx-multi__liste {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 5;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 12px;
+  padding: 14px 20px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(8, 26, 42, .16);
+}
+.erpx-multi__option {
+  display: flex;
   align-items: center;
   gap: 8px;
-  padding: 9px 16px;
-  border-radius: var(--erpx-radius-pill);
-  border: 1px solid var(--erpx-line);
-  background: #fff;
-  font-size: .88rem;
+  padding: 6px 0;
+  font-size: 14px;
   font-weight: 500;
+  letter-spacing: -.03em;
+  color: #01235C;
   cursor: pointer;
-  user-select: none;
-  transition: border-color .16s ease, background-color .16s ease, color .16s ease;
 }
-.erpx-chip input { position: absolute; opacity: 0; width: 0; height: 0; }
-.erpx-chip:hover { border-color: var(--erpx-blue-300); }
-.erpx-chip:has(input:checked) { background: var(--erpx-grad-brand); border-color: transparent; color: #fff; }
-.erpx-chip:has(input:focus-visible) { box-shadow: var(--erpx-ring); }
+.erpx-multi__option input { width: 16px; height: 16px; accent-color: #0756C5; }
 
-.erpx-consent { display: flex; align-items: flex-start; gap: 12px; font-size: .88rem; line-height: 1.5; color: var(--erpx-ink-soft); }
-.erpx-consent input { margin-top: 3px; width: 18px; height: 18px; flex: 0 0 auto; accent-color: var(--erpx-blue-500); }
+/* Consentement : case 20x20 #F4F4F4 rayon 5, texte 12px Medium #081A2A. */
+.erpx-consent {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  max-width: 347px;
+  margin: 4px 0 0 15px; /* et annule la marge Bootstrap des <label> */
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 15px;
+  color: #081A2A;
+}
+.erpx-consent input {
+  appearance: none;
+  flex: 0 0 auto;
+  /* !important : le bundle Frappe fige les cases a cocher a
+   * var(--checkbox-size) (14px) en !important. */
+  width: 20px !important;
+  height: 20px !important;
+  margin: 0;
+  border-radius: 5px;
+  background: #F4F4F4;
+  box-shadow: inset 0 0 0 1px rgba(8, 26, 42, .08);
+  cursor: pointer;
+}
+.erpx-consent input:checked {
+  background: #01235C url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='5 12 10 17 19 7'/%3E%3C/svg%3E") center / 14px no-repeat;
+}
+.erpx-consent input:focus-visible { outline: 0; box-shadow: var(--erpx-ring); }
 
 /* Piege a robots : jamais visible, jamais lu par un lecteur d'ecran. */
 .erpx-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 
-.erpx-form__status { font-size: .92rem; font-weight: 500; border-radius: var(--erpx-radius-sm); padding: 12px 16px; display: none; }
+.erpx-form__status { font-size: .92rem; font-weight: 500; border-radius: var(--erpx-radius-sm); padding: 12px 16px; display: none; margin: 0; }
 .erpx-form__status.is-ok { display: block; background: rgba(25, 135, 84, .1); color: #146c43; }
 .erpx-form__status.is-ko { display: block; background: rgba(243, 42, 87, .1); color: #b02a4a; }
 
 
 /* ============================================================
-   13 bis. PAGE CONTACT
+   13 bis. PAGE CONTACT (cadre 3749:10, 1540x2111)
    ============================================================ */
 
-.erpx-contact {
-  display: grid;
-  grid-template-columns: minmax(0, .85fr) minmax(0, 1fr);
-  gap: clamp(28px, 4vw, 64px);
-  align-items: start;
-  margin-top: clamp(36px, 5vw, 64px);
-  background: #fff;
-  border-radius: var(--erpx-radius-xl);
-  box-shadow: var(--erpx-shadow-card);
-  padding: clamp(26px, 3.5vw, 52px);
+/* Pilule a y=44 ; titre a 197 ; panneau a 370 ; footer a 1509. */
+.erpx-page-contact .erpx-nav { padding-top: 44px; top: -26px; }
+.erpx-page-contact .erpx-footer { margin-top: 90px; }
+
+.erpx-ct { position: relative; }
+.erpx-ct > section { position: relative; z-index: 1; }
+
+/* Halos (Group 103 a 109, Ellipse 43 et 55), etalonnes au pixel : rose
+ * #FF87AA a droite du titre, #FFB7CB a gauche, violet #8174C3 sur le flanc
+ * droit. Le bleu du bas est celui du degrade de page. */
+.erpx-ct__halos {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -133px;
+  height: 1500px;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(420px 220px at calc(50% + 440px) 330px, rgba(252, 80, 135, .72) 0%, rgba(252, 80, 135, 0) 100%),
+    radial-gradient(300px 260px at calc(50% + 660px) 330px, rgba(255, 120, 160, .45) 0%, rgba(255, 120, 160, 0) 100%),
+    radial-gradient(330px 330px at calc(50% - 680px) 360px, rgba(255, 120, 165, .6) 0%, rgba(255, 120, 165, 0) 100%),
+    radial-gradient(300px 300px at calc(50% - 700px) 700px, rgba(215, 150, 205, .45) 0%, rgba(215, 150, 205, 0) 100%),
+    radial-gradient(260px 330px at calc(50% + 720px) 640px, rgba(70, 60, 180, .75) 0%, rgba(70, 60, 180, 0) 100%),
+    radial-gradient(260px 200px at calc(50% + 700px) 430px, rgba(210, 110, 175, .45) 0%, rgba(210, 110, 175, 0) 100%),
+    radial-gradient(260px 160px at calc(50% - 200px) 330px, rgba(200, 205, 240, .5) 0%, rgba(200, 205, 240, 0) 100%);
 }
 
-.erpx-contact__aside { position: sticky; top: 110px; }
-.erpx-contact__infos { display: flex; flex-direction: column; gap: 18px; margin-top: 32px; }
-.erpx-contact__infos strong { color: var(--erpx-ink); }
-.erpx-contact__infos a { color: var(--erpx-blue-500); }
-.erpx-contact__infos a:hover { color: var(--erpx-pink-500); }
+/* 3749:109 : SemiBold 65/50, -6%. 3751:135 : Medium 20/30, -5%. */
+.erpx-ct__tete { padding: 64px var(--erpx-gutter) 0; text-align: center; }
+.erpx .erpx-ct__titre {
+  font-size: clamp(2.4rem, 1rem + 3.5vw, 4.0625rem);
+  font-weight: 600;
+  line-height: 50px;
+  letter-spacing: -.06em;
+  color: #01235C;
+}
+.erpx .erpx-ct__lead { margin: 20px 0 0; font-size: 20px; font-weight: 500; line-height: 30px; letter-spacing: -.05em; color: #01235C; }
 
-@media (max-width: 991.98px) {
-  .erpx-contact { grid-template-columns: minmax(0, 1fr); }
-  .erpx-contact__aside { position: static; }
+/* Rectangle 83 : 1290x1049, rayon 45, #FAFAFE, ombre 0 0 4 #000/25. */
+.erpx-ct__panneau-section { padding: 43px var(--erpx-gutter) 0; }
+.erpx-ct__panneau {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  max-width: 1290px;
+  min-height: 1049px;
+  margin-inline: auto;
+  padding: 53px 60px 52px 80px;
+  border-radius: 45px;
+  background: #FAFAFE;
+  box-shadow: 0 0 4px rgba(0, 0, 0, .25);
+}
+
+/* 4041:80 : 65/64, « Discutons ensemble » en SemiBold, le reste en Regular. */
+.erpx-ct__accroche { position: relative; z-index: 1; max-width: 479px; margin-top: 106px; }
+.erpx .erpx-ct__accroche-titre { font-size: clamp(2.4rem, 1rem + 3.5vw, 4.0625rem); font-weight: 400; line-height: 64px; letter-spacing: -.06em; color: #01235C; }
+.erpx-ct__accroche-titre strong { font-weight: 600; }
+.erpx .erpx-ct__accroche-texte { margin: 10px 0 0 2px; font-size: 15px; font-weight: 500; line-height: 30px; letter-spacing: -.05em; text-transform: uppercase; color: #01235C; }
+
+/* image 186 : 731x954 a (-55, 563) du panneau ; deborde par le bas, sous le
+ * footer (qui suit la coquille dans le DOM et passe donc devant). */
+.erpx-ct__duo { position: absolute; left: -55px; top: 563px; z-index: 0; width: 731px; height: auto; pointer-events: none; }
+
+/* Rectangle 84 : carte blanche 554x944, rayon 45 ; champs de 488 a 34px du
+ * bord gauche, premier libelle a 43px du haut. */
+.erpx-ct__carte {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 auto;
+  width: 554px;
+  min-height: 944px;
+  padding: 43px 32px 29px 34px;
+  border-radius: 45px;
+  background: #fff;
+  box-shadow: 0 0 4px rgba(0, 0, 0, .25);
+}
+/* Ecarts entre champs non reguliers dans la maquette (13 a 18px) : les trois
+ * derniers sont recales sur les libelles de 3749:10 (y=823 / 909 / 1002). */
+.erpx-ct__carte .erpx-form > .erpx-field:nth-child(5) { margin-top: 4px; }
+.erpx-ct__carte .erpx-form > .erpx-field:nth-child(6) { margin-top: -2px; }
+.erpx-ct__carte .erpx-form > .erpx-field:nth-child(7) { margin-top: 5px; }
+.erpx-ct__carte .erpx-consent { margin: -1px 0 0 12px; gap: 4px; }
+
+/* Button Contacts 4027:70 : 263x50 a 124px du bord des champs. */
+.erpx-ct__envoyer { align-self: flex-start; height: 50px; min-width: 263px; margin: 38px 0 0 124px; font-size: 16px; }
+
+@media (max-width: 1299.98px) {
+  .erpx-ct__panneau { flex-direction: column; align-items: center; gap: 36px; min-height: 0; padding: 48px 32px 360px; }
+  .erpx-ct__accroche { max-width: 554px; margin-top: 0; text-align: center; }
+  .erpx-ct__duo { left: 50%; top: auto; bottom: -140px; width: 420px; transform: translateX(-50%); }
+}
+@media (max-width: 767.98px) {
+  .erpx-ct__tete { padding-top: 32px; }
+  .erpx .erpx-ct__titre, .erpx .erpx-ct__accroche-titre { line-height: 1.1; }
+  .erpx .erpx-ct__lead { font-size: 17px; line-height: 1.5; }
+  .erpx-ct__panneau { padding: 32px 14px 300px; border-radius: 28px; }
+  .erpx-ct__carte { width: 100%; min-height: 0; padding: 32px 18px 28px; border-radius: 28px; }
+  .erpx-form__row { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .erpx-ct__envoyer { align-self: stretch; margin-left: 0; }
+  .erpx-ct__duo { width: 340px; }
+  .erpx-multi__liste { grid-template-columns: minmax(0, 1fr); }
+  .erpx-input, .erpx-select, .erpx-textarea, .erpx-multi__resume { padding-left: 16px; font-size: 14px; }
+  .erpx-select, .erpx-multi__resume { padding-right: 46px; }
+  .erpx-select-wrap__chevron { right: 16px; }
 }
 
 /* ============================================================
    14. TARIFICATION
    ============================================================ */
 
-.erpx-plans {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 26px;
-  align-items: center;
+/* ------------------------------------------------------------
+   Page Tarification (cadre 3586:1447, 1540x2776)
+   ------------------------------------------------------------ */
+
+/* Pilule de navigation a y=40 sur ce cadre (et non 18). */
+.erpx-page-tarification .erpx-nav { padding-top: 40px; top: -22px; }
+/* Encart sur-mesure fini a y=2111, footer a 2185. */
+.erpx-page-tarification .erpx-footer { margin-top: 74px; }
+
+.erpx-tarif { position: relative; }
+
+/* Halos : groupes roses #F33560 et ellipses bleues #266BCC -> #05295B, tous
+ * floutes de 250 a 500px dans la maquette. Rendus en degrades radiaux, cotes
+ * reportees depuis l'axe du cadre et le haut de la page (la coquille demarre
+ * 129px plus bas, sous la navbar). */
+.erpx-tarif__halos {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -129px;
+  height: 2300px;
+  z-index: 0;
+  pointer-events: none;
+  /* Intensites etalonnees au pixel sur un rendu du cadre : magenta #CF3889
+   * sous les cartes (x=400, y=1600), violet #C5C8E9 sur les flancs a y=1100,
+   * bleu-violet #8C8DD0 en bas a gauche (y=1900). */
+  background:
+    radial-gradient(420px 300px at calc(50% - 370px) 1610px, rgba(214, 36, 128, .85) 0%, rgba(214, 36, 128, 0) 100%),
+    radial-gradient(360px 240px at calc(50% + 0px) 1710px, rgba(200, 50, 140, .6) 0%, rgba(200, 50, 140, 0) 100%),
+    radial-gradient(420px 280px at calc(50% + 330px) 1630px, rgba(210, 60, 140, .6) 0%, rgba(210, 60, 140, 0) 100%),
+    radial-gradient(360px 140px at calc(50% - 115px) 560px, rgba(243, 53, 96, .14) 0%, rgba(243, 53, 96, 0) 100%),
+    radial-gradient(360px 160px at calc(50% + 236px) 580px, rgba(243, 53, 96, .10) 0%, rgba(243, 53, 96, 0) 100%),
+    radial-gradient(320px 420px at calc(50% - 680px) 1150px, rgba(140, 130, 210, .45) 0%, rgba(140, 130, 210, 0) 100%),
+    radial-gradient(320px 420px at calc(50% + 680px) 1150px, rgba(150, 150, 225, .3) 0%, rgba(150, 150, 225, 0) 100%),
+    radial-gradient(330px 280px at calc(50% - 720px) 1920px, rgba(60, 80, 200, .6) 0%, rgba(60, 80, 200, 0) 100%),
+    radial-gradient(330px 300px at calc(50% + 720px) 1900px, rgba(150, 140, 215, .45) 0%, rgba(150, 140, 215, 0) 100%),
+    radial-gradient(640px 200px at calc(50% + 0px) 2160px, rgba(200, 165, 220, .4) 0%, rgba(200, 165, 220, 0) 100%);
+}
+.erpx-tarif > section { position: relative; z-index: 1; }
+
+/* 3586:1448 : SemiBold 64/70, -6%, #01235C. 3586:1988 : Medium 24/35, -5%. */
+.erpx-tarif__tete { padding: 60px var(--erpx-gutter) 0; text-align: center; }
+.erpx .erpx-tarif__titre {
+  font-size: clamp(2.2rem, 1rem + 3.4vw, 4rem);
+  font-weight: 600;
+  line-height: 70px;
+  letter-spacing: -.06em;
+  color: #01235C;
+}
+.erpx .erpx-tarif__lead {
+  margin: 22px auto 0;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 35px;
+  letter-spacing: -.05em;
+  color: #01235C;
 }
 
+/* Cartes : 3 x 380, espacees de 25 ; la carte mise en avant commence 74px
+ * plus haut (y=534 contre 608). */
+.erpx-plans-section { padding: 113px var(--erpx-gutter) 0; }
+.erpx-plans {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 380px));
+  justify-content: center;
+  gap: 25px;
+  align-items: start;
+}
+
+/* Group 10 / 12 : carte blanche 380x881, rayon 35, ombre 0 0 2 #000/25. */
 .erpx-plan {
   display: flex;
   flex-direction: column;
-  border-radius: var(--erpx-radius-xl);
+  min-height: 881px;
+  margin-top: 74px;
+  padding: 18px 17px 40px 16px;
+  border-radius: 35px;
   background: #fff;
-  box-shadow: var(--erpx-shadow-card);
-  overflow: hidden;
-  height: 100%;
+  box-shadow: 0 0 2px rgba(0, 0, 0, .25);
+  color: #01235C;
+  --erpx-plan-gap: 20px;
+  --erpx-plan-list: 29px;
+}
+/* Group 11 : 380x1082, blanc -> #FFC0CE a partir de 46%, liseré or 4px. */
+.erpx-plan--featured {
+  min-height: 1082px;
+  margin-top: 0;
+  border: 4px solid transparent;
+  padding: 14px 13px 40px 12px;
+  background:
+    linear-gradient(180deg, #FFFFFF 46%, #FFC0CE 100%) padding-box,
+    linear-gradient(180deg, #FFB310 0%, #F8BB36 51%, #FFAF01 98%) border-box;
+  box-shadow: 0 0 8px rgba(0, 0, 0, .25);
+  --erpx-plan-list: 17px;
+}
+.erpx-plan--3 { --erpx-plan-gap: 16px; --erpx-plan-list: 38px; }
+/* Les intitules de l'offre Entreprise courent jusqu'au bord de la carte
+ * (3586:2233 : x=1051, 314 de large, pour une carte finissant a 1365). */
+.erpx-plan--3 .erpx-plan__body { margin-right: -17px; padding-right: 0; }
+/* Entreprise : le public tient sur deux lignes serrees (interligne 17) et la
+ * ligne « utilisateurs » le suit sans espace. */
+.erpx .erpx-plan--3 .erpx-plan__meta--public { line-height: 17px; }
+.erpx-plan--3 .erpx-plan__meta--public span { max-width: 263px; }
+.erpx .erpx-plan--3 .erpx-plan__meta + .erpx-plan__meta { margin-top: 0; }
+
+/* Rectangle 17 / 18 / 19 : encart 347px, rayon 30. */
+.erpx-plan__head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 323px;
+  padding: 18px 20px 20px 26px;
+  border-radius: 30px;
+  background: linear-gradient(229deg, #FFFFFF 0%, #E2EEFF 100%);
+}
+.erpx-plan--featured .erpx-plan__head { min-height: 274px; padding: 21px 20px 22px 30px; background: #F0F8FF; }
+.erpx-plan--3 .erpx-plan__head { min-height: 324px; padding: 19px 20px 22px 27px; background: linear-gradient(135deg, #FFFFFF 8%, #E2EEFF 100%); }
+
+.erpx-plan__nom { display: flex; align-items: flex-start; justify-content: space-between; width: 100%; }
+.erpx-plan__fne { flex: 0 0 auto; width: 38px; height: 37px; margin-top: -1px; }
+.erpx .erpx-plan__name { font-size: 26px; font-weight: 600; line-height: 40px; letter-spacing: -.06em; color: #01235C; }
+.erpx .erpx-plan__tagline { white-space: pre-line; max-width: 278px; margin: 21px 0 0; font-size: 20px; font-weight: 500; line-height: 20px; letter-spacing: -.05em; color: #01235C; }
+.erpx-plan--featured .erpx-plan__tagline { margin-top: 26px; max-width: 297px; }
+.erpx-plan--3 .erpx-plan__tagline { max-width: 263px; margin-top: 18px; line-height: 25px; }
+
+/* Prix 36px SemiBold, suffixe 15px SemiBold sur la ligne de base. */
+/* Hauteur fixee : l'alignement sur la ligne de base de deux corps (36 et 15)
+ * porterait sinon la ligne a 48px au lieu des 40 de la maquette. */
+.erpx .erpx-plan__price { display: flex; align-items: baseline; gap: 4px; height: 40px; margin: auto 0 0; line-height: 40px; }
+.erpx-plan__amount { font-size: 36px; font-weight: 600; line-height: 40px; letter-spacing: -.06em; }
+.erpx-plan__period { font-size: 15px; font-weight: 600; line-height: 40px; letter-spacing: -.06em; }
+.erpx-plan--featured .erpx-plan__price { margin-left: 7px; margin-top: 11px; }
+
+/* Button Contacts 263x50, libelle 16px SemiBold. */
+.erpx-plan__head .erpx-btn { height: 50px; width: 263px; margin: 23px 0 0 7px; padding: 0 20px; font-size: 16px; }
+.erpx-plan--featured .erpx-plan__head .erpx-btn { margin-top: 24px; margin-left: 8px; }
+.erpx-plan--3 .erpx-plan__head .erpx-btn { margin-left: 10px; }
+
+.erpx-plan__body { display: flex; flex-direction: column; padding: 17px 10px 0 20px; }
+.erpx-plan--featured .erpx-plan__body { padding: 11px 10px 0 24px; }
+
+/* Public : 15px Regular -5%, pictogrammes 20 et 24px, texte a 36px du
+ * pictogramme. */
+.erpx .erpx-plan__meta {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin: 0;
+  font-size: 15px;
+  line-height: 20px;
+  letter-spacing: -.05em;
+  color: #01235C;
+}
+.erpx-plan__meta svg { width: 20px; height: 20px; flex: 0 0 auto; }
+.erpx-plan__meta + .erpx-plan__meta { margin-top: 9px; gap: 12px; }
+.erpx-plan--featured .erpx-plan__meta + .erpx-plan__meta { margin-top: 14px; }
+.erpx-plan__meta + .erpx-plan__meta svg { width: 24px; height: 24px; margin-top: -2px; }
+
+/* material-symbols:check-box 25px ; intitules 20px Regular -5%. `.erpx`
+ * en tete : `.erpx ul { margin: 0 }` (0,1,1) l'emporterait sur la marge. */
+.erpx .erpx-plan__list { display: flex; flex-direction: column; gap: var(--erpx-plan-gap); margin-top: var(--erpx-plan-list); }
+.erpx-plan__feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  font-size: 20px;
+  line-height: 20px;
+  letter-spacing: -.05em;
+  color: #01235C;
+}
+.erpx-plan__feature svg { width: 25px; height: 25px; flex: 0 0 auto; margin-top: -2px; color: #01235C; }
+.erpx-plan__feature span { white-space: pre-line; }
+.erpx-plan__feature--off { opacity: .45; }
+/* Carte Business, avant le selecteur : 15px, #022443, interligne 15 sur les
+ * intitules longs. */
+.erpx .erpx-plan__list--petite { gap: 8px; }
+.erpx-plan__list--petite .erpx-plan__feature { gap: 8px; font-size: 15px; line-height: 15px; color: #022443; }
+.erpx-plan__list--petite .erpx-plan__feature span { padding-top: 3px; }
+.erpx-plan__list--petite .erpx-plan__feature svg { margin-top: 0; color: #022443; }
+.erpx .erpx-plan--featured .erpx-plan__list:not(.erpx-plan__list--petite) { margin-top: 21px; }
+
+/* Encart sur-mesure (Rectangle 17, 3586:2550) : 1190x376, rayon 30, blanc ->
+ * #E2EEFF, centre 16px a droite de l'axe (x=191). */
+.erpx-tarif__surmesure-section { padding: 119px var(--erpx-gutter) 0; }
+.erpx-tarif__surmesure {
+  position: relative;
+  left: 16px;
+  max-width: 1190px;
+  min-height: 376px;
+  margin-inline: auto;
+  padding: 95px 40px 52px;
+  border-radius: 30px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #E2EEFF 100%);
+  box-shadow: 0 0 4px rgba(0, 0, 0, .25);
+  text-align: center;
+}
+.erpx .erpx-tarif__surmesure-titre { font-size: 40px; font-weight: 600; line-height: 45px; letter-spacing: -.06em; color: #01235C; }
+.erpx .erpx-tarif__surmesure-texte { margin: 16px 0 0; font-size: 24px; font-weight: 500; line-height: 35px; letter-spacing: -.05em; color: #01235C; }
+.erpx-tarif__surmesure .erpx-btn { height: 50px; min-width: 263px; margin-top: 48px; font-size: 16px; }
+
+@media (max-width: 1239.98px) {
+  .erpx-plans { grid-template-columns: minmax(0, 420px); }
+  .erpx-plan, .erpx-plan--featured { margin-top: 0; min-height: 0; }
+  .erpx-plans .erpx-plan--featured { order: -1; }
+  .erpx-tarif__surmesure { left: 0; }
+}
+@media (max-width: 767.98px) {
+  .erpx-tarif__tete { padding-top: 32px; }
+  .erpx .erpx-tarif__titre { line-height: 1.1; }
+  .erpx .erpx-tarif__lead { font-size: 18px; line-height: 1.5; }
+  .erpx-plans-section { padding-top: 48px; }
+  .erpx-plan__head .erpx-btn { width: 100%; margin-left: 0 !important; }
+  .erpx-segmented { width: 100%; margin-left: 0; grid-template-columns: 46% 22% 1fr; }
+  .erpx-tarif__surmesure-section { padding-top: 64px; }
+  .erpx-tarif__surmesure { padding: 44px 22px; min-height: 0; }
+  .erpx .erpx-tarif__surmesure-titre { font-size: 28px; line-height: 1.2; }
+  .erpx .erpx-tarif__surmesure-texte { font-size: 18px; line-height: 1.5; }
+  .erpx-tarif__surmesure .erpx-btn { min-width: 0; margin-top: 28px; }
 }
 
-/* La carte mise en avant est plus haute sur la maquette (1082 vs 881). */
-.erpx-plan--featured { box-shadow: 0 26px 70px rgba(38, 107, 204, .22); }
-
-.erpx-plan__head { padding: 30px 30px 28px; background: var(--erpx-grad-glass); color: var(--erpx-blue-900); position: relative; }
-.erpx-plan__name { font-size: 1.85rem; font-weight: 700; letter-spacing: -.03em; }
-.erpx-plan__tagline { font-size: .95rem; line-height: 1.45; color: rgba(0, 17, 46, .74); margin: 8px 0 22px; }
-.erpx-plan__price { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
-.erpx-plan__amount { font-size: 2.3rem; font-weight: 700; letter-spacing: -.04em; }
-.erpx-plan__period { font-size: 1rem; font-weight: 500; color: rgba(0, 17, 46, .7); }
-.erpx-plan__mark { position: absolute; top: 26px; right: 28px; width: 38px; height: 38px; }
-
-.erpx-plan__body { padding: 24px 30px 32px; display: flex; flex-direction: column; gap: 16px; flex: 1 1 auto; }
-.erpx-plan__meta { display: flex; align-items: center; gap: 10px; font-size: .95rem; color: var(--erpx-ink-soft); }
-.erpx-plan__meta svg, .erpx-plan__meta img { width: 22px; height: 22px; flex: 0 0 auto; }
-
-.erpx-plan__list { display: flex; flex-direction: column; gap: 12px; margin-top: 4px; }
-.erpx-plan__feature { display: flex; align-items: flex-start; gap: 10px; font-size: .94rem; line-height: 1.45; }
-.erpx-plan__feature svg, .erpx-plan__feature img { width: 22px; height: 22px; flex: 0 0 auto; color: var(--erpx-blue-500); margin-top: 1px; }
-.erpx-plan__feature--off { color: var(--erpx-ink-faint); }
-
-.erpx-plan__cta { margin-top: auto; padding-top: 22px; }
 
 /* Selecteur segmente de la carte Business. */
-.erpx-segmented { display: inline-flex; padding: 4px; border-radius: var(--erpx-radius-pill); background: var(--erpx-blue-100); gap: 2px; }
+/* Group 339 : 333x48, rayon 30, fond blanc -> #E2EEFF avec ombre interne ;
+ * l'option active (154px) en degrade #004CC8 -> #83ACE5, libelles 12px. */
+.erpx-segmented {
+  display: grid;
+  grid-template-columns: 154px 72px 1fr;
+  width: 333px;
+  height: 48px;
+  margin: 13px 0 0 -10px;
+  border-radius: 30px;
+  background: linear-gradient(90deg, #FFFFFF 40%, #E2EEFF 100%);
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, .25);
+}
 .erpx-segmented__opt {
-  padding: 9px 14px;
+  padding: 0 0 0 4px;
   border: 0;
-  border-radius: var(--erpx-radius-pill);
+  border-radius: 30px;
   background: transparent;
   font: inherit;
-  font-size: .76rem;
-  font-weight: 600;
-  line-height: 1.2;
-  color: var(--erpx-blue-700);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 12px;
+  letter-spacing: -.05em;
+  text-align: left;
+  color: #01235C;
   cursor: pointer;
   transition: background-color .18s ease, color .18s ease;
 }
-.erpx-segmented__opt.is-active { background: var(--erpx-grad-brand); color: #fff; }
+.erpx-segmented__opt.is-active {
+  padding-left: 21px;
+  background: linear-gradient(135deg, #004CC8 0%, #83ACE5 100%);
+  font-weight: 600;
+  color: #fff;
+}
 
 .erpx-quote {
   border-radius: var(--erpx-radius-xl);
@@ -903,22 +2387,24 @@
 .erpx-carousel__track::-webkit-scrollbar { display: none; }
 .erpx-carousel__track > * { scroll-snap-align: start; flex: 0 0 auto; width: 160px; }
 
+/* Rectangle 96 de la maquette : cercle de 40, trait #01235C de 2px, fleche
+ * basil:arrow-left-outline de 30px. */
 .erpx-carousel__nav {
   display: grid;
   place-items: center;
   width: 40px;
   height: 40px;
-  border: 0;
+  padding: 0;
+  border: 2px solid #01235C;
   border-radius: 50%;
-  background: #fff;
-  box-shadow: var(--erpx-shadow-soft);
-  color: var(--erpx-blue-700);
+  background: transparent;
+  color: #01235C;
   cursor: pointer;
   transition: transform .18s ease, box-shadow .18s ease;
 }
-.erpx-carousel__nav:hover { transform: translateY(-2px); box-shadow: var(--erpx-shadow-card); }
+.erpx-carousel__nav:hover { transform: translateY(-2px); background: rgba(255, 255, 255, .6); }
 .erpx-carousel__nav[disabled] { opacity: .35; cursor: default; transform: none; }
-.erpx-carousel__nav svg { width: 22px; height: 22px; }
+.erpx-carousel__nav svg { width: 28px; height: 28px; }
 .erpx-carousel__nav--next svg { transform: rotate(180deg); }
 
 /* ============================================================
@@ -927,35 +2413,47 @@
 
 .erpx-footer { padding: 0 var(--erpx-gutter) 28px; margin-top: clamp(40px, 6vw, 88px); }
 
+/* Group 122 : 1486x558, rayon 24. Colonnes calees sur les x de la maquette
+ * (titres a 146 / 341 / 612 / 810 du cadre, soit 119 / 314 / 585 / 783 du
+ * panneau) ; logo et mention en absolu, a leurs cotes. */
 .erpx-footer__inner {
+  position: relative;
   max-width: var(--erpx-container-wide);
+  min-height: 558px;
   margin-inline: auto;
-  border-radius: var(--erpx-radius-xl);
-  background: var(--erpx-grad-footer);
+  border-radius: 24px;
+  /* Rectangle 80 (API Figma) : #00122E a 3% -> #002054 a 58%, du bas vers le
+   * haut, sur un axe qui deborde de 24% en haut du panneau. */
+  background: linear-gradient(0deg, #00122E 9%, #002054 74%);
   color: #fff;
-  padding: clamp(34px, 4vw, 56px) clamp(24px, 4vw, 92px);
+  padding: 48px 80px 51px 119px;
 }
 
 .erpx-footer__grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
-  gap: clamp(22px, 3vw, 48px);
+  grid-template-columns: 195px 271px 198px minmax(0, 1fr);
+  gap: 0;
 }
 
-.erpx-footer__title { font-size: 1.02rem; font-weight: 700; margin-bottom: 18px; }
-.erpx-footer__list { display: flex; flex-direction: column; gap: 10px; }
-.erpx-footer__link { font-size: .94rem; color: rgba(255, 255, 255, .8); transition: color .16s ease; }
+.erpx .erpx-footer__title { font-size: 14.5px; font-weight: 700; line-height: 20px; margin-bottom: 23px; letter-spacing: 0; }
+.erpx-footer__list { display: flex; flex-direction: column; gap: 16px; line-height: 20px; }
+.erpx-footer__grid > :nth-child(2) .erpx-footer__list { gap: 20px; }
+.erpx-footer__grid > :nth-child(3) .erpx-footer__list { gap: 22.5px; }
+.erpx-footer__link { font-size: 14px; line-height: 20px; color: rgba(255, 255, 255, .88); transition: color .16s ease; }
 .erpx-footer__link:hover { color: #fff; }
 
-.erpx-footer__block { font-size: .92rem; line-height: 1.55; color: rgba(255, 255, 255, .8); margin-bottom: 20px; }
-.erpx-footer__block strong { display: block; color: #fff; font-weight: 700; margin-bottom: 4px; }
+.erpx .erpx-footer__block { font-size: 14px; line-height: 27px; color: rgba(255, 255, 255, .88); margin-bottom: 39px; }
+.erpx-footer__block strong { display: block; color: #fff; font-weight: 700; margin-bottom: 0; }
 
-.erpx-footer__mail { display: inline-flex; align-items: center; gap: 8px; font-size: .94rem; color: rgba(255, 255, 255, .88); }
+.erpx-footer__mail { display: inline-flex; align-items: center; gap: 4px; margin-top: 36px; font-size: 14.5px; color: #fff; }
 .erpx-footer__mail svg { width: 18px; height: 18px; flex: 0 0 auto; }
 
-.erpx-footer__brand { display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; gap: 28px; }
-.erpx-footer__brand img { width: 184px; height: auto; }
-.erpx-footer__credit { font-size: .84rem; color: rgba(255, 255, 255, .7); white-space: nowrap; }
+/* Image1 2 : 184x60 a (1222, 226) du panneau ; mention a 80px du bord droit,
+ * y=493. */
+.erpx-footer__brand { position: absolute; inset: 0; pointer-events: none; }
+.erpx-footer__brand > * { pointer-events: auto; }
+.erpx-footer__brand img { position: absolute; left: calc(100% - 264px); top: 226px; width: 184px; height: auto; }
+.erpx-footer__credit { position: absolute; right: 80px; top: 493px; font-size: 13px; color: rgba(255, 255, 255, .88); white-space: nowrap; }
 
 /* ============================================================
    18. REVEAL
@@ -982,10 +2480,19 @@
    19. RESPONSIVE
    ============================================================ */
 
+/* Les spheres de /erpnext/modules sont calees aux cotes du cadre Figma, large
+ * de 1540px. Sous ~1360px elles mordraient sur le titre : on les retire. Elles
+ * sont purement decoratives, rien n'est perdu. */
+@media (max-width: 1359.98px) {
+  .erpx-modules-head__deco { display: none; }
+}
+
 @media (max-width: 1199.98px) {
   .erpx-modules { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .erpx-footer__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .erpx-footer__brand { grid-column: 1 / -1; flex-direction: row; align-items: center; justify-content: space-between; }
+  .erpx-footer__inner { padding: 44px 40px 40px; min-height: 0; }
+  .erpx-footer__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 36px; }
+  .erpx-footer__brand { position: static; grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; margin-top: 36px; }
+  .erpx-footer__brand img, .erpx-footer__credit { position: static; }
 }
 
 @media (max-width: 991.98px) {
@@ -1021,18 +2528,30 @@
 
   .erpx-hero__grid { grid-template-columns: minmax(0, 1fr); }
   .erpx-hero__media { order: -1; }
+  .erpx-modgrid { left: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .erpx-plans { grid-template-columns: minmax(0, 1fr); max-width: 460px; margin-inline: auto; }
-  .erpx-features { grid-template-columns: minmax(0, 1fr); }
   .erpx-form__row { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 991.98px) {
+  .erpx-modsec { padding-top: 80px; }
+  .erpx .erpx-modsec__titre { line-height: 1.2; }
+  .erpx-modsec .erpx-modules { left: 0; margin-top: 40px; grid-auto-rows: auto; row-gap: 32px; }
 }
 
 @media (max-width: 767.98px) {
   .erpx { --erpx-gutter: 16px; }
   .erpx-modules { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .erpx-tile__icon { width: 88px; height: 88px; border-radius: 24px; }
-  .erpx-tile__icon img, .erpx-tile__icon svg { width: 38px; height: 38px; }
+  .erpx-modgrid { grid-template-columns: minmax(0, 1fr); }
+  .erpx-modules-head { padding-top: 32px; }
+  .erpx-modgrid-section { padding-top: 48px; }
+  .erpx-page-modules .erpx-footer { margin-top: 72px; }
+  .erpx .erpx-modules-head .erpx-h1 { line-height: 1.1; }
+  .erpx-tile__icon { width: 96px; height: 96px; border-radius: 18px; }
+  .erpx-tile__icon img, .erpx-tile__icon svg { width: 40px; height: 40px; }
   .erpx-footer__grid { grid-template-columns: minmax(0, 1fr); }
-  .erpx-footer__brand { flex-direction: column; align-items: flex-start; }
+  .erpx-footer__inner { padding: 36px 24px; }
+  .erpx-footer__brand { flex-direction: column; align-items: flex-start; gap: 20px; }
   .erpx-segment { min-height: 440px; padding: 26px 22px; }
   .erpx-btn { width: 100%; }
   .erpx-nav__cta .erpx-btn { width: auto; }

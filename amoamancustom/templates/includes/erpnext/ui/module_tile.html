@@ -1,14 +1,28 @@
 {#
-  Tuile 120x120 de la grille « Nos Modules ».
-  Partagee entre l'accueil (grille 4x3) et le carrousel « Découvrir d'autres
-  modules » de la page module.
+  Tuile de la grille « Nos Modules » de l'accueil et du carrousel des pages
+  module (calque 4105:2454, rangee de tuiles a y=4719).
+
+  Releve sur la maquette : carre de 120px, rayon 22, fond en degrade 135deg
+  #83B3E6 -> #CC82AC, glyphe BLANC de 48px, intitule en bleu sous la tuile.
+  C'est le meme glyphe que la carte de /erpnext/modules, mais pose a l'envers :
+  ici le SVG `currentColor` est inline et vire au blanc, la-bas un <img> porte
+  le degrade dans le fichier (cf. ui/module_card.html).
+
+  `precision` n'existe que pour Comptabilite ; la maquette la met sur une
+  seconde ligne, plus petite, comme sur la carte.
+
+  Le miroir horizontal de la maquette s'applique ici comme sur la carte :
+  cf. `icon_miroir` dans erpnext_site.py.
 #}
 {%- from "amoamancustom/templates/includes/erpnext/ui/icon.html" import erpx_icon -%}
 
-{% macro erpx_module_tile(label, icon, href="") -%}
-{%- set tag = "a" if href else "div" -%}
-<{{ tag }} class="erpx-tile erpx-reveal"{% if href %} href="{{ href }}"{% endif %}>
-  <span class="erpx-tile__icon">{{ erpx_icon(icon) }}</span>
-  <span class="erpx-tile__label">{{ label }}</span>
+{% macro erpx_module_tile(item) -%}
+{%- set tag = "a" if item.href else "div" -%}
+<{{ tag }} class="erpx-tile erpx-reveal"{% if item.href %} href="{{ item.href }}"{% endif %}>
+  <span class="erpx-tile__icon{{ ' erpx-tile__icon--miroir' if item.icon_miroir else '' }}">{{ erpx_icon(item.icon) }}</span>
+  <span class="erpx-tile__label">
+    {{ item.titre }}
+    {%- if item.precision %}<span class="erpx-tile__precision">{{ item.precision }}</span>{% endif -%}
+  </span>
 </{{ tag }}>
 {%- endmacro %}

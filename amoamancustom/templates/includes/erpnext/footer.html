@@ -2,25 +2,31 @@
   Footer du mini-site ERPNext (« Group 367 », 1486x558, identique sur les 4 layers).
 
   Les colonnes « Modules » et « Secteurs » de la maquette listent des intitules
-  dont une seule page existe aujourd'hui (Stocks). Les autres pointent vers
-  l'ancre #modules de l'accueil ; les secteurs, qui n'ont aucun contenu
-  correspondant nulle part, sont rendus en TEXTE et non en liens.
+  dont une seule page existe aujourd'hui (Stocks). Les autres pointent vers le
+  catalogue /erpnext/modules, ou chacun a sa carte ; les secteurs, comme
+  « Tutoriels », qui n'ont aucun contenu correspondant nulle part, sont rendus
+  en TEXTE et non en liens.
+
+  L'ordre des trois colonnes est celui de la maquette (4167:374) et n'est celui
+  d'aucune autre grille du site — pas plus que « Helpdesk », qui designe ici le
+  module appele « Support » partout ailleurs. Les deux sont conserves tels
+  quels : c'est ce que le cadre affiche.
 #}
 {%- from "amoamancustom/templates/includes/erpnext/ui/icon.html" import erpx_icon -%}
 
 {%- set footer_modules = [
-  {"label": _("Comptabilité"),  "href": "/erpnext#modules"},
-  {"label": _("Achats"),        "href": "/erpnext#modules"},
-  {"label": _("Ventes"),        "href": "/erpnext#modules"},
+  {"label": _("Comptabilité"),  "href": "/erpnext/modules"},
+  {"label": _("Achats"),        "href": "/erpnext/modules"},
+  {"label": _("Ventes"),        "href": "/erpnext/modules"},
   {"label": _("Stocks"),        "href": "/erpnext/modules/stocks"},
-  {"label": _("CRM"),           "href": "/erpnext#modules"},
-  {"label": _("Production"),    "href": "/erpnext#modules"},
-  {"label": _("Projets"),       "href": "/erpnext#modules"},
-  {"label": _("Immos"),         "href": "/erpnext#modules"},
-  {"label": _("Point de vente"),"href": "/erpnext#modules"},
-  {"label": _("Qualité"),       "href": "/erpnext#modules"},
-  {"label": _("RH & Paie"),     "href": "/erpnext#modules"},
-  {"label": _("Helpdesk"),      "href": "/erpnext#modules"}
+  {"label": _("CRM"),           "href": "/erpnext/modules"},
+  {"label": _("Production"),    "href": "/erpnext/modules"},
+  {"label": _("Projets"),       "href": "/erpnext/modules"},
+  {"label": _("Immos"),         "href": "/erpnext/modules"},
+  {"label": _("Point de vente"),"href": "/erpnext/modules"},
+  {"label": _("Qualité"),       "href": "/erpnext/modules"},
+  {"label": _("RH & Paie"),     "href": "/erpnext/modules"},
+  {"label": _("Helpdesk"),      "href": "/erpnext/modules"}
 ] -%}
 
 {%- set footer_secteurs = [
@@ -30,6 +36,7 @@
 ] -%}
 
 {%- set footer_navigation = [
+  {"label": _("Tutoriels"),      "href": ""},
   {"label": _("Tarification"),   "href": "/erpnext/tarification"},
   {"label": _("Avantages"),      "href": "/erpnext#avantages"},
   {"label": _("Pourquoi nous ?"),"href": "/erpnext#pourquoi"},
@@ -62,7 +69,10 @@
         <h2 class="erpx-footer__title">{{ _("Navigation") }}</h2>
         <ul class="erpx-footer__list">
           {%- for item in footer_navigation %}
-          <li><a class="erpx-footer__link" href="{{ item.href }}">{{ item.label }}</a></li>
+          <li>
+            {%- if item.href %}<a class="erpx-footer__link" href="{{ item.href }}">{{ item.label }}</a>
+            {%- else %}<span class="erpx-footer__link">{{ item.label }}</span>{% endif -%}
+          </li>
           {%- endfor %}
         </ul>
       </div>

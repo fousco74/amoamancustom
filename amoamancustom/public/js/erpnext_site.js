@@ -150,6 +150,39 @@
   }
 
   /* ---------------------------------------------------------
+   * Liste deroulante a choix multiples (« Modules » du contact)
+   * Le <details> et les cases a cocher fonctionnent seuls ; on recopie
+   * simplement la selection dans le resume et on referme au clic exterieur.
+   * ------------------------------------------------------- */
+  function initMulti() {
+    var listes = document.querySelectorAll("[data-erpx-multi]");
+    if (!listes.length) return;
+
+    listes.forEach(function (liste) {
+      var texte = liste.querySelector("[data-erpx-multi-texte]");
+      var cases = liste.querySelectorAll('input[type="checkbox"]');
+      if (!texte) return;
+
+      function maj() {
+        var choix = [].slice.call(cases)
+          .filter(function (c) { return c.checked; })
+          .map(function (c) { return c.value; });
+        texte.textContent = choix.length ? choix.join(", ") : texte.getAttribute("data-vide");
+        liste.classList.toggle("is-rempli", choix.length > 0);
+      }
+
+      cases.forEach(function (c) { c.addEventListener("change", maj); });
+      // form.reset() apres envoi : les cases se decochent sans evenement change.
+      var form = liste.closest("form");
+      if (form) form.addEventListener("reset", function () { setTimeout(maj, 0); });
+
+      document.addEventListener("click", function (event) {
+        if (liste.open && !liste.contains(event.target)) liste.open = false;
+      });
+    });
+  }
+
+  /* ---------------------------------------------------------
    * Défilement doux sur les ancres internes
    * ------------------------------------------------------- */
   function initSmoothScroll() {
@@ -206,6 +239,7 @@
     initFaq();
     initCarousel();
     initSegmented();
+    initMulti();
     initSmoothScroll();
     initReveal();
   }
