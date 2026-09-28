@@ -1,23 +1,25 @@
 {#
-  Bloc texte/visuel alterne des pages module.
-  Parametres : blocs = liste de {title, text, image}. L'ordre alterne
-  automatiquement (texte a gauche, puis a droite).
-#}
-<section class="erpx-section">
+  Blocs texte / visuel alternes des pages module (cadre 3660:32).
+  Parametre : blocs = liste de {title, text, image, image_2, alt}.
+  Le premier bloc a le texte a gauche, le second a droite (titre et texte
+  alignes a droite dans la maquette). `image_2`, facultative, est un second
+  visuel pose en chevauchement sur le premier (bloc « Gestion simplifiée »).
 
-  <div class="erpx-container">
-    {%- for bloc in blocs %}
-    <div class="erpx-split{{ ' erpx-split--reverse' if loop.index0 % 2 else '' }} erpx-reveal">
-      <div>
-        <h2 class="erpx-h2">{{ bloc.title }}</h2>
-        <p class="erpx-lead" style="margin-top:20px">{{ bloc.text }}</p>
-      </div>
-      {%- if bloc.image %}
-      <img src="{{ bloc.image }}" alt="" loading="lazy" style="width:100%;height:auto;border-radius:var(--erpx-radius-lg)">
-      {%- else %}
-      <div class="erpx-split__placeholder" aria-hidden="true"></div>
-      {%- endif %}
+  Les visuels sont les rendus des groupes Figma (cadre translucide, rotation
+  et ombre compris), pas des captures brutes : les recomposer en CSS
+  multiplierait les calques sans rien gagner en fidelite.
+#}
+<section class="erpx-mi">
+  {%- for bloc in blocs %}
+  <div class="erpx-mi__bloc erpx-mi__bloc--{{ loop.index }} erpx-reveal">
+    <div class="erpx-mi__texte">
+      <h2 class="erpx-mi__titre">{{ bloc.title }}</h2>
+      <p class="erpx-mi__para">{{ bloc.text }}</p>
     </div>
-    {%- endfor %}
+    <div class="erpx-mi__media" aria-hidden="true">
+      {%- if bloc.image %}<img class="erpx-mi__img" src="{{ bloc.image }}" alt="" loading="lazy">{% endif %}
+      {%- if bloc.image_2 %}<img class="erpx-mi__img erpx-mi__img--2" src="{{ bloc.image_2 }}" alt="" loading="lazy">{% endif %}
+    </div>
   </div>
+  {%- endfor %}
 </section>

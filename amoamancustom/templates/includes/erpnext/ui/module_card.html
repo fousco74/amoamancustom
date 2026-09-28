@@ -1,0 +1,47 @@
+{#
+  Carte detaillee de la grille de /erpnext/modules (layers 4168:418 et suivants).
+  Parametre : module = une entree de amoamancustom.erpnext_site.modules_detailles().
+
+  A NE PAS confondre avec ui/module_tile.html, la tuile carree de l'accueil et du
+  carrousel. Meme glyphe, deux jeux de fichiers distincts, pour une raison de
+  couleur :
+
+    - la TUILE inline un SVG `fill="currentColor"` de
+      templates/includes/erpnext/icons/ et herite de la couleur de son parent ;
+    - la CARTE affiche un <img> pointant public/images/erpnext/modules/, ou le
+      degrade #83ACE6 -> #F88CA4 de la maquette est cuit dans le fichier.
+
+  Pourquoi un <img> et non un include comme partout ailleurs : les douze exports
+  Figma portent tous les memes id="Vector" / id="Subtract" / id="paint0_linear",
+  qui entreraient en collision une fois inlines cote a cote dans le meme
+  document — et un `url(#paint0_linear)` en collision resout sur le mauvais
+  degrade. Servis comme images, chaque SVG reste son propre document.
+
+  L'icone est purement decorative (alt="") : le titre de la carte, juste en
+  dessous, porte deja l'information.
+#}
+
+{% macro erpx_module_card(module) -%}
+{#- Sans page dediee, la carte est un <article> : un lien ramenant sur la page
+    courante vaut moins que pas de lien. Meme parti que la colonne « Secteurs »
+    du footer. -#}
+{%- set tag = "a" if module.href else "article" -%}
+<{{ tag }} class="erpx-modcard erpx-reveal"{% if module.href %} href="{{ module.href }}"{% endif %}>
+
+  <span class="erpx-modcard__icon{{ ' erpx-modcard__icon--miroir' if module.icon_miroir else '' }}">
+    <img src="/assets/amoamancustom/images/erpnext/modules/{{ module.icon }}.svg?v={{ erpx_assets_v }}"
+         alt="" aria-hidden="true" loading="lazy"
+         width="{{ module.icon_taille }}" height="{{ module.icon_taille }}">
+  </span>
+
+  <h3 class="erpx-modcard__title">
+    {{ module.titre }}
+    {#- La seule precision de la liste — « ( + Intégration directe FNE ) » — est
+        posee par la maquette sur une seconde ligne, en 15px contre 24px. -#}
+    {%- if module.precision %}<span class="erpx-modcard__precision">{{ module.precision }}</span>{% endif -%}
+  </h3>
+
+  <p class="erpx-modcard__text">{{ module.desc }}</p>
+
+</{{ tag }}>
+{%- endmacro %}

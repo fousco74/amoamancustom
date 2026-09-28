@@ -1,33 +1,28 @@
 {#
-  Carrousel « Découvrir d'autres modules » des pages module.
+  Carrousel « Découvrir d'autres modules » des pages module (cadre 3660:32) :
+  titre 26px a gauche, puis quatre tuiles visibles entre deux fleches rondes
+  (basil:arrow-left-outline dans un cercle de 40px).
   Parametre : autres_modules = amoamancustom.erpnext_site.modules(exclude=<cle>).
 
-  Defilement natif (scroll-snap) plutot qu'une librairie : le site historique
-  embarque Swiper depuis un CDN pour le meme besoin, ce qui ajoute une requete
-  bloquante et un point de panne externe. Ici, les fleches pilotent
-  `scrollBy()` et le carrousel reste utilisable sans JS (glissement tactile).
+  Defilement natif (scroll-snap) plutot qu'une librairie : les fleches pilotent
+  `scrollBy()` (erpnext_site.js) et le carrousel reste utilisable sans JS
+  (glissement tactile).
 #}
 {%- from "amoamancustom/templates/includes/erpnext/ui/module_tile.html" import erpx_module_tile -%}
 {%- from "amoamancustom/templates/includes/erpnext/ui/icon.html" import erpx_icon -%}
 
-<section class="erpx-section erpx-section--tight">
-  <div class="erpx-container">
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:34px">
-      <h2 class="erpx-h3">{{ _("Découvrir d'autres modules") }}</h2>
-      <div style="display:flex;gap:10px;flex:0 0 auto">
-        <button type="button" class="erpx-carousel__nav" data-erpx-carousel-prev
-                aria-label="{{ _('Modules précédents') }}">{{ erpx_icon("ui-arrow-left") }}</button>
-        <button type="button" class="erpx-carousel__nav erpx-carousel__nav--next" data-erpx-carousel-next
-                aria-label="{{ _('Modules suivants') }}">{{ erpx_icon("ui-arrow-left") }}</button>
-      </div>
-    </div>
+<section class="erpx-mc">
+  <h2 class="erpx-mc__titre">{{ _("Découvrir d’autres modules") }}</h2>
 
-    <div class="erpx-carousel" data-erpx-carousel>
-      <div class="erpx-carousel__track">
-        {%- for item in autres_modules %}
-        {{ erpx_module_tile(item.label, item.icon, item.href) }}
-        {%- endfor %}
-      </div>
+  <div class="erpx-mc__rang" data-erpx-carousel>
+    <button type="button" class="erpx-carousel__nav" data-erpx-carousel-prev
+            aria-label="{{ _('Modules précédents') }}">{{ erpx_icon("ui-arrow-left") }}</button>
+    <div class="erpx-carousel__track">
+      {%- for item in autres_modules %}
+      {{ erpx_module_tile(item) }}
+      {%- endfor %}
     </div>
+    <button type="button" class="erpx-carousel__nav erpx-carousel__nav--next" data-erpx-carousel-next
+            aria-label="{{ _('Modules suivants') }}">{{ erpx_icon("ui-arrow-left") }}</button>
   </div>
 </section>

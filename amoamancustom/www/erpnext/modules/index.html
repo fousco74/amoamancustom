@@ -1,0 +1,47 @@
+{% extends "amoamancustom/templates/layout_erpnext.html" %}
+
+{% block title %}{{ _("Les modules ERPNext par Amoaman & Associés") }}{% endblock %}
+
+{% block page_content %}
+<div class="erpx-shell">
+
+  {#- ------------------------------------------------------------------
+      1. En-tête
+
+      Les deux sphères ERPNext (calques « image 196 » et « image 197 ») sont
+      décoratives : elles sont calées sur le bloc de titre — et non sur la
+      section, dont le rembourrage varie avec la largeur — pour tenir les
+      écarts de la maquette quel que soit l'écran. Sous 1200px elles
+      chevaucheraient le texte : le CSS les retire.
+      ------------------------------------------------------------------ -#}
+  {#- Halos du cadre : Ellipse 43 (bleu #266BCC -> #05295B), Group 103
+      (rouge #E6072C), Group 106 et 107 (rose #F33560). -#}
+  <div class="erpx-modules-halos" aria-hidden="true"></div>
+
+  <section class="erpx-modules-head">
+    <div class="erpx-container">
+      <div class="erpx-title-block erpx-title-block--center erpx-modules-head__inner">
+
+        <img class="erpx-modules-head__deco erpx-modules-head__deco--lg"
+             src="/assets/amoamancustom/images/erpnext/modules/sphere-grande.png?v={{ erpx_assets_v }}"
+             alt="" aria-hidden="true" width="203" height="200">
+        <img class="erpx-modules-head__deco erpx-modules-head__deco--sm"
+             src="/assets/amoamancustom/images/erpnext/modules/sphere-petite.png?v={{ erpx_assets_v }}"
+             alt="" aria-hidden="true" width="136" height="134">
+
+        <h1 class="erpx-h1">{{ _("Des modules pensés pour chaque étape de votre croissance") }}</h1>
+        <p class="erpx-lead">
+          {{ _("Nos modules s'adaptent à la complexité de vos défis.") }}
+        </p>
+
+      </div>
+    </div>
+  </section>
+
+  {#- ------------------------------------------------------------------
+      2. Les 12 modules
+      ------------------------------------------------------------------ -#}
+  {% include "amoamancustom/templates/includes/erpnext/modules_cartes.html" %}
+
+</div>
+{% endblock %}

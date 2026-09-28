@@ -1,20 +1,27 @@
 {#
-  Panneau « Les fonctionnalités adaptées à vos besoins » : six lignes en deux
-  colonnes. Parametre : fonctionnalites = liste de {title, text}.
-#}
-{%- from "amoamancustom/templates/includes/erpnext/ui/feature_row.html" import erpx_feature_row -%}
+  Panneau « Les fonctionnalités adaptées à vos besoins » des pages module
+  (Rectangle 82 du cadre 3660:32) : verre blanc a 50%, six cartes #FAFAFE sur
+  deux colonnes — quatre a gauche, deux a droite, comme dans la maquette.
+  Parametre : fonctionnalites = liste de {title, text} ; les quatre premieres
+  vont a gauche.
 
-<section class="erpx-section">
-  <div class="erpx-container">
-    <div style="background:var(--erpx-surface-alt);border-radius:var(--erpx-radius-xl);padding:clamp(28px,4vw,56px)">
-      <div class="erpx-title-block erpx-title-block--center" style="margin-bottom:40px">
-        <h2 class="erpx-h2">{{ _("Les fonctionnalités adaptées à vos besoins") }}</h2>
-      </div>
-      <div class="erpx-features">
-        {%- for item in fonctionnalites %}
-        {{ erpx_feature_row(item.title, item.text) }}
-        {%- endfor %}
-      </div>
+  Le titre de la maquette porte « focntionnalités » : coquille corrigee.
+#}
+{%- from "amoamancustom/templates/includes/erpnext/ui/icon.html" import erpx_icon -%}
+
+{%- macro carte(item) -%}
+<div class="erpx-mf__carte">
+  <span class="erpx-mf__icone" aria-hidden="true">{{ erpx_icon("ui-set-up") }}</span>
+  <p class="erpx-mf__texte"><strong>{{ item.title }} :</strong> {{ item.text }}</p>
+</div>
+{%- endmacro -%}
+
+<section class="erpx-mf-section">
+  <div class="erpx-mf erpx-reveal">
+    <h2 class="erpx-mf__titre">{{ _("Les fonctionnalités adaptées à vos besoins") }}</h2>
+    <div class="erpx-mf__grille">
+      <div class="erpx-mf__col">{% for item in fonctionnalites[:4] %}{{ carte(item) }}{% endfor %}</div>
+      <div class="erpx-mf__col">{% for item in fonctionnalites[4:] %}{{ carte(item) }}{% endfor %}</div>
     </div>
   </div>
 </section>

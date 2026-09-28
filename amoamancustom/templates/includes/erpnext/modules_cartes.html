@@ -1,0 +1,28 @@
+{#
+  Grille des 12 cartes detaillees de /erpnext/modules (layer 4167:265).
+  Parametre : modules_cartes = amoamancustom.erpnext_site.modules_detailles().
+
+  A distinguer de modules.html, qui rend la grille de TUILES de l'accueil : meme
+  liste de modules, deux presentations. L'ordre differe aussi, et c'est voulu —
+  cf. ORDRE_PAGE_MODULES dans erpnext_site.py.
+
+  La maquette pose 3 colonnes de cartes 380x220 espacees de 40px, soit 1220px de
+  contenu, plus large que --erpx-container (1180px) : la section elargit donc
+  son conteneur (cf. .erpx-modgrid-section dans le CSS).
+#}
+{#- `with context` est indispensable : sans lui, une macro IMPORTEE ne voit pas
+    le contexte de la page, et `erpx_assets_v` — l'empreinte de version que la
+    carte colle sur l'URL de son icone — y serait vide. Les autres includes du
+    mini-site l'obtiennent gratuitement parce qu'ils lisent la variable dans
+    leur propre corps, et non depuis une macro. -#}
+{%- from "amoamancustom/templates/includes/erpnext/ui/module_card.html" import erpx_module_card with context -%}
+
+<section class="erpx-modgrid-section">
+  <div class="erpx-container">
+    <div class="erpx-modgrid">
+      {%- for module in modules_cartes %}
+      {{ erpx_module_card(module) }}
+      {%- endfor %}
+    </div>
+  </div>
+</section>

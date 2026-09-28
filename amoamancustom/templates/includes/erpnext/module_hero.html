@@ -1,0 +1,28 @@
+{#
+  Heros des pages module (cadre Figma 3660:32 « Module Stocks ») : titre et
+  accroche centres, puis une grande photo 1136x600 a rayon 25 portant la
+  pastille du module en haut a gauche, et le bouton sous la photo.
+
+  Parametres : hero_badge, hero_badge_icon, hero_title, hero_lead,
+               hero_media, hero_media_alt, hero_cta_label, hero_cta_href.
+#}
+{%- from "amoamancustom/templates/includes/erpnext/ui/button.html" import erpx_button -%}
+{%- from "amoamancustom/templates/includes/erpnext/ui/icon.html" import erpx_icon -%}
+
+<section class="erpx-mh">
+  <h1 class="erpx-mh__titre">{{ hero_title }}</h1>
+  {%- if hero_lead %}<p class="erpx-mh__lead">{{ hero_lead }}</p>{% endif %}
+
+  <div class="erpx-mh__media">
+    <img src="{{ hero_media }}" alt="{{ hero_media_alt or '' }}" width="1136" height="600" fetchpriority="high">
+    {%- if hero_badge %}
+    <span class="erpx-mh__badge">
+      <span class="erpx-mh__badge-icone" aria-hidden="true">{{ erpx_icon(hero_badge_icon) }}</span>{{ hero_badge }}
+    </span>
+    {%- endif %}
+  </div>
+
+  <div class="erpx-mh__cta">
+    {{ erpx_button(hero_cta_label or _("Demander une démo"), hero_cta_href or "/erpnext/contact") }}
+  </div>
+</section>

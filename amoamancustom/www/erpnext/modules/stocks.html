@@ -3,53 +3,44 @@
 {% block title %}{{ _("Gestion des stocks avec ERPNext") }}{% endblock %}
 
 {% block page_content %}
-<div class="erpx-shell">
+{%- from "amoamancustom/templates/includes/erpnext/ui/button.html" import erpx_button -%}
 
-  {#- ------------------------------------------------------------------
-      1. Héros
+{#-
+  Cadre Figma 3660:32 « Module Stocks » (1540x4656). Les visuels sont les
+  rendus des calques de la maquette (public/images/erpnext/stocks/).
+-#}
+<div class="erpx-shell erpx-mod">
 
-      NOTE : la maquette utilise un visuel dédié (calque « image 199 »,
-      1136x600) qui n'a pas encore pu être exporté — le quota d'appels Figma
-      du plan Starter a été atteint pendant l'intégration. En attendant, on
-      réutilise la capture de tableau de bord de l'accueil. Remplacer
-      `hero_media` ci-dessous une fois l'export disponible.
-      ------------------------------------------------------------------ -#}
+  {#- Halos : Ellipse 59 / 60 (bleu #266BCC -> #05295B) et Group 368 / 374
+      (rose #F33560), tous floutes de 400 a 500px. -#}
+  <div class="erpx-mod__halos" aria-hidden="true"></div>
+
+  {#- 1. Héros -#}
   {%- set hero_badge = _("Stocks") %}
   {%- set hero_badge_icon = "module-stocks" %}
-  {%- set hero_title_html %}
-    <span class="erpx-grad-text">{{ _("Une gestion des stocks optimale") }}</span><br>
-    {{ _("pour une maîtrise totale de vos opérations") }}
-  {%- endset %}
+  {%- set hero_title = _("Une gestion des stocks optimale pour une maîtrise totale de vos opérations") %}
   {%- set hero_lead = _("Gardez une visibilité en temps réel sur l'ensemble de vos stocks, réduisez vos coûts de stockage et optimisez votre chaîne d'approvisionnement grâce à une solution complète et intégrée.") %}
-  {%- set hero_cta_label = _("Demander une démo") %}
-  {%- set hero_cta_href = "/erpnext/contact" %}
-  {%- set hero_media = "/assets/amoamancustom/images/erpnext/hero-dashboard.webp" %}
-  {%- set hero_media_alt = _("Suivi des stocks dans ERPNext") %}
-  {% include "amoamancustom/templates/includes/erpnext/hero.html" %}
+  {%- set hero_media = "/assets/amoamancustom/images/erpnext/stocks/hero-entrepot.webp?v=" ~ erpx_assets_v %}
+  {%- set hero_media_alt = _("Entrepôt équipé d'ERPNext : rayonnages, chariot élévateur et convoyeur") %}
+  {% include "amoamancustom/templates/includes/erpnext/module_hero.html" %}
 
-  {#- ------------------------------------------------------------------
-      2. Deux blocs texte / visuel alternés
-
-      Les deux illustrations de la maquette restent à exporter (même raison
-      que le héros) : les blocs réservent leur emplacement en attendant.
-      ------------------------------------------------------------------ -#}
+  {#- 2. Deux blocs texte / visuel alternés -#}
   {%- set blocs = [
     {
       "title": _("Visibilité en temps réel et contrôle multi-entrepôts"),
       "text": _("Surveillez vos niveaux de stock à tout moment et suivez l'intégralité des mouvements de produits au sein de vos différents entrepôts. Assurez-vous de maintenir des niveaux de stock idéaux pour éviter les ruptures comme le surstockage."),
-      "image": ""
+      "image": "/assets/amoamancustom/images/erpnext/stocks/visibilite-tableau-bord.webp?v=" ~ erpx_assets_v
     },
     {
       "title": _("Gestion simplifiée des articles et valorisation exacte"),
       "text": _("Définissez vos produits, gérez facilement leurs variantes, leurs catégories et ajustez vos prix de manière dynamique. Bénéficiez d'une traçabilité exacte des entrées, sorties et transferts pour une comptabilité matière toujours précise."),
-      "image": ""
+      "image": "/assets/amoamancustom/images/erpnext/stocks/articles-fiche.webp?v=" ~ erpx_assets_v,
+      "image_2": "/assets/amoamancustom/images/erpnext/stocks/articles-bon.webp?v=" ~ erpx_assets_v
     }
   ] %}
   {% include "amoamancustom/templates/includes/erpnext/module_intro.html" %}
 
-  {#- ------------------------------------------------------------------
-      3. Les fonctionnalités adaptées à vos besoins
-      ------------------------------------------------------------------ -#}
+  {#- 3. Les fonctionnalités adaptées à vos besoins -#}
   {%- set fonctionnalites = [
     {
       "title": _("Suivi des stocks en temps réel"),
@@ -78,19 +69,14 @@
   ] %}
   {% include "amoamancustom/templates/includes/erpnext/module_features.html" %}
 
-  {#- ------------------------------------------------------------------
-      4. Appel à l'action
-      ------------------------------------------------------------------ -#}
-  {%- set cta_title = _("Prêt à optimiser la gestion de vos stocks ?") %}
-  {%- set cta_text = _("Que vous gériez un entrepôt unique ou un réseau logistique complexe, ERPNext s'adapte à la taille de votre entreprise.") %}
-  {%- set cta_label = _("Demander une démo") %}
-  {%- set cta_href = "/erpnext/contact" %}
-  {%- set cta_media = "" %}
-  {% include "amoamancustom/templates/includes/erpnext/cta.html" %}
+  {#- 4. Appel à l'action (3660:100, 3660:101, bouton 4174:744) -#}
+  <section class="erpx-mcta">
+    <h2 class="erpx-mcta__titre">{{ _("Prêt à optimiser la gestion de vos stocks ?") }}</h2>
+    <p class="erpx-mcta__texte">{{ _("Que vous gériez un entrepôt unique ou un réseau logistique complexe, ERPNext s'adapte à la taille de votre entreprise.") }}</p>
+    {{ erpx_button(_("Demander une démo"), "/erpnext/contact") }}
+  </section>
 
-  {#- ------------------------------------------------------------------
-      5. Découvrir d'autres modules
-      ------------------------------------------------------------------ -#}
+  {#- 5. Découvrir d'autres modules -#}
   {% include "amoamancustom/templates/includes/erpnext/module_carousel.html" %}
 
 </div>

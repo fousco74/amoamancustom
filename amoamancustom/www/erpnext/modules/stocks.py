@@ -23,6 +23,11 @@ def get_context(context):
 		page="module",
 	)
 
-	# Le carrousel de bas de page propose les onze autres modules.
-	context.autres_modules = modules(exclude="stocks")
+	# Le carrousel de bas de page propose les onze autres modules. La maquette
+	# (3660:32) l'ouvre sur RH & Paie, Support, Immos et Points de vente : la
+	# liste canonique est donc parcourue en boucle a partir de RH & Paie, sans
+	# en changer l'ordre.
+	autres = modules(exclude="stocks")
+	debut = next((i for i, m in enumerate(autres) if m["titre"] == "RH & Paie"), 0)
+	context.autres_modules = autres[debut:] + autres[:debut]
 	return context
