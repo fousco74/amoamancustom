@@ -1,5 +1,11 @@
 import frappe
 
+# Event `New` (et non plus `Save`) : la notification partait à chaque
+# enregistrement du Lead, donc à chaque retouche d'un commercial. Les deux
+# sources de Leads (web form « formulaire-de-prise-de-contact » et
+# /erpnext/contact via amoamancustom/contact_api.py) les insèrent en une seule
+# fois, champs déjà remplis : la condition est donc vraie dès l'after_insert.
+
 # Le gabarit HTML utilise des noms courts (secteur, besoin, m_compta…) alors que
 # les données vivent dans les champs personnalisés du Lead, dont les noms sont
 # générés à partir des libellés du formulaire web. Cette table fait le pont.
@@ -50,6 +56,10 @@ def get_context(context):
 
 	for alias, champ in CHAMPS.items():
 		context[alias] = lead.get(champ)
+
+	# Le formulaire /erpnext/contact (amoamancustom/contact_api.py) ne demande
+	# qu'un numéro, rangé dans `mobile_no` : sans repli, la ligne resterait vide.
+	context["whatsapp"] = lead.get("whatsapp_no") or lead.get("mobile_no")
 
 	context["has_modules"] = any(context[a] for a in CHAMPS if a.startswith("m_"))
 	context["has_migration"] = any(context[a] for a in CHAMPS if a.startswith("mig_"))
