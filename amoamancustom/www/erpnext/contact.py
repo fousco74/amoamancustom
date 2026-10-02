@@ -1,5 +1,5 @@
 # apps/amoamancustom/amoamancustom/www/erpnext/contact.py
-"""Formulaire de contact du mini-site ERPNext (/erpnext/contact).
+"""Formulaire de contact du mini-site ERPNext (/erpnext/contact), qui crée un Lead.
 
 Les listes déroulantes sont lues depuis `amoamancustom.contact_api` : c'est le
 même module qui les contraint côté serveur. Les dupliquer dans le template
@@ -9,7 +9,7 @@ incompréhensibles pour le visiteur.
 
 from frappe import _
 
-from amoamancustom.contact_api import MODULES, SECTEURS, TAILLES
+from amoamancustom.contact_api import MODULES, PAYS_DEFAUT, TAILLES, indicatifs, secteurs
 from amoamancustom.erpnext_site import base_context
 
 
@@ -26,6 +26,8 @@ def get_context(context):
 	)
 
 	context.tailles = TAILLES
-	context.secteurs = SECTEURS
-	context.modules_liste = MODULES
+	context.secteurs = secteurs()
+	context.modules_liste = list(MODULES)
+	context.indicatifs = indicatifs()
+	context.pays_defaut = PAYS_DEFAUT
 	return context

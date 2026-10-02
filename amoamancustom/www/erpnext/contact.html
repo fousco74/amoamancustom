@@ -50,7 +50,7 @@
 
           <div class="erpx-form__row">
             {{ erpx_input("email", _("E-mail"), type="email", placeholder=_("E-mail"), required=True, autocomplete="email") }}
-            {{ erpx_phone("number", _("Numéro de téléphone"), required=True) }}
+            {{ erpx_phone("number", _("Numéro de téléphone"), indicatifs, defaut=pays_defaut, required=True) }}
           </div>
 
           {{ erpx_input("entreprise", _("Nom de l’Entreprise"), placeholder=_("Nom de l’Entreprise"), required=True, autocomplete="organization") }}
@@ -60,7 +60,7 @@
                          precision=_("(nbre employés)")) }}
 
           {{ erpx_select("secteur_activite", _("Secteurs d’activité"), secteurs,
-                         placeholder=_("Sélectionnez votre secteur d’activité"), required=True) }}
+                         placeholder=_("Sélectionnez votre secteur d’activité"), required=secteurs|length > 0) }}
 
           {{ erpx_multiselect("services", _("Modules"), modules_liste,
                               placeholder=_("Sélectionnez un ou plusieurs modules"), required=True) }}
@@ -134,9 +134,6 @@ frappe.ready(function () {
       return;
     }
 
-    var tel = form.querySelector("#number");
-    var prefixe = tel.getAttribute("data-prefix") || "";
-
     bouton.disabled = true;
 
     frappe.call({
@@ -146,9 +143,10 @@ frappe.ready(function () {
         data: {
           first_name: form.querySelector("#first_name").value,
           email: form.querySelector("#email").value,
-          // L'indicatif est affiché mais non saisissable : on le recolle ici
-          // pour que `number` parte toujours au format international.
-          number: prefixe + " " + tel.value,
+          // Numéro et indicatif (code ISO du pays) séparés : le serveur
+          // recompose le format international.
+          number: form.querySelector("#number").value,
+          indicatif: form.querySelector("#number_indicatif").value,
           entreprise: form.querySelector("#entreprise").value,
           taille_entreprise: form.querySelector("#taille_entreprise").value,
           secteur_activite: form.querySelector("#secteur_activite").value,
@@ -160,10 +158,11 @@ frappe.ready(function () {
       },
       callback: function (r) {
         bouton.disabled = false;
-        if (r && r.message) {
-          afficher(r.message.message, true);
-          form.reset();
-        }
+        var reponse = (r && r.message) || {};
+        // Les erreurs de saisie reviennent en { ok: 0 } (HTTP 200), pour
+        // s'afficher ici plutôt que dans la modale msgprint du site.
+        afficher(reponse.message || form.dataset.msgError, !!reponse.ok);
+        if (reponse.ok) form.reset();
       },
       error: function () {
         bouton.disabled = false;

@@ -183,6 +183,32 @@
   }
 
   /* ---------------------------------------------------------
+   * Indicatif pays du téléphone (formulaire de contact)
+   * Le <select> natif est invisible, posé sur le drapeau et l'indicatif :
+   * on recopie le pays choisi dans ce bloc visible.
+   * ------------------------------------------------------- */
+  function initPhone() {
+    document.querySelectorAll("[data-erpx-phone]").forEach(function (bloc) {
+      var select = bloc.querySelector("select");
+      var drapeau = bloc.querySelector("[data-erpx-phone-drapeau]");
+      var isd = bloc.querySelector("[data-erpx-phone-isd]");
+      if (!select || !drapeau || !isd) return;
+
+      function maj() {
+        var option = select.options[select.selectedIndex];
+        if (!option) return;
+        drapeau.textContent = option.getAttribute("data-drapeau");
+        isd.textContent = option.getAttribute("data-isd");
+      }
+
+      select.addEventListener("change", maj);
+      // form.reset() remet le pays par défaut sans événement change.
+      var form = bloc.closest("form");
+      if (form) form.addEventListener("reset", function () { setTimeout(maj, 0); });
+    });
+  }
+
+  /* ---------------------------------------------------------
    * Défilement doux sur les ancres internes
    * ------------------------------------------------------- */
   function initSmoothScroll() {
@@ -240,6 +266,7 @@
     initCarousel();
     initSegmented();
     initMulti();
+    initPhone();
     initSmoothScroll();
     initReveal();
   }

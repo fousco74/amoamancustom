@@ -1871,11 +1871,23 @@ a.erpx-modcard:focus-visible { outline: 0; box-shadow: var(--erpx-ring); }
   color: #01235C;
   white-space: nowrap;
 }
-.erpx-phone__prefix > svg:first-child { width: 14px; height: 14px; margin-right: 3px; }
+/* Le <select> des indicatifs couvre tout le bloc, invisible : un clic sur le
+ * drapeau ou l'indicatif ouvre la liste native. */
+.erpx-phone__prefix { position: relative; }
+.erpx-phone__select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  opacity: 0;
+  cursor: pointer;
+  font-size: 16px; /* < 16px, iOS zoome a l'ouverture */
+}
+.erpx-phone__prefix:focus-within { outline: 2px solid #0756C5; outline-offset: 2px; border-radius: 6px; }
+.erpx-phone__drapeau { font-size: 15px; line-height: 1; margin-right: 4px; letter-spacing: 0; }
 /* Chevron de l'indicatif (ep:arrow-down-bold, 10px dans la maquette) : les
  * proportions du chevron commun (25x12) sont gardees pour qu'il ne soit pas
  * ecrase. */
-.erpx-phone__prefix > svg:last-child { width: 12px; height: 6px; margin-left: 3px; }
+.erpx-phone__prefix svg { width: 12px; height: 6px; margin-left: 3px; }
 .erpx-phone .erpx-input { height: 50px; padding: 0 12px 0 8px; background: transparent; box-shadow: none; }
 
 /* « Modules » : liste deroulante a choix multiples (details / summary). */

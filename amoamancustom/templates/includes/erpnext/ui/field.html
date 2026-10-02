@@ -28,22 +28,43 @@
 {%- endmacro %}
 
 {#
-  Telephone : drapeau, indicatif et chevron de la maquette. L'indicatif est
-  affiche mais non saisissable ; il est reconcatene cote client avant envoi,
-  pour que le champ `number` de Contact Us parte toujours au format
-  international.
+  Telephone : drapeau, indicatif et chevron de la maquette. L'indicatif se
+  choisit dans un <select> natif (`<name>_indicatif`, valeur = code ISO du
+  pays), rendu invisible et pose par-dessus le bloc drapeau + indicatif : on
+  garde le dessin Figma et le selecteur natif (clavier, mobile, lecteurs
+  d'ecran). erpnext_site.js recopie le choix dans le bloc visible.
+
+  `indicatifs` : contact_api.indicatifs() ; `defaut` : code ISO preselectionne.
+  Le numero est recompose cote serveur (contact_api._normaliser_telephone).
 #}
-{% macro erpx_phone(name, label, prefix="+225", required=False) -%}
+{% macro erpx_phone(name, label, indicatifs, defaut="ci", required=False) -%}
+{%- set choisi = (indicatifs | selectattr("iso", "equalto", defaut) | first) or indicatifs[0] -%}
 <div class="erpx-field">
   {{ _label(name, label, required) }}
-  <div class="erpx-phone">
-    <span class="erpx-phone__prefix" aria-hidden="true">{{ erpx_icon("ui-drapeau-ci") }}<span>{{ prefix }}</span>{{ erpx_icon("ui-chevron-bas") }}</span>
+  <div class="erpx-phone" data-erpx-phone>
+    <span class="erpx-phone__prefix">
+      <span class="erpx-phone__drapeau" aria-hidden="true" data-erpx-phone-drapeau>{{ choisi.drapeau }}</span>
+      <span aria-hidden="true" data-erpx-phone-isd>{{ choisi.isd }}</span>
+      <span aria-hidden="true">{{ erpx_icon("ui-chevron-bas") }}</span>
+      <select class="erpx-phone__select" id="{{ name }}_indicatif" name="{{ name }}_indicatif"
+              aria-label="{{ _('Indicatif pays') }}">
+        {%- for pays in indicatifs %}
+        <option value="{{ pays.iso }}" data-isd="{{ pays.isd }}" data-drapeau="{{ pays.drapeau }}"
+                {%- if pays.iso == choisi.iso %} selected{% endif %}>{{ pays.nom }} ({{ pays.isd }})</option>
+        {%- endfor %}
+      </select>
+    </span>
     <input class="erpx-input" type="tel" id="{{ name }}" name="{{ name }}"
-           data-prefix="{{ prefix }}" inputmode="tel"{% if required %} required{% endif %} autocomplete="tel">
+           inputmode="tel"{% if required %} required{% endif %} autocomplete="tel-national">
   </div>
 </div>
 {%- endmacro %}
 
+{#
+  `options` : chaines (valeur = libelle) ou couples (valeur, libelle), quand
+  la valeur stockee differe du texte affiche (taille d'entreprise -> Select
+  standard `Lead.no_of_employees`).
+#}
 {% macro erpx_select(name, label, options, placeholder="", required=False, precision="") -%}
 <div class="erpx-field">
   {{ _label(name, label, required, precision) }}
@@ -51,7 +72,11 @@
     <select class="erpx-select" id="{{ name }}" name="{{ name }}"{% if required %} required{% endif %}>
       <option value="" disabled selected>{{ placeholder }}</option>
       {%- for option in options %}
+      {%- if option is string %}
       <option value="{{ option }}">{{ option }}</option>
+      {%- else %}
+      <option value="{{ option[0] }}">{{ option[1] }}</option>
+      {%- endif %}
       {%- endfor %}
     </select>
     <span class="erpx-select-wrap__chevron" aria-hidden="true">{{ erpx_icon("ui-chevron-bas") }}</span>
