@@ -1,3 +1,4 @@
+{%- from "amoamancustom/templates/includes/ui/site_switch.html" import site_switch -%}
 <nav class="navbar navbar-light fixed-top">
   <div class="navbar-fluid p-0 m-0">
 
@@ -32,6 +33,9 @@
       <a class="btn text-nowrap" href="/#faq">{{ _("FAQ") }}</a>
       <a href="/contact" class="btn text-nowrap d-none d-md-block btn-contact">{{ _("Contactez-nous") }}</a>
     </div>
+
+    <!-- Bascule vers le mini-site ERPNext (suspendue sous la navbar, cf. site_switch.css) -->
+    {{ site_switch("amoaman") }}
 
   </div>
 </nav>

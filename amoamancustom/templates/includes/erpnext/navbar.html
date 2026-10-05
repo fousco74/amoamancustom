@@ -18,6 +18,7 @@
   `erpx_active` est pose par le get_context de chaque page.
 #}
 {%- from "amoamancustom/templates/includes/erpnext/ui/button.html" import erpx_button -%}
+{%- from "amoamancustom/templates/includes/ui/site_switch.html" import site_switch -%}
 
 {%- set nav_links = [
   {"key": "modules",     "label": _("Modules"),        "href": "/erpnext/modules"},
@@ -56,4 +57,7 @@
             aria-expanded="false" aria-label="{{ _('Ouvrir le menu') }}"><span></span></button>
 
   </div>
+
+  {#- Bascule vers le site corporate, suspendue sous la pilule (site_switch.css). -#}
+  {{ site_switch("erpnext") }}
 </nav>

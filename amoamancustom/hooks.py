@@ -30,7 +30,10 @@ app_license = "mit"
 app_include_js = "/assets/amoamancustom/js/notification_bell.js"
 
 # include js, css files in header of web template
-web_include_css = "/assets/amoamancustom/css/brand_theme_web.css"
+web_include_css = [
+    "/assets/amoamancustom/css/brand_theme_web.css",
+    "/assets/amoamancustom/css/site_switch.css",  # bascule / <-> /erpnext
+]
 
 # Route rules — intercept /events before the DocType ListPage renderer
 website_route_rules = [

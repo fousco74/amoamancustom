@@ -1,0 +1,68 @@
+/* =========================================
+   SITE SWITCH — bascule / <-> /erpnext
+   Macro : templates/includes/ui/site_switch.html
+   Charge sur tout le site web (hooks.py > web_include_css).
+   ========================================= */
+
+.amo-switch {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1.5px #043F93;
+  font-family: inherit;
+  line-height: 1;
+}
+
+.amo-switch__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  padding: 0 14px;
+  border-radius: 999px;
+  color: #043F93 !important;
+  font-size: .8rem;
+  font-weight: 600;
+  text-decoration: none !important;
+  white-space: nowrap;
+  transition: background-color .2s ease, color .2s ease;
+}
+
+.amo-switch__link:hover {
+  background: rgba(4, 63, 147, .08);
+}
+
+.amo-switch__link.is-active {
+  background: linear-gradient(90deg, #0756C5 0%, #F32A57 100%);
+  color: #fff !important;
+  cursor: default;
+}
+
+.amo-switch__link:focus-visible {
+  outline: 2px solid #0756C5;
+  outline-offset: 2px;
+}
+
+/* Position : suspendue sous la navbar, centree, sur les deux sites.
+ * Les navbars n'ont pas la place de l'accueillir en ligne : celle de / est
+ * symetrique (2 x 588px pleins a 1440px), celle de /erpnext reproduit la
+ * maquette Figma au pixel. Elle suit la navbar (fixed / sticky) au defile-
+ * ment ; les menus mobiles (z-index 99) passent devant elle. */
+.navbar-fluid > .amo-switch,
+.erpx-nav > .amo-switch {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  box-shadow: inset 0 0 0 1.5px #043F93, 0 4px 12px rgba(4, 63, 147, .15);
+}
+
+/* / : .navbar-fluid est position:relative et occupe toute la barre. */
+.navbar-fluid > .amo-switch { top: calc(100% + 8px); }
+
+/* /erpnext : .erpx-nav (sticky) a 18px de padding sous la pilule. */
+.erpx-nav > .amo-switch { top: calc(100% - 8px); }

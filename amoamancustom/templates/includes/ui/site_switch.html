@@ -1,0 +1,20 @@
+{#
+  UI Macro: Site switch — bascule entre le site corporate (/) et le mini-site
+  ERPNext (/erpnext). Inclus dans les deux navbars :
+    templates/includes/navbar.html          -> site_switch("amoaman")
+    templates/includes/erpnext/navbar.html  -> site_switch("erpnext")
+  Styles : public/css/site_switch.css (charge partout via web_include_css).
+  Pas de classe .btn : le style global .btn de layout.html la deformerait.
+#}
+{% macro site_switch(actif) %}
+{%- set sites = [
+  {"key": "amoaman", "label": "Amoaman", "href": "/"},
+  {"key": "erpnext", "label": "ERPNext", "href": "/erpnext"}
+] -%}
+<nav class="amo-switch" aria-label="{{ _('Changer de site') }}">
+  {%- for site in sites %}
+  <a class="amo-switch__link{% if actif == site.key %} is-active{% endif %}" href="{{ site.href }}"
+     {% if actif == site.key %}aria-current="page"{% endif %}>{{ site.label }}</a>
+  {%- endfor %}
+</nav>
+{% endmacro %}
