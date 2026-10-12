@@ -1,0 +1,25 @@
+{% extends "amoamancustom/templates/layout_erpnext.html" %}
+
+{% block title %}{{ _("Gestion des cookies") }}{% endblock %}
+
+{% block page_content %}
+<div class="erpx-shell erpx-legal">
+
+  <section class="erpx-legal__tete">
+    <span class="erpx-legal__badge">{{ _("Document légal") }}</span>
+    <h1 class="erpx-legal__titre">{{ _("Gestion des cookies") }}</h1>
+  </section>
+
+  {#- Préférences à gauche (collantes sur grand écran), texte à droite : même
+      disposition que /cookies. La date de mise à jour est dans la carte. -#}
+  <div class="erpx-legal__corps erpx-legal__corps--aside">
+    <div class="erpx-legal__aside">
+      {% include "amoamancustom/templates/includes/legal/cookies_preferences.html" %}
+    </div>
+    <article class="erpx-legal__carte">
+      {% include "amoamancustom/templates/includes/legal/cookies.html" %}
+    </article>
+  </div>
+
+</div>
+{% endblock %}

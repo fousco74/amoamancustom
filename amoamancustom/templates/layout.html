@@ -3407,66 +3407,9 @@ svg {
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="assets/amoamancustom/js/main.js"></script>
+  {#- API window.CookieConsent, partagée avec le mini-site /erpnext (voir le fichier). -#}
+  <script src="/assets/amoamancustom/js/cookie_consent.js"></script>
 <script>
-
-  
-/**
- * Stockage & API globale – window.CookieConsent
- */
-(function () {
-  'use strict';
-  const KEY = 'cookie_prefs_v1';
-
-  function _supportsLS() {
-    try {
-      if (typeof localStorage === 'undefined') return false;
-      localStorage.setItem('__t', '1');
-      localStorage.removeItem('__t');
-      return true;
-    } catch (e) { return false; }
-  }
-
-  function _read() {
-    if (typeof document === 'undefined') return null;
-    if (_supportsLS()) {
-      const raw = localStorage.getItem(KEY);
-      if (!raw) return null;
-      try { return JSON.parse(raw); } catch { return null; }
-    } else {
-      const m = document.cookie.match(new RegExp('(^| )' + KEY + '=([^;]+)'));
-      return m ? JSON.parse(decodeURIComponent(m[2])) : null;
-    }
-  }
-
-  function _write(prefs) {
-    const payload = JSON.stringify(prefs);
-    if (_supportsLS()) {
-      localStorage.setItem(KEY, payload);
-    } else {
-      const exp = new Date();
-      exp.setFullYear(exp.getFullYear() + 1);
-      document.cookie = KEY + '=' + encodeURIComponent(payload) + ';expires=' + exp.toUTCString() + ';path=/';
-    }
-    if (typeof document !== 'undefined' && typeof CustomEvent !== 'undefined') {
-      document.dispatchEvent(new CustomEvent('consent:applied', { detail: prefs }));
-    }
-  }
-
-  window.CookieConsent = {
-    get() { return _read(); },
-    set(p) {
-      const prefs = Object.assign(
-        { necessary: true, analytics: false, functional: false, marketing: false },
-        p,
-        { ts: Date.now() }
-      );
-      _write(prefs);
-      return prefs;
-    },
-    acceptAll() { return this.set({ necessary: true, analytics: true, functional: true, marketing: true }); },
-    rejectAll() { return this.set({ necessary: true, analytics: false, functional: false, marketing: false }); }
-  };
-})();
 
 /**
  * Bannière + Dialog Personnaliser - VERSION SIMPLIFIÉE + STYLES btn-contact / btn-soft

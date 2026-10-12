@@ -1,0 +1,22 @@
+{% extends "amoamancustom/templates/layout_erpnext.html" %}
+
+{% block title %}{{ _("Mentions légales") }}{% endblock %}
+
+{% block page_content %}
+<div class="erpx-shell erpx-legal">
+
+  <section class="erpx-legal__tete">
+    <span class="erpx-legal__badge">{{ _("Document légal") }}</span>
+    <h1 class="erpx-legal__titre">{{ _("Mentions légales") }}</h1>
+    <p class="erpx-legal__maj">{{ _("Dernière mise à jour :") }} {{ frappe.utils.formatdate(frappe.utils.nowdate()) }}</p>
+  </section>
+
+  {#- Texte court, sommaire intégré : une seule colonne. -#}
+  <div class="erpx-legal__corps">
+    <article class="erpx-legal__carte">
+      {% include "amoamancustom/templates/includes/legal/mentions_legales.html" %}
+    </article>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "amoamancustom/templates/layout_erpnext.html" %}
+
+{% block title %}{{ _("Politique de confidentialité") }}{% endblock %}
+
+{% block page_content %}
+<div class="erpx-shell erpx-legal">
+
+  <section class="erpx-legal__tete">
+    <span class="erpx-legal__badge">{{ _("Document légal") }}</span>
+    <h1 class="erpx-legal__titre">{{ _("Politique de confidentialité") }}</h1>
+    <p class="erpx-legal__maj">{{ _("Dernière mise à jour :") }} {{ frappe.utils.formatdate(frappe.utils.nowdate()) }}</p>
+  </section>
+
+  <div class="erpx-legal__corps erpx-legal__corps--aside">
+    <div class="erpx-legal__aside">
+      <nav class="erpx-legal__sommaire" aria-label="{{ _('Table des matières') }}">
+        <p class="erpx-legal__sommaire-titre">{{ _("Sommaire") }}</p>
+        <ol class="toc-list">
+          {% include "amoamancustom/templates/includes/legal/confidentialite_sommaire.html" %}
+        </ol>
+      </nav>
+    </div>
+    <article class="erpx-legal__carte">
+      {% include "amoamancustom/templates/includes/legal/confidentialite.html" %}
+    </article>
+  </div>
+
+</div>
+{% endblock %}

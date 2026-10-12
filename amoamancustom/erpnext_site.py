@@ -39,7 +39,7 @@ def assets_version():
 	en production. Les bundles `*.bundle.css` de `bench build` repondent a ce
 	besoin par un nom de fichier hache, mais cette app reference ses CSS en direct
 	(cf. templates/layout.html:9) ; on garde cette convention et on y ajoute la
-	date de modification la plus recente des deux fichiers.
+	date de modification la plus recente de ces fichiers.
 
 	Retourne "0" si les fichiers sont introuvables : une URL sans empreinte reste
 	preferable a une erreur de rendu.
@@ -49,6 +49,7 @@ def assets_version():
 	for chemin in (
 		os.path.join(_PUBLIC, "css", "erpnext_site.css"),
 		os.path.join(_PUBLIC, "js", "erpnext_site.js"),
+		os.path.join(_PUBLIC, "js", "cookie_consent.js"),
 	):
 		try:
 			dernier = max(dernier, int(os.path.getmtime(chemin)))

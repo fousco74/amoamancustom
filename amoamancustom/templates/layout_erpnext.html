@@ -49,5 +49,8 @@
 
 {% block script %}
 {{ super() }}
+{#- API window.CookieConsent, commune avec le site corporate : sert aux
+    preferences de /erpnext/cookies. Aucune banniere ici (voir le fichier). -#}
+<script src="/assets/amoamancustom/js/cookie_consent.js?v={{ erpx_assets_v }}"></script>
 <script src="/assets/amoamancustom/js/erpnext_site.js?v={{ erpx_assets_v }}"></script>
 {% endblock %}

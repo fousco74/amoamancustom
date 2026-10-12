@@ -494,95 +494,14 @@
         <nav class="toc-card" aria-label="{{ _('Table des matières') }}">
           <div class="toc-title">{{ _("Navigation") }}</div>
           <ol class="toc-list" id="tocList">
-            <li><a href="#pourquoi" class="toc-link">{{ _("Pourquoi nous traitons vos données") }}</a></li>
-            <li><a href="#donnees-traitees" class="toc-link">{{ _("Données traitées") }}</a></li>
-            <li><a href="#obtention" class="toc-link">{{ _("Comment nous les obtenons") }}</a></li>
-            <li><a href="#destinataires" class="toc-link">{{ _("Destinataires") }}</a></li>
-            <li><a href="#securite" class="toc-link">{{ _("Confidentialité & sécurité") }}</a></li>
-            <li><a href="#cookies" class="toc-link">{{ _("Cookies") }}</a></li>
-            <li><a href="#transferts" class="toc-link">{{ _("Transferts hors CEDEAO") }}</a></li>
-            <li><a href="#droits" class="toc-link">{{ _("Vos droits") }}</a></li>
-            <li><a href="#liens" class="toc-link">{{ _("Liens tiers") }}</a></li>
-            <li><a href="#maj" class="toc-link">{{ _("Mises à jour") }}</a></li>
+            {% include "amoamancustom/templates/includes/legal/confidentialite_sommaire.html" %}
           </ol>
         </nav>
       </aside>
 
       <!-- Main Content -->
       <article class="privacy-content">
-        <div class="info-note">
-          {{ _("La présente politique de confidentialité fournit des informations concernant le traitement des données à caractère personnel effectué par AMOAMAN & ASSOCIÉS. Elle décrit comment la société traite les données des personnes physiques (bénéficiaires directs/indirects ou représentants d'entreprises/organisations) et précise vos droits conformément aux lois en vigueur en Côte d'Ivoire, à l'Acte additionnel CEDEAO, à la Convention de l'Union Africaine sur la cybersécurité et à la protection des données, etc.") }}
-        </div>
-
-        <div class="info-callout">
-          <div class="callout-icon">i</div>
-          <div class="callout-content">
-            <strong>{{ _("Besoin d'aide ?") }}</strong>
-            <p>
-              {{ _("Contactez-nous :") }} <a href="mailto:hello@amoaman.com">hello@amoaman.com</a> 
-              <br>{{ _("Téléphone :") }} <a href="tel:+22527243115-61">(+225) 27 24-31-15-61</a>
-            </p>
-          </div>
-        </div>
-
-        <h2 id="pourquoi">{{ _("Pourquoi AMOAMAN & ASSOCIÉS traite-t-il vos données à caractère personnel ?") }}</h2>
-        <p>{{ _("AMOAMAN & ASSOCIÉS traite les données strictement nécessaires à la fourniture de solutions numériques à la clientèle et à la gestion clientèle, de manière raisonnable et conforme aux lois en vigueur.") }}</p>
-        <p>{{ _("Plus précisément, les traitements poursuivent les finalités suivantes :") }}</p>
-        <ul>
-          <li>{{ _("La gestion de ses systèmes informatiques et leur sécurité ;") }}</li>
-          <li>{{ _("La gestion de fourniture de service informatique ;") }}</li>
-          <li>{{ _("Les enquêtes concernant des plaintes et la réponse à ces dernières, ainsi que l'établissement, l'exercice et la défense de droits ;") }}</li>
-          <li>{{ _("La formation du personnel, et l'amélioration continue des procédures et modalités internes.") }}</li>
-        </ul>
-
-        <h2 id="donnees-traitees">{{ _("Quelles données à caractère personnel AMOAMAN & ASSOCIÉS traite-t-il ?") }}</h2>
-        <p>{{ _("AMOAMAN & ASSOCIÉS collecte et traite des données telles que le nom, les coordonnées et l'adresse e-mail. Les renseignements fournis sont utilisés aux seules fins d'identification et/ou de paiement sur la plateforme et le site web de la société.") }}</p>
-
-        <h2 id="obtention">{{ _("Comment AMOAMAN & ASSOCIÉS obtient-il vos données ?") }}</h2>
-        <p>{{ _("Les données peuvent provenir directement de vous, ou d'un intermédiaire partie à une opération que vous avez initiée (entreprise/organisation que vous représentez ou à laquelle vous êtes associé).") }}</p>
-        <p>{{ _("Si vous êtes bénéficiaire des services, certaines informations peuvent être collectées à partir de listes de sanctions internationales et d'autres sources accessibles publiquement.") }}</p>
-
-        <h2 id="destinataires">{{ _("À qui vos données sont-elles transmises ?") }}</h2>
-        <ul>
-          <li>{{ _("En interne, aux directions et/ou services concernés ;") }}</li>
-          <li>{{ _("À l'entité/organisation à laquelle vous êtes associé, aux intermédiaires et correspondants impliqués ;") }}</li>
-          <li>{{ _("Aux régulateurs ou autorités judiciaires ;") }}</li>
-          <li>{{ _("Aux conseillers juridiques ;") }}</li>
-          <li>{{ _("À toute autorité compétente dûment habilitée.") }}</li>
-        </ul>
-
-        <h2 id="securite">{{ _("Confidentialité et sécurité") }}</h2>
-        <p>{{ _("AMOAMAN & ASSOCIÉS prend des précautions techniques et organisationnelles raisonnables pour garder vos données confidentielles et protégées, et empêcher toute mauvaise manipulation. L'accès par des tiers non autorisés est empêché dans la mesure du possible.") }}</p>
-
-        <h2 id="cookies">{{ _("Cookies") }}</h2>
-        <p>{{ _("Nos pages utilisent des cookies (petits fichiers texte) et parfois des pixels invisibles pour mesurer l'usage et la performance. Certains cookies/pixels proviennent de prestataires tiers. Vous pouvez gérer vos préférences via les réglages du navigateur et notre page dédiée aux cookies.") }}</p>
-        <p>{{ _("Pour plus d'informations, consultez la page :") }} <a href="/gestion-des-cookies">/gestion-des-cookies</a>.</p>
-
-        <h2 id="transferts">{{ _("Transfert de données hors zone CEDEAO") }}</h2>
-        <p>{{ _("Vos informations peuvent être traitées et stockées sur des systèmes situés en dehors de la Côte d'Ivoire. En acceptant cette politique et en nous transmettant vos informations, vous consentez à ces transferts.") }}</p>
-        <p>{{ _("Nous prenons toutes les mesures nécessaires, conformément à la loi n°2013-450 du 19 juin 2013, pour garantir un traitement sécurisé et confidentiel. Aucun transfert ne sera effectué sans garanties appropriées (mesures techniques/contractuelles).") }}</p>
-
-        <h2 id="droits">{{ _("Vos droits et comment les exercer") }}</h2>
-        <p>{{ _("Vous pouvez demander à AMOAMAN & ASSOCIÉS de :") }}</p>
-        <ul>
-          <li>{{ _("Fournir plus d'informations sur l'utilisation de vos données ;") }}</li>
-          <li>{{ _("Accéder à vos données (copie fournie le cas échéant) ;") }}</li>
-          <li>{{ _("Corriger/mettre à jour vos données ;") }}</li>
-          <li>{{ _("Supprimer vos données ;") }}</li>
-          <li>{{ _("Restreindre certains traitements ;") }}</li>
-        </ul>
-        <p>{{ _("Vous pouvez également vous opposer à certains traitements. Pour exercer vos droits :") }}</p>
-        <ul>
-          <li>{{ _("Par téléphone :") }} <a href="tel:+22527243115-61">(+225) 27 24-31-15-61</a></li>
-          <li>{{ _("En ligne :") }} <a href="/contact">/contact</a></li>
-        </ul>
-        <p>{{ _("Vous pouvez en outre déposer une plainte auprès de l'Autorité de protection (ARTCI).") }}</p>
-
-        <h2 id="liens">{{ _("Liens vers d'autres sites web") }}</h2>
-        <p>{{ _("Notre service peut contenir des liens vers des sites tiers. Nous vous invitons à consulter leur politique de confidentialité. AMOAMAN & ASSOCIÉS n'exerce aucun contrôle sur les contenus et pratiques de ces sites et décline toute responsabilité à leur égard.") }}</p>
-
-        <h2 id="maj">{{ _("Modification de la politique de confidentialité") }}</h2>
-        <p>{{ _("Nous pouvons mettre à jour cette politique. Toute nouvelle version sera publiée sur cette page, avec notification visible le cas échéant, et mise à jour de la date « Dernière mise à jour ». Les changements prennent effet à la publication.") }}</p>
+        {% include "amoamancustom/templates/includes/legal/confidentialite.html" %}
       </article>
 
     </div>

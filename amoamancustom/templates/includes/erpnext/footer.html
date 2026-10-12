@@ -7,6 +7,12 @@
   « Tutoriels », qui n'ont aucun contenu correspondant nulle part, sont rendus
   en TEXTE et non en liens.
 
+  Le logo est une colonne de la grille et non plus un calque en absolu : cale
+  aux cotes du cadre de 1486px, il recouvrait la colonne Contacts sur tout
+  ecran plus etroit (« Agence – Dakar » passait sous le logo de 1280 a 1920px).
+  La barre basse (copyright, liens legaux, « Made by ») n'est pas dans la
+  maquette ; elle reprend le pied du site corporate (includes/footer.html).
+
   L'ordre des trois colonnes est celui de la maquette (4167:374) et n'est celui
   d'aucune autre grille du site — pas plus que « Helpdesk », qui designe ici le
   module appele « Support » partout ailleurs. Les deux sont conserves tels
@@ -41,6 +47,14 @@
   {"label": _("Avantages"),      "href": "/erpnext#avantages"},
   {"label": _("Pourquoi nous ?"),"href": "/erpnext#pourquoi"},
   {"label": _("FAQ"),            "href": "/erpnext#faq"}
+] -%}
+
+{#- Pages legales propres au mini-site ; leur texte est partage avec /cookies,
+    /legal-notice et /confidentialite (templates/includes/legal/). -#}
+{%- set footer_legal = [
+  {"label": _("Cookies"),          "href": "/erpnext/cookies"},
+  {"label": _("Mentions légales"), "href": "/erpnext/mentions-legales"},
+  {"label": _("Confidentialité"),  "href": "/erpnext/confidentialite"}
 ] -%}
 
 <footer class="erpx-footer">
@@ -97,9 +111,22 @@
       <div class="erpx-footer__brand">
         <img src="/assets/amoamancustom/images/erpnext/logo-erpnext-amoaman-blanc.png?v={{ erpx_assets_v }}"
              alt="ERPNext — Amoaman &amp; Associés" width="184" height="60" loading="lazy">
-        <span class="erpx-footer__credit">{{ _("Made by Amoaman & Associés") }}</span>
       </div>
 
+    </div>
+
+    <div class="erpx-footer__bas">
+      <p class="erpx-footer__copy">
+        © {{ frappe.utils.formatdate(frappe.utils.nowdate(), "YYYY") }}
+        Amoaman &amp; Associés — {{ _("Tous droits réservés.") }}
+      </p>
+      <nav class="erpx-footer__legal" aria-label="{{ _('Liens légaux') }}">
+        {%- for item in footer_legal %}
+        {%- if not loop.first %}<span class="erpx-footer__sep" aria-hidden="true">•</span>{% endif %}
+        <a class="erpx-footer__link" href="{{ item.href }}">{{ item.label }}</a>
+        {%- endfor %}
+      </nav>
+      <span class="erpx-footer__credit">{{ _("Made by Amoaman & Associés") }}</span>
     </div>
   </div>
 </footer>

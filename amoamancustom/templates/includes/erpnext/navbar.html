@@ -15,7 +15,10 @@
   de cibles. La maquette l'affiche, la masquer decalait les autres liens.
   Le drapeau `hidden: True` reste disponible pour retirer une entree.
 
-  `erpx_active` est pose par le get_context de chaque page.
+  `erpx_active` est pose par le get_context de chaque page : l'entree
+  correspondante recoit la classe `is-active` et aria-current="page". Sur
+  l'accueil, les entrees qui pointent une ancre sont suivies au defilement
+  (initNavSpy, public/js/erpnext_site.js).
 #}
 {%- from "amoamancustom/templates/includes/erpnext/ui/button.html" import erpx_button -%}
 {%- from "amoamancustom/templates/includes/ui/site_switch.html" import site_switch -%}
@@ -39,7 +42,7 @@
 
       <div class="erpx-nav__links">
         {%- for link in nav_links %}{% if not link.get("hidden") %}
-        <a class="erpx-nav__link" href="{{ link.href }}"
+        <a class="erpx-nav__link{% if erpx_active == link.key %} is-active{% endif %}" href="{{ link.href }}"
            {% if erpx_active == link.key %}aria-current="page"{% endif %}>{{ link.label }}</a>
         {%- endif %}{% endfor %}
       </div>
@@ -50,7 +53,10 @@
     </div>
 
     <div class="erpx-nav__aside">
-      {{ erpx_button(_("Contactez-nous"), "/erpnext/contact", variant="outline", size="sm") }}
+      {#- Pas d'entree « Contact » dans les liens : c'est ce bouton qui porte
+          l'etat actif sur /erpnext/contact. -#}
+      {{ erpx_button(_("Contactez-nous"), "/erpnext/contact", variant="outline", size="sm",
+                     attrs='aria-current="page"' if erpx_active == "contact" else "") }}
     </div>
 
     <button type="button" class="erpx-nav__burger" data-erpx-burger

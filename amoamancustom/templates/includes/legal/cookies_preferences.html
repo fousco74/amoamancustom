@@ -1,0 +1,122 @@
+{#
+  Carte « Vos préférences » de la page cookies : interrupteurs par catégorie et
+  boutons Tout refuser / Enregistrer / Tout accepter, avec leur script.
+
+  Partagée par www/cookies.html (site corporate) et www/erpnext/cookies.html
+  (mini-site). Le script ne fait que piloter window.CookieConsent, défini dans
+  public/js/cookie_consent.js et chargé par les deux gabarits : le choix est
+  donc commun aux deux sites (même origine, même clé `cookie_prefs_v1`).
+
+  Les classes (.cc-card, .cc-switch, .switch, .cc-btn…) sont stylées par le
+  <style> en ligne de www/cookies.html côté corporate, et par la section
+  « Pages légales » de public/css/erpnext_site.css côté mini-site.
+#}
+    <aside class="cc-card" aria-labelledby="cc-pref-title">
+      <h2 id="cc-pref-title">{{ _("Vos préférences") }}</h2>
+      <p class="cc-note">{{ _("Vous pouvez ajuster à tout moment vos préférences de confidentialité. Certains cookies sont indispensables au fonctionnement du site.") }}</p>
+
+      <div class="cc-badges" aria-hidden="true">
+        <span class="cc-badge"><span class="dot"></span>{{ _("Sécurité") }}</span>
+        <span class="cc-badge"><span class="dot"></span>{{ _("Performance") }}</span>
+        <span class="cc-badge"><span class="dot"></span>{{ _("Expérience") }}</span>
+      </div>
+
+      <!-- Switches -->
+      <div class="cc-switch" role="group" aria-label="{{ _('Catégories de cookies') }}">
+
+        <!-- Nécessaires (désactivé/fixe) -->
+        <div class="meta">
+          <div class="title">{{ _("Strictement nécessaires") }}</div>
+          <div class="desc">{{ _("Indispensables au fonctionnement du site (sécurité, session, charge). Toujours actifs.") }}</div>
+        </div>
+        <label class="switch" aria-disabled="true">
+          <input type="checkbox" id="cc-necessary" checked disabled>
+          <span class="track"><span class="knob"></span></span>
+        </label>
+      </div>
+
+      <div class="cc-switch">
+        <div class="meta">
+          <div class="title">{{ _("Fonctionnels") }}</div>
+          <div class="desc">{{ _("Améliorent le confort d’usage : préférences, sauvegarde d’état, fonctionnalités étendues.") }}</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="cc-functional" aria-label="{{ _('Activer les cookies fonctionnels') }}">
+          <span class="track"><span class="knob"></span></span>
+        </label>
+      </div>
+
+      <div class="cc-switch">
+        <div class="meta">
+          <div class="title">{{ _("Mesure d’audience (Analytics)") }}</div>
+          <div class="desc">{{ _("Statistiques anonymisées sur la fréquentation pour améliorer le site.") }}</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="cc-analytics" aria-label="{{ _('Activer les cookies analytics') }}">
+          <span class="track"><span class="knob"></span></span>
+        </label>
+      </div>
+
+      <div class="cc-switch">
+        <div class="meta">
+          <div class="title">{{ _("Marketing") }}</div>
+          <div class="desc">{{ _("Contenus et recommandations personnalisés, partenaires tiers.") }}</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="cc-marketing" aria-label="{{ _('Activer les cookies marketing') }}">
+          <span class="track"><span class="knob"></span></span>
+        </label>
+      </div>
+
+      <!-- Actions -->
+      <div class="cc-actions">
+        <button id="cc-reject" class="cc-btn danger">{{ _("Tout refuser") }}</button>
+        <button id="cc-save" class="cc-btn ghost">{{ _("Enregistrer mes choix") }}</button>
+        <button id="cc-accept" class="cc-btn primary">{{ _("Tout accepter") }}</button>
+      </div>
+
+      <p class="cc-toc" style="margin-top:12px;color:var(--muted)">{{ _("Dernière mise à jour :") }} {{ frappe.utils.formatdate(frappe.utils.nowdate()) }}</p>
+    </aside>
+
+<script>
+/* Sync UI avec l’API globale + actions */
+(function(){
+  function $(id){ return document.getElementById(id); }
+
+  function syncUI(){
+    if (!window.CookieConsent) return;
+    var p = window.CookieConsent.get() || { analytics:false, functional:false, marketing:false };
+    var a = $('cc-analytics'), f = $('cc-functional'), m = $('cc-marketing');
+    if (a) a.checked = !!p.analytics;
+    if (f) f.checked = !!p.functional;
+    if (m) m.checked = !!p.marketing;
+  }
+
+  document.addEventListener('consent:applied', syncUI);
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', syncUI); else syncUI();
+
+  var accept = $('cc-accept'), reject = $('cc-reject'), save = $('cc-save');
+  if (accept) accept.addEventListener('click', function(){
+    window.CookieConsent && window.CookieConsent.acceptAll();
+    frappe.show_alert({ message: __('Tous les cookies activés.'), indicator:'green' });
+    syncUI();
+  });
+  if (reject) reject.addEventListener('click', function(){
+    window.CookieConsent && window.CookieConsent.rejectAll();
+    frappe.show_alert({ message: __('Cookies limités au strict nécessaire.'), indicator:'orange' });
+    syncUI();
+  });
+  if (save) save.addEventListener('click', function(){
+    if (!window.CookieConsent) return;
+    const prefs = {
+      necessary: true,
+      analytics: !!$('cc-analytics')?.checked,
+      functional: !!$('cc-functional')?.checked,
+      marketing: !!$('cc-marketing')?.checked
+    };
+    window.CookieConsent.set(prefs);
+    frappe.show_alert({ message: __('Préférences enregistrées.'), indicator:'green' });
+    syncUI();
+  });
+})();
+</script>

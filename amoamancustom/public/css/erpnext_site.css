@@ -449,15 +449,36 @@ padding: 2rem  1.8rem !important;
 .erpx-nav__link {
   font-size: .87rem;
   font-weight: 500;
+  white-space: nowrap; /* « Pourquoi nous ? » se coupait en deux lignes sous ~1100px */
   color: var(--erpx-balck);
   padding: 6px 2px;
   position: relative;
   transition: color .18s ease;
 }
 .erpx-nav__link:hover { color: var(--erpx-blue-500); }
-/* L'entree courante garde aria-current mais aucun marquage visuel : le
- * Header de la maquette est identique sur les quatre cadres, sans etat actif. */
-.erpx-nav__link[aria-current="page"]::after { display: none; }
+
+/* Entree courante. La maquette n'en dessine pas (Header identique sur les
+ * quatre cadres), mais sans repere le visiteur ne sait plus ou il est.
+ * `page` est pose par le serveur (erpx_active), `location` par le suivi de
+ * section de l'accueil (initNavSpy, erpnext_site.js). Trait degrade de marque
+ * sous le libelle, en absolu pour ne pas decaler les autres entrees.
+ * La classe `is-active` accompagne toujours aria-current (serveur et script). */
+.erpx-nav__link.is-active { color: var(--erpx-blue-500); }
+.erpx-nav__link::after {
+  content: "";
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  bottom: -2px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--erpx-grad-brand);
+  transform: scaleX(0);
+  transition: transform .2s ease;
+}
+.erpx-nav__link.is-active::after { transform: scaleX(1); }
+/* « Contactez-nous » sur /erpnext/contact : pilule pleine au lieu du contour. */
+.erpx-nav__aside .erpx-btn[aria-current] { background: #043F93; color: #fff; }
 
 .erpx-nav__cta { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; }
 
@@ -713,7 +734,9 @@ padding: 2rem  1.8rem !important;
 
 @media (max-width: 767.98px) {
   .erpx-herox__scene { height: 240px; }
-  .erpx-herox__panel { padding: 108px 18px 0; border-radius: 18px; }
+  /* 144px et non 108 : le selecteur Amoaman | ERPNext, suspendu sous la
+   * navbar, recouvrait le badge « Une solution Open Source » sur telephone. */
+  .erpx-herox__panel { padding: 144px 18px 0; border-radius: 18px; }
 }
 
 
@@ -2425,25 +2448,30 @@ a.erpx-modcard:focus-visible { outline: 0; box-shadow: var(--erpx-ring); }
 
 .erpx-footer { padding: 0 var(--erpx-gutter) 28px; margin-top: clamp(40px, 6vw, 88px); }
 
-/* Group 122 : 1486x558, rayon 24. Colonnes calees sur les x de la maquette
- * (titres a 146 / 341 / 612 / 810 du cadre, soit 119 / 314 / 585 / 783 du
- * panneau) ; logo et mention en absolu, a leurs cotes. */
+/* Group 122 : 1486x558, rayon 24. Sur un ecran assez large pour le cadre
+ * (>= 1440px), les colonnes reprennent les x de la maquette (titres a 119 /
+ * 314 / 585 / 783 du panneau) et le logo finit a 80px du bord droit, comme
+ * dans le cadre. En dessous, voir la section RESPONSIVE.
+ *
+ * Le logo etait auparavant pose en absolu a `left: calc(100% - 264px)` : la
+ * colonne Contacts, elle, est fluide, et ses adresses passaient sous le logo
+ * sur tous les ecrans de PC courants (1280 a 1920px). Il est desormais la
+ * cinquieme colonne de la grille, qui ne peut plus le superposer a rien. */
 .erpx-footer__inner {
   position: relative;
   max-width: var(--erpx-container-wide);
-  min-height: 558px;
   margin-inline: auto;
   border-radius: 24px;
   /* Rectangle 80 (API Figma) : #00122E a 3% -> #002054 a 58%, du bas vers le
    * haut, sur un axe qui deborde de 24% en haut du panneau. */
   background: linear-gradient(0deg, #00122E 9%, #002054 74%);
   color: #fff;
-  padding: 48px 80px 51px 119px;
+  padding: 48px 80px 36px 119px;
 }
 
 .erpx-footer__grid {
   display: grid;
-  grid-template-columns: 195px 271px 198px minmax(0, 1fr);
+  grid-template-columns: 195px 271px 198px minmax(0, 1fr) auto;
   gap: 0;
 }
 
@@ -2460,12 +2488,278 @@ a.erpx-modcard:focus-visible { outline: 0; box-shadow: var(--erpx-ring); }
 .erpx-footer__mail { display: inline-flex; align-items: center; gap: 4px; margin-top: 36px; font-size: 14.5px; color: #fff; }
 .erpx-footer__mail svg { width: 18px; height: 18px; flex: 0 0 auto; }
 
-/* Image1 2 : 184x60 a (1222, 226) du panneau ; mention a 80px du bord droit,
- * y=493. */
-.erpx-footer__brand { position: absolute; inset: 0; pointer-events: none; }
-.erpx-footer__brand > * { pointer-events: auto; }
-.erpx-footer__brand img { position: absolute; left: calc(100% - 264px); top: 226px; width: 184px; height: auto; }
-.erpx-footer__credit { position: absolute; right: 80px; top: 493px; font-size: 13px; color: rgba(255, 255, 255, .88); white-space: nowrap; }
+/* Image1 2 : 184x60, a y=226 du panneau, soit le milieu de la colonne
+ * Contacts : centre verticalement sur la hauteur de la grille. */
+.erpx-footer__brand { display: flex; align-items: center; padding-left: 24px; }
+.erpx-footer__brand img { display: block; width: 184px; height: auto; }
+
+/* Barre basse : copyright et liens legaux a gauche, « Made by » a droite (la
+ * mention etait en y=493 du cadre, a 80px du bord : meme ligne, meme bord). */
+.erpx-footer__bas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 24px;
+  row-gap: 10px;
+  margin-top: 48px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, .14);
+  font-size: 13px;
+  line-height: 20px;
+  color: rgba(255, 255, 255, .88);
+}
+.erpx .erpx-footer__copy { margin: 0; }
+.erpx-footer__legal { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+.erpx-footer__legal .erpx-footer__link { font-size: 13px; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(255, 255, 255, .35); }
+.erpx-footer__legal .erpx-footer__link:hover { text-decoration-color: currentColor; }
+.erpx-footer__sep { color: rgba(255, 255, 255, .45); }
+.erpx-footer__credit { margin-left: auto; white-space: nowrap; }
+
+/* ============================================================
+   17 bis. PAGES LEGALES (/erpnext/cookies, /mentions-legales, /confidentialite)
+   ============================================================ */
+
+/* Le texte vient de templates/includes/legal/, partage avec les pages du site
+ * corporate : il porte donc LEURS classes (.legal-dl, .info-callout, .cc-switch,
+ * .toc-link...). Le site corporate les style dans le <style> en ligne de chaque
+ * page ; ici elles sont restylees aux couleurs du mini-site, et uniquement sous
+ * .erpx-legal pour ne rien laisser fuir. */
+
+.erpx-page-legal::before {
+  background: linear-gradient(182.98deg, #FFFFFF 12%, #DFECFF 34%, #F6F8FC 60%, #FFFFFF 90%);
+}
+
+.erpx-legal {
+  --muted: var(--erpx-ink-soft); /* lu par le style en ligne de cookies_preferences.html */
+  padding: 0 var(--erpx-gutter);
+}
+
+.erpx-legal__tete { padding: 56px 0 40px; text-align: center; }
+.erpx-legal__badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: var(--erpx-radius-pill);
+  background: rgba(38, 107, 204, .10);
+  color: var(--erpx-blue-600);
+  font-size: 13px;
+  font-weight: 600;
+}
+.erpx .erpx-legal__titre {
+  margin-top: 18px;
+  font-size: clamp(2rem, 1.2rem + 3vw, 3.5rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -.05em;
+  color: #01235C;
+}
+.erpx .erpx-legal__maj { margin: 14px 0 0; font-size: 14px; color: var(--erpx-ink-soft); }
+
+/* Une colonne (mentions legales) ou deux : colonne laterale de 340px, collante
+ * sous la navbar, et texte. La largeur de lecture est plafonnee a ~80 signes. */
+.erpx-legal__corps {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 28px;
+  max-width: 920px;
+  margin-inline: auto;
+}
+.erpx-legal__corps--aside {
+  grid-template-columns: 340px minmax(0, 1fr);
+  max-width: var(--erpx-container);
+  align-items: start;
+}
+.erpx-legal__aside { position: sticky; top: 110px; }
+
+.erpx-legal__carte,
+.erpx-legal .cc-card,
+.erpx-legal__sommaire {
+  background: #fff;
+  border: 1px solid var(--erpx-line);
+  border-radius: var(--erpx-radius-lg);
+  box-shadow: var(--erpx-shadow-soft);
+}
+.erpx-legal__carte { padding: clamp(24px, 3.5vw, 48px); }
+.erpx-legal .cc-card, .erpx-legal__sommaire { padding: 24px; }
+
+/* Texte courant */
+.erpx-legal__carte { font-size: 15px; line-height: 1.75; color: var(--erpx-ink); }
+.erpx-legal__carte p { margin: 0 0 14px; }
+.erpx-legal__carte h2,
+.erpx-legal__carte h3 {
+  margin: 36px 0 12px;
+  color: #01235C;
+  letter-spacing: -.02em;
+  line-height: 1.3;
+}
+.erpx-legal__carte h2 { font-size: clamp(1.2rem, 1rem + .6vw, 1.45rem); }
+.erpx-legal__carte h3 { font-size: clamp(1.05rem, .95rem + .4vw, 1.2rem); }
+.erpx-legal__carte ul,
+.erpx-legal__carte ol { margin: 0 0 16px; padding-left: 22px; }
+.erpx-legal__carte ul { list-style: disc; }
+.erpx-legal__carte ol { list-style: decimal; }
+.erpx-legal__carte li { margin: 4px 0; }
+.erpx-legal__carte li::marker { color: var(--erpx-blue-400); }
+.erpx-legal__carte a,
+.erpx-legal .cc-card a { color: var(--erpx-blue-500); text-decoration: underline; text-underline-offset: 3px; }
+.erpx-legal__carte a:hover { color: var(--erpx-pink-500); }
+.erpx-legal [id] { scroll-margin-top: 110px; }
+
+/* Mentions legales : editeur et sommaire */
+.erpx-legal .legal-head { padding-left: 14px; border-left: 4px solid var(--erpx-blue-400); }
+.erpx-legal .legal-head p { margin: 0; color: #01235C; }
+.erpx-legal .legal-dl {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 6px 20px;
+  margin: 20px 0 8px;
+}
+.erpx-legal .legal-dl dt { font-weight: 700; color: #01235C; }
+.erpx-legal .legal-dl dd { margin: 0; }
+.erpx-legal .legal-section:first-of-type h2 { margin-top: 28px; }
+
+/* Cookies : titre du sommaire integre au texte */
+.erpx-legal .cc-toc-title { font-weight: 700; color: #01235C; margin-bottom: 8px; }
+.erpx-legal__carte > :first-child { margin-top: 0; }
+
+/* Confidentialite : note d'introduction et encart contact */
+.erpx-legal .info-note {
+  padding: 18px 20px;
+  border-radius: var(--erpx-radius-md);
+  background: var(--erpx-surface-alt);
+  color: var(--erpx-ink-soft);
+  margin-bottom: 18px;
+}
+.erpx-legal .info-callout {
+  display: flex;
+  gap: 14px;
+  padding: 18px 20px;
+  border-radius: var(--erpx-radius-md);
+  background: rgba(38, 107, 204, .07);
+  border: 1px solid rgba(38, 107, 204, .18);
+}
+.erpx-legal .callout-icon {
+  flex: 0 0 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--erpx-grad-brand);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+.erpx-legal .callout-content p { margin: 4px 0 0; }
+
+/* Sommaire lateral (confidentialite) */
+.erpx .erpx-legal__sommaire-titre { margin: 0 0 12px; font-weight: 700; color: #01235C; }
+.erpx-legal .toc-list { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+.erpx-legal .toc-list li { counter-increment: toc; }
+.erpx-legal .toc-link {
+  display: flex;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--erpx-radius-sm);
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--erpx-ink-soft);
+  transition: background .16s ease, color .16s ease;
+}
+.erpx-legal .toc-link::before { content: counter(toc, decimal-leading-zero); font-weight: 600; color: var(--erpx-blue-400); }
+.erpx-legal .toc-link:hover { background: var(--erpx-surface-alt); color: var(--erpx-blue-600); }
+
+/* Carte de preferences (cookies) */
+.erpx-legal .cc-card h2 { font-size: 1.25rem; color: #01235C; margin-bottom: 12px; }
+.erpx-legal .cc-note {
+  padding: 12px 14px;
+  border-radius: var(--erpx-radius-sm);
+  background: var(--erpx-surface-alt);
+  font-size: 14px;
+  color: var(--erpx-ink-soft);
+}
+.erpx-legal .cc-badges { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 8px; }
+.erpx-legal .cc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border: 1px solid var(--erpx-line);
+  border-radius: var(--erpx-radius-pill);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--erpx-ink-soft);
+}
+.erpx-legal .cc-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--erpx-blue-200); }
+.erpx-legal .cc-switch {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px dashed var(--erpx-line);
+}
+.erpx-legal .cc-switch .meta { flex: 1 1 auto; }
+.erpx-legal .cc-switch .title { font-weight: 600; color: var(--erpx-ink); }
+.erpx-legal .cc-switch .desc { margin-top: 2px; font-size: 13.5px; line-height: 1.5; color: var(--erpx-ink-soft); }
+.erpx-legal .switch { position: relative; flex: 0 0 46px; width: 46px; height: 26px; }
+.erpx-legal .switch input { position: absolute; inset: 0; z-index: 1; margin: 0; opacity: 0; cursor: pointer; }
+.erpx-legal .switch .track {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--erpx-radius-pill);
+  background: #E6EBF2;
+  transition: background .2s ease;
+}
+.erpx-legal .switch .knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(8, 26, 42, .2);
+  transition: transform .2s ease;
+}
+.erpx-legal .switch input:checked + .track { background: var(--erpx-grad-brand); }
+.erpx-legal .switch input:checked + .track .knob { transform: translateX(20px); }
+.erpx-legal .switch input:focus-visible + .track { box-shadow: var(--erpx-ring); }
+.erpx-legal .switch input:disabled { cursor: not-allowed; }
+.erpx-legal .switch input:disabled + .track { opacity: .6; }
+.erpx-legal .cc-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.erpx-legal .cc-btn {
+  flex: 1 1 auto;
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: var(--erpx-radius-pill);
+  border: 1px solid var(--erpx-line);
+  background: #fff;
+  color: var(--erpx-ink);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.erpx-legal .cc-btn:hover { transform: translateY(-1px); box-shadow: var(--erpx-shadow-soft); }
+.erpx-legal .cc-btn.primary { border-color: transparent; background: var(--erpx-grad-brand); color: #fff; }
+.erpx-legal .cc-btn.danger { border-color: #FFD5DB; background: #FFF5F7; color: #A1112F; }
+.erpx-legal .cc-toc { font-size: 13px; }
+
+/* Sous 992px : une colonne, la colonne laterale n'est plus collante et passe
+ * AU-DESSUS du texte (preferences de cookies et sommaire en premier). */
+@media (max-width: 991.98px) {
+  .erpx-legal__corps--aside { grid-template-columns: minmax(0, 1fr); max-width: 760px; }
+  .erpx-legal__aside { position: static; }
+}
+@media (max-width: 767.98px) {
+  /* Pas moins de 56px en haut : le selecteur Amoaman | ERPNext pend sous la navbar. */
+  .erpx-legal__tete { padding-bottom: 28px; }
+  .erpx-legal__carte { font-size: 14.5px; }
+  .erpx-legal .legal-dl { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .erpx-legal .legal-dl dd { margin-bottom: 8px; }
+}
+
+.erpx-page-legal .erpx-footer { margin-top: 88px; }
 
 /* ============================================================
    18. REVEAL
@@ -2499,12 +2793,41 @@ a.erpx-modcard:focus-visible { outline: 0; box-shadow: var(--erpx-ring); }
   .erpx-modules-head__deco { display: none; }
 }
 
+/* Footer entre 1200 et 1439px : le panneau est plus etroit que le cadre de
+ * 1486px, les largeurs fixes de la maquette ne laisseraient a Contacts que
+ * ~250px. Les trois premieres colonnes prennent la largeur de leur contenu,
+ * l'espace restant va a Contacts. */
+@media (max-width: 1439.98px) {
+  .erpx-footer__inner { padding-inline: clamp(40px, 5vw, 80px); }
+  .erpx-footer__grid {
+    grid-template-columns: auto auto auto minmax(0, 1fr) auto;
+    column-gap: clamp(28px, 3.4vw, 56px);
+  }
+  .erpx-footer__brand { padding-left: 0; }
+}
+
 @media (max-width: 1199.98px) {
+  /* Petits ecrans de PC (992-1199px) : les largeurs minimales de la maquette
+   * (190 et 168px) ne laissent plus la place aux cinq liens. Les boutons
+   * prennent la largeur de leur libelle. */
+  .erpx-nav .erpx-btn,
+  .erpx-nav__aside .erpx-btn { min-width: 0; padding: 0 18px; }
+  .erpx-nav__bar { padding-left: 24px; }
   .erpx-modules { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .erpx-footer__inner { padding: 44px 40px 40px; min-height: 0; }
-  .erpx-footer__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 36px; }
-  .erpx-footer__brand { position: static; grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; margin-top: 36px; }
-  .erpx-footer__brand img, .erpx-footer__credit { position: static; }
+  /* Trois colonnes, Contacts passe sous Modules ; le logo prend une ligne. */
+  .erpx-footer__inner { padding: 44px 40px 32px; }
+  .erpx-footer__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 36px; column-gap: 24px; }
+  .erpx-footer__brand { grid-column: 1 / -1; padding-left: 0; }
+  .erpx-footer__bas { margin-top: 36px; }
+}
+
+/* 992-1099px (portables 13" et ecrans 1024) : meme sans largeur minimale, les
+ * cinq liens et les deux boutons ne tiennent pas et « Demander une démo »
+ * recouvrait « Contactez-nous ». Les deux menent a /erpnext/contact : la
+ * seconde pilule est retiree sur cette plage, rien n'est perdu. Sous 992px le
+ * menu burger prend le relais. */
+@media (min-width: 992px) and (max-width: 1099.98px) {
+  .erpx-nav__aside { display: none; }
 }
 
 @media (max-width: 991.98px) {
@@ -2562,8 +2885,9 @@ a.erpx-modcard:focus-visible { outline: 0; box-shadow: var(--erpx-ring); }
   .erpx-tile__icon { width: 96px; height: 96px; border-radius: 18px; }
   .erpx-tile__icon img, .erpx-tile__icon svg { width: 40px; height: 40px; }
   .erpx-footer__grid { grid-template-columns: minmax(0, 1fr); }
-  .erpx-footer__inner { padding: 36px 24px; }
-  .erpx-footer__brand { flex-direction: column; align-items: flex-start; gap: 20px; }
+  .erpx-footer__inner { padding: 36px 24px 28px; }
+  .erpx-footer__bas { flex-direction: column; align-items: flex-start; }
+  .erpx-footer__credit { margin-left: 0; white-space: normal; }
   .erpx-segment { min-height: 440px; padding: 26px 22px; }
   .erpx-btn { width: 100%; }
   .erpx-nav__cta .erpx-btn { width: auto; }

@@ -229,6 +229,56 @@
   }
 
   /* ---------------------------------------------------------
+   * Entrée de navbar active sur les ancres de l'accueil
+   * ------------------------------------------------------- */
+  // Les pages dédiées (Modules, Tarification) reçoivent aria-current="page"
+  // côté serveur (erpx_active). Secteurs, Pourquoi nous ? et Aide pointent des
+  // SECTIONS de /erpnext : le serveur ne peut pas savoir laquelle est à
+  // l'écran, on la suit donc au défilement. aria-current="location" est la
+  // valeur ARIA prévue pour « l'endroit courant dans la page ».
+  function initNavSpy() {
+    var path = window.location.pathname.replace(/\/+$/, "");
+    if (path !== "/erpnext") return;
+    if (!("IntersectionObserver" in window)) return;
+
+    var links = {};
+    document.querySelectorAll('.erpx-nav__link[href^="/erpnext#"]').forEach(function (link) {
+      links[link.getAttribute("href").split("#")[1]] = link;
+    });
+
+    var sections = Object.keys(links)
+      .map(function (id) { return document.getElementById(id); })
+      .filter(Boolean);
+    if (!sections.length) return;
+
+    var visibles = {};
+
+    function marquer() {
+      // La section retenue est la premiere visible dans l'ordre du document :
+      // deux sections peuvent se partager la bande d'observation.
+      var courante = null;
+      sections.forEach(function (section) {
+        if (!courante && visibles[section.id]) courante = section.id;
+      });
+      Object.keys(links).forEach(function (id) {
+        var actif = id === courante;
+        links[id].classList.toggle("is-active", actif);
+        if (actif) links[id].setAttribute("aria-current", "location");
+        else links[id].removeAttribute("aria-current");
+      });
+    }
+
+    // Bande d'observation : du bas de la navbar collante jusqu'au milieu de
+    // l'ecran. Une section n'est « courante » que si elle occupe le haut de la vue.
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) { visibles[entry.target.id] = entry.isIntersecting; });
+      marquer();
+    }, { rootMargin: "-110px 0px -50% 0px" });
+
+    sections.forEach(function (section) { observer.observe(section); });
+  }
+
+  /* ---------------------------------------------------------
    * Apparition au défilement
    * ------------------------------------------------------- */
   function initReveal() {
@@ -268,6 +318,7 @@
     initMulti();
     initPhone();
     initSmoothScroll();
+    initNavSpy();
     initReveal();
   }
 
